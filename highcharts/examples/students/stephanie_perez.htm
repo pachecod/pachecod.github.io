@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>COVID Cases in Nearby Cities</title>
+
+		<style type="text/css">
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 310px; 
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+	font-family: Fira Sans, sans-serif;
+	border-collapse: collapse;
+	border: 41px solid #8c456f;
+	margin: 40px auto;
+	text-align: center;
+	width: 100%;
+	max-width: 500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #red;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #red;
+}
+.highcharts-data-table tr:hover {
+    background: #red;
+}
+
+		</style>
+	</head>
+	<body>
+<script src="../../code/highcharts.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+</figure>
+
+
+		<script type="text/javascript">
+var chart = Highcharts.chart('container', {
+
+    chart: {
+        type: 'column'
+    },
+
+    title: {
+        text: 'COVID-19 Cases in Nearby Cities'
+    },
+
+    subtitle: {
+        text: 'Here is a look at the Covid-19 cases in the following cities: Bellflower, Lakewood, Long Beach, Cerritos and Downey'
+    },
+
+    legend: {
+        align: 'right',
+        verticalAlign: 'middle',
+        layout: 'vertical'
+    },
+
+    xAxis: {
+        categories: ['Bellflower', 'Lakewood', 'Long Beach', 'Cerritos','Downey'],
+        labels: {
+            x: -5
+        }
+    },
+
+    yAxis: {
+        allowDecimals: false,
+        title: {
+            text: 'Number of Reported Cases'
+        }
+    },
+
+    series: [{
+        name: 'Cases',
+        data: [ 9588, 6267, 47205, 2577, 15805]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    align: 'right',
+                    verticalAlign: 'top',
+                    layout: 'horizontal'
+                },
+                yAxis: {
+                    labels: {
+                        align: 'left',
+                        x: 0,
+                        y: -5
+                    },
+                    title: {
+                        text: null
+                    }
+                },
+                subtitle: {
+                    text: null
+                },
+                credits: {
+                    enabled: false
+                }
+            }
+        }]
+    }
+});
+
+document.getElementById('small').addEventListener('click', function () {
+    chart.setSize(400);
+});
+
+document.getElementById('large').addEventListener('click', function () {
+    chart.setSize(600);
+});
+
+document.getElementById('auto').addEventListener('click', function () {
+    chart.setSize(null);
+});
+
+		</script>
+	</body>
+</html>
