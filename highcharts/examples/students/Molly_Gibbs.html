@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Molly Gibbs</title>
+<style type="text/css">
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 360px;
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+	font-family: Verdana, sans-serif;
+	border-collapse: collapse;
+	border: 1px solid #EBEBEB;
+	margin: 10px auto;
+	text-align: center;
+	width: 100%;
+	max-width: 500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+</style>
+
+    <!-- import the webpage's stylesheet -->
+
+    <!-- import the webpage's javascript file -->
+
+  </head>
+  <body>
+    <h1>Welcome to my website!</h1>
+    <img src= "file:///Users/mollygibbs/Desktop/mollslol.github.io/mollyphoto.JPG" width="300"
+
+<p>
+
+</p>
+
+    <p>
+      I'm your cool new webpage. Made with <a href="https://glitch.com">Glitch</a>!
+</p>
+
+      <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        Basic line chart showing how COVID-19 affected total visits to National Parks in 2020. 
+    </p>
+</figure>
+
+<script type="text/javascript">
+Highcharts.chart('container', {
+
+    title: {
+        text: 'Total Visitors to Some of the Most Visited National Parks 2017-2020'
+    },
+
+    subtitle: {
+        text: 'Source: nps.gov'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Number of Visitors'
+        }
+    },
+
+    xAxis: {
+        accessibility: {
+            rangeDescription: 'Range: 2017 to 2021'
+        }
+    },
+
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+            pointStart: 2017
+        }
+    },
+
+    series: [{
+        name: 'Grand Canyon NP',
+        data: [6254238, 6380495, 5974411, 2897098]
+    }, {
+        name: 'Yellowstone NP',
+        data: [4116524, 4115000, 4020288, 3806306]
+    }, {
+        name: 'Zion NP',
+        data: [4504812, 4320033, 4488268, 3591254]
+    }, {
+        name: 'Rocky Mtn NP',
+        data: [4437215, 4590493, 4670053, 3305199]
+    }, {
+        name: 'Grand Teton NP',
+        data: [3317000, 3491151, 3405614, 3289638]
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+});
+</script>
+</body>
+</html>
