@@ -7,9 +7,12 @@
   <title>Tour A-Frame</title>
 
 <script src="https://pachecod.github.io/aframe-master/dist/aframe-master.js"></script>
+
 </head>
 
 <body>
+
+<p>Beans...</p>
 
 <a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
 
@@ -44,11 +47,33 @@
   })
 </script>
 
-<a-box position="20 0 -20" rotation="0 -55 0" width="7" height="1.5" color="orange" weblink="url:photo2.html">
-  <a-text font="kelsonsans" value="Hallway" width="15" position="-2.5 0 1" rotation="0 0 0"></a-text>
+<!-- Change position, text and weblink for each hotspot and photo. !-->
+<!-- Duplicate a snippet below for additional hotspots, then customize them. -->
+<!-- -->
+<!-- BLOCK PLACEMENT -->
+<!-- X is right positive, left negative  -->
+<!-- Y is up negative, down negative  -->
+<!-- Z is toward you positive, away from you negative  -->
+<!-- -->
+<!-- BLOCK ROTATION-->
+<!-- X is tumbles toward or away from you.  -->
+<!-- Y spins like a top.  -->
+<!-- Z spins like a fan with blades facing you -->
+<!-- -->
+
+<a-box position="-5 0 -15" rotation="0 0 0" width="5" height="1.5" color="orange" weblink="url:photo1.html">
+  <a-text font="kelsonsans" value="This Way" width="15" position="-2 0 0.5" rotation="0 0 0"></a-text>
 </a-box>
 
-<a-sky src="../photos/360foodcom1.jpg" rotation="0 -130 0"></a-sky>
+<a-box position="40 0 -15" rotation="0 270 0" width="5" height="1.5" color="green" weblink="url:photo2.html">
+  <a-text font="kelsonsans" value="This Way" width="15" position="-2 0 0.5" rotation="0 0 0"></a-text>
+</a-box>
+
+<!-- ....................... -->
+
+<!-- Change 360 photo to your own below. -->
+<a-sky src="../photos/n1courtyard.jpg" rotation="0 -130 0"></a-sky>
+<!-- ....................... -->
 
 </a-scene>
 
