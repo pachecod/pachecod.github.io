@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tour A-Frame</title>
+
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<!-- script src="https://pachecod.github.io/aframe-master/dist/aframe-master.js"></script -->
+
+</head>
+
+<body>
+
+
+
+<a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
+
+<!-- canvas class="a-canvas a-grab-cursor" data-aframe-canvas="true" width="801" height="937" style=""></canvas -->
+
+<a-entity camera="" position="" wasd-controls="" rotation="" look-controls="" aframe-injected=""></a-entity>
+
+<div class="a-enter-vr" aframe-injected=""><button class="a-enter-vr-button" title="Enter VR mode with a headset or fullscreen mode on a desktop. Visit https://webvr.rocks or https://webvr.info for more information." aframe-injected=""></button></div>
+
+<div class="a-enter-ar a-hidden" aframe-injected=""><button class="a-enter-ar-button" title="Enter AR mode with a headset or handheld device. Visit https://webvr.rocks or https://webvr.info for more information." aframe-injected=""></button></div>
+
+<div class="a-orientation-modal a-hidden" aframe-injected=""><button aframe-injected="">Exit VR</button></div>
+
+<a-entity light="" data-aframe-default-light="" aframe-injected=""></a-entity>
+
+<a-entity light="" position="" data-aframe-default-light="" aframe-injected=""></a-entity>
+
+<a-entity cursor="rayOrigin:mouse"></a-entity>
+
+<script>
+  AFRAME.registerComponent("weblink", {
+    schema: {
+      url: {
+        default: ""
+      }
+    },
+    init: function() {
+      this.el.addEventListener("click", (e) => {
+        window.location = this.data.url;
+      })
+    }
+  })
+</script>
+
+<!-- Change position, text and weblink for each hotspot and photo. !-->
+<!-- Duplicate a snippet below for additional hotspots, then customize them. -->
+<!-- -->
+<!-- BLOCK PLACEMENT -->
+<!-- X is right positive, left negative  -->
+<!-- Y is up negative, down negative  -->
+<!-- Z is toward you positive, away from you negative  -->
+<!-- -->
+<!-- BLOCK ROTATION-->
+<!-- X is tumbles toward or away from you.  -->
+<!-- Y spins like a top.  -->
+<!-- Z spins like a fan with blades facing you -->
+<!-- -->
+
+<a-box position="10 0 -60" rotation="0 0 0" width="20" height="10" color="orange" weblink="url:photo1.html">
+<a-text font="kelsonsans" value="Go this way" width="50" position="-6 0 0.8" rotation="0 0 0"></a-text>
+</a-box>
+
+<a-box position="40 0 -15" rotation="0 270 0" width="20" height="10" color="green" weblink="url:photo2.html">
+  <a-text font="kelsonsans" value="Go this way" width="50" position="-6 0 0.8" rotation="0 0 0"></a-text>
+</a-box>
+
+<a-box position="-60 0 -15" rotation="0 90 0" width="20" height="10" color="blue" weblink="url:photo3.html">
+  <a-text font="kelsonsans" value="Go this way" width="50" position="-6 0 0.8" rotation="0 0 0"></a-text>
+</a-box>
+
+<a-box position="-5 0 35" rotation="0 180 0" width="20" height="10" color="red" weblink="url:photo3.html">
+  <a-text font="kelsonsans" value="Go this way" width="50" position="-6 0 0.8" rotation="0 0 0"></a-text>
+</a-box>
+
+<!-- ....................... -->
+
+<!-- Change 360 photo to your own below. -->
+
+<a-sky src="photos/5.jpg" rotation="0 -130 0"></a-sky>
+<!-- ....................... -->
+
+</a-scene>
+
+
+</body>
+</html>
