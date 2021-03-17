@@ -17,18 +17,7 @@
 <!-- model-viewer src="amezion_aero.glb" alt="AME Zion Church" width="400" auto-rotate camera-controls></model-viewer -->
 
 
-<model-viewer src="amezion_aero.glb" camera-controls ar ios-src="amezion_aero.usdz" ar-modes="webxr scene-viewer quick-look">
-
-    <div class="progress-bar hide" slot="progress-bar">
-        <div class="update-bar"></div>
-    </div>
-    <button slot="ar-button" id="ar-button">
-        View in your space
-    </button>
-    <div id="ar-prompt">
-        <img src="https://modelviewer.dev/shared-assets/icons/hand.png">
-    </div>
-</model-viewer>
+<model-viewer src="amezion_aero.glb" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls alt="AME Zion Church" ios-src="amezion_aero.usdz"></model-viewer>
 
 
   </body>
