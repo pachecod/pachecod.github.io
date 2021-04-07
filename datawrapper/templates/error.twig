@@ -1,0 +1,35 @@
+{% extends "core.twig" %}
+
+{% block content %}
+
+    <div class="row docs error">
+
+        <div class="span8">
+
+            <h1 class="title">{{ title }}</h1>
+
+            <p class="big">
+
+                {{ message|raw }}
+
+            </p>
+
+            {% if options %}
+            <h2>{% trans "So, what can I do now?" %}</h2>
+
+            <ul class="options">
+                {% for o in options %}
+                    <li><i class="icon-chevron-right"></i> {{ o | raw }}</li>
+                {% endfor %}
+            </ul>
+
+            {% else %}
+
+            <p>{% trans "error / return to homepage" %}</p>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+
+.select-visualization p {
+    margin-top: 15px;
+    @media @viewport-medium { font-size: 13px; }
+}
+
+.vis-thumbs {
+
+    margin-right: -10px;
+
+    .vis-thumb {
+        width: 84px;
+        height: 82px; //90
+        background: #fff;
+        position: relative;
+        display: inline-block;
+        margin: 0 8px 8px 0;
+        cursor: pointer;
+
+        @media (max-width: 1199px) {
+            width: 75px;
+            height: 75px;
+        }
+
+        svg {
+            width: 30px; //55
+            height: 40px; //60
+            margin-left: 27px; //10
+            margin-top: 10px; //5
+            overflow: visible;
+
+            path, rect, circle, ellipse, polyline, polygon { fill: @dw_blue_medium; }
+          //  line { stroke: @bright-blue; }
+
+            @media (max-width: 1199px) {
+                width: 30px;
+                height: 40px;
+                margin-left: 23px;
+                margin-top: 10px;
+            }
+        }
+
+        .title {
+            position: absolute;
+            bottom: 8px;
+            left: 5px;
+            right: 5px;
+            font-size: 11px;
+            font-family: @base-font;
+            font-weight: 500;
+            line-height: 14px;
+            text-align: center;
+            text-shadow: 1px 1px 0px @light-grey,0px 1px 0px @light-grey,-1px 1px 0px @light-grey,
+                1px -1px 0px @light-grey,0px -1px 0px @light-grey,-1px -1px 0px @light-grey,
+                1px 0px 0px @light-grey,0px 0px 0px @light-grey,-1px 0px 0px @light-grey;
+            color: #555;
+        }
+
+        &:hover {
+            //border: 2px solid @bright-blue;
+            background: fade(@dw_blue_medium, 20%);
+
+            .title {
+                text-shadow: 1px 1px 0px #CCE7F5,0px 1px 0px #CCE7F5,-1px 1px 0px #CCE7F5,
+                    1px -1px 0px #CCE7F5, 0px -1px 0px #CCE7F5, -1px -1px 0px #CCE7F5,
+                    1px 0px 0px #CCE7F5, 0px 0px 0px #CCE7F5, -1px 0px 0px #CCE7F5;
+            }
+        }
+
+        &.active, &:active, &.active:hover {
+            @active_color: @dw_blue_medium;
+            background: @active_color;
+
+            .title {
+                color:#fff;
+                text-shadow: 1px 1px 0px @active_color,0px 1px 0px @active_color,-1px 1px 0px @active_color,
+                    1px -1px 0px @active_color, 0px -1px 0px @active_color, -1px -1px 0px @active_color,
+                    1px 0px 0px @active_color, 0px 0px 0px @active_color, -1px 0px 0px @active_color;
+            }
+
+            svg {
+                path, rect, circle, ellipse, polyline, polygon { fill:#fff; }
+                .st0, .st1, .st2, .st3, .st4 { opacity: 1}
+              //  line { stroke: #000; }
+            }
+        }
+    }
+}

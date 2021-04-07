@@ -1,0 +1,105 @@
+{% extends "core.twig" %}
+
+{% block content %}
+
+{% if user.isLoggedIn() %}
+{{ svelte('chart-breadcrumb', {folders:folders, type:visNamespace}) }}
+{% endif %}
+
+{{ hook('before_editor_nav', chart) }}
+
+<div class="row create-nav">
+    {% for step in steps %}
+        {% if not step.readonly and (createstep > step.index or createstep != step.index and chart.lastEditStep >= step.index) %}
+            <a href="{{ step.id }}" class="submit span3{% if createstep == step.index %} active{% else %}{% if createstep > step.index %} passed{% endif %}{% endif %}">
+                <span class="step">{{ step.index }}</span>
+                <span class="title">{{ step.title }}</span>
+                <i class="fa fa-check"></i>
+                 <div class="corner"></div>
+            </a>
+        {% elseif createstep < step.index and createstep == step.index-1 %}
+            <a href="{{ step.id }}" class="submit span3{% if createstep == step.index %} active{% else %}{% if createstep > step.index %} passed{% else %} unseen{% endif %}{% endif %}">
+                <span class="step">{{ step.index }}</span>
+                {{ step.title }}
+                <div class="corner"></div>
+            </a>
+        {% else %}
+            <div class="span3{% if step.readonly %} readonly{% endif %}{% if createstep == step.index %} active{% else %}{% if createstep > step.index %} passed{% else %} unseen{% endif %}{% endif %}">
+                <span class="step">{{ step.index }}</span>
+                {{ step.title }}
+                <div class="corner"></div>
+            </div>
+        {% endif %}
+
+    {% endfor %}
+</div>
+
+{% if user != chart.user and user.isAdmin() %}
+<div class="alert alert-warning mt-2">
+  {{ "This chart belongs to %email. Great power comes with great responsibility, so be careful with what you're doing!"
+      | trans | replace({ "%email": "<a href=\"/admin/charts/#{chart.user.id}\">#{chart.user.email}</a>" }) | raw }}
+  <ul class="mb-1">
+    <li><a href="javascript:void(0)" id="duplicate-chart">{{ "copy the chart to your account" | trans }}</a></li>
+    <li><a href="http://app.datawrapper.local/admin/copy-to-local?chartIds={{ chart.id }}">{{ "copy the chart to local instance" | trans }}</a></li>
+  </ul>
+</div>
+{% endif %}
+{{ hook('chart_editor_alert', chart, user) }}
+
+{% if createstep != 3 %}
+
+<script type="text/javascript">
+
+    dw.backend.__currentData = {{ chart.loadData | json | raw }};
+    // initialize current chart
+    var chart = dw.backend.currentChart = dw.chart(JSON.parse("{{ chart.toJSON(false, mode) | raw }}"));
+
+    chart
+        .locale(dw.backend.currentChart.get('language') || '{{ chartLocale }}')
+        .metricPrefix({{ metricPrefix | json | raw }});
+
+    if (chart.get('lastEditStep') < {{ createstep }}) {
+        dw.backend.__firstTime = true;
+        chart.set('lastEditStep', {{ createstep }});
+        try { chart.save(); } catch (e) {}
+    }
+
+    chart.load(dw.backend.__currentData);
+
+
+dw.backend.ready(function() {
+
+    dw.backend.syncChart(chart);
+
+    _.templateSettings = {
+        interpolate : /\{\{(.+?)\}\}/g
+    };
+    $('.chart-editor').on('click', '.submit', function(e) {
+        var a = $(e.target);
+        if (e.target.nodeName.toLowerCase() != 'a') a = a.parents('a');
+        if (chart.hasUnsavedChanges()) {
+            e.preventDefault();
+            chart.onSave(function() {
+                location.href = a.attr('href');
+            });
+        }
+    });
+
+    {% if user != chart.user and user.isAdmin() %}
+    $('a#duplicate-chart').on('click', function(e){
+        e.preventDefault();
+        $('i#copying-chart').addClass('fa-spinner fa-spin');
+        dw.backend.httpReq.post('/v3/charts/' + chart.get('id') + '/copy').then(openChart);
+    })
+
+    function openChart(res) {
+        $('i#copying-chart').removeClass('fa-spinner fa-spin');
+        window.open(window.location.href.replace(chart.get('id'), res.id));
+    }
+    {% endif %}
+})
+</script>
+
+{% endif %}
+
+{% endblock %}

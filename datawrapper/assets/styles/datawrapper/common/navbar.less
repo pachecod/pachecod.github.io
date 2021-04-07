@@ -1,0 +1,219 @@
+html .navbar.navbar-transparent .navbar-inner {
+    height: 65px;
+
+    .nav li .divider-vertical {
+        height: 65px;
+    }
+}
+
+html .navbar .navbar-inner {
+    font-weight: 400;
+    background: @dw_background;
+    min-height: 55px;
+    padding-top: 10px;
+    border-bottom: 1px solid @dw_background;
+    box-shadow: none;
+    height: 55px;
+
+    li {
+        line-height: 26px;
+    }
+
+    .nav {
+        & > li {
+            &.icon > a {
+                padding: 10px 9px 10px;
+                line-height: 26px;
+            }
+
+            .fa, .im {
+                color: #222;
+                font-size: 15px;
+                margin-right: 2px;
+            }
+
+            .im {
+                position: relative;
+                top: 2px;
+                font-size: 14px;
+                line-height: 18px;
+            }
+            .no-icon {
+                display: inline;
+                margin-right: 19px;
+            }
+
+            & > a {
+                padding-top: 11px;
+                padding-bottom: 10px;
+                font-size: 15px;
+
+                &:hover {
+                    color: #000;
+                    .fa { color: @dw_blue_medium; }
+                }
+                b { font-weight: 500; }
+            }
+
+            &.divider-vertical {
+                height: 45px;
+                margin: 0 0px;
+                border-left-color: #dedcdb;
+            }
+        }
+
+        .active > a,
+        .active > a:hover,
+        li.dropdown.active > .dropdown-toggle:hover {
+            box-shadow: none;
+            -webkit-box-shadow: none;
+            background: transparent;
+            font-weight: 500;
+            color: #222!important;
+        }
+
+        .dropdown a.group {
+            color: #999;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            pointer-events: none;
+            margin-left: -2px;
+        }
+
+    } // end .nav
+
+    img.logo {
+        width: 118px;
+        float: left;
+        margin-top: 11px;
+    }
+
+    .brand {
+        color: #333;
+        border: 2px solid #333;
+        border-top: 0;
+        border-right: 0;
+        padding-left: 9px;
+        padding-top: 4px;
+        padding-bottom: 8px;
+        font-size: 18.5px;
+        margin-top: 11px;
+        margin-left: 1px;
+        padding-right: 6px;
+        box-sizing: border-box;
+        line-height: 18px;
+        font-weight: 500;
+        text-shadow: none;
+        letter-spacing: -0.4px;
+    }
+
+    .mycharts_dd.dropdown {
+        margin-left: -20px;
+
+        ul {
+            z-index: 1001;
+        }
+
+        li {
+            position: relative;
+            max-width: 240px;
+            min-height: 26px;
+
+            img.icon {
+                height: 20px!important;
+                width: 30px!important;
+                position: absolute;
+                left: 10px;
+                top: 4px;
+            }
+
+            a {
+                padding-left: 45px;
+                min-height: 20px;
+
+                span {
+                    overflow: hidden;
+                    display: block;
+                    width: 100%;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            &.divider {
+                min-height: 0;
+            }
+        }
+
+        &.open {
+            #dw-header-link-mycharts_dd {
+                background: none;
+            }
+        }
+    }
+
+
+    .nav li.dropdown .dropdown-toggle .caret, .nav li.dropdown.open .caret,
+    li a .tt { display: none; }
+
+}
+
+html .navbar.navbar-transparent .navbar-inner {
+    background: rgba(255,255,255,0.3);
+    border-bottom-color: transparent;
+    position: relative;
+    z-index: 100000;
+
+    .nav {
+        & > li > a {
+            text-shadow: none;
+            color: #fff;
+            font-weight: 100;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-left: 4px;
+        }
+
+        li a i.fa {
+            color: #fff;
+            margin-right: 4px;
+        }
+    }
+
+    .brand {
+        text-shadow: none;
+        color: #fff;
+        font-weight: 100;
+        font-size: 24px;
+        margin-top: 8px;
+    }
+}
+
+
+html .navbar.navbar-inverse {
+    .navbar-inner {
+        background: #000;
+
+        li a i.fa { color: #bbb; }
+
+        li a:hover i.fa { color: #08c; }
+
+        .nav {
+            & > li > a {
+                &:hover { color: #fff; }
+            }
+            .active > a,
+            .active > a:hover,
+            li.dropdown.active > .dropdown-toggle:hover {
+                background: #111111;
+                color: #fff!important;
+            }
+        }
+        .brand {
+            color: #ddd;
+            text-shadow: none;
+        }
+    }
+
+}

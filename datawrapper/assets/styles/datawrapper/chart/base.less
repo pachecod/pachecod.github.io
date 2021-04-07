@@ -1,0 +1,154 @@
+@import 'upload';
+@import 'describe';
+@import 'visualize';
+@import 'publish';
+
+.chart-editor {
+    margin-top: 20px;
+    color: #000;
+
+    h2,
+    h3,
+    h4,
+    p {
+        font-family: @base-font;
+        font-weight: 300;
+        line-height: 1.5;
+    }
+
+    p b {
+        font-weight: bold;
+    }
+
+    h3 {
+        font-weight: 500;
+        font-size: 19px;
+    }
+    h4 {
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    input,
+    label {
+        font-family: @base-font-cd;
+        font-weight: 300;
+    }
+
+    .mini-help {
+        font-size: 12px;
+        line-height: 15px;
+        color: #ababab;
+        font-weight: 400;
+    }
+}
+
+.dw .create-nav {
+    & > * {
+        background: darken(@dw_lightgray, 2%);
+        position: relative;
+        border-radius: 4px 0 0 4px;
+        text-align: left;
+        height: 50px;
+        font-size: 16px;
+        line-height: 50px;
+        font-weight: 400;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        @media (min-width: 768px) and (max-width: 979px) {
+            font-size: 14px;
+            line-height: 42px;
+            height: 42px;
+            margin-bottom: 5px;
+            margin-right: -10px;
+            padding-right: 10px;
+        }
+    }
+
+    a > span {
+        pointer-events: none;
+    }
+
+    .corner {
+        background: url(../img/nav-corner.svg) right center no-repeat;
+        background-size: 22px;
+        width: 22px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: -1px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    // use clip-path solution for chrome if clip-path is supported
+    @supports (-webkit-clip-path: polygon(0% 0%, 100% 100%)) {
+        & > * {
+            clip-path: polygon(
+                0% 0%,
+                93% 0%,
+                93.5% 0.5%,
+                94% 2%,
+                99.95% 48%,
+                99.95% 52%,
+                94% 98%,
+                93.5% 99.5%,
+                93% 100%,
+                0% 100%
+            );
+            -webkit-clip-path: polygon(
+                0% 0%,
+                93% 0%,
+                93.5% 0.5%,
+                94% 2%,
+                99.95% 48%,
+                99.95% 52%,
+                94% 98%,
+                93.5% 99.5%,
+                93% 100%,
+                0% 100%
+            );
+        }
+        .corner {
+            display: none;
+        }
+    }
+
+    & > .active {
+        background: @dw_red;
+        box-shadow: none;
+        font-weight: normal;
+        color: #fff;
+    }
+
+    & > .unseen {
+        color: #999;
+    }
+
+    & > a.unseen {
+        color: @dw_blue_dark;
+    }
+
+    & > a:hover {
+        text-decoration: none;
+    }
+
+    & > .readonly {
+        color: #999;
+    }
+
+    & > * .step {
+        font-weight: bold;
+        color: #fff;
+        font-size: 26px;
+        line-height: 26px;
+        position: relative;
+        top: 3px;
+        margin-left: 18px;
+        margin-right: 5px;
+        text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+    }
+}

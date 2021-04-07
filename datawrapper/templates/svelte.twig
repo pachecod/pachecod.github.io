@@ -1,0 +1,38 @@
+<script type="text/javascript" src="{{ app_js }}?v={{sha}}"></script>
+<link rel="stylesheet" type="text/css" href="{{ app_css }}?v={{sha}}">
+<div id="svelte-{{ app_id | replace({'/':'-'}) }}"></div>
+
+<script type="text/javascript">
+
+require(['svelte/{{ app_id }}'], function(mod) {
+
+    var App = mod.App;
+    var data = _.extend({}, mod.data || {}, {{ twig_data | json | raw }});
+
+    // Initialize API wrapper with domain, if API wrapper is present in the default props
+    if (data.api && data.api.init) {
+        data.api.init({ domain: '{{ config.api_domain }}' })
+    }
+
+    var app;
+    if (mod.v3) {
+        app = mod.app = new App({
+            target: document.querySelector('#svelte-{{ app_id | replace({'/':'-'}) }}'),
+            props: data
+        })
+    } else {
+        if (dw.backend.currentChart) {
+            mod.store.set({ dw_chart: dw.backend.currentChart });
+        }
+        mod.store.set({ language: '{{language}}' });
+        app = mod.app = new App({
+            store: mod.store,
+            target: document.querySelector('#svelte-{{ app_id | replace({'/':'-'}) }}'),
+            data: data
+        });
+    }
+
+
+    if (mod.init) mod.init(app);
+});
+</script>

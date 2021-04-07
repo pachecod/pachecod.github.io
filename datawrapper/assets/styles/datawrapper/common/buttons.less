@@ -1,0 +1,58 @@
+
+html button {
+  font-family: @base-font;
+}
+
+html .btn {
+    border-radius: 4px;
+    background-image: none!important;
+    font-family: @base-font;
+}
+
+html .btn .fa {
+    line-height: 19px;
+}
+html .btn .fa.icon-btn-left {
+    margin-left:-6px;
+}
+html .btn .fa.icon-btn-right {
+    margin-right:-6px;
+}
+
+html .btn-primary,
+html .btn-success {
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25)!important;
+  box-shadow: none;
+  background-repeat: repeat-x;
+}
+
+html .btn-primary {
+  color: #fff!important;  
+  background-color:@dw_blue_medium;  
+  border-color: darker(@dw_blue_medium, 5%);
+  // filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0276B0', GradientType=0);
+  // filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+html .btn-success {
+  background-color: @dw_green_dark !important;
+  border-color: darker(@dw_green_dark, 5%);  
+}
+
+html .btn-primary:hover,
+html .btn-primary:focus,
+html .btn-primary:active,
+html .btn-primary.active,
+html .btn-primary.disabled,
+html .btn-primary[disabled] {
+  color: #ffffff;
+  background:@dw_blue_medium!important;
+}
+
+html .btn-inverse {
+  background: #555;
+}
+
+html .btn-danger {
+  background: #c71e1d;
+}

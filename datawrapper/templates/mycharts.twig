@@ -1,0 +1,253 @@
+{% use "utils.twig" %}
+
+{% extends "core.twig" %}
+
+
+{% block content %}
+
+{# <div class="docs">
+    <div class="pull-right pagination-right">
+        {{ block('pagination') }}
+    </div>
+</div> #}
+
+<div class="folder-line">
+    <div class="mycharts-filter pull-right" style="position:relative">
+        <div class="mycharts-search-wrapper" style="display:inline-block; position: relative">
+            <span style="position:absolute; top:9px;left:10px;color:#bbb" class="im im-magnifier"></span><span class="im im-x-mark-circle"></span><input name="q" style="padding-left:30px;border-radius: 20px;" autocomplete="screw-you-google-chrome" class="search-query input-large" type="search" placeholder="{% trans "Search" %}" value="{{ search_query }}" />
+        </div>
+        &nbsp;
+        <div class="btn-group">
+            <a id="sort-dropdown" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                {% trans "mycharts / Sort by" %}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu sort-menu">
+                <li><a href="?sort=title">{% trans "mycharts / Title" %}</a></li>
+                <li><a href="?sort=status">{% trans "mycharts / Status" %}</a></li>
+                <li><a href="?sort=author">{% trans "mycharts / Author" %}</a></li>
+                <li><a href="?sort=type">{% trans "mycharts / Type" %}</a></li>
+                <li class="divider" style="height: 1px;margin: 9px 1px;overflow: hidden;background-color: #e5e5e5;border-bottom: 1px solid #ffffff;"></li>
+                <li><a href="?sort=modified_at">{% trans "mycharts / Last edit time" %}</a></li>
+                <li class="active"><a href="?sort=created_at">{% trans "mycharts / Creation time" %}</a></li>
+                <li><a href="?sort=published_at">{% trans "mycharts / Publish time" %}</a></li>
+            </ul>
+        </div>
+    </div>
+    <h1 id="current-folder">
+        <a id="current-root" href="{{ mycharts_base }}"{% if not search_query is empty %} style="display: none;"{% endif %}>
+            {% if user2 %}
+            {{ "Charts by %s" | trans | replace({'%s': user2.email }) }}
+            {% else %}
+            {% trans "My Charts" %}
+            {% endif %}
+        </a>
+        <span id="folder-sequence"></span>
+        <span id="current-folder-name">{% if not search_query is empty %}{{ "Search" | trans }}{% endif %}</span>
+        <div class="btn-group" style="display:inline-block; position: relative">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
+                style="border:0;background:none;box-shadow:none">
+                <i class="im im-care-down"></i>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="add-folder" tabindex="-1" href="#"><i class="im im-plus-circle"></i> {% trans "Add subfolder" %}</a></li>
+                <li><a id="rename-folder" style="display: none;" tabindex="-1" href="#"><i class="im im-edit"></i> {% trans "Rename folder" %}</a></li>
+                <li><a id="delete-folder" style="display: none;" tabindex="-1" href="#"><i class="im im-trash-can"></i> {% trans "Remove folder" %}</a></li>
+            </ul>
+        </div>
+    </h1>
+</div>
+
+<div class="folders-and-gallery row">
+    <div class="folders span2">
+        <ul class="folders-left">
+            {% for org in organizations %}
+            {% if org.id != 'my charts' %}
+
+            <li id="org-root-{{ org.tag }}" {% if not current.folder and current.organization == org.id %}class="active root-folder"{% else %}class="root-folder"{% endif %}>
+                <div class="collapse-toggle"></div>
+                <a href="/team/{{ org.id }}">
+                    <i class="im im-users"></i>
+                    <span>{{ org.name }}</span>
+                    {% if org.id == user.currentOrganization.id %}
+                    <i class="fa fa-check-circle"></i>
+                    {% endif %}
+                </a>
+            </li>
+            <ul id="dynamic-tree-{{ org.tag }}" style="margin-bottom:40px">
+            </ul>
+            {% else %}
+            <li id="user-root" {% if not current.folder and not current.organization %}class="active root-folder"{% else %}class="root-folder"{% endif %}>
+                <div class="collapse-toggle"></div>
+                <a href="{{ mycharts_base }}">
+                <i class="im im-user-male"></i>
+                <span>{% trans "My Charts" %}</span></a>
+            </li>
+            <ul id="dynamic-tree" style="margin-bottom:40px"></ul>
+            {% if (not hasFolders or not hasTeams) and not userData.mycharts_teams_intro %}
+            <div data-notification-key="mycharts_teams_intro" class="welcome-to-folders did-you-know" style="margin-top:84px;margin-left:-18px">
+                <h3><a href="#" class="close pull-right"><i class="im im-check-mark-circle"></i></a>
+                    {%if not hasFolders %}<i class="im im-folder"></i> {% trans "mycharts / intro / folders" %}{% endif %}
+                    {%if not hasTeams and not hasFolders %}  &amp; {% endif %}
+                    {%if not hasTeams %}<i class="im im-users"></i> Teams{% endif %}
+                </h3>
+                {%if not hasFolders %}
+                <p><p>{{ "mycharts / intro / folders / p" | trans | raw }}<p><p>
+                {% endif %}
+                {%if not hasTeams %}<p>
+                    <p>{{ "mycharts / intro / teams / p" | trans | raw }}<p>
+                    </p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% endif %}
+            {% endfor %}
+        </ul>
+
+    </div>
+
+    <div class="gallery span10">
+
+        {% include 'mycharts/subfolder-list.twig' %}
+
+        <hr {% if not search_query is empty %}style="display: none;"{% endif %}/>
+
+        <div class="mycharts-chart-list">
+            {% include 'mycharts/chart-list.twig' %}
+        </div>
+    </div>
+</div>
+
+
+<div class="after-gallery row">
+    <div class="span9">
+
+        {% if not user2 %}
+
+            {{ hook('mycharts_after_sidebar', chart, user) }}
+
+        {% else %}
+
+            <h3>{% trans "Switch User" %}</h3>
+
+            <select class="select-css" id="switch_user" style="width:80%">
+                {% for user in all_users %}
+                <option {% if user == user2 %}selected="selected" {% endif %}value="{{ user.id }}">{{ user.email }}</option>
+                {% endfor %}
+            </select>
+        <script type="text/javascript">
+            $('#switch_user').change(function(e) {
+                e.preventDefault();
+                location.href = '/admin/charts/' + $('#switch_user').val();
+            });
+        </script>
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    require(['dw/mycharts'], function(init) {
+        init({
+            strings: {
+                confirm_move_chart_to_user: {{ "mycharts / confirm-move-chart-to-user" | trans | json | raw }},
+                confirm_move_chart_to_org: {{ "mycharts / confirm-move-chart-to-org" | trans | json | raw }},
+                confirm_move_folder_to_user: {{ "mycharts / confirm-move-folder-to-user" | trans | json | raw }},
+                confirm_move_folder_to_org: {{ "mycharts / confirm-move-folder-to-org" | trans | json | raw }},
+                move_prohibited_alert: '{{ "mycharts / move-prohibited-alert" | trans }}',
+                confirm_chart_delete: {{ "mycharts / confirm-chart-delete" | trans | json | raw }},
+                enter_folder_name: '{{ "mycharts / enter-folder-name" | trans }}',
+                mycharts_base: '{{ mycharts_base }}',
+                mycharts_trans: '{{ "My Charts" | trans }}',
+                search: '{{ "Search" | trans }}'
+            },
+            current: {{ current | json | raw }},
+            preload: {{ preload | json | raw }},
+            charts: {{ charts | json | raw }},
+            user2: {{ user2 | json | raw }}
+        });
+    });
+
+    window.organizationFolderDefault = {
+        {% for org in organizations %}
+            {{ loop.index0 > 0 ? "," : "" }}
+            "{{ org.id }}": {{ org.settings.folders | json | raw }}
+        {% endfor %}
+    };
+    window.organizationEmbedSettings = {
+        {% for org in organizations %}
+            {{ loop.index0 > 0 ? "," : "" }}
+            "{{ org.id }}": {{ org.settings.embed | json | raw }}
+        {% endfor %}
+    };
+</script>
+
+<div id="mycharts-modal" class="hidden">
+    <div class="mycharts-modal" style="[[ wrapperW ]]" data-user-id="{{ user.id }}" data-is-gfxed="{{ user.isGraphicEditor or user.isAdmin }}">
+        <a class="close" href="#close">✕</a>
+        <div class="sidebar">
+            {# Sidebar #}
+            <div class="chart-id">[[ chartID ]]</div>
+
+            <label>{% trans "mycharts / Author" %}</label>
+            <p>[[ author ]]</p>
+
+            <label>{% trans "mycharts / Creation time" %}</label>
+            <p>[[ createdAt ]]</p>
+
+            <div class="forked">
+                <label>{% trans "Copied from" %}</label>
+                <p><a href="#[[ forkedFrom ]]">[[ forkedFrom ]]</a></p>
+            </div>
+
+            <div class="published">
+                <label>{% trans "mycharts / Publish time" %}</label>
+                <p>[[ publishedAt ]]</p>
+
+                <label>{% trans "Public Url" %}</label>
+                <p><a class="public-url" href="[[ publicUrl ]]">[[ publicUrl ]]</a></p>
+            </div>
+
+
+            <ul class="unstyled">
+                <li>
+                    <a href="/[[ namespace ]]/[[ chartID ]]/edit" class="btn btn-edit hidden">
+                        <i class="icon-pencil"></i> {% trans "Edit" %}
+                    </a>
+                </li>
+                <li class="action-duplicate">
+                    <form>
+                        <input type="hidden" name="redirect" value="1" />
+                        <button type="submit" class="btn duplicate">
+                            <i class="icon-plus"></i> {% trans "Duplicate this chart" %}
+                        </button>
+                    </form>
+                </li>
+                <li class="published">
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="icon-pencil"></i> {% trans "Copy embed code"  %}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu embed-codes">
+
+                        </ul>
+                        <textarea class="embed-code-copy" style="width:3px;height:3px;opacity:0"></textarea>
+                    </div>
+                    <p class="copy-success small-help hidden"></p>
+                </li>
+                {{ hook('mycharts_modal_actions') }}
+            </ul>
+
+        </div>
+        <iframe src="" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen="" oallowfullscreen="" msallowfullscreen="" style="background: [[ iframeBg ]]; border-color: [[ iframeBg ]]; width: [[ iframeW ]]px; height: [[ iframeH ]]px"></iframe>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/vendor/overlay/ender.overlay.js"></script>
+
+{{ parent() }}
+{% endblock %}
