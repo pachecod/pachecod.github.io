@@ -7,7 +7,23 @@
   </head>
   <body data-new-gr-c-s-check-loaded="14.1000.0" data-gr-ext-installed="">
 
-    <model-viewer src="AMEZionExterior2.glb" camera-controls ar ar-modes="webxr scene-viewer quick-look" ios-src="AMEZionExterior2.usdz" exposure="1.06" shadow-intensity="3.4" shadow-softness="0.86" camera-orbit="106.6deg 84.85deg 57.1m" poster="poster.png" auto-rotate min-camera-orbit="auto auto auto" max-camera-orbit="auto auto 57.1m">
+    <model-viewer
+        style="width: 250; height: 100%;"
+        src="AMEZionExterior2.glb"
+        ar=""
+        ar-modes="webxr scene-viewer quick-look"
+        ar-scale="auto"
+        camera-controls auto-rotate
+        alt="Peoples AME Church of Zion"
+        ios-src="AMEZionExterior2.usdz"
+        ar-status="not-presenting"
+        exposure="1.06"
+        shadow-intensity="3.4"
+        shadow-softness="0.86"
+        camera-orbit="106.6deg 84.85deg 57.1m"
+        poster="poster.png"
+        auto-rotate min-camera-orbit="auto auto auto" max-camera-orbit="auto auto 57.1m">
+
         <button class="Hotspot" slot="hotspot-1" data-position="15.416994487231552m 22.470302332600447m 6.1111795209373225m" data-normal="0.7483665089438158m 0.663172102000629m -0.012260971385378756m" data-visibility-attribute="visible">
             <div class="HotspotAnnotation">Tower</div>
         </button><button class="Hotspot" slot="hotspot-2" data-position="16.013362251589427m 1.8455311366277485m 6.465294239668365m" data-normal="0.9976922099829197m 0.026575830994280743m -0.062481832130315766m" data-visibility-attribute="visible">
@@ -20,9 +36,7 @@
         <div class="progress-bar hide" slot="progress-bar">
             <div class="update-bar"></div>
         </div>
-        <button slot="ar-button" id="ar-button">
-            View in your space
-        </button>
+
         <div id="ar-prompt">
             <img src="https://modelviewer.dev/shared-assets/icons/hand.png">
         </div>
