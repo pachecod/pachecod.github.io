@@ -1,0 +1,38 @@
+
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Pano Fade Test</title>
+	<meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+	<meta aframe-injected="" name="theme-color" content="black">
+	<script src="https://cdn.jsdelivr.net/npm/aframe@0.8.2/dist/aframe-master.min.js" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <div id="g-pano-box" style="visibility: visible;">
+  <a-scene class="g-pano-scene fullscreen" debug="" vr-mode-ui="enabled:false" inspector="" keyboard-shortcuts="" screenshot="" aframe-inspector-removed-embedded="undefined"><canvas class="a-canvas" data-aframe-canvas="true" width="450" height="225"></canvas>
+
+      <a-assets id="g-pano-asset-loader">
+
+
+      </a-assets>
+
+      <a-camera id="g-pano-camera" look-controls="reverseMouseDrag:true;reverseTouchDrag:true;gyroEnabled:false" camera="" position="0 1.6 0" rotation="" wasd-controls="" data-aframe-inspector-original-camera=""></a-camera>
+
+      <a-sky id="g-pano-sky" src="src:https://i81360s.netlify.app/auntediths.jpg" rotation="0 739.7606484374955 0" material="src:https://i81360s.netlify.app/auntediths.jpg" geometry="">
+
+        <!-- attached inner pano -->
+
+        <a-sky id="g-pano-inner-sky" src="https://i81360s.netlify.app/auntedithshistorical360.jpg;opacity:0.9979499833385891" rotation="0 540 0" opacity="0.5" radius="4000" scale="-1 1 -1" visible="" material="src:https://i81360s.netlify.app/auntedithshistorical360.jpg;opacity:0.9979499833385891" geometry="">
+
+          <a-animation attribute="material.opacity" direction="alternate" delay="1000" dur="4000" repeat="indefinite" from="1" to="0"></a-animation>
+        </a-sky>
+
+      <a-animation id="g-animation" attribute="rotation" fill="forwards" easing="linear" dur="128000" repeat="0" from="0 500 0" to="0 600 0"></a-animation></a-sky>
+
+    </a-scene>
+
+  </div>
+    </body>
+</html>
