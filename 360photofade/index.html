@@ -1,0 +1,40 @@
+
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Pioneer Homes</title>
+	<meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+	<meta aframe-injected="" name="theme-color" content="black">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.js" integrity="sha512-E71Id1i5xBlc2EftiH5s+mmpPbNJ2+XiCZy+iVb91pHKkCZmxS9WcGHpg/tyAp0mFo/9CuNFg1ey5T03kgP1bA==" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <div id="g-pano-box" style="visibility: visible;">
+  <a-scene loading-screen="dotsColor: red; backgroundColor: #ffffff00" class="g-pano-scene fullscreen" debug="" keyboard-shortcuts="" screenshot="" vr-mode-ui="enabled: false">
+
+  
+
+    
+
+      <a-sky id="g-pano-sky" src="src:PioneerHomesBoys.jpg" rotation="0 20 0" radius="5000" material="src:PioneerHomesBoys.jpg" geometry="">
+        
+        <!-- attached inner pano -->
+        <a-sky id="g-pano-inner-sky" src="PioneerHomesBoysHistorical.jpg;opacity:0.0" rotation="0 540 0" opacity="0.5" radius="4000" scale="-1 1 -1" visible="true" material="src:PioneerHomesBoysHistorical.jpg;opacity:0.0;transparent:true;" geometry=""  animation="property: material.opacity; from: 0.0; to: 1.0; dur: 5000; delay: 2000; dir: alternate; loop: true; easing: easeInOutElastic;">
+         
+        </a-sky>
+
+     </a-sky>
+  <a-camera id="g-pano-camera" look-controls="magicWindowTrackingEnabled: false;reverseMouseDrag:false;reverseTouchDrag:false;" camera="" position="0 1.6 0" rotation="" wasd-controls=""></a-camera>
+    </a-scene>
+
+  </div>
+    </body>
+</html>
+
+
+
+
+
+
+
