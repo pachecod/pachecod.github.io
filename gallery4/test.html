@@ -64,7 +64,7 @@
 <!-- -->
 
 <a-box position="10 0 -60" rotation="0 0 0" width="20" height="10" color="orange" weblink="url:photo2.html">
-<a-text font="kelsonsans" value="Go this way" width="50" position="-6 0 0.8" rotation="0 0 0"></a-text>
+<a href="photo2.html"><a-text font="kelsonsans" value="Go this way" width="50" position="-6 0 0.8" rotation="0 0 0"></a-text></a>
 </a-box>
 
 <a-box position="40 0 -15" rotation="0 270 0" width="20" height="10" color="green" weblink="url:photo3.html">
@@ -84,6 +84,33 @@
 <!-- Change 360 photo to your own below. -->
 <a-sky src="photos/n1inside.jpg" rotation="0 -130 0"></a-sky>
 <!-- ....................... -->
+
+<!-- Basic movement and teleportation  -->
+
+  <a-camera>
+    <a-cursor
+      id="cursor"
+      animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; easing: easeInCubic; dur: 150; startEvents: click"
+      animation__clickreset="property: scale; to: 0.1 0.1 0.1; dur: 1; startEvents: animationcomplete__click"
+      animation__fusing="property: scale; from: 1 1 1; to: 0.1 0.1 0.1; easing: easeInCubic; dur: 150; startEvents: fusing">
+    </a-cursor>
+  </a-camera>
+
+      <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; position="0 2 0" rotation="0 0 0">  
+
+        <!-- camera -->
+
+        <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity>
+
+              <!-- Left Controller -->
+              <a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60" visible="true"></a-entity>
+
+              <!-- Right Controller -->
+              <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true">
+              
+        </a-entity>
+
+      </a-entity>
 
 </a-scene>
 
