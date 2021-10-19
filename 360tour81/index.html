@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Elizabeth Street</title>
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+</head>
+
+<body>
+<a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="enabled: false" device-orientation-permission-ui="">
+
+<a-entity camera look-controls position="0 1.6 0" wasd-controls="enabled: false" cursor="rayOrigin: mouse" raycaster="direction: -0.3035078853305619 0.595726236522669 -0.7436351354398926; useWorldCoordinates: true"></a-entity>
+
+<script>
+  AFRAME.registerComponent("weblink", {
+    schema: {
+      url: {
+        default: ""
+      }
+    },
+    init: function() {
+      this.el.addEventListener("click", (e) => {
+        window.location = this.data.url;
+      })
+    }
+  })
+</script><div class="a-loader-title" style="display: none;">Dead Ends</div>
+
+
+
+
+<a-box position="-10 5 -15" rotation="" width="5" height="1.5" color="#303030" weblink="url: #" material="" geometry="">
+  <a-text font="kelsonsans" value="Elizabeth St" width="10" position="-1.1 0 .6" rotation="" text=""></a-text>
+</a-box>
+
+<a-box position="-10 0 -15" rotation="" width="5" height="1.5" color="#df5532" weblink="url: deadend3.html" material="" geometry="">
+  <a-text font="kelsonsans" value="East Corning Ave" width="10" position="-1.5 0 .6" rotation="" text=""></a-text>
+</a-box>
+
+<a-box position="0 0 -15" rotation="" width="5" height="1.5" color="#df5532" weblink="url: deadend4.html" material="" geometry="">
+  <a-text font="kelsonsans" value="East Ostrander Ave" width="10" position="-1.9 0 .6" rotation="" text=""></a-text>
+</a-box>
+
+<a-box position="0 5 -15" rotation="" width="5" height="1.5" color="#df5532" weblink="url: deadend5.html" material="" geometry="">
+  <a-text font="kelsonsans" value="Hobart Ave" width="10" position="-1. 0 .6" rotation="" text=""></a-text>
+</a-box>
+
+<a-box position="-5 -5 -15" rotation="" width="5" height="1.5" color="#df5532" weblink="url: index.html" material="" geometry="">
+  <a-text font="kelsonsans" value="Woodland Ave" width="10" position="-1.4 0 .6" rotation="" text=""></a-text>
+</a-box>
+
+<a-sky src="deadend2.jpg" rotation="0 45 0" material="" geometry=""></a-sky>
+
+
+</a-scene>
+
+
+</body>
+</html>
