@@ -3,15 +3,3 @@ body {
   margin-left: 20px;
   margin-right: 20px;
 }
-
-.journalstyle {
-	font-family: 'Vollkorn', serif;
-		font-size: 60px;
-		font-weight: 500;
-}
-
-.cursive {
-	font-family: 'Amatic SC', cursive;
-	font-size: 30px;
-	font-weight: 300;
-}
