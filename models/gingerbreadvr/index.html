@@ -14,14 +14,14 @@
 	<script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
 
 
-	
+
 </head>
 <body>
    <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
      <a-assets>
     <a-asset-item id="interior" src="gingerbread.glb"></a-asset-item>
-  </a-assets> 
- 
+  </a-assets>
+
 <a-entity gltf-model="#interior" position="0 0 0" rotation="0 0 0"></a-entity>
 
 <a-entity light="color: #c2c2c2; type: ambient; intensity: 15" data-aframe-default-light="" aframe-injected=""></a-entity>
@@ -29,7 +29,7 @@
 
 
 <!-- Basic movement and teleportation  -->
-      <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 2 0" rotation="0 0 0">  
+      <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 2 0" rotation="0 0 0">
 
         <!-- camera -->
         <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity>
@@ -41,9 +41,8 @@
               <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity>
 	</a-entity>
 
+  <!-- a-entity geometry="" scale="1000 0.28 1000" color="green"></a-entity -->
+
        </a-scene>
 </body>
 </html>
-
-
-
