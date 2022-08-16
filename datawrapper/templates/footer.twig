@@ -1,8 +1,0 @@
-<p>{% trans "footer / datawrapper-gmbh" %}</p>
-{% if config.footer_links %}
-<ul role="nav" class="unstyled footer-links">
-  {% for link in config.footer_links %}
-    <li><a {% if link.highlight %}class="highlight"{% endif %} href="{{ link.url | replace({'%lang': language }) }}">{{ link.title[language] | default(link.title.en) }}</a></li>
-  {% endfor %}
-</ul>
-{% endif %}
