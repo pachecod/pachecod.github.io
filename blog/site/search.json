@@ -7,17 +7,24 @@
     "text": "Heading 1\nTest Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam suscipit est nec dui eleifend, at dictum elit ullamcorper. Aliquam feugiat dictum bibendum. Praesent fermentum laoreet quam, cursus volutpat odio dapibus in. Fusce luctus porttitor vehicula. Donec ac tortor nisi. Donec at lectus tortor. Morbi tempor, nibh non euismod viverra, metus arcu aliquet elit, sed fringilla urna leo vel purus."
   },
   {
+    "objectID": "archive.html",
+    "href": "archive.html",
+    "title": "Archive",
+    "section": "",
+    "text": "This is a dummy blog posts\n\n\n\n\n\n\n\n\n\nOct 30, 2022\n\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "About",
     "section": "",
-    "text": "About this blog"
+    "text": "About this blog\nGo to blog.html"
   },
   {
     "objectID": "blog.html",
     "href": "blog.html",
     "title": "blog",
     "section": "",
-    "text": "This is a dummy blog posts\n\n\n\n\n\n\n\nwelcome\n\n\n\n\nThis is a test post.\n\n\n\n\n\n\nOct 30, 2022\n\n\n\n\n\n\nNo matching items"
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\nThis is a dummy blog posts\n\n\n\n\n\n\n\nwelcome\n\n\n\n\nThis is a test post.\n\n\n\n\n\n\nOct 30, 2022\n\n\n0 min\n\n\n\n\n\n\nNo matching items"
   }
 ]

@@ -12,6 +12,13 @@ website:
         href: https://github.com/pachecod
       - icon: twitter
         href: https://twitter.com/pachecod
+      - icon: rss
+        href: blog.xml
+      - text: Archive
+        href: archive.qmd
+
+cookie-consent: true      
+
 format:
   html:
     theme: theme.scss
