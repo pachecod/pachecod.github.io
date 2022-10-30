@@ -1,0 +1,16 @@
+
+---
+title: 'A second blog post'
+date: '2022-10-30'
+categories: ['welcome']
+description: 'This is another test post.'
+execute: 
+  message: false
+  warning: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Heading 1
+
+Hello, cruel world.

@@ -21,7 +21,9 @@ cookie-consent: true
 
 format:
   html:
-    theme: theme.scss
-
+    theme: 
+      light: theme.scss
+      dark: theme-dark.scss
+    include-after-body: ../footer.html
 editor: visual
 
