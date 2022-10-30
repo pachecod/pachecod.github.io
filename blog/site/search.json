@@ -7,11 +7,18 @@
     "text": "Heading 1\nTest Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam suscipit est nec dui eleifend, at dictum elit ullamcorper. Aliquam feugiat dictum bibendum. Praesent fermentum laoreet quam, cursus volutpat odio dapibus in. Fusce luctus porttitor vehicula. Donec ac tortor nisi. Donec at lectus tortor. Morbi tempor, nibh non euismod viverra, metus arcu aliquet elit, sed fringilla urna leo vel purus."
   },
   {
+    "objectID": "posts/10302022/post2.html",
+    "href": "posts/10302022/post2.html",
+    "title": "A second blog post",
+    "section": "",
+    "text": "Heading 1\nHello, cruel world."
+  },
+  {
     "objectID": "archive.html",
     "href": "archive.html",
     "title": "Archive",
     "section": "",
-    "text": "This is a dummy blog posts\n\n\n\n\n\n\n\n\n\nOct 30, 2022\n\n\n\n\n\n\nNo matching items"
+    "text": "This is a dummy blog posts\n\n\n\n\n\n\n\n\n\nOct 30, 2022\n\n\n\n\n\n\n\n\nA second blog post\n\n\n\n\n\n\n\n\n\nOct 30, 2022\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -25,6 +32,6 @@
     "href": "blog.html",
     "title": "blog",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\nThis is a dummy blog posts\n\n\n\n\n\n\n\nwelcome\n\n\n\n\nThis is a test post.\n\n\n\n\n\n\nOct 30, 2022\n\n\n0 min\n\n\n\n\n\n\nNo matching items"
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\nThis is a dummy blog posts\n\n\n\n\n\n\n\nwelcome\n\n\n\n\nThis is a test post.\n\n\n\n\n\n\nOct 30, 2022\n\n\n0 min\n\n\n\n\n\n\n\n\nA second blog post\n\n\n\n\n\n\n\nwelcome\n\n\n\n\nThis is another test post.\n\n\n\n\n\n\nOct 30, 2022\n\n\n0 min\n\n\n\n\n\n\nNo matching items"
   }
 ]
