@@ -32,17 +32,20 @@
 
 
   <a-entity gltf-model="#lamp" position="0 0 0" rotation="0 0 0" scale="2 2 2"></a-entity>
-
-
-  <a-entity gltf-model="#bench" position="0 0 0" rotation="0 0 0" scale="2 2 2"></a-entity>
   
   <a-entity light="angle: 61.59; color: #fefffa; groundColor: #e89696; intensity: 1; type: ambient; shadowBias: 0.08"></a-entity>
 
   <a-entity light="color: #f6f7b1; decay: 30; distance: 100; type: point"></a-entity>
 
-<a-entity gltf-model="models/library.glb" position="-24.38831 0 6.41064" rotation=""></a-entity>
+  <a-entity gltf-model="models/library.glb" position="-24.38831 0 6.41064" rotation=""></a-entity>
 
   <a-entity gltf-model="models/rock.glb" position="-11.16953 -1.2 -6.41308" rotation="" scale="4 4 4"></a-entity>
+
+  <a-entity gltf-model="models/bench.glb" position="-2.17494 -0.87 -8.62438" rotation="" scale="0.025 0.025 0.025"></a-entity>
+
+  <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4" material="" geometry=""></a-plane>
+
+
 
   <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" height="4" color="#7BC8A4"></a-plane>
 
@@ -50,7 +53,7 @@
   </a-sky>      
 
 
-  
+
 
  <!-- Basic movement and teleportation  -->
       <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="5 5 10" rotation="0 0 0">  
