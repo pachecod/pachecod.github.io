@@ -6,6 +6,8 @@
 
   <title>Pacheco's 3D Model Gallery</title>
 
+  <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
+
   <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
   <meta aframe-injected="" name="theme-color" content="black">
   
@@ -28,12 +30,12 @@
 
 	 </a-assets>
 
+
   <a-entity gltf-model="#library" position="0 0 0" rotation="0 0 0"></a-entity>
 
-  <a-entity gltf-model="#rock" position="10 -1 0" rotation="0 0 0" scale="10 10 10"></a-entity>
+  <a-entity gltf-model="#rock" position="10 -1.2 0" rotation="0 0 0" scale="10 10 10"></a-entity>
 
-  <a-entity light="color: #c2c2c2; type: ambient; intensity: 1" data-aframe-default-light="" aframe-injected=""></a-entity>
-
+  <a-entity light="angle: 61.59; color: #fefffa; groundColor: #e89696; intensity: 1.5; type: ambient; shadowBias: 0.08"></a-entity>
 
   <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" height="4" color="#7BC8A4"></a-plane>
 
