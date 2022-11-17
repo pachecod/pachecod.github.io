@@ -1,0 +1,38 @@
+style
+.row {
+	border: 3px;
+	font-family: sans-serif;
+	border-style: solid;
+	border-color: black;
+	border-width: thin;
+	text-align: left;
+}
+.col{
+	border: 3px;
+	border-style: solid;
+	border-color: black;
+	font-family: sans-serif;
+	border-width: thin;
+	text-align: left;
+}
+head {
+	margin:100px;
+	font-family: cursive;
+}
+h1 {
+	text-align: center;
+	font-family: roboto-black.ttf;
+}
+.col{
+	border-color: transparent;
+}
+.p1{
+	text-align: left;
+	font-family: robot-black.ttf;
+	padding-top: 30px;
+}
+.graph1 {
+	flex-wrap: float;
+	font-family: robot-black.ttf;
+	padding-top: 25px;
+}

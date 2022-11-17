@@ -27,6 +27,10 @@ img {
   margin-top: 5px
 }
 
+.spaceycontainer {
+  margin-top: 10px;
+}
+
 h1 {
   font-style: bold;
   font-size: 40px;
@@ -47,4 +51,18 @@ p {
   margin-right: auto;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+.bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+}
+
+@media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
 }

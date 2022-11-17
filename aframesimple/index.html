@@ -24,6 +24,8 @@
 
     <a-assets>
 
+      <a-asset-item id="bear" src="models/bear.glb"></a-asset-item>
+
       <a-asset-item id="library" src="models/library.glb"></a-asset-item>
 
       <a-asset-item id="rock" src="models/rock.glb"></a-asset-item>
@@ -33,20 +35,17 @@
 
 	 </a-assets>
 
+  <a-entity gltf-model="models/library.glb" position="-5.91023 0 3.44177" rotation="0 29.999999999999996 0" scale=""></a-entity>
 
-  <a-entity gltf-model="#library" position="0 0 0" rotation="0 0 0"></a-entity>
+  <a-entity gltf-model="models/rock.glb" position="21.46575 -1.2 3.07021" rotation="" scale="10 10 10"></a-entity>
 
-  <a-entity gltf-model="#rock" position="10 -1.2 0" rotation="0 0 0" scale="10 10 10"></a-entity>
-
-
-  <a-entity gltf-model="#bench" position="0 0 0" rotation="0 0 0" scale="50 50 50"></a-entity>
-
+  <a-entity gltf-model="models/bench.glb" position="9.38325 0.10328 -19.2111" rotation="" scale="0.05 0.05 0.05"></a-entity>
 
   <a-entity light="angle: 61.59; color: #fefffa; groundColor: #e89696; intensity: 1.5; type: ambient; shadowBias: 0.08"></a-entity>
 
   <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" height="4" color="#7BC8A4"></a-plane>
 
-  <a-sky src="skies/clarens.jpg" rotation="0 -130 0">
+  <a-sky src="skies/sataranight.jpg" rotation="0 -130 0">
   </a-sky>      
 
  <!-- Basic movement and teleportation  -->

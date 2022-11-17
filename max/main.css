@@ -1,0 +1,83 @@
+body {
+  margin: 0px;
+}
+
+nav {
+  border-top: 20px solid darkblue;
+  border-bottom: 1px solid black;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo {
+  width: 330px;
+  background: url(https://cdn.logojoy.com/wp-content/uploads/20210709120855/nfl-logo.png);
+}
+
+.sitemotto {
+  color: #de2f23;
+  font-family: Basier, Arial, sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+article {
+  margin-left: 10%;
+  width: 60%;
+}
+
+header {
+    font-family: Times, sans-serif;
+    font-size: 20px;
+}
+
+h1 {
+  font-size: 46px;
+  font-family: Impact;
+
+}
+
+.byline {
+  font-weight: bold;
+  font-family: times;
+}
+
+.tdpad {
+  padding: 15px;
+}
+
+article > p {
+  font-family: Pensum, "Times New Roman", serif;
+  font-size: 20px;
+}
+
+.story_image {
+  width: 100%;
+}
+
+.caption {
+  color: gray;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+footer {
+  margin-top: 30px;
+  font-family: Basier, Arial, sans-serif;
+}
+
+footer > p {
+  font-size: 14px;
+  color: #666;
+}
+
+a {
+  color: black;
+}
+
+a:hover {
+  color: #717171;
+  text-decoration-color: #ffcb04;
+}
