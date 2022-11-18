@@ -1,4 +1,10 @@
 style
+
+
+img {
+	float: right;
+}
+
 .row {
 	border: 3px;
 	font-family: sans-serif;
