@@ -23,7 +23,7 @@
 
 
 
-    <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00" fog="type: linear; color: #AAB; far: 60; near: 0">
+    <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
 
     <a-assets>
 
@@ -35,19 +35,19 @@
 
       <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
 
-      <a-asset-item id="doll" src="models/russiandoll.glb"></a-asset-item>
+      <a-asset-item id="retiro" src="models/retiro.glb"></a-asset-item>
 
 	 </a-assets>
 
-  <a-entity gltf-model="models/library.glb" position="-5.91023 0 3.44177" rotation="0 29.999999999999996 0" scale=""></a-entity>
+  <a-entity gltf-model="models/retiro.glb" position="0.50309 -0.14979 12.8189" rotation="0 29.999999999999996 0" scale="5 5 5" id=""></a-entity>
+
+  <a-entity gltf-model="models/library.glb" position="-13.345 0 11.427" rotation="0 80 0" scale=""></a-entity>
 
   <a-entity gltf-model="models/rock.glb" position="21.46575 -1.2 3.07021" rotation="" scale="10 10 10"></a-entity>
 
-  <a-entity gltf-model="models/doll.glb" position="0 0 0" rotation="" scale="100 100 100"></a-entity>
-
   <a-entity gltf-model="models/rock.glb" position="-17.06672 -1.2 -11.51745" rotation="" scale="10 10 10"></a-entity>
 
-   <a-entity gltf-model="models/lamp.glb" position="-6.7385 -0.14403 7.1571" rotation="" scale="2 2 2"></a-entity>
+  <a-entity gltf-model="models/lamp.glb" position="18.86744 -0.14403 -20.12056" rotation="" scale="2 2 2"></a-entity>
 
   <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4" material="" geometry=""></a-plane>
 
@@ -67,13 +67,15 @@
 
   <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" height="4" color="#7BC8A4"></a-plane>
 
-  <a-text font="kelsonsans" value="Computer: WASD + mouse to move" width="50" position="21 20 -29" rotation="0 -45 0" rotation="0 0 0"></a-text>
+  <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
 
-   <a-text font="kelsonsans" value="Mobile: tap, hold and point." width="50" position="21 11 -23" rotation="0 -45 0" rotation="0 0 0"></a-text>
+  <a-text font="kelsonsans" value="Computer: WASD + mouse to move" width="50" position="21 20 -29" rotation="0 -45 0" rotation="0 0 0" color="#6f6d6d"></a-text>
 
-  <a-text font="kelsonsans" value="Use WASD + mouse to move" width="50" position="-34 20 21" rotation="0 90 0" rotation="0 0 0"></a-text>
+  <a-text font="kelsonsans" value="Mobile: tap, hold and point." width="50" position="21 11 -23" rotation="0 -45 0" rotation="0 0 0" color="#6f6d6d"></a-text>
 
-  <a-sky src="skies/sataranight.jpg" rotation="0 -130 0">
+  <a-text font="kelsonsans" value="Use WASD + mouse to move" width="50" position="-34 20 21" rotation="0 90 0" rotation="0 0 0" color="#6f6d6d"></a-text>
+
+  <a-sky src="skies/day.jpg" rotation="0 -130 0">
   </a-sky>      
 
   <!-- Basic movement and teleportation  -->
