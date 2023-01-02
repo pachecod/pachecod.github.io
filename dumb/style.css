@@ -1,0 +1,10 @@
+p {
+	font-family: baskerville
+	font-color: green;
+	font-size: 30px;
+}
+
+.jellybeans {
+	padding-left: 10px;
+	max-width: 800px;
+}
