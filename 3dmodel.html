@@ -1,3 +1,7 @@
+
+
+    
+      
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -27,15 +31,26 @@
 
       <a-entity
         gltf-model="#model"
-        position="0 0 0"
+        position="0 -130 0"
         rotation="0 0 0"
+        scale="200 200 200"
       ></a-entity>
+
 
       <a-entity
         light="color: #c2c2c2; type: ambient; intensity: 0.25"
         data-aframe-default-light=""
         aframe-injected=""
       ></a-entity>
+
+ <a-plane src="aframesimple/grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4" material="" geometry=""></a-plane>
+
+  <a-sky src="aframesimple/skies/day.jpg" rotation="0 -130 0">
+  </a-sky> 
+
+   <a-entity light="angle: 61.59; color: #fefffa; groundColor: #e89696; intensity: 1.5; type: ambient; shadowBias: 0.08"></a-entity>
+
+
 
       <!-- Basic movement and teleportation  -->
       <a-entity
@@ -45,13 +60,13 @@
         position="0 2 0"
         rotation="0 0 0"
       >
-        <!-- camera -->
-        <a-entity
-          id="head"
-          camera="active: true"
-          position="0 10 15"
-          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
-        ></a-entity>
+ 
+
+<!-- camera -->
+  <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity>
+
+
+
 
         <!-- Left Controller -->
         <a-entity
