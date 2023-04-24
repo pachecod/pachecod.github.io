@@ -15,6 +15,41 @@ header {
   margin-bottom: 15px;
 }
 
+nav {
+  float:left;
+  width: 30%;
+  background: #cccccc;
+  padding: 20px;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px;
+}
+
+footer {
+  background-color: #777777;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+
 img {
   width: 100%;
 }
