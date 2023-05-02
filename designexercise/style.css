@@ -1,0 +1,49 @@
+body {
+  font-family: font-family: 'Roboto Mono', monospace;
+  max-width: 70rem;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+header {
+  background-color: darkgray;
+  font-size: 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10%;
+  padding-right: 10%;
+  margin-bottom: 15px;
+}
+
+img {
+  width: 100%;
+}
+
+.caption {
+  font-size: 14px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 5px
+}
+
+h1 {
+  font-style: italic;
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+}
+
+p {
+  font-size: 18px;
+}
+
+.otherimg {
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
