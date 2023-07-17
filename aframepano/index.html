@@ -35,7 +35,7 @@
 
 
 
-<script>
+<!-- script>
   AFRAME.registerComponent("weblink", {
     schema: {
       url: {
@@ -48,7 +48,7 @@
       })
     }
   })
-</script>
+</script -->
   
   <!-- Ground -->
 
@@ -76,15 +76,25 @@
 <!-- Z spins like a fan with blades facing you -->
 <!-- -->
 
-  <a-circle position="0, -2.6, 13" rotation="-70 180 0" width="20" height="20" radius="2" weblink="url:photo1.html">
+  <a-circle position="0, -2.6, 13" rotation="-70 180 0" width="20" height="20" radius="2" id="left" weblink="url:photo1.html">
     <a-entity geometry="primitive: circle; height: 2; segmentsHeight: 2; radius: 2" material="src: arrow.png; roughness: 1; side: double" position="0.025 -0.073 0.060">
     </a-entity>
   </a-circle>
 
-  <a-circle position="0, -2.6, -13" rotation="60 180 0" width="20" height="20" radius="2" weblink="url:photo1.html">
-    <a-entity geometry="primitive: circle; height: 2; segmentsHeight: 2; radius: 2" material="src: arrow.png; roughness: 1; side: double" position="0.025 -0.073 0.060">
+<a-circle position="-0.73271 -2.6 -15.76857" rotation="59.99999999999999 180 0" width="20" height="20" radius="2" id="right" weblink="url:photo1.html" material="" geometry="">
+    <a-entity geometry="primitive: circle; radius: 2" material="src: arrow.png; roughness: 1; side: double" position="0.025 -0.073 0.06">
     </a-entity>
   </a-circle>
+
+<a-circle position="-18.10648 -8.71645 16.50014" rotation="69.05287346916681 -74.36820293459547 5.321632001175086" width="20" height="20" radius="2" weblink="url:photo1.html" material="" geometry="" id="front">
+    <a-entity geometry="primitive: circle; radius: 2" material="src: arrow.png; roughness: 1; side: double" position="-16.51045 -4.47912 -8.45314">
+    </a-entity>
+</a-circle>
+
+<a-circle position="13.37582 -8.71645 22.62248" rotation="69.05287346916681 -74.36820293459547 5.321632001175086" width="20" height="20" radius="2" weblink="url:photo1.html" material="" geometry="" id="back">
+    <a-entity geometry="primitive: circle; radius: 2" material="src: arrow.png; roughness: 1; side: double" position="-16.51045 -4.47912 -8.45314" rotation="45 -1.2278485549653542 -172.57087718883804">
+    </a-entity>
+</a-circle>
 
 
 
