@@ -1,0 +1,30 @@
+body{
+    background-color: #FF69B4;
+    cursor: url(https://resources.newhouse.syr.edu/directory/wp-content/uploads/sites/6/2020/07/dan-p-web.jpg);  
+
+}
+
+/* Style the header with a grey background and some padding */
+.header{
+    background-color: darkorange;
+    padding: 20px 10px 30px 50px;
+    color: black;
+}
+.header a{
+    color: yellow;
+    padding: 15px 10px;
+}
+
+.header a:hover {
+    background-color: darkblue;
+    color: lightgray;
+  }
+
+  
+@media screen and (max-width: 500px) {
+    .header a {
+      background-color: lightgray;
+      display: block;
+      text-align: left;
+    }
+  }

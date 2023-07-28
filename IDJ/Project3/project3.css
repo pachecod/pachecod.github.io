@@ -1,0 +1,51 @@
+body{
+    background-color: rgb(198, 170, 239);
+
+}
+
+/* Header */
+.header{
+    background-color: #f8ef9b;
+    padding: 20px 10px;
+    color: black;
+
+}
+.header a{
+    padding: 15px 10px;
+}
+
+.header a:hover {
+    background-color: #b3b169;
+    color: black;
+  }
+  
+@media screen and (max-width: 500px) {
+    .header a {
+      background-color: aquamarine;
+      display: block;
+      text-align: left;
+    }
+  }
+/*Youtube*/
+.iframe-container{
+    margin-left: 40px;
+    width: 550px;
+    height: 250px;
+    float: center;
+}
+
+.Para{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 14px;
+    font-weight: 50;
+}
+
+.videoembed {
+    align-items: center;
+}
+
+/*DataWrapper*/
+.data-wrapper-container{
+    text-align: center;
+}
+
