@@ -1,0 +1,72 @@
+
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>My Food Story: A Digital Diorama</title>
+
+  <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
+
+  <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+
+  <meta aframe-injected="" name="theme-color" content="black">
+  
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+  <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+  
+  </head>
+  <body>
+
+
+
+    <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
+
+    <a-assets>
+
+      <a-asset-item id="retiro" src="models/christchurchbell.glb"></a-asset-item>
+
+   </a-assets>
+
+<!-- Bell -->
+
+
+
+<a-entity gltf-model="models/christchurchbell.glb" position="5.39038 8.02315 -21.24266" rotation="0 41.15670433983729 0" scale="10 10 10"></a-entity>
+
+
+
+
+<!-- FOG --> 
+
+  <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
+
+<!-- TEXT -->
+
+  <a-text font="kelsonsans" value="The Christ Church Bell in Philadelphia" width="50" position="-7.98332 12.98107 -24.50811" rotation="0 2.748478543242559 0" color="#0d0c0c" text=""></a-text>
+
+      
+
+<!-- Basic movement and teleportation  -->
+  
+  <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="5 5 10" rotation="0 0 0">  
+
+<!-- camera -->
+  <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity>
+
+<!-- Left Controller -->
+  <a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60" visible="true"></a-entity>
+
+<!-- Right Controller -->
+  <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity>
+  </a-entity>
+
+  </a-scene>
+
+  </body>
+</html>
