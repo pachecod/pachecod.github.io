@@ -37,12 +37,12 @@
 
 
 
-<a-entity gltf-model="models/christchurchbell.glb" position="5.39038 8.02315 -21.24266" rotation="0 41.15670433983729 0" scale="10 10 10"></a-entity>
+<a-entity gltf-model="models/christchurchbell4.glb" position="5.39038 -4.7433 1.10239" rotation="0 41.15670433983729 0" scale="7 7 7"></a-entity>
 
 
 <a-sky src="skies/day.jpg" rotation="0 -130 0">
   </a-sky>  
-  
+
 <!-- GRASS -->
 
   <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4" material="" geometry="" scale="5 5 1"></a-plane>
@@ -53,13 +53,18 @@
 
 <!-- TEXT -->
 
-  <a-text font="kelsonsans" value="The Christ Church Bell in Philadelphia" width="50" position="-7.98332 12.98107 -24.50811" rotation="0 2.748478543242559 0" color="#0d0c0c" text=""></a-text>
+  <a-text font="kelsonsans" value="The Christ Church Bell in Philadelphia" width="50" position="-15.29913 45.20875 -31.25745" rotation="0 -48.53582778332717 0" color="#0d0c0c" text="color: #d95000" scale="2 2 2"></a-text>
 
       
 
 <!-- Basic movement and teleportation  -->
+
+
+
   
-  <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="5 5 10" rotation="0 0 0">  
+  <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="-57 25 28" rotation="-10 -79 0">  
+
+
 
 <!-- camera -->
   <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity>
