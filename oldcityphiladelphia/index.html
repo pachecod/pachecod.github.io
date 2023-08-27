@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <title>My Food Story: A Digital Diorama</title>
+  <title>The Christ Church Bell in Old City Philadelphia</title>
 
   <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
 
@@ -23,8 +23,6 @@
   </head>
   <body>
 
-
-
     <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
 
     <a-assets>
@@ -35,12 +33,11 @@
 
 <!-- Bell -->
 
+  <a-entity gltf-model="models/christchurchbell4.glb" position="5.39038 -4.7433 1.10239" rotation="0 41.15670433983729 0" scale="7 7 7"></a-entity>
 
+<!-- Sky -->
 
-<a-entity gltf-model="models/christchurchbell4.glb" position="5.39038 -4.7433 1.10239" rotation="0 41.15670433983729 0" scale="7 7 7"></a-entity>
-
-
-<a-sky src="skies/day.jpg" rotation="0 -130 0">
+  <a-sky src="skies/day.jpg" rotation="0 -130 0">
   </a-sky>  
 
 <!-- GRASS -->
@@ -55,12 +52,7 @@
 
   <a-text font="kelsonsans" value="The Christ Church Bell in Philadelphia" width="50" position="-15.29913 45.20875 -31.25745" rotation="0 -48.53582778332717 0" color="#0d0c0c" text="color: #d95000" scale="2 2 2"></a-text>
 
-      
-
 <!-- Basic movement and teleportation  -->
-
-
-
   
   <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="-57 25 28" rotation="-10 -79 0">  
 
