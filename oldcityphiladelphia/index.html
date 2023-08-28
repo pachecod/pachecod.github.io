@@ -1,80 +1,223 @@
-
-
 <html>
   <head>
-    <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-  <title>The Christ Church Bell in Old City Philadelphia</title>
+    <title>The Christ Church Bell in Old City Philadelphia</title>
 
-  <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
 
-  <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes" />
 
-  <meta aframe-injected="" name="theme-color" content="black">
-  
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
-  <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-  <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
-  
+    <meta aframe-injected="" name="theme-color" content="black" />
+
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
   </head>
   <body>
-
     <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
+      <!-- Wall 1 -->
 
-    <a-assets>
+      <!-- Front section of wall -->
 
-      <a-asset-item id="retiro" src="models/christchurchbell.glb"></a-asset-item>
+      Wall part 1
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-138.79739 -12.43237 -302.06372"
+        rotation="0 0 0"
+        scale="7 7 7"
+      ></a-entity>
 
-   </a-assets>
+      <!-- Wall part 2 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-39 -12.43237 -302.06372"
+        rotation="0 0 0"
+        scale="7 7 7"
+      ></a-entity>
 
-<!-- Bell -->
+      <!-- Wall part 3 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="135 -12.43237 -302.06372"
+        rotation="0 0 0"
+        scale="7 7 7"
+      ></a-entity>
 
-  <a-entity gltf-model="models/christchurchbell4.glb" position="5.39038 -4.7433 1.10239" rotation="0 41.15670433983729 0" scale="7 7 7"></a-entity>
+      <!-- End front section of wall -->
 
-<!-- Sky -->
+      <!-- BACK section of wall -->
 
-  <a-sky src="skies/sunset.jpg" rotation="0 -130 0">
-  </a-sky>  
+      Wall part 1
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-138.79739 -12.43237 273"
+        rotation="0 180 0"
+        scale="7 7 7"
+      ></a-entity>
 
-<!-- GRASS -->
+      <!-- Wall part 2 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="37 -12.43237 273"
+        rotation="0 180 0"
+        scale="7 7 7"
+      ></a-entity>
 
-  <a-plane src="grass.jpg" position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4" material="" geometry="" scale="5 5 1"></a-plane>
+      <!-- Wall part 3 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="207 -12.4 273"
+        rotation="0 180 0"
+        scale="7 7 7"
+      ></a-entity>
 
-<!-- FOG --> 
+      <!-- End front section of wall -->
 
-  <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
+      <!-- Left section of wall -->
 
-<!-- TEXT -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-296 -12.43237 -124"
+        rotation="0 90 0"
+        scale="7 7 7"
+      ></a-entity>
 
-  <a-text font="kelsonsans" value="The Christ Church Bell in Philadelphia" width="50" position="-15.29913 45.20875 -31.25745" rotation="0 -48.53582778332717 0" color="#0d0c0c" text="color: #d95000; transparent: false" scale="2 2 2"></a-text>
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-296 -12.43237 49.53"
+        rotation="0 90 0"
+        scale="7 7 7"
+      ></a-entity>
 
-  <a-text font="kelsonsans" value="Mobile move forward instructions" width="50" position="-121.81298 49.98033 2.37577" rotation="0 9.68184082212065 0" color="#0d0c0c" text="value: Mobile: Hold one thumb down to move forward. Hold two thumbs down to move backward.; color: #d95000; transparent: true" scale="2 2 2"></a-text>
+      <!-- End left section of wall -->
 
-  <a-text font="kelsonsans" value="Mobile move forward instructions" width="50" position="61.87123 49.98033 61.23011" rotation="0.9946547323471091 -99.31192054561585 0.042971834634811745" color="#0d0c0c" text="value: Desktop: Use mouse + WASD or arrow keys.; color: #d95000" scale="2 2 2"></a-text> 
+      <!-- Right section of wall -->
 
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="294 -12.4 -124"
+        rotation="0 -90 0"
+        scale="7 7 7"
+      ></a-entity>
 
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="294 -12.4 105"
+        rotation="0 -90 0"
+        scale="7 7 7"
+      ></a-entity>
 
-<!-- Basic movement and teleportation  -->
-  
-  <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="-57 25 28" rotation="-10 -79 0">  
+      <!-- End right section of wall -->
 
+      <!-- Bell -->
 
+      <a-entity
+        gltf-model="models/christchurchbell4.glb"
+        position="5.39038 -4.7433 1.10239"
+        rotation="0 41.15670433983729 0"
+        scale="7 7 7"
+      ></a-entity>
 
-<!-- camera -->
-  <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity>
+      <!-- Sky -->
 
-<!-- Left Controller -->
-  <a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60" visible="true"></a-entity>
+      <a-sky src="skies/sunset.jpg" rotation="0 -130 0"> </a-sky>
 
-<!-- Right Controller -->
-  <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity>
-  </a-entity>
+      <!-- GRASS -->
 
-  </a-scene>
+      <a-plane
+        src="grass.jpg"
+        position="0 0 -4"
+        rotation="-90 0 0"
+        width="100"
+        height="100"
+        color="#7BC8A4"
+        material=""
+        geometry=""
+        scale="5 5 1"
+      ></a-plane>
 
+      <!-- FOG -->
+
+      <a-entity
+        position="0 2.25 -15"
+        particle-system="color: #EF0000,#44CC00"
+      ></a-entity>
+
+      <!-- TEXT -->
+
+      <a-text
+        font="kelsonsans"
+        value="The Christ Church Bell in Old Philadelphia"
+        width="30"
+        position="-15.29913 60 -31.25745"
+        rotation="0 -48.53582778332717 0"
+        color="#0d0c0c"
+        text="color: #d95000; transparent: false"
+        scale="4 4 4"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="Instructions"
+        width="30"
+        position="-150 50 -124"
+        rotation="0 4.8 0"
+        color="#0d0c0c"
+        text="value: MOBILE: Hold down one thumb to move forward, two thumbs to move backward.; color: #d95000; transparent: false"
+        scale="4 4 4"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="Instructions"
+        width="30"
+        position="-150 20 -124"
+        rotation="0 4.8 0"
+        color="#0d0c0c"
+        text="value: DESKTOP: Use WASD + arrow keys.; color: #d95000; transparent: false"
+        scale="4 4 4"
+      ></a-text>
+
+      <!-- Basic movement and teleportation  -->
+
+      <a-entity
+        id="cameraRig"
+        movement-controls="constrainToNavMesh: true; fly: false; speed: 5;"
+        navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
+        position="-12 25 127"
+        rotation="0 0 0"
+      >
+        <!-- camera -->
+        <a-entity
+          id="head"
+          camera="active: true"
+          position="0 1.6 0"
+          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+        ></a-entity>
+
+        <!-- Left Controller -->
+        <a-entity
+          id="leftHand"
+          hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF"
+          teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60"
+          visible="true"
+        ></a-entity>
+
+        <!-- Right Controller -->
+        <a-entity
+          id="rightHand"
+          hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF"
+          laser-controls
+          raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;"
+          line="color: #7cfc00; opacity: 0.5"
+          visible="true"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
   </body>
 </html>
