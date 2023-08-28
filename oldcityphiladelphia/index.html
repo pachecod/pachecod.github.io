@@ -19,7 +19,10 @@
     <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
   </head>
   <body>
-    <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
+    <a-scene
+      loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00"
+      fog="type:linear; color:#AAB; far: 500; near: 10"
+    >
       <!-- Wall 1 -->
 
       <!-- Front section of the wall -->
