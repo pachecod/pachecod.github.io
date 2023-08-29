@@ -155,35 +155,50 @@
 
       <a-text
         font="kelsonsans"
-        value="The Christ Church Bell in Old Philadelphia"
+        value="Desktop"
         width="30"
-        position="-15.29913 60 -31.25745"
-        rotation="0 -48.53582778332717 0"
+        position="-143.43281 44 62"
+        rotation="0 -40.730996698055094 0"
         color="#0d0c0c"
-        text="color: #d95000; transparent: false"
+        text="value: Welcome! Here's how to get around...; color: #d95000; transparent: false"
         scale="4 4 4"
+        id="welcome"
       ></a-text>
 
       <a-text
         font="kelsonsans"
         value="Instructions"
         width="30"
-        position="-150 50 -124"
-        rotation="0 4.8 0"
+        position="-143.43281 28 62.05978"
+        rotation="0 -40.730996698055094 0"
         color="#0d0c0c"
         text="value: MOBILE: Hold down one thumb to move forward, two thumbs to move backward.; color: #d95000; transparent: false"
         scale="4 4 4"
+        id="mobileinstructions"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="Desktop"
+        width="30"
+        position="-143.43281 15 62.05978"
+        rotation="0 -40.730996698055094 0"
+        color="#0d0c0c"
+        text="value: DESKTOP: Use WASD + arrow keys.; color: #d95000; transparent: false"
+        scale="4 4 4"
+        id="desktopinstructions"
       ></a-text>
 
       <a-text
         font="kelsonsans"
         value="Instructions"
         width="30"
-        position="-150 20 -124"
-        rotation="0 4.8 0"
-        color="#0d0c0c"
-        text="value: DESKTOP: Use WASD + arrow keys.; color: #d95000; transparent: false"
-        scale="4 4 4"
+        position="-28 3.4 -10"
+        rotation="0 -48.53582778332717 0"
+        color="#302d2c"
+        text="value: The Christ Church Bell in Old Philadelphia; color: #302d2c; transparent: false"
+        scale="2 2 2"
+        id="belllabel"
       ></a-text>
 
       <!-- Basic movement and teleportation  -->
@@ -192,8 +207,8 @@
         id="cameraRig"
         movement-controls="constrainToNavMesh: true; fly: false; speed: 5;"
         navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
-        position="-12 25 127"
-        rotation="0 0 0"
+        position="-186 25 132"
+        rotation="0 -35 1"
       >
         <!-- camera -->
         <a-entity
