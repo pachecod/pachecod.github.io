@@ -1,10 +1,12 @@
 <html>
+
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>The Christ Church Bell in Old City Philadelphia</title>
+    <title>A Digital Diorama of the Christ Church Bell</title>
 
     <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
 
@@ -18,16 +20,23 @@
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
   </head>
+
+
   <body>
+  
+    <a-assets>
+    <img id="qrcode" src="qrcode.png">
+  </a-assets>
+
     <a-scene
       loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00"
-      fog="type:linear; color:#AAB; far: 500; near: 10"
+      ; color:#AAB; far: 500; near: 10"
     >
-      <!-- Wall 1 -->
 
       <!-- Front section of the wall -->
 
-      Wall part 1
+      <!-- Wall part 1 -->
+
       <a-entity
         gltf-model="models/brickwall.glb"
         position="-138.79739 -12.43237 -302.06372"
@@ -36,6 +45,7 @@
       ></a-entity>
 
       <!-- Wall part 2 -->
+
       <a-entity
         gltf-model="models/brickwall.glb"
         position="-39 -12.43237 -302.06372"
@@ -119,21 +129,32 @@
 
       <!-- Bell -->
 
+       <a-entity gltf-model="models/christchurchbell.glb" position="0.14284 -4.41136 -4.23306" rotation="3.1231929412581176 68.06624014595154 1.9228463604590427" scale="5 5 5" id="new_wall"></a-entity>
+
       <a-entity
-        gltf-model="models/christchurchbell4.glb"
+        gltf-model="models/ibexstatue.glb"
         position="5.39038 -4.7433 1.10239"
         rotation="0 41.15670433983729 0"
         scale="7 7 7"
       ></a-entity>
 
+      <!-- Hydrant -->
+
+     <a-entity gltf-model="models/hydrant.glb" position="80.1901 50.45226 192.69044" rotation="0 41.15670433983729 0" scale="30 30 30"></a-entity>
+
+
+      <!-- Hydrant -->
+
+     <a-entity gltf-model="models/cone2.glb" position="80.1901 50.45226 192.69044" rotation="0 41.15670433983729 0" scale="30 30 30"></a-entity>
+
       <!-- Sky -->
 
-      <a-sky src="skies/sunset.jpg" rotation="0 -130 0"> </a-sky>
+      <a-sky src="skies/night.jpg" rotation="0 -130 0"> </a-sky>
 
       <!-- GRASS -->
 
       <a-plane
-        src="grass.jpg"
+        src="grounds/grass.jpg"
         position="0 0 -4"
         rotation="-90 0 0"
         width="100"
@@ -215,17 +236,8 @@
 
       <!-- QR Code -->
 
-      <a-plane
-        src="qr.png"
-        position="-51.36687 29.93523 140.21679"
-        rotation="0 -41.92504074310773 -90.00021045914971"
-        width="100"
-        height="100"
-        color="#7BC8A4"
-        material=""
-        geometry=""
-        scale="0.25 0.25 0.25"
-      ></a-plane>
+      <a-plane src="qrcode" color="#CCC" height="20" width="20" material="" geometry="" id="qrcode" position="-103 63 92" rotation="0 -43 0"></a-plane>
+
 
       <!-- Basic movement and teleportation  -->
 
