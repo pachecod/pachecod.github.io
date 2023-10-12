@@ -1,0 +1,281 @@
+<html>
+
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>A Digital Diorama of University of Illinois in Urbana-Champagne</title>
+
+    <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
+
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes" />
+
+    <meta aframe-injected="" name="theme-color" content="black" />
+
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+  </head>
+
+
+  <body>
+  
+    <a-assets>
+    <img id="qrcode" src="qrcode.png">
+    <img id="ground" src="grass.jpg">
+
+  </a-assets>
+
+    <a-scene
+      loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00"
+      ; color:#AAB; far: 500; near: 10"
+    >
+
+      <!-- Front section of the wall -->
+
+      <!-- Wall part 1 -->
+
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-138.79739 -12.43237 -302.06372"
+        rotation="0 0 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- Wall part 2 -->
+
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-39 -12.43237 -302.06372"
+        rotation="0 0 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- Wall part 3 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="135 -12.43237 -302.06372"
+        rotation="0 0 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- End front section of wall -->
+
+      <!-- BACK section of wall -->
+
+      Wall part 1
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-138.79739 -12.43237 273"
+        rotation="0 180 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- Wall part 2 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="37 -12.43237 273"
+        rotation="0 180 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- Wall part 3 -->
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="207 -12.4 273"
+        rotation="0 180 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- End front section of wall -->
+
+      <!-- Left section of wall -->
+
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-296 -12.43237 -124"
+        rotation="0 90 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="-296 -12.43237 49.53"
+        rotation="0 90 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- End left section of wall -->
+
+      <!-- Right section of wall -->
+
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="294 -12.4 -124"
+        rotation="0 -90 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <a-entity
+        gltf-model="models/brickwall.glb"
+        position="294 -12.4 105"
+        rotation="0 -90 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- End right section of wall -->
+
+      <!-- Statue -->
+
+       <a-entity gltf-model="models/statuesitting.glb" position="0.14284 -1.98775 -4.23306" rotation="-2.1715100435458203 -110.46339811224706 3.8686110327233183" scale="15 15 15" id="new_wall"></a-entity>
+
+      <a-entity
+        gltf-model="models/ibexstatue.glb"
+        position="5.39038 -4.7433 1.10239"
+        rotation="0 41.15670433983729 0"
+        scale="7 7 7"
+      ></a-entity>
+
+      <!-- Hydrant -->
+
+     <a-entity gltf-model="models/hydrant.glb" position="80.1901 50.45226 192.69044" rotation="0 41.15670433983729 0" scale="30 30 30"></a-entity>
+
+
+      <!-- Hydrant -->
+
+     <a-entity gltf-model="models/cone2.glb" position="80.1901 50.45226 192.69044" rotation="0 41.15670433983729 0" scale="30 30 30"></a-entity>
+
+      <!-- Sky -->
+
+      <a-sky src="skies/day.jpg" rotation="0 -130 0"> </a-sky>
+
+      <!-- GRASS -->
+
+      <a-plane
+        src="grass.jpg"
+        position="0 0 -4"
+        rotation="-90 0 0"
+        width="100"
+        height="100"
+        color="#7BC8A4"
+        material=""
+        geometry=""
+        scale="5 5 1"
+      ></a-plane>
+
+      <!-- FOG -->
+
+      <a-entity
+        position="0 2.25 -15"
+        particle-system="color: #EF0000,#44CC00"
+      ></a-entity>
+
+      <!-- TEXT -->
+
+      <a-text
+        font="kelsonsans"
+        value="Desktop"
+        width="30"
+        position="-143.43281 44 62"
+        rotation="0 -40.730996698055094 0"
+        color="#0d0c0c"
+        text="value: Welcome! Here's how to get around...; color: #d95000; transparent: false"
+        scale="4 4 4"
+        id="welcome"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="Instructions"
+        width="30"
+        position="-143.43281 28 62.05978"
+        rotation="0 -40.730996698055094 0"
+        color="#0d0c0c"
+        text="value: MOBILE: Hold down one thumb to move forward, two thumbs to move backward.; color: #d95000; transparent: false"
+        scale="4 4 4"
+        id="mobileinstructions"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="Desktop"
+        width="30"
+        position="-143.43281 15 62.05978"
+        rotation="0 -40.730996698055094 0"
+        color="#0d0c0c"
+        text="value: DESKTOP: Use WASD + arrow keys.; color: #d95000; transparent: false"
+        scale="4 4 4"
+        id="desktopinstructions"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="QR"
+        width="30"
+        position="-143.43281 5.7 62.05978"
+        rotation="0 -40.730996698055094 0"
+        color="#0d0c0c"
+        text="value: Scan the code to switch to mobile.; color: #d95000; transparent: false"
+        scale="4 4 4"
+        id="desktopinstructions"
+      ></a-text>
+
+      <a-text
+        font="kelsonsans"
+        value="Instructions"
+        width="30"
+        position="-28 3.4 -10"
+        rotation="0 -48.53582778332717 0"
+        color="#302d2c"
+        text="value: University of Illinois; color: #302d2c; transparent: false"
+        scale="2 2 2"
+        id="belllabel"
+      ></a-text>
+
+      <!-- QR Code -->
+
+      <!-- a-plane src="qrcode" color="#CCC" height="20" width="20" material="" geometry="" id="qrcode" position="-103 63 92" rotation="0 -43 0"></a-plane -->
+
+
+      <!-- Basic movement and teleportation  -->
+
+      <a-entity
+        id="cameraRig"
+        movement-controls="constrainToNavMesh: true; fly: false; speed: 5;"
+        navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
+        position="-186 25 132"
+        rotation="-2.8 -75 -1"
+      >
+        <!-- camera -->
+        <a-entity
+          id="head"
+          camera="active: true"
+          position="0 1.6 0"
+          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+        ></a-entity>
+
+        <!-- Left Controller -->
+        <a-entity
+          id="leftHand"
+          hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF"
+          teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60"
+          visible="true"
+        ></a-entity>
+
+        <!-- Right Controller -->
+        <a-entity
+          id="rightHand"
+          hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF"
+          laser-controls
+          raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;"
+          line="color: #7cfc00; opacity: 0.5"
+          visible="true"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
