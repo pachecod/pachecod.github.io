@@ -1,0 +1,110 @@
+
+body {
+    font-family:Verdana, Geneva, Tahoma, sans-serif
+    font-weight: 100
+    max-width: 800px;
+    margin: 0px auto;
+    padding: 10px;
+  }
+  
+  .source-info {
+    background-color: darkgray;
+    font-size: 18px;
+    margin: 0px 0px 15px 0px;
+    border: black solid 2px;
+    padding: 10px;
+  }
+  
+img {
+  float:left;
+  width: 50%;
+  margin-right: 13px;
+  max-width: 400px;
+  margin-bottom: 10px;
+}
+
+
+    width:50%
+    max-width: 400px;
+    margin-left:10px;
+    margin-bottom: 10px;
+  
+  .lead-caption {
+    font-size: 14px;
+    margin: 5px 0px;
+    line-height: 14px;
+  }
+  
+p {
+  line-height: 2;
+}
+
+  h1 {
+    font-family: 'Raleway', sans-serif;
+    font-style:normal;
+    font-size: 40px;
+    font-weight: 250;
+    text-align: center;
+  }
+  
+.googleicon {
+  width: 20px;
+}
+
+  h2 {
+    font-family: 'Pixelify Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 100;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  p {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  blockquote {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 40px;
+    font-style: italic;
+    padding: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .newblockquote {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 40px;
+    font-style: italic;
+    padding: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .quotecaption {
+    margin-left: 40px;
+    font-family: times;
+    font-size: 14px;
+  
+  }
+
+  .tableclass {
+    float: left;
+    max-width: 500px;
+  }
+  
+  .other-image {
+    float: left;
+    width: 400px;
+    max-width: 500px;
+    display: block;
+    padding: 10px;
+  }
+  
+  .other-caption {
+    font-size: 14px;
+    line-height: 14px;
+    max-width: 600px;
+    margin: 5px auto;
+  }
