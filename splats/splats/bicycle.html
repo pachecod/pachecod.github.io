@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Exported Scene</title>
+  <style>
+    body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: Arial, sans-serif; }
+    #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+    
+    .ui-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    #hotspotContent {
+      position: fixed;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1001;
+      max-width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+      font-size: 14px;
+    }
+    #infoPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1002;
+      max-width: 80%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+      font-size: 16px;
+    }
+    
+    #scrollControls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    #scrollPercentage {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    #progressBarContainer {
+      width: 200px;
+      height: 10px;
+      background-color: rgba(255,255,255,0.3);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background-color: #4CAF50;
+      transition: width 0.3s ease;
+    }
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+    #scrollButtons {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    
+  </style>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  
+  <div class="ui-overlay">
+    <p><strong>Controls:</strong></p>
+    <p>• W/A/S/D: Move camera</p>
+    <p>• Mouse: Look around</p>
+    <p>• Scroll: Move along path</p>
+  </div>
+  
+  <div id="hotspotContent"></div>
+  <div id="infoPopup"></div>
+  
+  <div id="scrollControls">
+    <div id="scrollPercentage">0%</div>
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+    <div id="scrollButtons">
+      <button class="button" onclick="adjustScroll(-1)">◀ Backward</button>
+      <button class="button" onclick="adjustScroll(1)">Forward ▶</button>
+    </div>
+  </div>
+  
+  <!-- Babylon.js CDN -->
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script>
+    // Get the canvas element
+    const canvas = document.getElementById('renderCanvas');
+
+    // Generate the Babylon.js 3D engine
+    const engine = new BABYLON.Engine(canvas, true);
+
+    // Create the scene
+    const scene = new BABYLON.Scene(engine);
+
+    // Set the background color
+    scene.clearColor = BABYLON.Color3.FromHexString('#7D7D7D').toColor4(1);
+
+    // Create a universal camera and position it
+    const camera = new BABYLON.UniversalCamera(
+      'camera',
+      new BABYLON.Vector3(-3.452072177702375, 4.2454177870591545, 3.111228878817893),
+      scene
+    );
+    camera.attachControl(canvas, true);
+
+    // Adjust camera sensitivity
+    camera.speed = 0.2;
+    camera.angularSensibility = 4000;
+
+    // Initialize rotationQuaternion with the first waypoint's rotation
+    camera.rotationQuaternion = new BABYLON.Quaternion(
+      0.13661540482616666,
+      0.85647363735498,
+      -0.28837887902675663,
+      0.40574224500882683
+    ).normalize();
+
+    // Ensure Euler angles match the quaternion
+    camera.rotation = camera.rotationQuaternion.toEulerAngles();
+
+    // Enable WASD keys for movement
+    camera.keysUp.push(87); // W
+    camera.keysDown.push(83); // S
+    camera.keysLeft.push(65); // A
+    camera.keysRight.push(68); // D
+
+    // Create a basic light
+    new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+
+    // Variables to manage camera control state
+    let userControl = false;
+    let animatingToPath = false;
+
+    // Variables for scroll position and target
+    let scrollPosition = 0;
+    let scrollTarget = 0.01; // Start with a small value to enable scrolling
+
+    // Load the model file
+    BABYLON.SceneLoader.ImportMeshAsync('', '', 'https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_Nick_on_Bike.ply', scene)
+      .then((result) => {
+        const loadedMeshes = result.meshes;
+        loadedMeshes.forEach((mesh) => {
+          if (mesh instanceof BABYLON.Mesh) {
+            mesh.position = BABYLON.Vector3.Zero();
+          }
+        });
+      })
+      .catch((error) => {
+        console.error('Error loading model file:', error);
+        alert('Error loading model file: ' + error.message);
+      });
+
+    // Prepare waypoints and rotations
+    const waypoints = [{"x":-3.452072177702375,"y":4.2454177870591545,"z":3.111228878817893,"rotation":{"_isDirty":true,"_x":0.13661540482616666,"_y":0.85647363735498,"_z":-0.28837887902675663,"_w":0.40574224500882683},"interactions":[]},{"x":-4.699875173607137,"y":2.6698522628594596,"z":1.750444065568405,"rotation":{"_isDirty":true,"_x":0.1085014509848301,"_y":0.8238380156894707,"_z":-0.16859793769107131,"_w":0.530182164944778},"interactions":[]},{"x":-1.9729714050440694,"y":1.3899531066199917,"z":0.5092586546440102,"rotation":{"_isDirty":true,"_x":0.08428699183881354,"_y":0.8308666715280263,"_z":-0.13109544104065707,"_w":0.5342005458853099},"interactions":[]},{"x":-0.16702054793730853,"y":1.2066240821480692,"z":-2.5757830004315285,"rotation":{"_isDirty":true,"_x":0.09523066408318744,"_y":-0.027132219178800123,"_z":0.002596589561546938,"_w":0.9950820197872045},"interactions":[]},{"x":3.7073641026137847,"y":2.062016843228821,"z":-3.7041314647113883,"rotation":{"_isDirty":true,"_x":0.10433350720332407,"_y":-0.45432119293712186,"_z":0.05367697415115237,"_w":0.8830773201130219},"interactions":[]},{"x":6.455681411351996,"y":3.1159419608000762,"z":0.5174270332298111,"rotation":{"_isDirty":true,"_x":0.08969551173543604,"_y":-0.6902213934445718,"_z":0.08686112113008121,"_w":0.7127442098524616},"interactions":[]},{"x":-0.930902100307467,"y":2.588642087247087,"z":4.805829616787664,"rotation":{"_isDirty":true,"_x":0.003046726224149873,"_y":0.9894415862641405,"_z":-0.1433664061509847,"_w":0.02102695104024676},"interactions":[]},{"x":-4.1074440816791595,"y":3.238541469153828,"z":0.3667977019128617,"rotation":{"_isDirty":true,"_x":0.10942071565590193,"_y":0.7995062436497073,"_z":-0.15338621754552148,"_w":0.570341618983352},"interactions":[]},{"x":-1.096113453845182,"y":0.3646318874901998,"z":-2.4355442182857914,"rotation":{"_isDirty":true,"_x":-0.14694882004417603,"_y":0.2785620493428457,"_z":0.04317390871917317,"_w":0.9481272288920507},"interactions":[]}];
+    const controlPoints = waypoints.map(
+      (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
+    );
+    const rotations = waypoints.map(
+      (wp) => new BABYLON.Quaternion(wp.rotation._x, wp.rotation._y, wp.rotation._z, wp.rotation._w).normalize()
+    );
+
+    let path = [];
+
+    if (controlPoints.length >= 2) {
+      const positionCurve = BABYLON.Curve3.CreateCatmullRomSpline(
+        controlPoints,
+        (waypoints.length - 1) * 20, // Increased resolution from 10 to 20
+        false
+      );
+      path = positionCurve.getPoints();
+    } else if (controlPoints.length === 1) {
+      path = [controlPoints[0]];
+    }
+
+    // Create hotspots
+    const hotspots = [];
+    console.log(hotspots);
+
+    hotspots.forEach(hotspot => {
+      // Assign default scale if necessary
+      const scale = (hotspot.scale._x === 0 && hotspot.scale._y === 0 && hotspot.scale._z === 0)
+        ? new BABYLON.Vector3(1, 1, 1) // Default scale
+        : new BABYLON.Vector3(hotspot.scale._x, hotspot.scale._y, hotspot.scale._z);
+
+      const sphere = BABYLON.MeshBuilder.CreateSphere(`hotspot-${hotspot.id}`, { diameter: 0.2 }, scene);
+      sphere.position = new BABYLON.Vector3(hotspot.position._x, hotspot.position._y, hotspot.position._z);
+      sphere.scaling = scale;
+      console.log('created sphere, position:', sphere.position, 'scale:', sphere.scaling);
+      
+      const material = new BABYLON.StandardMaterial(`hotspot-material-${hotspot.id}`, scene);
+      material.diffuseColor = BABYLON.Color3.FromHexString(hotspot.color);
+      material.emissiveColor = BABYLON.Color3.FromHexString(hotspot.color).scale(0.5);
+      sphere.material = material;
+
+      // Make sure the hotspot is pickable by the camera
+      sphere.isPickable = true;
+
+      sphere.actionManager = new BABYLON.ActionManager(scene);
+      sphere.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+          BABYLON.ActionManager.OnPointerOverTrigger,
+          () => {
+            material.emissiveColor = BABYLON.Color3.FromHexString(hotspot.color);
+            if (hotspot.activationMode === 'hover') {
+              showHotspotContent(hotspot);
+            }
+          }
+        )
+      );
+      sphere.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+          BABYLON.ActionManager.OnPointerOutTrigger,
+          () => {
+            material.emissiveColor = BABYLON.Color3.FromHexString(hotspot.color).scale(0.5);
+            if (hotspot.activationMode === 'hover') {
+              hideHotspotContent();
+            }
+          }
+        )
+      );
+      if (hotspot.activationMode === 'click') {
+        sphere.actionManager.registerAction(
+          new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,
+            () => {
+              showHotspotContent(hotspot);
+            }
+          )
+        );
+      }
+    });
+
+    // Function to show hotspot content
+    function showHotspotContent(hotspot) {
+      const hotspotContent = document.getElementById('hotspotContent');
+      hotspotContent.innerHTML = `
+        <h3>${hotspot.title}</h3>
+        ${hotspot.photoUrl ? `<img src="${hotspot.photoUrl}" alt="${hotspot.title}" style="width: 100%; margin-bottom: 10px; border-radius: 5px;">` : ''}
+        ${hotspot.information ? `<p>${hotspot.information}</p>` : ''}
+        ${hotspot.activationMode === 'click' ? '<button onclick="hideHotspotContent()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>' : ''}
+      `;
+      hotspotContent.style.display = 'block';
+      positionHotspotContent(hotspotContent);
+    }
+
+    // Function to hide hotspot content
+    function hideHotspotContent() {
+      const hotspotContent = document.getElementById('hotspotContent');
+      hotspotContent.style.display = 'none';
+    }
+
+    // Function to position hotspot content near the mouse
+    function positionHotspotContent(element) {
+      const rect = element.getBoundingClientRect();
+      let left = scene.pointerX + 10;
+      let top = scene.pointerY + 10;
+
+      if (left + rect.width > window.innerWidth) {
+        left = window.innerWidth - rect.width - 10;
+      }
+      if (top + rect.height > window.innerHeight) {
+        top = window.innerHeight - rect.height - 10;
+      }
+
+      element.style.left = `${left}px`;
+      element.style.top = `${top}px`;
+    }
+
+    // Function to execute interactions
+    const executeInteractions = (interactions) => {
+      interactions.forEach((interaction) => {
+        switch (interaction.type) {
+          case "audio":
+            playAudio(interaction.data.url);
+            break;
+          case "info":
+            showInfoPopup(interaction.data.text);
+            break;
+          // Add other interaction types here if needed
+        }
+      });
+    };
+
+    // Function to reverse interactions
+    const reverseInteractions = (interactions) => {
+      interactions.forEach((interaction) => {
+        switch (interaction.type) {
+          case "audio":
+            stopAudio(interaction.data.url);
+            break;
+          case "info":
+            hideInfoPopup();
+            break;
+          // Add other interaction types here if needed
+        }
+      });
+    };
+
+    // Function to play audio
+    function playAudio(url) {
+      const audio = new Audio(url);
+      audio.loop = true;
+      audio.play().catch(error => console.error('Error playing audio:', error));
+    }
+
+    // Function to stop audio
+    function stopAudio(url) {
+      // Implement audio stopping logic if needed
+    }
+
+    // Function to show info popup
+    function showInfoPopup(text) {
+      const infoPopup = document.getElementById('infoPopup');
+      infoPopup.innerHTML = `
+        <p>${text}</p>
+        <button onclick="hideInfoPopup()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>
+      `;
+      infoPopup.style.display = 'block';
+    }
+
+    // Function to hide info popup
+    function hideInfoPopup() {
+      const infoPopup = document.getElementById('infoPopup');
+      infoPopup.style.display = 'none';
+    }
+
+    // Function to update scroll percentage and progress bar
+    function updateScrollUI(percentage) {
+      const scrollPercentage = document.getElementById('scrollPercentage');
+      const progressBar = document.getElementById('progressBar');
+      scrollPercentage.textContent = `${Math.round(percentage)}%`;
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    // Function to adjust scroll
+    function adjustScroll(direction) {
+      const increment = 10;
+      const pathLength = path.length;
+      if (pathLength > 1) {
+        const scrollIncrement = (pathLength - 1) * (increment / 100) * direction;
+        scrollTarget += scrollIncrement;
+
+        if (scrollTarget < 0) scrollTarget = 0;
+        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+
+        userControl = false;
+      }
+    }
+
+    // Handle scroll events
+    window.addEventListener('wheel', (event) => {
+      if (animatingToPath) return;
+
+      if (userControl) {
+        animatingToPath = true;
+        userControl = false;
+
+        if (!camera.rotationQuaternion) {
+          camera.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(
+            camera.rotation.x,
+            camera.rotation.y,
+            camera.rotation.z
+          ).normalize();
+          camera.rotation.set(0, 0, 0);
+        }
+
+        const closestPointInfo = getClosestPointOnPath(camera.position, path);
+        const startIndex = closestPointInfo.index;
+
+        const targetPosition = path[startIndex];
+
+        let targetRotation = camera.rotationQuaternion.clone();
+        if (rotations.length >= 2 && path.length >= 2) {
+          const t = startIndex / (path.length - 1);
+          const totalSegments = waypoints.length - 1;
+          const segmentT = t * totalSegments;
+          const segmentIndex = Math.floor(segmentT);
+          const clampedSegmentIndex = Math.min(segmentIndex, totalSegments - 1);
+          const lerpFactor = segmentT - clampedSegmentIndex;
+
+          const r1 = rotations[clampedSegmentIndex];
+          const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
+          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
+        } else if (rotations.length === 1) {
+          targetRotation = rotations[0];
+        }
+
+        const positionAnimation = new BABYLON.Animation(
+          'cameraPositionAnimation',
+          'position',
+          60,
+          BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+          BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+        );
+
+        const positionKeys = [];
+        positionKeys.push({ frame: 0, value: camera.position.clone() });
+        positionKeys.push({ frame: 120, value: targetPosition.clone() });
+
+        positionAnimation.setKeys(positionKeys);
+
+        const easingFunction = new BABYLON.CubicEase();
+        easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        positionAnimation.setEasingFunction(easingFunction);
+
+        const rotationAnimation = new BABYLON.Animation(
+          'cameraRotationAnimation',
+          'rotationQuaternion',
+          60,
+          BABYLON.Animation.ANIMATIONTYPE_QUATERNION,
+          BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+        );
+
+        const currentRotation = camera.rotationQuaternion.clone();
+        rotationAnimation.setKeys([
+          { frame: 0, value: currentRotation },
+          { frame: 120, value: targetRotation },
+        ]);
+
+        rotationAnimation.setEasingFunction(easingFunction);
+
+        camera.animations = [];
+        camera.animations.push(positionAnimation);
+        camera.animations.push(rotationAnimation);
+
+        scene.beginAnimation(camera, 0, 120, false, 1, function () {
+          animatingToPath = false;
+          scrollPosition = startIndex;
+          scrollTarget = scrollPosition;
+        });
+      } else {
+        scrollTarget += event.deltaY * 0.1;
+
+        if (scrollTarget < 0) scrollTarget = 0;
+        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+      }
+    });
+
+    // Helper function to find the closest point on the path
+    function getClosestPointOnPath(position, path) {
+      let minDist = Infinity;
+      let closestIndex = 0;
+
+      for (let i = 0; i < path.length; i++) {
+        const dist = BABYLON.Vector3.DistanceSquared(position, path[i]);
+        if (dist < minDist) {
+          minDist = dist;
+          closestIndex = i;
+        }
+      }
+
+      return { index: closestIndex, distanceSquared: minDist };
+    }
+
+    // Initialize target rotation and position
+    let targetRotation = camera.rotationQuaternion.clone();
+    let targetPosition = camera.position.clone();
+
+    // Active waypoints set
+    const activeWaypoints = new Set();
+
+    engine.runRenderLoop(function () {
+      // Smoothly interpolate scrollPosition towards scrollTarget
+      const scrollInterpolationSpeed = 0.1;
+      scrollPosition += (scrollTarget - scrollPosition) * scrollInterpolationSpeed;
+
+      // Clamp scroll position
+      scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));
+
+      // Update UI
+      const scrollPercentage = (scrollPosition / (path.length - 1)) * 100;
+      if(true){
+      updateScrollUI(scrollPercentage);
+  }
+
+      if (!userControl && path.length >= 1) {
+        const t = scrollPosition / (path.length - 1 || 1);
+
+        const totalSegments = waypoints.length - 1;
+        if (totalSegments >= 1) {
+          const segmentT = t * totalSegments;
+          const segmentIndex = Math.floor(segmentT);
+          const clampedSegmentIndex = Math.min(segmentIndex, totalSegments - 1);
+          const lerpFactor = segmentT - clampedSegmentIndex;
+
+          // Calculate target rotation using Slerp
+          const r1 = rotations[clampedSegmentIndex];
+          const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
+
+          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
+
+          // Calculate interpolated position using Lerp
+          const floorIndex = Math.floor(scrollPosition);
+          const ceilIndex = Math.min(floorIndex + 1, path.length - 1);
+          const lerpFactorPos = scrollPosition - floorIndex;
+
+          const interpolatedPosition = BABYLON.Vector3.Lerp(
+            path[floorIndex],
+            path[ceilIndex],
+            lerpFactorPos
+          );
+
+          targetPosition = interpolatedPosition;
+        } else if (rotations.length === 1) {
+          targetRotation = rotations[0].clone();
+          targetPosition = path[0].clone();
+        }
+
+        // Smoothly interpolate the camera's rotation towards the target rotation
+        if (camera.rotationQuaternion) {
+          camera.rotationQuaternion = BABYLON.Quaternion.Slerp(
+            camera.rotationQuaternion,
+            targetRotation,
+            0.05 // Damping factor for rotation (adjust between 0 and 1 for smoothness)
+          ).normalize();
+        }
+
+        // Smoothly interpolate the camera's position towards the target position
+        const positionDampingFactor = 0.1; // Adjust between 0 (no movement) and 1 (instant movement)
+        camera.position = BABYLON.Vector3.Lerp(
+          camera.position,
+          targetPosition,
+          positionDampingFactor
+        );
+
+        // Handle interactions based on waypoints
+        waypoints.forEach((wp, index) => {
+          const distance = BABYLON.Vector3.Distance(
+            camera.position,
+            new BABYLON.Vector3(wp.x, wp.y, wp.z)
+          );
+          const triggerDistance = 1.0; // Define a suitable trigger distance
+
+          if (distance <= triggerDistance) {
+            if (!activeWaypoints.has(index)) {
+              activeWaypoints.add(index);
+              executeInteractions(wp.interactions);
+            }
+          } else {
+            if (activeWaypoints.has(index)) {
+              activeWaypoints.delete(index);
+              reverseInteractions(wp.interactions);
+            }
+          }
+        });
+      }
+
+      // Update hotspots visibility and interactivity
+      hotspots.forEach(hotspot => {
+        const sphere = scene.getMeshByName(`hotspot-${hotspot.id}`);
+        if (sphere) {
+          const distance = BABYLON.Vector3.Distance(camera.position, sphere.position);
+          const isVisible = distance <= 5; // Adjust this value to change visibility distance
+          sphere.isVisible = isVisible;
+          sphere.isPickable = isVisible;
+        }
+      });
+
+      scene.render();
+    });
+
+    // User interaction detection
+    scene.onPointerObservable.add(function (evt) {
+      if (evt.type === BABYLON.PointerEventTypes.POINTERDOWN) {
+        userControl = true;
+
+        if (camera.rotationQuaternion) {
+          camera.rotation = camera.rotationQuaternion.toEulerAngles();
+          camera.rotationQuaternion = null;
+        }
+      }
+    });
+
+    window.addEventListener('keydown', function () {
+      userControl = true;
+
+      if (camera.rotationQuaternion) {
+        camera.rotation = camera.rotationQuaternion.toEulerAngles();
+        camera.rotationQuaternion = null;
+      }
+    });
+
+    // Resize
+    window.addEventListener('resize', function () {
+      engine.resize();
+    });
+  </script>
+</body>
+</html>
+  
