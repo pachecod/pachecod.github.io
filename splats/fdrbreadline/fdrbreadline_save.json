@@ -1,0 +1,177 @@
+{
+  "scrollSpeed": 0.1,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.2,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#7D7D7D",
+  "waypoints": [
+    {
+      "x": 1.9716321106631787,
+      "y": 1.1810963730287274,
+      "z": -4.188848091084995,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.09145853919672968,
+        "_y": -0.3084269241929842,
+        "_z": 0.029806758842337164,
+        "_w": 0.9463718799297276
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729168767089",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3"
+          }
+        }
+      ]
+    },
+    {
+      "x": 1.7567649935805205,
+      "y": 0.9454826336248555,
+      "z": -3.462626243558567,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.20922080869698206,
+        "_y": -0.13918895734472475,
+        "_z": 0.03010121565303319,
+        "_w": 0.9674435389108644
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729168876836",
+          "type": "info",
+          "data": {
+            "text": "The FDR Memorial was commissioned in 1992 after 40 years of planning. It is a series of sculpture scenes and water features situated on the west side of the Tidal Basin in Washington, D.C."
+          }
+        }
+      ]
+    },
+    {
+      "x": 2.7084529241269473,
+      "y": 0.1984271541905026,
+      "z": -2.401921801633828,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.01612332237658836,
+        "_y": -0.5613152015729077,
+        "_z": 0.010938559712306076,
+        "_w": 0.8273727311055538
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729168973126",
+          "type": "info",
+          "data": {
+            "text": "In this second scene of the memorial, scuptor George Segal depicts men standing in a breadline, representing the despair of the Great Depression."
+          }
+        }
+      ]
+    },
+    {
+      "x": 1.1466802225201465,
+      "y": 0.2040102413138607,
+      "z": -2.241162306786908,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.001316550259938281,
+        "_y": -0.6959250706105095,
+        "_z": 0.001275873823512578,
+        "_w": 0.7181120495483385
+      },
+      "interactions": []
+    },
+    {
+      "x": -0.27159940284467476,
+      "y": 0.24155893424961905,
+      "z": -2.173665926643597,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.008037427812713164,
+        "_y": -0.59103387900288,
+        "_z": 0.005889510467404884,
+        "_w": 0.8065851852909928
+      },
+      "interactions": []
+    },
+    {
+      "x": -0.9564647656952449,
+      "y": 0.6648139258645014,
+      "z": -3.3011263588125455,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.11652136274081772,
+        "_y": -0.22502426109626503,
+        "_z": 0.02711546673296018,
+        "_w": 0.9669806642872442
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729169050908",
+          "type": "info",
+          "data": {
+            "text": "In an adjacent scene, a couple listens to one of Roosevelt's Fireside Chats over the radio, symbolizing the hope of the New Deal."
+          }
+        }
+      ]
+    },
+    {
+      "x": -0.8149156368869387,
+      "y": 0.5264631607440404,
+      "z": -2.296951348240977,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.06738665443746472,
+        "_y": 0.11282652853924166,
+        "_z": -0.007669749228145554,
+        "_w": 0.9912973300510756
+      },
+      "interactions": []
+    },
+    {
+      "x": -0.7274648642353161,
+      "y": 1.151837735850847,
+      "z": -5.263733741733483,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0600751819829814,
+        "_y": 0.04045402560698896,
+        "_z": -0.002436689680656746,
+        "_w": 0.9973707951257353
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729169089797",
+          "type": "info",
+          "data": {
+            "text": "Roosevelt was the longest-serving president, and one of the most tested. He dealt with the Great Depression, the New Deal, and World War II."
+          }
+        }
+      ]
+    },
+    {
+      "x": -0.11345789542205632,
+      "y": 1.3956778753095893,
+      "z": -8.559100136973264,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0013089836359634983,
+        "_y": -0.00069541228497894,
+        "_z": 9.102841679314278e-7,
+        "_w": 0.9999989047640526
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729169116098",
+          "type": "info",
+          "data": {
+            "text": "3D capture by Dan Pacheco. Audio by John Patitucci and YouTube Audio library. StorySplat fly-through technology by Sonny Cirasuolo."
+          }
+        }
+      ]
+    }
+  ],
+  "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_FDR_1.splat",
+  "hotspots": [],
+  "uiColor": "#4CAF50"
+}

@@ -49,6 +49,40 @@
       display: none;
       font-size: 16px;
     }
+    #scrollControls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #toggleCameraModeContainer {
+      margin-bottom: 10px;
+    }
+
+    #scrollControlsContent,
+    #exploreControlsContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    #scrollControlsContent.hidden,
+    #exploreControlsContent.hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    #exploreControlsContent p {
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      margin: 0;
+    }
     
     #scrollControls {
       position: absolute;
@@ -98,7 +132,7 @@
       transition: background-color 0.3s;
     }
     .button:hover {
-      background-color: #45a049;
+       background-color: #197c1d;
     }
     #scrollButtons {
       display: flex;
@@ -197,8 +231,8 @@
     }
     
 
-    /* Ensure the toggleFreeFly button has consistent styling */
-    #toggleFreeFly {
+    /* Ensure the toggleCameraMode button has consistent styling */
+    #toggleCameraMode {
       background-color: #4CAF50;
       border: none;
       color: white;
@@ -212,8 +246,8 @@
       border-radius: 5px;
       transition: background-color 0.3s;
     }
-    #toggleFreeFly:hover {
-      background-color: #45a049;
+    #toggleCameraMode:hover {
+       background-color: #197c1d;
     }
       
   </style>
@@ -232,6 +266,7 @@
   <div class="ui-overlay">
     <p><strong>Controls:</strong></p>
     <p>• W/A/S/D: Move camera</p>
+    <p>• Q/E: Up and Down</p>
     <p>• Mouse: Look around</p>
     <p>• Scroll: Move along path</p>
   </div>
@@ -240,47 +275,73 @@
   <div id="infoPopup"></div>
   
   <div id="scrollControls">
-    <div id="scrollPercentage">0%</div>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
+    <div id="toggleCameraModeContainer">
+      <button id="toggleCameraMode" onclick="toggleCameraMode()">Mode: Tour</button>
     </div>
-    <div id="scrollButtons">
-      <button class="button" onclick="adjustScroll(-1)">◀ Backward</button>
-      <button class="button" onclick="adjustScroll(1)">Forward ▶</button>
+    <div id="scrollControlsContent">
+      <div id="scrollPercentage">0%</div>
+      <div id="progressBarContainer">
+        <div id="progressBar"></div>
+      </div>
+      <div id="scrollButtons">
+        <button class="button" onclick="adjustScroll(-1)">◀ Backward</button>
+        <button class="button" onclick="adjustScroll(1)">Forward ▶</button>
+      </div>
     </div>
-    <div>
-      <button id="toggleFreeFly" onclick="toggleFreeFly()">Free Fly: On</button>
+    <div id="exploreControlsContent">
+      <p>Use WASD to move and mouse to look around</p>
     </div>
   </div>
+
   
   <button id="muteButton">🔊 Mute</button>
   <!-- Babylon.js CDN -->
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
   <script>
-    // Initialize freeFlyEnabled based on the parameter
-    let freeFlyEnabled = false;
-
-    // Function to toggle Free Fly mode
-    function toggleFreeFly() {
-      freeFlyEnabled = !freeFlyEnabled;
-      const toggleButton = document.getElementById('toggleFreeFly');
-      if (toggleButton) {
-        toggleButton.textContent = 'Free Fly: ' + (freeFlyEnabled ? 'On' : 'Off');
-      }
-      // Additional logic to handle Free Fly mode
-      // For example, enabling/disabling certain camera constraints
-      if ("path" === "path") {
-        if (freeFlyEnabled) {
-          // Enable free fly controls
-          userControl = true;
+    // Initialize cameraMode
+    let cameraMode = 'tour';
+      function updateScrollControlsVisibility() {
+        const scrollControlsContent = document.getElementById('scrollControlsContent');
+        const exploreControlsContent = document.getElementById('exploreControlsContent');
+        if (cameraMode === 'explore') {
+          scrollControlsContent.classList.add('hidden');
+          exploreControlsContent.classList.remove('hidden');
         } else {
-          // Disable free fly controls and revert to path constraints
-          userControl = false;
+          scrollControlsContent.classList.remove('hidden');
+          exploreControlsContent.classList.add('hidden');
         }
       }
-      console.log('Free Fly Enabled:', freeFlyEnabled);
+
+    // Function to toggle camera mode
+    function toggleCameraMode() {
+      switch (cameraMode) {
+        case 'tour':
+          cameraMode = 'explore';
+          break;
+        case 'explore':
+          cameraMode = 'auto';
+          break;
+        case 'auto':
+          cameraMode = 'tour';
+          break;
+      }
+      const toggleButton = document.getElementById('toggleCameraMode');
+      if (toggleButton) {
+        toggleButton.textContent = 'Mode: ' + cameraMode.charAt(0).toUpperCase() + cameraMode.slice(1);
+      }
+      // Additional logic to handle camera mode change
+      if (cameraMode === 'tour') {
+        userControl = false;
+      } else if (cameraMode === 'explore') {
+        userControl = true;
+      }
+      // For 'auto' mode, userControl will be dynamically updated based on user interactions
+      updateScrollControlsVisibility();
+      console.log('Camera Mode:', cameraMode);
     }
+
+    updateScrollControlsVisibility();
 
     const preloader = document.getElementById('preloader');
     // Get the canvas element
@@ -299,7 +360,7 @@
     // Create a universal camera and position it
     const camera = new BABYLON.UniversalCamera(
       'camera',
-      new BABYLON.Vector3(4.279007503658608, 2.0938289102895773, -4.821410033896113),
+      new BABYLON.Vector3(1.9716321106631787, 1.1810963730287274, -4.188848091084995),
       scene
     );
     camera.attachControl(canvas, true);
@@ -310,10 +371,10 @@
 
     // Initialize rotationQuaternion with the first waypoint's rotation
     camera.rotationQuaternion = new BABYLON.Quaternion(
-      0.11680891688276832,
-      -0.43705660077555075,
-      0.05736385318704582,
-      0.8899699947973071
+      0.09145853919672968,
+      -0.3084269241929842,
+      0.029806758842337164,
+      0.9463718799297276
     ).normalize();
 
     // Ensure Euler angles match the quaternion
@@ -325,11 +386,15 @@
     camera.keysLeft.push(65); // A
     camera.keysRight.push(68); // D
 
+    //add q and e to move up and down
+    camera.keysUpward.push(81); // Q
+    camera.keysDownward.push(69); // E
+
     // Create a basic light
     new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
 
     // Variables to manage camera control state
-    let userControl = false;
+    let userControl = cameraMode === 'explore';
     let animatingToPath = false;
 
     // Variables for scroll position and target
@@ -337,7 +402,7 @@
     let scrollTarget = 0.01; // Start with a small value to enable scrolling
 
     // Prepare waypoints and rotations
-    const waypoints = [{"x":4.279007503658608,"y":2.0938289102895773,"z":-4.821410033896113,"rotation":{"_isDirty":true,"_x":0.11680891688276832,"_y":-0.43705660077555075,"_z":0.05736385318704582,"_w":0.8899699947973071},"interactions":[{"id":"interaction-1729078392196","type":"audio","data":{"url":"https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3"}}]},{"x":2.8560444243115453,"y":0.7872624275472504,"z":-2.9160261569799832,"rotation":{"_isDirty":true,"_x":0.03533450061340844,"_y":-0.4753164783631915,"_z":0.01910924892785591,"_w":0.8788973574718325},"interactions":[{"id":"interaction-1729078541707","type":"info","data":{"text":"The FDR Memorial was commissioned in 1992 after 40 years of planning."}}]},{"x":2.1771674160512124,"y":-0.1477222224736696,"z":-2.809749676769882,"rotation":{"_isDirty":true,"_x":-0.1258874350116794,"_y":-0.3282649233021161,"_z":-0.04524309715043048,"_w":0.9350655259156795},"interactions":[]},{"x":0.9445933007185592,"y":0.01734661052953775,"z":-2.979358408843927,"rotation":{"_isDirty":true,"_x":-0.05365745223521603,"_y":-0.14506379563650057,"_z":-0.008902461983380142,"_w":0.9879261705814776},"interactions":[{"id":"interaction-1729078583213","type":"info","data":{"text":"In Room 2 of the memorial, George Segal created this sculpture of a breadline that represents the despair of the Great Depression."}}]},{"x":-0.7823243430101204,"y":-0.08024270393172235,"z":-2.6136914189520146,"rotation":{"_isDirty":true,"_x":-0.0007675481044654009,"_y":-0.16946898156276283,"_z":-0.0011641516382896447,"_w":0.9855345375598177},"interactions":[{"id":"interaction-1729078608252","type":"info","data":{"text":"In this sculpture, a couple listens to one of Roosevelt's Fireside Chats over the radio."}}]},{"x":-0.8257421345748086,"y":-0.1173366862592732,"z":-2.832066768334111,"rotation":{"_isDirty":true,"_x":-0.08673790711630416,"_y":0.08290511583909774,"_z":0.006234323144634322,"_w":0.992755967338647},"interactions":[{"id":"interaction-1729078638061","type":"info","data":{"text":"Roosevelt was the longest-serving president, and one of the most tested. He dealt with the Great Depression, the New Deal, and World War II."}}]},{"x":-1.4923561219961095,"y":0.5681671895241823,"z":-5.501797985042506,"rotation":{"_isDirty":true,"_x":0.0068296976010681675,"_y":0.1202447693355414,"_z":-0.0018428801777897678,"_w":0.992719072335202},"interactions":[{"id":"interaction-1729078685132","type":"info","data":{"text":"3D capture by Dan Pacheco. Audio by John Patitucci and YouTube Audio library. StorySplat fly-through technology by Sonny Cirasuolo."}}]}];
+    const waypoints = [{"x":1.9716321106631787,"y":1.1810963730287274,"z":-4.188848091084995,"rotation":{"_isDirty":true,"_x":0.09145853919672968,"_y":-0.3084269241929842,"_z":0.029806758842337164,"_w":0.9463718799297276},"interactions":[{"id":"interaction-1729168767089","type":"audio","data":{"url":"https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3"}}]},{"x":1.7567649935805205,"y":0.9454826336248555,"z":-3.462626243558567,"rotation":{"_isDirty":true,"_x":0.20922080869698206,"_y":-0.13918895734472475,"_z":0.03010121565303319,"_w":0.9674435389108644},"interactions":[{"id":"interaction-1729168876836","type":"info","data":{"text":"The FDR Memorial was commissioned in 1992 after 40 years of planning. It is a series of sculpture scenes and water features situated on the west side of the Tidal Basin in Washington, D.C."}}]},{"x":2.7084529241269473,"y":0.1984271541905026,"z":-2.401921801633828,"rotation":{"_isDirty":true,"_x":0.01612332237658836,"_y":-0.5613152015729077,"_z":0.010938559712306076,"_w":0.8273727311055538},"interactions":[{"id":"interaction-1729168973126","type":"info","data":{"text":"In this second scene of the memorial, scuptor George Segal depicts men standing in a breadline, representing the despair of the Great Depression."}}]},{"x":1.1466802225201465,"y":0.2040102413138607,"z":-2.241162306786908,"rotation":{"_isDirty":true,"_x":0.001316550259938281,"_y":-0.6959250706105095,"_z":0.001275873823512578,"_w":0.7181120495483385},"interactions":[]},{"x":-0.27159940284467476,"y":0.24155893424961905,"z":-2.173665926643597,"rotation":{"_isDirty":true,"_x":0.008037427812713164,"_y":-0.59103387900288,"_z":0.005889510467404884,"_w":0.8065851852909928},"interactions":[]},{"x":-0.9564647656952449,"y":0.6648139258645014,"z":-3.3011263588125455,"rotation":{"_isDirty":true,"_x":0.11652136274081772,"_y":-0.22502426109626503,"_z":0.02711546673296018,"_w":0.9669806642872442},"interactions":[{"id":"interaction-1729169050908","type":"info","data":{"text":"In an adjacent scene, a couple listens to one of Roosevelt's Fireside Chats over the radio, symbolizing the hope of the New Deal."}}]},{"x":-0.8149156368869387,"y":0.5264631607440404,"z":-2.296951348240977,"rotation":{"_isDirty":true,"_x":0.06738665443746472,"_y":0.11282652853924166,"_z":-0.007669749228145554,"_w":0.9912973300510756},"interactions":[]},{"x":-0.7274648642353161,"y":1.151837735850847,"z":-5.263733741733483,"rotation":{"_isDirty":true,"_x":0.0600751819829814,"_y":0.04045402560698896,"_z":-0.002436689680656746,"_w":0.9973707951257353},"interactions":[{"id":"interaction-1729169089797","type":"info","data":{"text":"Roosevelt was the longest-serving president, and one of the most tested. He dealt with the Great Depression, the New Deal, and World War II."}}]},{"x":-0.11345789542205632,"y":1.3956778753095893,"z":-8.559100136973264,"rotation":{"_isDirty":true,"_x":0.0013089836359634983,"_y":-0.00069541228497894,"_z":9.102841679314278e-7,"_w":0.9999989047640526},"interactions":[{"id":"interaction-1729169116098","type":"info","data":{"text":"3D capture by Dan Pacheco. Audio by John Patitucci and YouTube Audio library. StorySplat fly-through technology by Sonny Cirasuolo."}}]}];
     const controlPoints = waypoints.map(
       (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
     );
@@ -580,8 +645,7 @@
 
     // Function to adjust scroll
     function adjustScroll(direction) {
-      // Prevent scroll adjustment when Free Fly is enabled in path mode
-      if ("path" === "path" && freeFlyEnabled) {
+      if (cameraMode === 'explore') {
         return;
       }
       const increment = 10;
@@ -602,8 +666,8 @@
       if (animatingToPath) return;
 
       if (
-        ("path" === "auto" && userControl) ||
-        ("path" === "path" && !freeFlyEnabled && userControl)
+        (cameraMode === 'auto' && userControl) ||
+        (cameraMode === 'tour' && userControl)
       ) {
         animatingToPath = true;
         userControl = false;
@@ -617,23 +681,31 @@
           camera.rotation.set(0, 0, 0);
         }
 
-        const closestPointInfo = getClosestPointOnPath(camera.position, path);
-        const startIndex = closestPointInfo.index;
+        // Use current scroll position instead of finding closest point
+        const targetT = scrollPosition;
+        const pathLength = path.length - 1;
 
-        const targetPosition = path[startIndex];
+        const floorIndex = Math.floor(targetT);
+        const ceilIndex = Math.min(floorIndex + 1, pathLength);
+        const lerpFactor = targetT - floorIndex;
+
+        const targetPosition = BABYLON.Vector3.Lerp(
+          path[floorIndex],
+          path[ceilIndex],
+          lerpFactor
+        );
 
         let targetRotation = camera.rotationQuaternion.clone();
         if (rotations.length >= 2 && path.length >= 2) {
-          const t = startIndex / (path.length - 1);
           const totalSegments = waypoints.length - 1;
-          const segmentT = t * totalSegments;
+          const segmentT = (targetT / pathLength) * totalSegments;
           const segmentIndex = Math.floor(segmentT);
           const clampedSegmentIndex = Math.min(segmentIndex, totalSegments - 1);
-          const lerpFactor = segmentT - clampedSegmentIndex;
+          const lerpFactorRot = segmentT - clampedSegmentIndex;
 
           const r1 = rotations[clampedSegmentIndex];
           const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
-          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
+          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactorRot).normalize();
         } else if (rotations.length === 1) {
           targetRotation = rotations[0];
         }
@@ -678,35 +750,16 @@
 
         scene.beginAnimation(camera, 0, 120, false, 1, function () {
           animatingToPath = false;
-          scrollPosition = startIndex;
-          scrollTarget = scrollPosition;
+          scrollPosition = targetT;
+          scrollTarget = targetT;
         });
-      } else {
-        // Prevent updating scroll when Free Fly is enabled in path mode
-        if (!("path" === "path" && freeFlyEnabled)) {
-          scrollTarget += event.deltaY * 0.1;
+      } else if (cameraMode !== 'explore') {
+        scrollTarget += event.deltaY * 0.1;
 
-          if (scrollTarget < 0) scrollTarget = 0;
-          if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
-        }
+        if (scrollTarget < 0) scrollTarget = 0;
+        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
       }
     });
-
-    // Helper function to find the closest point on the path
-    function getClosestPointOnPath(position, path) {
-      let minDist = Infinity;
-      let closestIndex = 0;
-
-      for (let i = 0; i < path.length; i++) {
-        const dist = BABYLON.Vector3.DistanceSquared(position, path[i]);
-        if (dist < minDist) {
-          minDist = dist;
-          closestIndex = i;
-        }
-      }
-
-      return { index: closestIndex, distanceSquared: minDist };
-    }
 
     // Initialize target rotation and position
     let targetRotation = camera.rotationQuaternion.clone();
@@ -754,20 +807,19 @@
       // Calculate scroll percentage
       const scrollPercentage = (scrollPosition / (path.length - 1 || 1)) * 100;
 
-      // Update UI only if not in Free Fly mode
-      if (!("path" === "path" && freeFlyEnabled)) {
+      // Update UI only if not in explore mode
+      if (cameraMode !== 'explore') {
         updateScrollUI(scrollPercentage);
       }
 
       // Determine if camera should follow the path
       if (
         (
-          "path" === "auto" && !userControl
+          cameraMode === 'auto' && !userControl
         ) ||
         (
-          "path" === "path" && !freeFlyEnabled && !userControl
-        )
-      ) {
+          cameraMode === 'tour' && !userControl
+       )) {
         const t = scrollPosition / (path.length - 1 || 1);
 
         const totalSegments = waypoints.length - 1;
@@ -805,7 +857,7 @@
           camera.rotationQuaternion = BABYLON.Quaternion.Slerp(
             camera.rotationQuaternion,
             targetRotation,
-            0.050000000000000044 // Damping factor for rotation (adjust between 0 and 1 for smoothness)
+            0.050000000000000044 // Damping factor for rotation
           ).normalize();
         }
 
@@ -845,7 +897,7 @@
     // User interaction detection
     scene.onPointerObservable.add(function (evt) {
       if (evt.type === BABYLON.PointerEventTypes.POINTERDOWN) {
-        if ("path" === "auto" ||  ("path" === "path" && freeFlyEnabled)) {
+        if (cameraMode === 'explore' || cameraMode === 'auto') {
           userControl = true;
         } else {
           userControl = false;
@@ -854,12 +906,11 @@
     });
 
     window.addEventListener('keydown', function () {
-      if ("path" === "auto" ||  ("path" === "path" && freeFlyEnabled)) {
+      if (cameraMode === 'explore' || cameraMode === 'auto') {
         userControl = true;
       } else {
         userControl = false;
       }
-
     });
 
     // Mute button functionality
