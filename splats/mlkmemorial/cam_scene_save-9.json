@@ -1,0 +1,54 @@
+{
+  "scrollSpeed": 0.1,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.84,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#27a8b9",
+  "waypoints": [
+    {
+      "x": -1.8068986332646086,
+      "y": 2.2800631055783858,
+      "z": 6.700820075966867,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.016280112985074768,
+        "_y": 0.9775010367361167,
+        "_z": -0.08221429525445446,
+        "_w": 0.1935652154921611
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729186761999",
+          "type": "info",
+          "data": {
+            "text": "Congress allowed MLK's fraternity, Alpha Phi Alpha to establish a memorial to him in 1996. The memorial was officially dedicated on August 28, 2011, but the official ceremony was postponed until October 16 due to Hurricane Irene."
+          }
+        }
+      ]
+    },
+    {
+      "x": 0.5292316138132002,
+      "y": 3.1279386610701474,
+      "z": 1.1719791098063563,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.04962163681255723,
+        "_y": 0.9449946286790573,
+        "_z": -0.17084515730855449,
+        "_w": 0.2744718193535312
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729187075655",
+          "type": "info",
+          "data": {
+            "text": "The space behind MLK in which the cutout of his figure appears to have come from says \"Out of the mountain of despair, a stone of hope\" symbolizing how MLK came and brought hope for a people who had nothing to hope for in society."
+          }
+        }
+      ]
+    }
+  ],
+  "loadedModelUrl": " https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_MLK_Memorial.splat",
+  "hotspots": [],
+  "uiColor": "#4CAF50"
+}

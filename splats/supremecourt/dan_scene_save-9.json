@@ -1,0 +1,109 @@
+{
+  "scrollSpeed": 0.1,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.2,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#7D7D7D",
+  "waypoints": [
+    {
+      "x": -2.266591632929432,
+      "y": -1.3300941377440287,
+      "z": 2.3188837302382157,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.006940446661367508,
+        "_y": 0.9897926744924168,
+        "_z": 0.05181467769819851,
+        "_w": 0.13258028421409396
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729185799934",
+          "type": "info",
+          "data": {
+            "text": "The U.S. Supreme Court building is located just east of the Capitol Building and was built between 1932 and 1935. The building is the central hub for all law in the United States and is the center for key judicial decision-making."
+          }
+        }
+      ]
+    },
+    {
+      "x": -1.3086585269476747,
+      "y": -0.4768731612188655,
+      "z": -3.6706244711290044,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0013609033312621084,
+        "_y": 0.9960372759199572,
+        "_z": 0.015479375004624478,
+        "_w": -0.0875687898815574
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729185705934",
+          "type": "info",
+          "data": {
+            "text": "Outside the Supreme Court building, there are two figures depicted as statues. On the right side, there is a male figure, who is considered \"The Guardian,\" or \"Authority of Law.\""
+          }
+        }
+      ]
+    },
+    {
+      "x": 0.4889941643653878,
+      "y": 1.1344594893537672,
+      "z": -4.308377282218798,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0007319659058914733,
+        "_y": 0.9967722507965973,
+        "_z": 0.07975498996405035,
+        "_w": -0.009148057603606418
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729185897144",
+          "type": "info",
+          "data": {
+            "text": "The front of the building reads \"Equal Justice Under Law\" because it represents the core principle that the judicial system should apply the law fairly and impartially to everyone, which is rooted in the 14th Amendment."
+          }
+        }
+      ]
+    },
+    {
+      "x": 2.2575592265132367,
+      "y": -0.5793460837673464,
+      "z": -4.426650882782607,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.007440111492256014,
+        "_y": 0.9817673036358402,
+        "_z": -0.03930734668632539,
+        "_w": 0.18582934500704237
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729185957494",
+          "type": "info",
+          "data": {
+            "text": "On the left side, you see a female figure. This statue represents the \"Contemplation of Justice.\""
+          }
+        }
+      ]
+    },
+    {
+      "x": -1.9271558232026356,
+      "y": -0.9458243834017419,
+      "z": 0.6059503985659561,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.003209694953238405,
+        "_y": 0.9921669995450316,
+        "_z": 0.026076308382598192,
+        "_w": 0.12212439055143405
+      },
+      "interactions": []
+    }
+  ],
+  "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_Supreme_Court.splat",
+  "hotspots": [],
+  "uiColor": "#4CAF50"
+}
