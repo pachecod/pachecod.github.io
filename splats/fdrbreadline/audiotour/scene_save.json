@@ -1,0 +1,236 @@
+{
+  "scrollSpeed": 0.1,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.2,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#7D7D7D",
+  "waypoints": [
+    {
+      "x": 1.9716321106631787,
+      "y": 1.1810963730287274,
+      "z": -4.188848091084995,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0914585387415608,
+        "_y": -0.30842692265801175,
+        "_z": 0.029806758693995534,
+        "_w": 0.9463718752198446
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729168767089",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3",
+            "volume": 0.49
+          }
+        }
+      ]
+    },
+    {
+      "x": 1.7567649935805205,
+      "y": 0.9454826336248555,
+      "z": -3.462626243558567,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.20922080903145307,
+        "_y": -0.13918895756723929,
+        "_z": 0.03010121570115452,
+        "_w": 0.9674435404574688
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729168876836",
+          "type": "info",
+          "data": {
+            "text": "The FDR Memorial was commissioned in 1992 after 40 years of planning. It is a series of sculpture scenes and water features situated on the west side of the Tidal Basin in Washington, D.C."
+          }
+        },
+        {
+          "id": "interaction-1729172992857",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/1.mp3",
+            "spatialSound": true,
+            "loop": false
+          }
+        },
+        {
+          "id": "interaction-1729173177562",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/1.mp3",
+            "loop": false
+          }
+        }
+      ]
+    },
+    {
+      "x": 2.7084529241269473,
+      "y": 0.1984271541905026,
+      "z": -2.401921801633828,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.016123322333805642,
+        "_y": -0.5613152000834758,
+        "_z": 0.010938559683280958,
+        "_w": 0.8273727289101468
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729168973126",
+          "type": "info",
+          "data": {
+            "text": "In this second scene of the memorial, scuptor George Segal depicts men standing in a breadline, representing the despair of the Great Depression."
+          }
+        },
+        {
+          "id": "interaction-1729173202335",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/2.mp3",
+            "spatialSound": true,
+            "loop": false
+          }
+        }
+      ]
+    },
+    {
+      "x": 1.1466802225201465,
+      "y": 0.2040102413138607,
+      "z": -2.241162306786908,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0013165502725973341,
+        "_y": -0.6959250773020522,
+        "_z": 0.001275873835780514,
+        "_w": 0.7181120564532162
+      },
+      "interactions": []
+    },
+    {
+      "x": -0.27159940284467476,
+      "y": 0.24155893424961905,
+      "z": -2.173665926643597,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.008037427837470506,
+        "_y": -0.5910338808234161,
+        "_z": 0.005889510485546089,
+        "_w": 0.8065851877754824
+      },
+      "interactions": []
+    },
+    {
+      "x": -0.9564647656952449,
+      "y": 0.6648139258645014,
+      "z": -3.3011263588125455,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.1165213627583866,
+        "_y": -0.2250242611301938,
+        "_z": 0.027115466737048604,
+        "_w": 0.9669806644330439
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729169050908",
+          "type": "info",
+          "data": {
+            "text": "In an adjacent scene, a couple listens to one of Roosevelt's Fireside Chats over the radio, symbolizing the hope of the New Deal."
+          }
+        },
+        {
+          "id": "interaction-1729173235368",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/3.mp3",
+            "loop": false
+          }
+        }
+      ]
+    },
+    {
+      "x": -0.8149156368869387,
+      "y": 0.5264631607440404,
+      "z": -2.296951348240977,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.06738665415585239,
+        "_y": 0.11282652806773373,
+        "_z": -0.007669749196093273,
+        "_w": 0.9912973259083925
+      },
+      "interactions": []
+    },
+    {
+      "x": -0.7274648642353161,
+      "y": 1.151837735850847,
+      "z": -5.263733741733483,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.06007518209999462,
+        "_y": 0.04045402568578449,
+        "_z": -0.002436689685402881,
+        "_w": 0.9973707970683939
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729169089797",
+          "type": "info",
+          "data": {
+            "text": "Roosevelt was the longest-serving president, and one of the most tested. He dealt with the Great Depression, the New Deal, and World War II."
+          }
+        },
+        {
+          "id": "interaction-1729173139120",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/4.mp3",
+            "loop": false
+          }
+        },
+        {
+          "id": "interaction-1729173262316",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/4.mp3",
+            "loop": false
+          }
+        }
+      ]
+    },
+    {
+      "x": -0.11345789542205632,
+      "y": 1.3956778753095893,
+      "z": -8.559100136973264,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.0013089836316657524,
+        "_y": -0.0006954122826957141,
+        "_z": 9.102841649427195e-7,
+        "_w": 0.9999989014807867
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729169116098",
+          "type": "info",
+          "data": {
+            "text": "3D capture by Dan Pacheco. Audio by John Patitucci and YouTube Audio library. StorySplat fly-through technology by Sonny Cirasuolo."
+          }
+        },
+        {
+          "id": "interaction-1729173280953",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/5.mp3",
+            "loop": false
+          }
+        }
+      ]
+    }
+  ],
+  "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_FDR_1.splat",
+  "hotspots": [],
+  "uiColor": "#4CAF50"
+}
