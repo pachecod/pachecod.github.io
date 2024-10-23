@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaussian Splat Viewer</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <style>
+        #renderCanvas {
+            width: 100%;
+            height: 100vh;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        // Get the canvas element
+        var canvas = document.getElementById('renderCanvas');
+
+        // Create the Babylon.js engine
+        var engine = new BABYLON.Engine(canvas, true);
+        
+        // Create a function to setup the scene
+        var createScene = function() {
+            // Create a basic BJS Scene object
+            var scene = new BABYLON.Scene(engine);
+
+            // Use ArcRotateCamera to orbit around the model
+            var camera = new BABYLON.ArcRotateCamera('camera1', Math.PI / 4, Math.PI / 4, 5, BABYLON.Vector3.Zero(), scene);
+            camera.attachControl(canvas, true);
+
+            // Create a light
+            var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 1, 0), scene);
+
+            // Load the Gaussian splat model
+            BABYLON.SceneLoader.ImportMesh("", "https://mambofishfiledump.s3.us-east-2.amazonaws.com/", "gs_Eleanor_Roosevelt.splat", scene, function (meshes) {
+                // Optionally manipulate meshes here
+                meshes.forEach(mesh => {
+                    mesh.position.y = 0; // Set the position of the model
+                });
+            });
+
+            // Enable keyboard movement with WASD
+            window.addEventListener("keydown", function(event) {
+                const speed = 0.1;
+                switch (event.key) {
+                    case 'w': // Move forward
+                        camera.position.z += speed * Math.cos(camera.alpha);
+                        camera.position.x += speed * Math.sin(camera.alpha);
+                        break;
+                    case 's': // Move backward
+                        camera.position.z -= speed * Math.cos(camera.alpha);
+                        camera.position.x -= speed * Math.sin(camera.alpha);
+                        break;
+                    case 'a': // Move left
+                        camera.position.z += speed * Math.sin(camera.alpha);
+                        camera.position.x -= speed * Math.cos(camera.alpha);
+                        break;
+                    case 'd': // Move right
+                        camera.position.z -= speed * Math.sin(camera.alpha);
+                        camera.position.x += speed * Math.cos(camera.alpha);
+                        break;
+                }
+            });
+
+            return scene;
+        };
+
+        var scene = createScene();
+
+        // Register a render loop to repeatedly render the scene
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+
+        // Resize the engine on window resize
+        window.addEventListener('resize', function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+{
+  "scrollSpeed": 0.35,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.11,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#7D7D7D",
+  "waypoints": [
+    {
+      "x": -2.2694488164950313,
+      "y": 1.1673592605494012,
+      "z": -5.556568506843705,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.02513407800903491,
+        "_y": 0.15572422190052915,
+        "_z": -0.0039636370936603355,
+        "_w": 0.9874728066285531
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729687505099",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3"
+          }
+        }
+      ],
+      "triggerDistance": 1
+    },
+    {
+      "x": -3.6876986179275164,
+      "y": 0.6411538480516679,
+      "z": -3.933816156847106,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.013514951935012785,
+        "_y": 0.15257301184267585,
+        "_z": -0.0020866443487484163,
+        "_w": 0.9881975794418003
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729686935261",
+          "type": "info",
+          "data": {
+            "text": "\"The structure of world peace cannot be the work of one man, or one party, or one nation. It must be a peace which rests on the cooperative effort of the whole world.\"\n- Franklin Delano Roosevelt. March 1, 1945."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -0.33240325988430147,
+      "y": 1.2477282901534112,
+      "z": -3.266965544180837,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.12136773499264164,
+        "_y": 0.028533281348967397,
+        "_z": -0.003490273832713769,
+        "_w": 0.9921912846530611
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729687085281",
+          "type": "info",
+          "data": {
+            "text": "Eleanor Roosevelt was a tireless advocate for civil rights, women’s empowerment, and social justice. She played a pivotal role in drafting the Universal Declaration of Human Rights as chair of the U.N. Human Rights Commission."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -0.6093102876167955,
+      "y": 0.8165589048550702,
+      "z": -2.0306052278077638,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.038176341920207156,
+        "_y": 0.13348261183471138,
+        "_z": -0.0051457814859728335,
+        "_w": 0.9903022171045189
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729687110041",
+          "type": "info",
+          "data": {
+            "text": "As First Lady from 1933 to 1945, Roosevelt redefined the role, engaging directly with the public through speeches, radio shows, and her own newspaper column. Even after leaving the White House, she continued to champion humanitarian causes worldwide."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -1.2728775327385289,
+      "y": 1.60958222755548,
+      "z": -5.600699026907016,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.06897452428272048,
+        "_y": 0.11090025161569325,
+        "_z": -0.007715606972886907,
+        "_w": 0.9914051260314294
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729687135699",
+          "type": "info",
+          "data": {
+            "text": "Eleanor Roosevelt used her platform to push for reforms, advocating for African Americans, workers, and displaced individuals during the Great Depression and World War II. She wasn't afraid to challenge both her husband's policies and the status quo."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -1.9802679885594356,
+      "y": 2.971585619003058,
+      "z": -11.22604649988084,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.04872279817803465,
+        "_y": 0.041969316348771726,
+        "_z": -0.0015438375216267706,
+        "_w": 0.9979289931463133
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729687554674",
+          "type": "info",
+          "data": {
+            "text": "Story by Dan Pacheco. 3D scanning by Dan Pacheco. Music from YouTube Audio Library. Technology by Sonny Cirasuolo."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    }
+  ],
+  "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_Eleanor_Roosevelt.splat",
+  "hotspots": [],
+  "uiColor": "#4CAF50",
+  "transitionSpeed": 1,
+  "scrollButtonMode": "waypoint",
+  "scrollAmount": 10
+}
