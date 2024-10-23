@@ -26,6 +26,25 @@
 
     <link rel="stylesheet" href="main.css" />
 
+    <style>
+      /* Center the buttons and title at the top */
+      .carousel-controls-bottom {
+        position: absolute;
+        top: 15px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        z-index: 2;
+      }
+      .carousel-controls-bottom .title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0 12px;
+      }
+    </style>
+
     
   </head>
 
@@ -82,27 +101,76 @@
           src="https://resources.newhouse.syr.edu/directory/wp-content/uploads/sites/6/2020/07/pacheco-dan-20201.jpg"
         / -->
 
+
+
+
           <p class="lead">This was created with the evolving <a href="https://storysplat.com" target="_blank">Story Splat</a> tool created by Newhouse alum <a href="https://sonnycirasuolo.com"></a>Sonny Cirasuolo.</a> The scan was done by me using Luma, and the audio and captions were placed into the Story Splat tool. (Fair disclosure: I am an advisor to Story Splat.) </p>
 
+
+
           
-            <embed src="https://pachecod.github.io/splats/fdrbreadline/audiotour/fdrbreadline_audio.html" style="max-width: 600px; width: 100%; height: 600px;">
-              <br/>
-            <p><a href="https://pachecod.github.io/splats/fdrbreadline/audiotour/fdrbreadline_audio.html" target="_blank">View in Full Screen</a></p>  
 
+          <!-- START CAROUSEL -->
 
+          <div id="embedCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+  
+            <div class="carousel-inner">
+              <!-- Slide 1 -->
+              <div class="carousel-item active" data-title="FDR Memorial 1">
+                <div class="d-flex flex-column align-items-center">
+                  <embed src="https://pachecod.github.io/splats/fdrbreadline/audiotour/fdrbreadline_audio.html"
+                         style="max-width: 600px; width: 100%; height: 600px;">
+                  <br/>
+                  <p>
+                    <a href="https://pachecod.github.io/splats/fdrbreadline/audiotour/fdrbreadline_audio.html" 
+                       target="_blank">View in Full Screen</a>
+                  </p>
+                </div>
+              </div>
+          
+              <!-- Slide 2 -->
+              <div class="carousel-item" data-title="FDR Memorial 2">
+                <div class="d-flex flex-column align-items-center">
+                  <embed src="https://pachecod.github.io/splats/eleanor_roosevelt/modified.html"
+                         style="max-width: 600px; width: 100%; height: 600px;">
+                  <br/>
+                  <p>
+                    <a href="https://pachecod.github.io/splats/eleanor_roosevelt/modified.html" 
+                       target="_blank">View in Full Screen</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          
+            <!-- Custom Controls with Title at the Bottom -->
+            <div class="carousel-controls-bottom">
+              <button class="btn btn-outline-dark" type="button" data-bs-target="#embedCarousel" data-bs-slide="prev">
+                Previous
+              </button>
+              <div class="title" id="carouselTitle">FDR Breadline Audio Tour</div>
+              <button class="btn btn-outline-dark" type="button" data-bs-target="#embedCarousel" data-bs-slide="next">
+                Next
+              </button>
+            </div>
+          
+          </div>
+          
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+          <script>
+            const carousel = document.getElementById('embedCarousel');
+            const title = document.getElementById('carouselTitle');
+          
+            // Update the title when the slide changes
+            carousel.addEventListener('slide.bs.carousel', function (event) {
+              const newTitle = event.relatedTarget.getAttribute('data-title');
+              title.textContent = newTitle;
+            });
+          </script>
+
+          <!-- END CAROUSEL -->
+
+          
             
-                
-
-          <!-- END FIRST -->
-                  
-               
-          <hr /> 
-         
-          <!-- START SECOND SPLAT -->
-
-          <embed src="https://pachecod.github.io/splats/eleanor_roosevelt/modified.html" style="max-width: 600px; width: 100%; height: 600px;">
-            <br/>
-          <p><a href="https://pachecod.github.io/splats/eleanor_roosevelt/modified.html" target="_blank">View in Full Screen</a></p> 
           
           <!-- END SECOND SPLAT -->
 
