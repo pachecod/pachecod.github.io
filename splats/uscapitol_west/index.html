@@ -10,6 +10,19 @@
     body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: Arial, sans-serif; }
     #renderCanvas { width: 100%; height: 100%; touch-action: none; }
   
+    .ui-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
     #hotspotContent {
       position: fixed;
       background-color: rgba(0, 0, 0, 0.8);
@@ -81,7 +94,7 @@
       padding: 15px;
       border-radius: 10px;
       color: white;
-      z-index: 10;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -205,6 +218,19 @@
       cursor: pointer;
     }
     
+    .ui-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
 
     /* Ensure the toggleCameraMode button has consistent styling */
     #toggleCameraMode {
@@ -252,6 +278,14 @@
   <canvas id="renderCanvas"></canvas>
   <!-- Movement Instructions -->
   
+  <div class="ui-overlay">
+    <p><strong>Controls:</strong></p>
+    <p>• W/A/S/D: Move camera</p>
+    <p>• Q/E: Up and Down</p>
+    <p>• Mouse: Look around</p>
+    <p>• Scroll: Move along path</p>
+  </div>
+  
   <!-- Hotspot and Info Popup -->
   <div id="hotspotContent"></div>
   <div id="infoPopup"></div>
@@ -286,7 +320,7 @@
   <script>
     // Initialize cameraMode and other variables
     let cameraMode = 'tour';
-    const allowedCameraModes = ["tour","explore"];
+    const allowedCameraModes = ["tour","explore","auto"];
     let loopMode = false;
     let autoPlaySpeed = 0.05;
     let autoPlayEnabled = false;
@@ -323,7 +357,7 @@
 
       if(BABYLON.VirtualJoystick.Canvas && (cameraMode === 'explore' || cameraMode === 'auto')){ 
             BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
-        } else if (BABYLON.VirtualJoystick.Canvas && cameraMode === 'explore' ){
+        } else if (BABYLON.VirtualJoystick.Canvas && cameraMode === 'tour' ){
             BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
         }
 
@@ -388,9 +422,14 @@
     if (isMobileDevice) {
       var leftJoystick = new BABYLON.VirtualJoystick(true);
       var rightJoystick = new BABYLON.VirtualJoystick(false);
+      if('tour' === 'tour'){
       if(BABYLON.VirtualJoystick.Canvas){
-          BABYLON.VirtualJoystick.Canvas.style.zIndex = "4";
-      }
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+  }} else {
+         if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+  }
+  }
   
       scene.onBeforeRenderObservable.add(()=>{
           if(leftJoystick.pressed){
@@ -417,7 +456,7 @@
             const deltaX = rightJoystick.deltaPosition.x;
             const deltaY = rightJoystick.deltaPosition.y;
         
-            const angularSensibility = 200 * cameraMovementSpeed; // Adjust rotation speed
+            const angularSensibility = 200 * 0.32; // Adjust rotation speed
         
             // Get current yaw and pitch from the camera's rotation quaternion
             const currentEuler = camera.rotationQuaternion.toEulerAngles();

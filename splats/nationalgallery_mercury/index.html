@@ -10,6 +10,19 @@
     body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: Arial, sans-serif; }
     #renderCanvas { width: 100%; height: 100%; touch-action: none; }
   
+    .ui-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
     #hotspotContent {
       position: fixed;
       background-color: rgba(0, 0, 0, 0.8);
@@ -81,7 +94,7 @@
       padding: 15px;
       border-radius: 10px;
       color: white;
-      z-index: 10;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -205,6 +218,19 @@
       cursor: pointer;
     }
     
+    .ui-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
 
     /* Ensure the toggleCameraMode button has consistent styling */
     #toggleCameraMode {
@@ -252,6 +278,14 @@
   <canvas id="renderCanvas"></canvas>
   <!-- Movement Instructions -->
   
+  <div class="ui-overlay">
+    <p><strong>Controls:</strong></p>
+    <p>• W/A/S/D: Move camera</p>
+    <p>• Q/E: Up and Down</p>
+    <p>• Mouse: Look around</p>
+    <p>• Scroll: Move along path</p>
+  </div>
+  
   <!-- Hotspot and Info Popup -->
   <div id="hotspotContent"></div>
   <div id="infoPopup"></div>
@@ -286,7 +320,7 @@
   <script>
     // Initialize cameraMode and other variables
     let cameraMode = 'tour';
-    const allowedCameraModes = ["tour","explore"];
+    const allowedCameraModes = ["tour","explore","auto"];
     let loopMode = false;
     let autoPlaySpeed = 0.05;
     let autoPlayEnabled = false;
@@ -323,7 +357,7 @@
 
       if(BABYLON.VirtualJoystick.Canvas && (cameraMode === 'explore' || cameraMode === 'auto')){ 
             BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
-        } else if (BABYLON.VirtualJoystick.Canvas && cameraMode === 'explore' ){
+        } else if (BABYLON.VirtualJoystick.Canvas && cameraMode === 'tour' ){
             BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
         }
 
@@ -357,10 +391,10 @@
 
     // Initialize rotationQuaternion with the first waypoint's rotation
     camera.rotationQuaternion = new BABYLON.Quaternion(
-      -0.04037932714630912,
-      0.7390137705630568,
-      0.044471780544608666,
-      0.6710070295890358
+      -0.040379326819936674,
+      0.7390137645898585,
+      0.04447178018515831,
+      0.6710070241655129
     ).normalize();
 
     // Ensure Euler angles match the quaternion
@@ -388,9 +422,14 @@
     if (isMobileDevice) {
       var leftJoystick = new BABYLON.VirtualJoystick(true);
       var rightJoystick = new BABYLON.VirtualJoystick(false);
+      if('tour' === 'tour'){
       if(BABYLON.VirtualJoystick.Canvas){
-          BABYLON.VirtualJoystick.Canvas.style.zIndex = "4";
-      }
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+  }} else {
+         if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+  }
+  }
   
       scene.onBeforeRenderObservable.add(()=>{
           if(leftJoystick.pressed){
@@ -417,7 +456,7 @@
             const deltaX = rightJoystick.deltaPosition.x;
             const deltaY = rightJoystick.deltaPosition.y;
         
-            const angularSensibility = 200 * cameraMovementSpeed; // Adjust rotation speed
+            const angularSensibility = 200 * 0.61; // Adjust rotation speed
         
             // Get current yaw and pitch from the camera's rotation quaternion
             const currentEuler = camera.rotationQuaternion.toEulerAngles();
@@ -451,7 +490,7 @@
     let scrollTarget = 0.01; // Start with a small value to enable scrolling
 
     // Prepare waypoints and rotations
-    const waypoints = [{"x":-6.888871141196567,"y":-0.07927923686230859,"z":1.3431628714764319,"rotation":{"_isDirty":true,"_x":-0.04037932714630912,"_y":0.7390137705630568,"_z":0.044471780544608666,"_w":0.6710070295890358},"interactions":[{"id":"interaction-1729775698683","type":"audio","data":{"url":"https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/AmongTheStars_Everet+Almond.mp3"}}],"triggerDistance":0.5},{"x":-4.805025875387847,"y":0.1842481089144362,"z":1.3443553741047196,"rotation":{"_isDirty":true,"_x":-0.06492354238606447,"_y":0.7531333021754139,"_z":0.07518720789474286,"_w":0.6503245775521004},"interactions":[{"id":"interaction-1729775859575","type":"info","data":{"text":"In the rotunda of the West Building of the Smithsonian’s National Gallery of Art, a statue of Mercury presides over the fountain, drawing visitors' eyes toward the heavens with an outstretched arm—symbolizing wisdom, peace, and the pursuit of knowledge."}}],"triggerDistance":1},{"x":-1.2620797389071958,"y":0.59904787627351,"z":2.6658431839402144,"rotation":{"_isDirty":true,"_x":-0.024481710126699627,"_y":0.9402260168612969,"_z":0.06921929168796578,"_w":0.33254228828370846},"interactions":[{"id":"interaction-1729775885032","type":"info","data":{"text":"The rotunda was completed and opened to the public on March 17, 1941. Architect John Russell Pope designed the building in a classical style, drawing inspiration from Renaissance and Beaux-Arts traditions. 16 towering columns of green Italian marble support the dome above."}}],"triggerDistance":0.5},{"x":2.1545253410201233,"y":1.3083706841518985,"z":0.9657808618062064,"rotation":{"_isDirty":true,"_x":0.016484474911950642,"_y":-0.8443811377945981,"_z":0.026024133911575924,"_w":0.5348565522404959},"interactions":[{"id":"interaction-1729775913306","type":"info","data":{"text":"The Mercury statue, a work inspired by the renowned sculptor Giambologna, serves as the focal point of the rotunda's fountain and has symbolized knowledge and communication since the museum's inauguration"}}],"triggerDistance":0.5},{"x":-0.6321221351139203,"y":1.3948924612594389,"z":-1.6015754466780203,"rotation":{"_isDirty":true,"_x":0.11903346613945101,"_y":0.1351937633146851,"_z":-0.016362447287188338,"_w":0.9835069628688673},"interactions":[{"id":"interaction-1729775931560","type":"info","data":{"text":"Mercury, known as Hermes in Greek mythology, was the Roman god of commerce, communication, and travel, as well as the guide of souls to the underworld. Often depicted with winged sandals and a caduceus, Mercury symbolizes swiftness, eloquence, and the connection between the mortal and divine realms."}}],"triggerDistance":0.5},{"x":-4.018651088864671,"y":3.588925383845551,"z":2.035992507693554,"rotation":{"_isDirty":true,"_x":0.13007187910648507,"_y":0.7923574271166942,"_z":-0.18154277316636375,"_w":0.5677087409050088},"interactions":[{"id":"interaction-1729775953506","type":"info","data":{"text":"The National Gallery of Art attracts 3.8 million visitors each year. It remains one of the top cultural destinationsl on the National Mall in Washington, D.C."}}],"triggerDistance":1},{"x":-0.8593637338067479,"y":-0.546984253115431,"z":5.369830198925703,"rotation":{"_isDirty":true,"_x":-0.026382163025870372,"_y":0.972695231135312,"_z":0.1401527337881243,"_w":0.18309882776317019},"interactions":[{"id":"interaction-1729775972206","type":"info","data":{"text":"Credits: Gaussian Splat by Dan Pacheco, using Luma. Captions by Dan Pacheco. “Among the Stars” audio track by Everet Almond and YouTube Audio Library.\n"}}],"triggerDistance":0.5}];
+    const waypoints = [{"x":-6.888871141196567,"y":-0.07927923686230859,"z":1.3431628714764319,"rotation":{"_isDirty":true,"_x":-0.040379326819936674,"_y":0.7390137645898585,"_z":0.04447178018515831,"_w":0.6710070241655129},"interactions":[{"id":"interaction-1729775698683","type":"audio","data":{"url":"https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/AmongTheStars_Everet+Almond.mp3"}}],"triggerDistance":0.5},{"x":-4.805025875387847,"y":0.1842481089144362,"z":1.3443553741047196,"rotation":{"_isDirty":true,"_x":-0.06492354207440149,"_y":0.7531332985600262,"_z":0.07518720753380953,"_w":0.650324574430242},"interactions":[{"id":"interaction-1729775859575","type":"info","data":{"text":"In the rotunda of the West Building of the Smithsonian’s National Gallery of Art, a statue of Mercury presides over the fountain, drawing visitors' eyes toward the heavens with an outstretched arm—symbolizing wisdom, peace, and the pursuit of knowledge."}}],"triggerDistance":1},{"x":-1.2620797389071958,"y":0.59904787627351,"z":2.6658431839402144,"rotation":{"_isDirty":true,"_x":-0.024481710117490386,"_y":0.9402260165076138,"_z":0.06921929166192768,"_w":0.33254228815861664},"interactions":[{"id":"interaction-1729775885032","type":"info","data":{"text":"The rotunda was completed and opened to the public on March 17, 1941. Architect John Russell Pope designed the building in a classical style, drawing inspiration from Renaissance and Beaux-Arts traditions. 16 towering columns of green Italian marble support the dome above."}}],"triggerDistance":0.5},{"x":2.1545253410201233,"y":1.3083706841518985,"z":0.9657808618062064,"rotation":{"_isDirty":true,"_x":0.016484474658115613,"_y":-0.8443811247924544,"_z":0.026024133510845125,"_w":0.5348565440045447},"interactions":[{"id":"interaction-1729775913306","type":"info","data":{"text":"The Mercury statue, a work inspired by the renowned sculptor Giambologna, serves as the focal point of the rotunda's fountain and has symbolized knowledge and communication since the museum's inauguration"}}],"triggerDistance":0.5},{"x":-0.6321221351139203,"y":1.3948924612594389,"z":-1.6015754466780203,"rotation":{"_isDirty":true,"_x":0.11903346641363696,"_y":0.13519376362609528,"_z":-0.016362447324878186,"_w":0.9835069651343126},"interactions":[{"id":"interaction-1729775931560","type":"info","data":{"text":"Mercury, known as Hermes in Greek mythology, was the Roman god of commerce, communication, and travel, as well as the guide of souls to the underworld. Often depicted with winged sandals and a caduceus, Mercury symbolizes swiftness, eloquence, and the connection between the mortal and divine realms."}}],"triggerDistance":0.5},{"x":-4.018651088864671,"y":3.588925383845551,"z":2.035992507693554,"rotation":{"_isDirty":true,"_x":0.1300718804702781,"_y":0.7923574354244971,"_z":-0.18154277506982489,"_w":0.5677087468573885},"interactions":[{"id":"interaction-1729775953506","type":"info","data":{"text":"The National Gallery of Art attracts 3.8 million visitors each year. It remains one of the top cultural destinationsl on the National Mall in Washington, D.C."}}],"triggerDistance":1},{"x":-0.8593637338067479,"y":-0.546984253115431,"z":5.369830198925703,"rotation":{"_isDirty":true,"_x":-0.02638216301642775,"_y":0.972695230787168,"_z":0.14015273373796128,"_w":0.18309882769763602},"interactions":[{"id":"interaction-1729775972206","type":"info","data":{"text":"Credits: Gaussian Splat by Dan Pacheco, using Luma. Captions by Dan Pacheco. “Among the Stars” audio track by Everet Almond and YouTube Audio Library.\n"}}],"triggerDistance":0.5}];
     const controlPoints = waypoints.map(
       (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
     );
@@ -886,7 +925,7 @@
 
     // Active waypoints set
     const activeWaypoints = new Set();
-    if(true) {
+    if(false) {
     // Create floor mesh at y = 0 and hide it
     const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100 }, scene);    
     ground.isVisible = false;

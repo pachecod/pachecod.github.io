@@ -6,9 +6,10 @@
   <title>Exported Scene</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
+    /* Your existing CSS styles */
     body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: Arial, sans-serif; }
     #renderCanvas { width: 100%; height: 100%; touch-action: none; }
-    
+  
     .ui-overlay {
       position: absolute;
       top: 10px;
@@ -93,7 +94,7 @@
       padding: 15px;
       border-radius: 10px;
       color: white;
-      z-index: 10;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -249,19 +250,33 @@
     #toggleCameraMode:hover {
        background-color: #197c1d;
     }
-      
+
+    /* Joystick Styles */
+    #joystickContainer {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      z-index: 1000;
+    }
+    #joystickCanvas {
+      width: 100px;
+      height: 100px;
+      touch-action: none;
+    }
+
   </style>
 </head>
 <body>
   <div id="preloader">
-        <h1>Story Splat</h1>
-        <div class="spinner"></div>
-    </div>
-      <!-- Start Screen -->
-    <div id="startButtonContainer">
-      <button id="startButton">Start Experience</button>
-    </div>
+    <h1>Story Splat</h1>
+    <div class="spinner"></div>
+  </div>
+  <!-- Start Screen -->
+  <div id="startButtonContainer">
+    <button id="startButton">Start Experience</button>
+  </div>
   <canvas id="renderCanvas"></canvas>
+  <!-- Movement Instructions -->
   
   <div class="ui-overlay">
     <p><strong>Controls:</strong></p>
@@ -271,11 +286,14 @@
     <p>• Scroll: Move along path</p>
   </div>
   
+  <!-- Hotspot and Info Popup -->
   <div id="hotspotContent"></div>
   <div id="infoPopup"></div>
+  <!-- Scroll Controls -->
   
   <div id="scrollControls">
-    <div id="toggleCameraModeContainer">
+    <!-- Scroll Controls Content -->
+        <div id="toggleCameraModeContainer">
       <button id="toggleCameraMode" onclick="toggleCameraMode()">Mode: Tour</button>
     </div>
     <div id="scrollControlsContent">
@@ -284,48 +302,48 @@
         <div id="progressBar"></div>
       </div>
       <div id="scrollButtons">
-        <button class="button" onclick="adjustScroll(-1)">◀ Backward</button>
-        <button class="button" onclick="adjustScroll(1)">Forward ▶</button>
+        <button class="button" onclick="handleButtonScroll(-1)">◀ Prev</button>
+        <button class="button" onclick="handleButtonScroll(1)">Next ▶</button>
       </div>
     </div>
     <div id="exploreControlsContent">
       <p>Use WASD to move and mouse to look around</p>
     </div>
   </div>
-
   
+  <!-- Mute Button -->
   <button id="muteButton">🔊 Mute</button>
+
   <!-- Babylon.js CDN -->
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
   <script>
-    // Initialize cameraMode
+    // Initialize cameraMode and other variables
     let cameraMode = 'tour';
-      function updateScrollControlsVisibility() {
-        const scrollControlsContent = document.getElementById('scrollControlsContent');
-        const exploreControlsContent = document.getElementById('exploreControlsContent');
-        if (cameraMode === 'explore') {
-          scrollControlsContent.classList.add('hidden');
-          exploreControlsContent.classList.remove('hidden');
-        } else {
-          scrollControlsContent.classList.remove('hidden');
-          exploreControlsContent.classList.add('hidden');
-        }
+    const allowedCameraModes = ["tour","explore","auto"];
+    let loopMode = false;
+    let autoPlaySpeed = 0.05;
+    let autoPlayEnabled = false;
+
+    // Function to update scroll controls visibility
+    function updateScrollControlsVisibility() {
+    const scrollControlsContent = document.getElementById('scrollControlsContent');
+      const exploreControlsContent = document.getElementById('exploreControlsContent');
+      if (cameraMode === 'explore') {
+        scrollControlsContent.classList.add('hidden');
+        exploreControlsContent.classList.remove('hidden');
+      } else {
+        scrollControlsContent.classList.remove('hidden');
+        exploreControlsContent.classList.add('hidden');
       }
+    }
 
     // Function to toggle camera mode
     function toggleCameraMode() {
-      switch (cameraMode) {
-        case 'tour':
-          cameraMode = 'explore';
-          break;
-        case 'explore':
-          cameraMode = 'auto';
-          break;
-        case 'auto':
-          cameraMode = 'tour';
-          break;
-      }
+      const currentIndex = allowedCameraModes.indexOf(cameraMode);
+      const nextIndex = (currentIndex + 1) % allowedCameraModes.length;
+      cameraMode = allowedCameraModes[nextIndex];
+
       const toggleButton = document.getElementById('toggleCameraMode');
       if (toggleButton) {
         toggleButton.textContent = 'Mode: ' + cameraMode.charAt(0).toUpperCase() + cameraMode.slice(1);
@@ -336,6 +354,13 @@
       } else if (cameraMode === 'explore') {
         userControl = true;
       }
+
+      if(BABYLON.VirtualJoystick.Canvas && (cameraMode === 'explore' || cameraMode === 'auto')){ 
+            BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+        } else if (BABYLON.VirtualJoystick.Canvas && cameraMode === 'tour' ){
+            BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+        }
+
       // For 'auto' mode, userControl will be dynamically updated based on user interactions
       updateScrollControlsVisibility();
       console.log('Camera Mode:', cameraMode);
@@ -344,20 +369,15 @@
     updateScrollControlsVisibility();
 
     const preloader = document.getElementById('preloader');
-    // Get the canvas element
     const canvas = document.getElementById('renderCanvas');
-
-    // Generate the Babylon.js 3D engine
     const engine = new BABYLON.Engine(canvas, true);
-
-    // Create the scene
     const scene = new BABYLON.Scene(engine);
-    window.scene = scene; // Make scene accessible globally
+    window.scene = scene;
 
     // Set the background color
     scene.clearColor = BABYLON.Color3.FromHexString('#7D7D7D').toColor4(1);
 
-    // Create a universal camera and position it
+    // Create the camera
     const camera = new BABYLON.UniversalCamera(
       'camera',
       new BABYLON.Vector3(-2.266591632929432, -1.3300941377440287, 2.3188837302382157),
@@ -371,10 +391,10 @@
 
     // Initialize rotationQuaternion with the first waypoint's rotation
     camera.rotationQuaternion = new BABYLON.Quaternion(
-      -0.006940446661367508,
-      0.9897926744924168,
-      0.05181467769819851,
-      0.13258028421409396
+      -0.006940446658362403,
+      0.9897926740638521,
+      0.05181467767576357,
+      0.13258028415668877
     ).normalize();
 
     // Ensure Euler angles match the quaternion
@@ -386,23 +406,91 @@
     camera.keysLeft.push(65); // A
     camera.keysRight.push(68); // D
 
-    //add q and e to move up and down
+    // Add Q and E keys for vertical movement
     camera.keysUpward.push(81); // Q
     camera.keysDownward.push(69); // E
-
-    // Create a basic light
-    new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+    camera.inputs.addGamepad();
 
     // Variables to manage camera control state
     let userControl = cameraMode === 'explore';
     let animatingToPath = false;
+
+    const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+      navigator.userAgent.toLowerCase()
+    );
+
+    if (isMobileDevice) {
+      var leftJoystick = new BABYLON.VirtualJoystick(true);
+      var rightJoystick = new BABYLON.VirtualJoystick(false);
+      if('tour' === 'tour'){
+      if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+  }} else {
+         if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+  }
+  }
+  
+      scene.onBeforeRenderObservable.add(()=>{
+          if(leftJoystick.pressed){
+            userControl = true;
+            const deltaTime = engine.getDeltaTime() / 1000;
+            const moveSpeed = deltaTime * 5 * 0.2;
+        
+            // Get the movement values from the joystick
+            const moveX = leftJoystick.deltaPosition.x * moveSpeed;
+            const moveZ = leftJoystick.deltaPosition.y * moveSpeed;
+        
+            // Calculate the forward and right directions
+            const forward = camera.getDirection(BABYLON.Axis.Z);
+            const right = camera.getDirection(BABYLON.Axis.X);
+        
+            // Calculate the movement vector
+            const move = forward.scale(moveZ).add(right.scale(moveX));
+        
+            // Update the camera position
+            camera.position.addInPlace(move);
+              
+          }
+          if (rightJoystick.pressed) {
+            const deltaX = rightJoystick.deltaPosition.x;
+            const deltaY = rightJoystick.deltaPosition.y;
+        
+            const angularSensibility = 200 * 0.2; // Adjust rotation speed
+        
+            // Get current yaw and pitch from the camera's rotation quaternion
+            const currentEuler = camera.rotationQuaternion.toEulerAngles();
+            let yaw = currentEuler.y;
+            let pitch = currentEuler.x;
+        
+            // Update yaw and pitch based on joystick input
+            yaw += deltaX / angularSensibility;
+            pitch -= deltaY / angularSensibility;
+        
+            // Clamp the pitch to prevent rolling
+            const maxPitch = Math.PI / 2; // Maximum pitch angle (90 degrees)
+            pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+        
+            // Update the camera's rotation quaternion without introducing roll
+            camera.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(yaw, pitch, 0);
+        }
+      })
+    }
+    // Enable camera collisions and gravity
+    camera.checkCollisions = true;
+    camera.applyGravity = false;
+    camera.ellipsoid = new BABYLON.Vector3(0.1, 0.1, 0.1);
+
+    // Create a basic light
+    new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+
 
     // Variables for scroll position and target
     let scrollPosition = 0;
     let scrollTarget = 0.01; // Start with a small value to enable scrolling
 
     // Prepare waypoints and rotations
-    const waypoints = [{"x":-2.266591632929432,"y":-1.3300941377440287,"z":2.3188837302382157,"rotation":{"_isDirty":true,"_x":-0.006940446661367508,"_y":0.9897926744924168,"_z":0.05181467769819851,"_w":0.13258028421409396},"interactions":[{"id":"interaction-1729185799934","type":"info","data":{"text":"The U.S. Supreme Court building is located just east of the Capitol Building and was built between 1932 and 1935. The building is the central hub for all law in the United States and is the center for key judicial decision-making."}}]},{"x":-1.3086585269476747,"y":-0.4768731612188655,"z":-3.6706244711290044,"rotation":{"_isDirty":true,"_x":0.0013609033312621084,"_y":0.9960372759199572,"_z":0.015479375004624478,"_w":-0.0875687898815574},"interactions":[{"id":"interaction-1729185705934","type":"info","data":{"text":"Outside the Supreme Court building, there are two figures depicted as statues. On the right side, there is a male figure, who is considered \"The Guardian,\" or \"Authority of Law.\""}}]},{"x":0.4889941643653878,"y":1.1344594893537672,"z":-4.308377282218798,"rotation":{"_isDirty":true,"_x":0.0007319659058914733,"_y":0.9967722507965973,"_z":0.07975498996405035,"_w":-0.009148057603606418},"interactions":[{"id":"interaction-1729185897144","type":"info","data":{"text":"The front of the building reads \"Equal Justice Under Law\" because it represents the core principle that the judicial system should apply the law fairly and impartially to everyone, which is rooted in the 14th Amendment."}}]},{"x":2.2575592265132367,"y":-0.5793460837673464,"z":-4.426650882782607,"rotation":{"_isDirty":true,"_x":0.007440111492256014,"_y":0.9817673036358402,"_z":-0.03930734668632539,"_w":0.18582934500704237},"interactions":[{"id":"interaction-1729185957494","type":"info","data":{"text":"On the left side, you see a female figure. This statue represents the \"Contemplation of Justice.\""}}]},{"x":-1.9271558232026356,"y":-0.9458243834017419,"z":0.6059503985659561,"rotation":{"_isDirty":true,"_x":-0.003209694953238405,"_y":0.9921669995450316,"_z":0.026076308382598192,"_w":0.12212439055143405},"interactions":[]}];
+    const waypoints = [{"x":-2.266591632929432,"y":-1.3300941377440287,"z":2.3188837302382157,"rotation":{"_isDirty":true,"_x":-0.006940446658362403,"_y":0.9897926740638521,"_z":0.05181467767576357,"_w":0.13258028415668877},"interactions":[{"id":"interaction-1729185799934","type":"info","data":{"text":"The U.S. Supreme Court building is located just east of the Capitol Building and was built between 1932 and 1935. The building is the central hub for all law in the United States and is the center for key judicial decision-making."}}]},{"x":-1.3086585269476747,"y":-0.4768731612188655,"z":-3.6706244711290044,"rotation":{"_isDirty":true,"_x":0.0013609033237146882,"_y":0.9960372703960441,"_z":0.015479374918777567,"_w":-0.08756878939591053},"interactions":[{"id":"interaction-1729185705934","type":"info","data":{"text":"Outside the Supreme Court building, there are two figures depicted as statues. On the right side, there is a male figure, who is considered \"The Guardian,\" or \"Authority of Law.\""}}]},{"x":0.4889941643653878,"y":1.1344594893537672,"z":-4.308377282218798,"rotation":{"_isDirty":true,"_x":0.0007319659054836634,"_y":0.9967722502412524,"_z":0.0797549899196154,"_w":-0.009148057598509639},"interactions":[{"id":"interaction-1729185897144","type":"info","data":{"text":"The front of the building reads \"Equal Justice Under Law\" because it represents the core principle that the judicial system should apply the law fairly and impartially to everyone, which is rooted in the 14th Amendment."}}]},{"x":2.2575592265132367,"y":-0.5793460837673464,"z":-4.426650882782607,"rotation":{"_isDirty":true,"_x":0.007440111467269624,"_y":0.9817673003387363,"_z":-0.03930734655431814,"_w":0.1858293443829651},"interactions":[{"id":"interaction-1729185957494","type":"info","data":{"text":"On the left side, you see a female figure. This statue represents the \"Contemplation of Justice.\""}}]},{"x":-1.9271558232026356,"y":-0.9458243834017419,"z":0.6059503985659561,"rotation":{"_isDirty":true,"_x":-0.0032096949568423995,"_y":0.9921670006590828,"_z":0.026076308411877882,"_w":0.122124390688561},"interactions":[]}];
     const controlPoints = waypoints.map(
       (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
     );
@@ -415,8 +503,8 @@
     if (controlPoints.length >= 2) {
       const positionCurve = BABYLON.Curve3.CreateCatmullRomSpline(
         controlPoints,
-        (waypoints.length - 1) * 20, // Increased resolution from 10 to 20
-        false
+        20, // Adjust resolution if needed
+        false //loopMode
       );
       path = positionCurve.getPoints();
     } else if (controlPoints.length === 1) {
@@ -513,6 +601,51 @@
       element.style.top = `${top}px`;
     }
 
+    // Collision Meshes Data
+    const collisionMeshesData = [];
+
+    // Function to reconstruct collision meshes
+    function createCollisionMeshes() {
+      collisionMeshesData.forEach((data, index) => {
+        const mesh = BABYLON.MeshBuilder.CreatePlane(
+          `collisionMesh-${index}`,
+          { size: 3 },
+          scene
+        );
+        mesh.position = new BABYLON.Vector3(
+          data.position._x,
+          data.position._y,
+          data.position._z
+        );
+        mesh.rotation = new BABYLON.Vector3(
+          data.rotation._x,
+          data.rotation._y,
+          data.rotation._z
+        );
+        mesh.scaling = new BABYLON.Vector3(
+          data.scaling._x,
+          data.scaling._y,
+          data.scaling._z
+        );
+        mesh.checkCollisions = true;
+        mesh.isVisible = false; // Hide collision meshes
+
+        // Optional: Apply material if you want to visualize the collision meshes
+        /*
+        const material = new BABYLON.StandardMaterial(
+          `collisionMaterial-${index}`,
+          scene
+        );
+        material.backFaceCulling = false;
+        material.diffuseColor = BABYLON.Color3.FromHexString("#FF0000");
+        mesh.material = material;
+        */
+      });
+    }
+
+    // Call the function to create collision meshes
+    createCollisionMeshes();
+
     // Mute state
     let isMuted = false;
     const activeSounds = {};
@@ -568,7 +701,6 @@
           }
 
           sound.setPosition(position);
-          // No need to attach the sound to the camera
         }
       }
     }
@@ -617,9 +749,16 @@
       });
     };
 
+    let transitionSpeed = 0.5;
+
+    function updateTransitionSpeed(value) {
+      transitionSpeed = parseFloat(value);
+      document.getElementById('transitionSpeedValue').textContent = 'Transition Speed: ' + transitionSpeed.toFixed(1);
+    }
+
     // Function to show info popup
     function showInfoPopup(text) {
-      const infoPopup = document.getElementById('infoPopup');
+   const infoPopup = document.getElementById('infoPopup');
       infoPopup.innerHTML = `
         <p>${text}</p>
         <button onclick="hideInfoPopup()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>
@@ -635,7 +774,7 @@
 
     // Function to update scroll percentage and progress bar
     function updateScrollUI(percentage) {
-      const scrollPercentage = document.getElementById('scrollPercentage');
+        const scrollPercentage = document.getElementById('scrollPercentage');
       const progressBar = document.getElementById('progressBar');
       if (scrollPercentage && progressBar) {
         scrollPercentage.textContent = `${Math.round(percentage)}%`;
@@ -643,27 +782,46 @@
       }
     }
 
-    // Function to adjust scroll
-    function adjustScroll(direction) {
+    const scrollButtonMode = 'waypoint';
+    const scrollAmount = 10;
+
+    function handleButtonScroll(direction) {
       if (cameraMode === 'explore') {
         return;
       }
-      const increment = 10;
+      if (scrollButtonMode === 'percentage') {
+        adjustScroll(direction * scrollAmount / 100);
+      } else {
+        moveToWaypoint(direction);
+      }
+    }
+
+    function adjustScroll(amount) {
       const pathLength = path.length;
       if (pathLength > 1) {
-        const scrollIncrement = (pathLength - 1) * (increment / 100) * direction;
+        const scrollIncrement = (pathLength - 1) * amount;
         scrollTarget += scrollIncrement;
 
-        if (scrollTarget < 0) scrollTarget = 0;
-        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+          if (scrollTarget < 0) scrollTarget = 0;
+          if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
 
         userControl = false;
       }
     }
 
+    function moveToWaypoint(direction) {
+        const subdivisionsPerSegment = 20;
+      let currentWaypointIndex = Math.round(scrollPosition / subdivisionsPerSegment);
+      let nextWaypointIndex = currentWaypointIndex + direction;
+
+        nextWaypointIndex = Math.max(0, Math.min(nextWaypointIndex, waypoints.length - 1));
+
+      scrollTarget = nextWaypointIndex * subdivisionsPerSegment;
+      userControl = false;
+    }
     // Handle scroll events
     window.addEventListener('wheel', (event) => {
-      if (animatingToPath) return;
+        if (animatingToPath) return;
 
       if (
         (cameraMode === 'auto' && userControl) ||
@@ -704,7 +862,8 @@
           const lerpFactorRot = segmentT - clampedSegmentIndex;
 
           const r1 = rotations[clampedSegmentIndex];
-          const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
+          const nextIndex = (clampedSegmentIndex + 1) % rotations.length;
+          const r2 = rotations[nextIndex];
           targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactorRot).normalize();
         } else if (rotations.length === 1) {
           targetRotation = rotations[0];
@@ -755,9 +914,8 @@
         });
       } else if (cameraMode !== 'explore') {
         scrollTarget += event.deltaY * 0.1;
-
-        if (scrollTarget < 0) scrollTarget = 0;
-        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+          if (scrollTarget < 0) scrollTarget = 0;
+          if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
       }
     });
 
@@ -767,16 +925,16 @@
 
     // Active waypoints set
     const activeWaypoints = new Set();
-
+    if(false) {
     // Create floor mesh at y = 0 and hide it
     const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100 }, scene);    
     ground.isVisible = false;
 
-    // WebXR setup
-    const xr = scene.createDefaultXRExperienceAsync({
-      floorMeshes: [ground],
-    });
-
+   // WebXR setup
+   const xr = scene.createDefaultXRExperienceAsync({
+        floorMeshes: [ground],
+     });
+     }
     // Load the model file
     BABYLON.SceneLoader.ImportMeshAsync('', '', 'https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_Supreme_Court.splat', scene)
       .then((result) => {
@@ -798,11 +956,25 @@
     // Start the render loop
     engine.runRenderLoop(function () {
       // Smoothly interpolate scrollPosition towards scrollTarget
-      const scrollInterpolationSpeed = 0.1;
+      const scrollInterpolationSpeed = 0.01 + transitionSpeed * 0.1;
+      // Autoplay handling
+      if (autoPlayEnabled && !userControl) {
+        scrollTarget += autoPlaySpeed;
+      }
       scrollPosition += (scrollTarget - scrollPosition) * scrollInterpolationSpeed;
 
+      if (loopMode) {
+        if (scrollPosition >= path.length - 1.1) {
+          scrollPosition = 0.2;
+          scrollTarget = 0.2;
+        } else if (scrollPosition <= 0.1) {
+          scrollPosition = path.length - 1.11;
+          scrollTarget = path.length - 1.11;
+        }
+      }
+
       // Clamp scroll position
-      scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));
+      scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));    
 
       // Calculate scroll percentage
       const scrollPercentage = (scrollPosition / (path.length - 1 || 1)) * 100;
@@ -814,12 +986,9 @@
 
       // Determine if camera should follow the path
       if (
-        (
-          cameraMode === 'auto' && !userControl
-        ) ||
-        (
-          cameraMode === 'tour' && !userControl
-       )) {
+        (cameraMode === 'auto' && !userControl) ||
+        (cameraMode === 'tour' && !userControl)
+      ) {
         const t = scrollPosition / (path.length - 1 || 1);
 
         const totalSegments = waypoints.length - 1;
@@ -831,7 +1000,8 @@
 
           // Calculate target rotation using Slerp
           const r1 = rotations[clampedSegmentIndex];
-          const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
+          const nextIndex = (clampedSegmentIndex + 1) % rotations.length;
+          const r2 = rotations[nextIndex];
 
           targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
 
@@ -875,7 +1045,7 @@
             camera.position,
             new BABYLON.Vector3(wp.x, wp.y, wp.z)
           );
-          const triggerDistance = 1.0; // Define a suitable trigger distance
+          const triggerDistance = wp.triggerDistance ?? 1.0;
 
           if (distance <= triggerDistance) {
             if (!activeWaypoints.has(index)) {
@@ -919,7 +1089,7 @@
     muteButton.addEventListener('click', function() {
       isMuted = !isMuted;
       muteButton.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
-      
+
       if (isMuted) {
         // Stop all active sounds
         Object.values(activeSounds).forEach(sound => {
@@ -964,6 +1134,7 @@
     window.addEventListener('resize', function () {
       engine.resize();
     });
+
   </script>
 </body>
 </html>
