@@ -1,0 +1,156 @@
+{
+  "scrollSpeed": 0.1,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.32,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#7D7D7D",
+  "waypoints": [
+    {
+      "x": -0.4636253469681257,
+      "y": -0.7108893859881574,
+      "z": -1.6396677403840922,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.13484857643744258,
+        "_y": 0.3657882341546459,
+        "_z": 0.05365532789178771,
+        "_w": 0.9193127553240402
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729772176294",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/Last_Sunrise_Adam+MacDougall.mp3"
+          }
+        }
+      ],
+      "triggerDistance": 1
+    },
+    {
+      "x": 0.7107984112051815,
+      "y": -0.17439261333369432,
+      "z": -0.44497384273930535,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.14563870865098888,
+        "_y": 0.42714498378642474,
+        "_z": 0.06992640634718762,
+        "_w": 0.8896329692077889
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729772215445",
+          "type": "info",
+          "data": {
+            "text": "The U.S. Capitol building, located in Washington, D.C., was first commissioned in 1793, with George Washington laying its cornerstone. Originally designed by architect William Thornton, its construction faced delays due to funding issues and damage from the War of 1812."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": 2.742668068883666,
+      "y": 0.638676480900438,
+      "z": 1.2749199099638657,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.11776543000235071,
+        "_y": 0.46565185292781974,
+        "_z": 0.06268206515104596,
+        "_w": 0.8748546207091203
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729772240720",
+          "type": "info",
+          "data": {
+            "text": "The Capitol underwent significant expansions throughout the 19th century, including the addition of the current cast-iron dome, completed in 1866. These expansions were driven by the growth of the nation and the increasing number of representatives in Congress."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": 5.740674407859956,
+      "y": 1.4480509892855107,
+      "z": 2.193599568992119,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.15744093756411157,
+        "_y": 0.40356797511891324,
+        "_z": 0.07071390358844766,
+        "_w": 0.8985236665621086
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729772277037",
+          "type": "info",
+          "data": {
+            "text": "Today, the Capitol is both a working legislative building and a symbol of American democracy. It houses the Senate and House of Representatives chambers, and it continues to serve as the site of major national events, such as presidential inaugurations."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -1.986410300949356,
+      "y": 0.16955631744193878,
+      "z": -3.3022059010831946,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.09816433248348966,
+        "_y": 0.40386315967552805,
+        "_z": 0.0436382980008656,
+        "_w": 0.9084899695472017
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729772327769",
+          "type": "info",
+          "data": {
+            "text": "Since the early 19th century, the U.S. Capitol has become the traditional site for presidential inaugurations, with 54 inaugurations taking place on its grounds as of 2021. Most of these ceremonies have occurred on the building’s west front since Ronald Reagan’s 1981 inauguration, offering a stunning view of the National Mall and accommodating larger crowds."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -7.54995675241576,
+      "y": -1.089560691441718,
+      "z": -8.108065002195676,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.12351134221425131,
+        "_y": 0.4516391495438953,
+        "_z": 0.06329286159969875,
+        "_w": 0.8813404790950625
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729772356863",
+          "type": "info",
+          "data": {
+            "text": "Gaussian Splat by Dan Pacheco, using Luma. Captions by Dan Pacheco. \"Last Sunrise\" audio track by Adam MacDougall and YouTube Audio Library."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    }
+  ],
+  "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_United_States_Capitol.splat",
+  "hotspots": [],
+  "uiColor": "#4CAF50",
+  "transitionSpeed": 0.5,
+  "scrollButtonMode": "waypoint",
+  "scrollAmount": 10,
+  "collisionMeshesData": [],
+  "allowedCameraModes": [
+    "tour",
+    "explore",
+    "auto"
+  ],
+  "loopMode": false,
+  "autoPlayEnabled": false,
+  "autoPlaySpeed": 0.05
+}
