@@ -1,0 +1,178 @@
+{
+  "scrollSpeed": 0.1,
+  "animationFrames": 120,
+  "cameraMovementSpeed": 0.61,
+  "cameraRotationSensitivity": 4000,
+  "backgroundColor": "#7D7D7D",
+  "waypoints": [
+    {
+      "x": -6.888871141196567,
+      "y": -0.07927923686230859,
+      "z": 1.3431628714764319,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.04037932714630912,
+        "_y": 0.7390137705630568,
+        "_z": 0.044471780544608666,
+        "_w": 0.6710070295890358
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775698683",
+          "type": "audio",
+          "data": {
+            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/AmongTheStars_Everet+Almond.mp3"
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -4.805025875387847,
+      "y": 0.1842481089144362,
+      "z": 1.3443553741047196,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.06492354238606447,
+        "_y": 0.7531333021754139,
+        "_z": 0.07518720789474286,
+        "_w": 0.6503245775521004
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775859575",
+          "type": "info",
+          "data": {
+            "text": "In the rotunda of the West Building of the Smithsonian’s National Gallery of Art, a statue of Mercury presides over the fountain, drawing visitors' eyes toward the heavens with an outstretched arm—symbolizing wisdom, peace, and the pursuit of knowledge."
+          }
+        }
+      ],
+      "triggerDistance": 1
+    },
+    {
+      "x": -1.2620797389071958,
+      "y": 0.59904787627351,
+      "z": 2.6658431839402144,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.024481710126699627,
+        "_y": 0.9402260168612969,
+        "_z": 0.06921929168796578,
+        "_w": 0.33254228828370846
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775885032",
+          "type": "info",
+          "data": {
+            "text": "The rotunda was completed and opened to the public on March 17, 1941. Architect John Russell Pope designed the building in a classical style, drawing inspiration from Renaissance and Beaux-Arts traditions. 16 towering columns of green Italian marble support the dome above."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": 2.1545253410201233,
+      "y": 1.3083706841518985,
+      "z": 0.9657808618062064,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.016484474911950642,
+        "_y": -0.8443811377945981,
+        "_z": 0.026024133911575924,
+        "_w": 0.5348565522404959
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775913306",
+          "type": "info",
+          "data": {
+            "text": "The Mercury statue, a work inspired by the renowned sculptor Giambologna, serves as the focal point of the rotunda's fountain and has symbolized knowledge and communication since the museum's inauguration"
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -0.6321221351139203,
+      "y": 1.3948924612594389,
+      "z": -1.6015754466780203,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.11903346613945101,
+        "_y": 0.1351937633146851,
+        "_z": -0.016362447287188338,
+        "_w": 0.9835069628688673
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775931560",
+          "type": "info",
+          "data": {
+            "text": "Mercury, known as Hermes in Greek mythology, was the Roman god of commerce, communication, and travel, as well as the guide of souls to the underworld. Often depicted with winged sandals and a caduceus, Mercury symbolizes swiftness, eloquence, and the connection between the mortal and divine realms."
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    },
+    {
+      "x": -4.018651088864671,
+      "y": 3.588925383845551,
+      "z": 2.035992507693554,
+      "rotation": {
+        "_isDirty": true,
+        "_x": 0.13007187910648507,
+        "_y": 0.7923574271166942,
+        "_z": -0.18154277316636375,
+        "_w": 0.5677087409050088
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775953506",
+          "type": "info",
+          "data": {
+            "text": "The National Gallery of Art attracts 3.8 million visitors each year. It remains one of the top cultural destinationsl on the National Mall in Washington, D.C."
+          }
+        }
+      ],
+      "triggerDistance": 1
+    },
+    {
+      "x": -0.8593637338067479,
+      "y": -0.546984253115431,
+      "z": 5.369830198925703,
+      "rotation": {
+        "_isDirty": true,
+        "_x": -0.026382163025870372,
+        "_y": 0.972695231135312,
+        "_z": 0.1401527337881243,
+        "_w": 0.18309882776317019
+      },
+      "interactions": [
+        {
+          "id": "interaction-1729775972206",
+          "type": "info",
+          "data": {
+            "text": "Credits: Gaussian Splat by Dan Pacheco, using Luma. Captions by Dan Pacheco. “Among the Stars” audio track by Everet Almond and YouTube Audio Library.\n"
+          }
+        }
+      ],
+      "triggerDistance": 0.5
+    }
+  ],
+  "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/splats/nationalgalleryart.ply",
+  "hotspots": [],
+  "uiColor": "#4CAF50",
+  "transitionSpeed": 0.5,
+  "scrollButtonMode": "waypoint",
+  "scrollAmount": 10,
+  "collisionMeshesData": [],
+  "allowedCameraModes": [
+    "tour",
+    "explore",
+    "auto"
+  ],
+  "loopMode": false,
+  "autoPlayEnabled": false,
+  "autoPlaySpeed": 0.05
+}
