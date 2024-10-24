@@ -6,9 +6,10 @@
   <title>Exported Scene</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
+    /* Your existing CSS styles */
     body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: Arial, sans-serif; }
     #renderCanvas { width: 100%; height: 100%; touch-action: none; }
-    
+  
     .ui-overlay {
       position: absolute;
       top: 10px;
@@ -49,6 +50,40 @@
       display: none;
       font-size: 16px;
     }
+    #scrollControls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #toggleCameraModeContainer {
+      margin-bottom: 10px;
+    }
+
+    #scrollControlsContent,
+    #exploreControlsContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    #scrollControlsContent.hidden,
+    #exploreControlsContent.hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    #exploreControlsContent p {
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      margin: 0;
+    }
     
     #scrollControls {
       position: absolute;
@@ -59,7 +94,7 @@
       padding: 15px;
       border-radius: 10px;
       color: white;
-      z-index: 10;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -98,7 +133,7 @@
       transition: background-color 0.3s;
     }
     .button:hover {
-      background-color: #45a049;
+       background-color: #197c1d;
     }
     #scrollButtons {
       display: flex;
@@ -182,63 +217,170 @@
       border-radius: 5px; 
       cursor: pointer;
     }
+    
+    .ui-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 10;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+
+    /* Ensure the toggleCameraMode button has consistent styling */
+    #toggleCameraMode {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    #toggleCameraMode:hover {
+       background-color: #197c1d;
+    }
+
+    /* Joystick Styles */
+    #joystickContainer {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      z-index: 1000;
+    }
+    #joystickCanvas {
+      width: 100px;
+      height: 100px;
+      touch-action: none;
+    }
+
   </style>
 </head>
 <body>
-<div id="preloader">
-      <h1>Story Splat</h1>
-      <div class="spinner"></div>
+  <div id="preloader">
+    <h1>Story Splat</h1>
+    <div class="spinner"></div>
   </div>
-    <!-- Start Screen -->
+  <!-- Start Screen -->
   <div id="startButtonContainer">
     <button id="startButton">Start Experience</button>
   </div>
   <canvas id="renderCanvas"></canvas>
+  <!-- Movement Instructions -->
   
   <div class="ui-overlay">
     <p><strong>Controls:</strong></p>
     <p>• W/A/S/D: Move camera</p>
+    <p>• Q/E: Up and Down</p>
     <p>• Mouse: Look around</p>
     <p>• Scroll: Move along path</p>
   </div>
   
+  <!-- Hotspot and Info Popup -->
   <div id="hotspotContent"></div>
   <div id="infoPopup"></div>
+  <!-- Scroll Controls -->
   
   <div id="scrollControls">
-    <div id="scrollPercentage">0%</div>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
+    <!-- Scroll Controls Content -->
+        <div id="toggleCameraModeContainer">
+      <button id="toggleCameraMode" onclick="toggleCameraMode()">Mode: Tour</button>
     </div>
-    <div id="scrollButtons">
-      <button class="button" onclick="adjustScroll(-1)">◀ Backward</button>
-      <button class="button" onclick="adjustScroll(1)">Forward ▶</button>
+    <div id="scrollControlsContent">
+      <div id="scrollPercentage">0%</div>
+      <div id="progressBarContainer">
+        <div id="progressBar"></div>
+      </div>
+      <div id="scrollButtons">
+        <button class="button" onclick="handleButtonScroll(-1)">◀ Prev</button>
+        <button class="button" onclick="handleButtonScroll(1)">Next ▶</button>
+      </div>
+    </div>
+    <div id="exploreControlsContent">
+      <p>Use WASD to move and mouse to look around</p>
     </div>
   </div>
   
+  <!-- Mute Button -->
   <button id="muteButton">🔊 Mute</button>
+
   <!-- Babylon.js CDN -->
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
   <script>
+    // Initialize cameraMode and other variables
+    let cameraMode = 'tour';
+    const allowedCameraModes = ["tour","explore","auto"];
+    let loopMode = true;
+    let autoPlaySpeed = 0.05;
+    let autoPlayEnabled = false;
+
+    // Function to update scroll controls visibility
+    function updateScrollControlsVisibility() {
+    const scrollControlsContent = document.getElementById('scrollControlsContent');
+      const exploreControlsContent = document.getElementById('exploreControlsContent');
+      if (cameraMode === 'explore') {
+        scrollControlsContent.classList.add('hidden');
+        exploreControlsContent.classList.remove('hidden');
+      } else {
+        scrollControlsContent.classList.remove('hidden');
+        exploreControlsContent.classList.add('hidden');
+      }
+    }
+
+    // Function to toggle camera mode
+    function toggleCameraMode() {
+      const currentIndex = allowedCameraModes.indexOf(cameraMode);
+      const nextIndex = (currentIndex + 1) % allowedCameraModes.length;
+      cameraMode = allowedCameraModes[nextIndex];
+
+      const toggleButton = document.getElementById('toggleCameraMode');
+      if (toggleButton) {
+        toggleButton.textContent = 'Mode: ' + cameraMode.charAt(0).toUpperCase() + cameraMode.slice(1);
+      }
+      // Additional logic to handle camera mode change
+      if (cameraMode === 'tour') {
+        userControl = false;
+      } else if (cameraMode === 'explore') {
+        userControl = true;
+      }
+
+      if(BABYLON.VirtualJoystick.Canvas && (cameraMode === 'explore' || cameraMode === 'auto')){ 
+            BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+        } else if (BABYLON.VirtualJoystick.Canvas && cameraMode === 'tour' ){
+            BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+        }
+
+      // For 'auto' mode, userControl will be dynamically updated based on user interactions
+      updateScrollControlsVisibility();
+      console.log('Camera Mode:', cameraMode);
+    }
+
+    updateScrollControlsVisibility();
+
     const preloader = document.getElementById('preloader');
-    // Get the canvas element
     const canvas = document.getElementById('renderCanvas');
-
-    // Generate the Babylon.js 3D engine
     const engine = new BABYLON.Engine(canvas, true);
-
-    // Create the scene
     const scene = new BABYLON.Scene(engine);
-    window.scene = scene; // Make scene accessible globally
+    window.scene = scene;
 
     // Set the background color
     scene.clearColor = BABYLON.Color3.FromHexString('#7D7D7D').toColor4(1);
 
-    // Create a universal camera and position it
+    // Create the camera
     const camera = new BABYLON.UniversalCamera(
       'camera',
-      new BABYLON.Vector3(0.14563172744460237, 0.3941925045758312, -1.857539592289876),
+      new BABYLON.Vector3(1.9716321106631787, 1.1810963730287274, -4.188848091084995),
       scene
     );
     camera.attachControl(canvas, true);
@@ -249,10 +391,10 @@
 
     // Initialize rotationQuaternion with the first waypoint's rotation
     camera.rotationQuaternion = new BABYLON.Quaternion(
-      -0.004373006537580791,
-      -0.5293592118895964,
-      -0.002728594826716233,
-      0.8483821380144081
+      0.0914585387415608,
+      -0.30842692265801175,
+      0.029806758693995534,
+      0.9463718752198446
     ).normalize();
 
     // Ensure Euler angles match the quaternion
@@ -264,19 +406,91 @@
     camera.keysLeft.push(65); // A
     camera.keysRight.push(68); // D
 
+    // Add Q and E keys for vertical movement
+    camera.keysUpward.push(81); // Q
+    camera.keysDownward.push(69); // E
+    camera.inputs.addGamepad();
+
+    // Variables to manage camera control state
+    let userControl = cameraMode === 'explore';
+    let animatingToPath = false;
+
+    const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+      navigator.userAgent.toLowerCase()
+    );
+
+    if (isMobileDevice) {
+      var leftJoystick = new BABYLON.VirtualJoystick(true);
+      var rightJoystick = new BABYLON.VirtualJoystick(false);
+      if('tour' === 'tour'){
+      if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+  }} else {
+         if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+  }
+  }
+  
+      scene.onBeforeRenderObservable.add(()=>{
+          if(leftJoystick.pressed){
+            userControl = true;
+            const deltaTime = engine.getDeltaTime() / 1000;
+            const moveSpeed = deltaTime * 5 * 0.2;
+        
+            // Get the movement values from the joystick
+            const moveX = leftJoystick.deltaPosition.x * moveSpeed;
+            const moveZ = leftJoystick.deltaPosition.y * moveSpeed;
+        
+            // Calculate the forward and right directions
+            const forward = camera.getDirection(BABYLON.Axis.Z);
+            const right = camera.getDirection(BABYLON.Axis.X);
+        
+            // Calculate the movement vector
+            const move = forward.scale(moveZ).add(right.scale(moveX));
+        
+            // Update the camera position
+            camera.position.addInPlace(move);
+              
+          }
+          if (rightJoystick.pressed) {
+            const deltaX = rightJoystick.deltaPosition.x;
+            const deltaY = rightJoystick.deltaPosition.y;
+        
+            const angularSensibility = 200 * 0.2; // Adjust rotation speed
+        
+            // Get current yaw and pitch from the camera's rotation quaternion
+            const currentEuler = camera.rotationQuaternion.toEulerAngles();
+            let yaw = currentEuler.y;
+            let pitch = currentEuler.x;
+        
+            // Update yaw and pitch based on joystick input
+            yaw += deltaX / angularSensibility;
+            pitch -= deltaY / angularSensibility;
+        
+            // Clamp the pitch to prevent rolling
+            const maxPitch = Math.PI / 2; // Maximum pitch angle (90 degrees)
+            pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+        
+            // Update the camera's rotation quaternion without introducing roll
+            camera.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(yaw, pitch, 0);
+        }
+      })
+    }
+    // Enable camera collisions and gravity
+    camera.checkCollisions = true;
+    camera.applyGravity = false;
+    camera.ellipsoid = new BABYLON.Vector3(0.1, 0.1, 0.1);
+
     // Create a basic light
     new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
 
-    // Variables to manage camera control state
-    let userControl = false;
-    let animatingToPath = false;
 
     // Variables for scroll position and target
     let scrollPosition = 0;
     let scrollTarget = 0.01; // Start with a small value to enable scrolling
 
     // Prepare waypoints and rotations
-    const waypoints = [{"x":0.14563172744460237,"y":0.3941925045758312,"z":-1.857539592289876,"rotation":{"_isDirty":true,"_x":-0.004373006537580791,"_y":-0.5293592118895964,"_z":-0.002728594826716233,"_w":0.8483821380144081},"interactions":[]},{"x":-0.8141447118489401,"y":0.6541763046329682,"z":-1.9079528954794585,"rotation":{"_isDirty":true,"_x":0.03738554833686428,"_y":-0.40057911821129843,"_z":0.016360759419561118,"_w":0.9153529537686708},"interactions":[]},{"x":-2.558366315220047,"y":0.7648976162461689,"z":0.06581684035242533,"rotation":{"_isDirty":true,"_x":-0.0320097556301488,"_y":-0.16816951645217082,"_z":-0.005463802834781105,"_w":0.9852230944784379},"interactions":[]},{"x":-0.6699014511851044,"y":0.28783445683686915,"z":1.9806195800749515,"rotation":{"_isDirty":true,"_x":0.017038434926502685,"_y":0.6206722820338401,"_z":-0.01349286206466646,"_w":0.7837688110723934},"interactions":[]},{"x":0.3426889977450241,"y":0.41970932596464505,"z":2.0523738899458723,"rotation":{"_isDirty":true,"_x":-0.11183698552066869,"_y":0.5797670215762664,"_z":0.08074432054148328,"_w":0.803021191779046},"interactions":[]},{"x":1.5264188621071058,"y":0.450695745039709,"z":0.7238058246418058,"rotation":{"_isDirty":true,"_x":0.021312036250450212,"_y":0.9188560337070314,"_z":-0.050106941825548076,"_w":0.39081795713440426},"interactions":[]},{"x":2.5865921112262575,"y":0.2531983718158885,"z":-0.22125541667033197,"rotation":{"_isDirty":true,"_x":-0.00046878311996533987,"_y":0.9986977442509561,"_z":-0.050154417980216505,"_w":-0.009334622860686892},"interactions":[]},{"x":1.3770832850128978,"y":0.13477027160635505,"z":-1.8319240578288163,"rotation":{"_isDirty":true,"_x":0.007615187441003635,"_y":-0.788369319758289,"_z":0.009760685808309393,"_w":0.6150776799792813},"interactions":[]}];
+    const waypoints = [{"x":1.9716321106631787,"y":1.1810963730287274,"z":-4.188848091084995,"rotation":{"_isDirty":true,"_x":0.0914585387415608,"_y":-0.30842692265801175,"_z":0.029806758693995534,"_w":0.9463718752198446},"interactions":[{"id":"interaction-1729168767089","type":"audio","data":{"url":"https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3","autoplay":false}}],"triggerDistance":0.5},{"x":1.7567649935805205,"y":0.9454826336248555,"z":-3.462626243558567,"rotation":{"_isDirty":true,"_x":0.20922080903145307,"_y":-0.13918895756723929,"_z":0.03010121570115452,"_w":0.9674435404574688},"interactions":[{"id":"interaction-1729168876836","type":"info","data":{"text":"The FDR Memorial was commissioned in 1992 after 40 years of planning. It is a series of sculpture scenes and water features situated on the west side of the Tidal Basin in Washington, D.C."}}],"triggerDistance":0.5},{"x":2.7084529241269473,"y":0.1984271541905026,"z":-2.401921801633828,"rotation":{"_isDirty":true,"_x":0.016123322333805642,"_y":-0.5613152000834758,"_z":0.010938559683280958,"_w":0.8273727289101468},"interactions":[{"id":"interaction-1729168973126","type":"info","data":{"text":"In this second scene of the memorial, scuptor George Segal depicts men standing in a breadline, representing the despair of the Great Depression."}}],"triggerDistance":0.5},{"x":1.1466802225201465,"y":0.2040102413138607,"z":-2.241162306786908,"rotation":{"_isDirty":true,"_x":0.0013165502725973341,"_y":-0.6959250773020522,"_z":0.001275873835780514,"_w":0.7181120564532162},"interactions":[],"triggerDistance":0.5},{"x":-0.27159940284467476,"y":0.24155893424961905,"z":-2.173665926643597,"rotation":{"_isDirty":true,"_x":0.008037427837470506,"_y":-0.5910338808234161,"_z":0.005889510485546089,"_w":0.8065851877754824},"interactions":[],"triggerDistance":0.5},{"x":-0.9564647656952449,"y":0.6648139258645014,"z":-3.3011263588125455,"rotation":{"_isDirty":true,"_x":0.1165213627583866,"_y":-0.2250242611301938,"_z":0.027115466737048604,"_w":0.9669806644330439},"interactions":[{"id":"interaction-1729169050908","type":"info","data":{"text":"In an adjacent scene, a couple listens to one of Roosevelt's Fireside Chats over the radio, symbolizing the hope of the New Deal."}}],"triggerDistance":0.5},{"x":-0.8149156368869387,"y":0.5264631607440404,"z":-2.296951348240977,"rotation":{"_isDirty":true,"_x":0.06738665415585239,"_y":0.11282652806773373,"_z":-0.007669749196093273,"_w":0.9912973259083925},"interactions":[],"triggerDistance":0.5},{"x":-0.7274648642353161,"y":1.151837735850847,"z":-5.263733741733483,"rotation":{"_isDirty":true,"_x":0.06007518209999462,"_y":0.04045402568578449,"_z":-0.002436689685402881,"_w":0.9973707970683939},"interactions":[{"id":"interaction-1729169089797","type":"info","data":{"text":"Roosevelt was the longest-serving president, and one of the most tested. He dealt with the Great Depression, the New Deal, and World War II."}}],"triggerDistance":0.5},{"x":-0.11345789542205632,"y":1.3956778753095893,"z":-8.559100136973264,"rotation":{"_isDirty":true,"_x":0.0013089836316657524,"_y":-0.0006954122826957141,"_z":9.102841649427195e-7,"_w":0.9999989014807867},"interactions":[{"id":"interaction-1729169116098","type":"info","data":{"text":"3D capture by Dan Pacheco. Audio by John Patitucci and YouTube Audio library. StorySplat fly-through technology by Sonny Cirasuolo."}}],"triggerDistance":0.5}];
     const controlPoints = waypoints.map(
       (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
     );
@@ -289,8 +503,8 @@
     if (controlPoints.length >= 2) {
       const positionCurve = BABYLON.Curve3.CreateCatmullRomSpline(
         controlPoints,
-        (waypoints.length - 1) * 20, // Increased resolution from 10 to 20
-        false
+        20, // Adjust resolution if needed
+        false //loopMode
       );
       path = positionCurve.getPoints();
     } else if (controlPoints.length === 1) {
@@ -387,77 +601,120 @@
       element.style.top = `${top}px`;
     }
 
+    // Collision Meshes Data
+    const collisionMeshesData = [];
+
+    // Function to reconstruct collision meshes
+    function createCollisionMeshes() {
+      collisionMeshesData.forEach((data, index) => {
+        const mesh = BABYLON.MeshBuilder.CreatePlane(
+          `collisionMesh-${index}`,
+          { size: 3 },
+          scene
+        );
+        mesh.position = new BABYLON.Vector3(
+          data.position._x,
+          data.position._y,
+          data.position._z
+        );
+        mesh.rotation = new BABYLON.Vector3(
+          data.rotation._x,
+          data.rotation._y,
+          data.rotation._z
+        );
+        mesh.scaling = new BABYLON.Vector3(
+          data.scaling._x,
+          data.scaling._y,
+          data.scaling._z
+        );
+        mesh.checkCollisions = true;
+        mesh.isVisible = false; // Hide collision meshes
+
+        // Optional: Apply material if you want to visualize the collision meshes
+        /*
+        const material = new BABYLON.StandardMaterial(
+          `collisionMaterial-${index}`,
+          scene
+        );
+        material.backFaceCulling = false;
+        material.diffuseColor = BABYLON.Color3.FromHexString("#FF0000");
+        mesh.material = material;
+        */
+      });
+    }
+
+    // Call the function to create collision meshes
+    createCollisionMeshes();
+
     // Mute state
     let isMuted = false;
     const activeSounds = {};
 
-// Updated playAudio function
-function playAudio(interactionData, waypointIndex) {
-  if (isMuted) return;
+    // Updated playAudio function
+    function playAudio(interactionData, waypointIndex) {
+      if (isMuted) return;
 
-  const id = interactionData.id;
-  const url = interactionData.url;
-  const data = interactionData;
+      const id = interactionData.id;
+      const url = interactionData.url;
+      const data = interactionData;
 
-  // If sound is already playing, do not play it again
-  if (activeSounds[id] && activeSounds[id].isPlaying) {
-    return;
-  }
-
-  if (activeSounds[id]) {
-    // Sound object already exists, play it if not playing
-    if (!activeSounds[id].isPlaying) {
-      activeSounds[id].play();
-    }
-  } else {
-    // Create new sound
-    const sound = new BABYLON.Sound(
-      id,
-      url,
-      scene,
-      () => {
-        // Play the sound once it's ready
-        sound.play();
-      },
-      {
-        loop: data.loop !== undefined ? data.loop : true,
-        volume: data.volume !== undefined ? data.volume : 1,
-        spatialSound: data.spatialSound !== undefined ? data.spatialSound : false,
-        distanceModel: data.distanceModel !== undefined ? data.distanceModel : "exponential",
-        maxDistance: data.maxDistance !== undefined ? data.maxDistance : 100,
-        refDistance: data.refDistance !== undefined ? data.refDistance : 1,
-        rolloffFactor: data.rolloffFactor !== undefined ? data.rolloffFactor : 1,
+      // If sound is already playing, do not play it again
+      if (activeSounds[id] && activeSounds[id].isPlaying) {
+        return;
       }
-    );
 
-    activeSounds[id] = sound;
-
-    if (data.spatialSound) {
-      let position;
-      if (waypointIndex !== undefined && waypoints[waypointIndex]) {
-        const waypoint = waypoints[waypointIndex];
-        position = new BABYLON.Vector3(waypoint.x, waypoint.y, waypoint.z);
+      if (activeSounds[id]) {
+        // Sound object already exists, play it if not playing
+        if (!activeSounds[id].isPlaying) {
+          activeSounds[id].play();
+        }
       } else {
-        position = new BABYLON.Vector3(0, 0, 0); // Default position if waypoint is undefined
+        // Create new sound
+        const sound = new BABYLON.Sound(
+          id,
+          url,
+          scene,
+          () => {
+            // Play the sound once it's ready
+            sound.play();
+          },
+          {
+            loop: data.loop !== undefined ? data.loop : true,
+            volume: data.volume !== undefined ? data.volume : 1,
+            spatialSound: data.spatialSound !== undefined ? data.spatialSound : false,
+            distanceModel: data.distanceModel !== undefined ? data.distanceModel : "exponential",
+            maxDistance: data.maxDistance !== undefined ? data.maxDistance : 100,
+            refDistance: data.refDistance !== undefined ? data.refDistance : 1,
+            rolloffFactor: data.rolloffFactor !== undefined ? data.rolloffFactor : 1,
+          }
+        );
+
+        activeSounds[id] = sound;
+
+        if (data.spatialSound) {
+          let position;
+          if (waypointIndex !== undefined && waypoints[waypointIndex]) {
+            const waypoint = waypoints[waypointIndex];
+            position = new BABYLON.Vector3(waypoint.x, waypoint.y, waypoint.z);
+          } else {
+            position = new BABYLON.Vector3(0, 0, 0); // Default position if waypoint is undefined
+          }
+
+          sound.setPosition(position);
+        }
       }
-
-      sound.setPosition(position);
-      // No need to attach the sound to the camera
     }
-  }
-}
 
-// Updated stopAudio function
-function stopAudio(interactionData) {
-  const id = interactionData.id;
-  const sound = activeSounds[id];
-  if (sound && sound.isPlaying) {
-    sound.stop();
-  }
-  // Remove the sound from activeSounds to clean up
-  delete activeSounds[id];
-}
-
+    // Updated stopAudio function
+    function stopAudio(interactionData) {
+      const id = interactionData.id;
+      const sound = activeSounds[id];
+      if (sound && sound.isPlaying) {
+        sound.stop();
+      }
+      // Remove the sound from activeSounds to clean up
+      delete activeSounds[id];
+    }
 
     // Function to execute interactions
     const executeInteractions = (interactions, waypointIndex) => {
@@ -492,9 +749,16 @@ function stopAudio(interactionData) {
       });
     };
 
+    let transitionSpeed = 0.5;
+
+    function updateTransitionSpeed(value) {
+      transitionSpeed = parseFloat(value);
+      document.getElementById('transitionSpeedValue').textContent = 'Transition Speed: ' + transitionSpeed.toFixed(1);
+    }
+
     // Function to show info popup
     function showInfoPopup(text) {
-      const infoPopup = document.getElementById('infoPopup');
+   const infoPopup = document.getElementById('infoPopup');
       infoPopup.innerHTML = `
         <p>${text}</p>
         <button onclick="hideInfoPopup()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>
@@ -510,7 +774,7 @@ function stopAudio(interactionData) {
 
     // Function to update scroll percentage and progress bar
     function updateScrollUI(percentage) {
-      const scrollPercentage = document.getElementById('scrollPercentage');
+        const scrollPercentage = document.getElementById('scrollPercentage');
       const progressBar = document.getElementById('progressBar');
       if (scrollPercentage && progressBar) {
         scrollPercentage.textContent = `${Math.round(percentage)}%`;
@@ -518,26 +782,51 @@ function stopAudio(interactionData) {
       }
     }
 
-    // Function to adjust scroll
-    function adjustScroll(direction) {
-      const increment = 10;
+    const scrollButtonMode = 'waypoint';
+    const scrollAmount = 10;
+
+    function handleButtonScroll(direction) {
+      if (cameraMode === 'explore') {
+        return;
+      }
+      if (scrollButtonMode === 'percentage') {
+        adjustScroll(direction * scrollAmount / 100);
+      } else {
+        moveToWaypoint(direction);
+      }
+    }
+
+    function adjustScroll(amount) {
       const pathLength = path.length;
       if (pathLength > 1) {
-        const scrollIncrement = (pathLength - 1) * (increment / 100) * direction;
+        const scrollIncrement = (pathLength - 1) * amount;
         scrollTarget += scrollIncrement;
 
-        if (scrollTarget < 0) scrollTarget = 0;
-        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+          if (scrollTarget < 0) scrollTarget = 0;
+          if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
 
         userControl = false;
       }
     }
 
+    function moveToWaypoint(direction) {
+        const subdivisionsPerSegment = 20;
+      let currentWaypointIndex = Math.round(scrollPosition / subdivisionsPerSegment);
+      let nextWaypointIndex = currentWaypointIndex + direction;
+
+        nextWaypointIndex = Math.max(0, Math.min(nextWaypointIndex, waypoints.length - 1));
+
+      scrollTarget = nextWaypointIndex * subdivisionsPerSegment;
+      userControl = false;
+    }
     // Handle scroll events
     window.addEventListener('wheel', (event) => {
-      if (animatingToPath) return;
+        if (animatingToPath) return;
 
-      if (userControl) {
+      if (
+        (cameraMode === 'auto' && userControl) ||
+        (cameraMode === 'tour' && userControl)
+      ) {
         animatingToPath = true;
         userControl = false;
 
@@ -550,23 +839,32 @@ function stopAudio(interactionData) {
           camera.rotation.set(0, 0, 0);
         }
 
-        const closestPointInfo = getClosestPointOnPath(camera.position, path);
-        const startIndex = closestPointInfo.index;
+        // Use current scroll position instead of finding closest point
+        const targetT = scrollPosition;
+        const pathLength = path.length - 1;
 
-        const targetPosition = path[startIndex];
+        const floorIndex = Math.floor(targetT);
+        const ceilIndex = Math.min(floorIndex + 1, pathLength);
+        const lerpFactor = targetT - floorIndex;
+
+        const targetPosition = BABYLON.Vector3.Lerp(
+          path[floorIndex],
+          path[ceilIndex],
+          lerpFactor
+        );
 
         let targetRotation = camera.rotationQuaternion.clone();
         if (rotations.length >= 2 && path.length >= 2) {
-          const t = startIndex / (path.length - 1);
           const totalSegments = waypoints.length - 1;
-          const segmentT = t * totalSegments;
+          const segmentT = (targetT / pathLength) * totalSegments;
           const segmentIndex = Math.floor(segmentT);
           const clampedSegmentIndex = Math.min(segmentIndex, totalSegments - 1);
-          const lerpFactor = segmentT - clampedSegmentIndex;
+          const lerpFactorRot = segmentT - clampedSegmentIndex;
 
           const r1 = rotations[clampedSegmentIndex];
-          const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
-          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
+          const nextIndex = (clampedSegmentIndex + 1) % rotations.length;
+          const r2 = rotations[nextIndex];
+          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactorRot).normalize();
         } else if (rotations.length === 1) {
           targetRotation = rotations[0];
         }
@@ -611,32 +909,15 @@ function stopAudio(interactionData) {
 
         scene.beginAnimation(camera, 0, 120, false, 1, function () {
           animatingToPath = false;
-          scrollPosition = startIndex;
-          scrollTarget = scrollPosition;
+          scrollPosition = targetT;
+          scrollTarget = targetT;
         });
-      } else {
+      } else if (cameraMode !== 'explore') {
         scrollTarget += event.deltaY * 0.1;
-
-        if (scrollTarget < 0) scrollTarget = 0;
-        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+          if (scrollTarget < 0) scrollTarget = 0;
+          if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
       }
     });
-
-    // Helper function to find the closest point on the path
-    function getClosestPointOnPath(position, path) {
-      let minDist = Infinity;
-      let closestIndex = 0;
-
-      for (let i = 0; i < path.length; i++) {
-        const dist = BABYLON.Vector3.DistanceSquared(position, path[i]);
-        if (dist < minDist) {
-          minDist = dist;
-          closestIndex = i;
-        }
-      }
-
-      return { index: closestIndex, distanceSquared: minDist };
-    }
 
     // Initialize target rotation and position
     let targetRotation = camera.rotationQuaternion.clone();
@@ -644,18 +925,18 @@ function stopAudio(interactionData) {
 
     // Active waypoints set
     const activeWaypoints = new Set();
-
+    if(true) {
     // Create floor mesh at y = 0 and hide it
     const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100 }, scene);    
     ground.isVisible = false;
 
-    // WebXR setup
-    const xr = scene.createDefaultXRExperienceAsync({
-      floorMeshes: [ground],
-    });
-
+   // WebXR setup
+   const xr = scene.createDefaultXRExperienceAsync({
+        floorMeshes: [ground],
+     });
+     }
     // Load the model file
-    BABYLON.SceneLoader.ImportMeshAsync('', '', 'https://mambofishfiledump.s3.us-east-2.amazonaws.com/jaleelRoom_2.splat', scene)
+    BABYLON.SceneLoader.ImportMeshAsync('', '', 'https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_FDR_1.splat', scene)
       .then((result) => {
         const loadedMeshes = result.meshes;
         loadedMeshes.forEach((mesh) => {
@@ -675,19 +956,39 @@ function stopAudio(interactionData) {
     // Start the render loop
     engine.runRenderLoop(function () {
       // Smoothly interpolate scrollPosition towards scrollTarget
-      const scrollInterpolationSpeed = 0.1;
+      const scrollInterpolationSpeed = 0.01 + transitionSpeed * 0.1;
+      // Autoplay handling
+      if (autoPlayEnabled && !userControl) {
+        scrollTarget += autoPlaySpeed;
+      }
       scrollPosition += (scrollTarget - scrollPosition) * scrollInterpolationSpeed;
 
-      // Clamp scroll position
-      scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));
-
-      // Update UI
-      const scrollPercentage = (scrollPosition / (path.length - 1 || 1)) * 100;
-      if(true){
-         updateScrollUI(scrollPercentage);
+      if (loopMode) {
+        if (scrollPosition >= path.length - 1.1) {
+          scrollPosition = 0.2;
+          scrollTarget = 0.2;
+        } else if (scrollPosition <= 0.1) {
+          scrollPosition = path.length - 1.11;
+          scrollTarget = path.length - 1.11;
+        }
       }
 
-      if (!userControl && path.length >= 1) {
+      // Clamp scroll position
+      scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));    
+
+      // Calculate scroll percentage
+      const scrollPercentage = (scrollPosition / (path.length - 1 || 1)) * 100;
+
+      // Update UI only if not in explore mode
+      if (cameraMode !== 'explore') {
+        updateScrollUI(scrollPercentage);
+      }
+
+      // Determine if camera should follow the path
+      if (
+        (cameraMode === 'auto' && !userControl) ||
+        (cameraMode === 'tour' && !userControl)
+      ) {
         const t = scrollPosition / (path.length - 1 || 1);
 
         const totalSegments = waypoints.length - 1;
@@ -699,7 +1000,8 @@ function stopAudio(interactionData) {
 
           // Calculate target rotation using Slerp
           const r1 = rotations[clampedSegmentIndex];
-          const r2 = rotations[clampedSegmentIndex + 1] || rotations[rotations.length - 1];
+          const nextIndex = (clampedSegmentIndex + 1) % rotations.length;
+          const r2 = rotations[nextIndex];
 
           targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
 
@@ -725,7 +1027,7 @@ function stopAudio(interactionData) {
           camera.rotationQuaternion = BABYLON.Quaternion.Slerp(
             camera.rotationQuaternion,
             targetRotation,
-            0.05 // Damping factor for rotation (adjust between 0 and 1 for smoothness)
+            0.050000000000000044 // Damping factor for rotation
           ).normalize();
         }
 
@@ -743,7 +1045,7 @@ function stopAudio(interactionData) {
             camera.position,
             new BABYLON.Vector3(wp.x, wp.y, wp.z)
           );
-          const triggerDistance = 1.0; // Define a suitable trigger distance
+          const triggerDistance = wp.triggerDistance ?? 1.0;
 
           if (distance <= triggerDistance) {
             if (!activeWaypoints.has(index)) {
@@ -765,21 +1067,19 @@ function stopAudio(interactionData) {
     // User interaction detection
     scene.onPointerObservable.add(function (evt) {
       if (evt.type === BABYLON.PointerEventTypes.POINTERDOWN) {
-        userControl = true;
-
-        if (camera.rotationQuaternion) {
-          camera.rotation = camera.rotationQuaternion.toEulerAngles();
-          camera.rotationQuaternion = null;
+        if (cameraMode === 'explore' || cameraMode === 'auto') {
+          userControl = true;
+        } else {
+          userControl = false;
         }
       }
     });
 
     window.addEventListener('keydown', function () {
-      userControl = true;
-
-      if (camera.rotationQuaternion) {
-        camera.rotation = camera.rotationQuaternion.toEulerAngles();
-        camera.rotationQuaternion = null;
+      if (cameraMode === 'explore' || cameraMode === 'auto') {
+        userControl = true;
+      } else {
+        userControl = false;
       }
     });
 
@@ -789,7 +1089,7 @@ function stopAudio(interactionData) {
     muteButton.addEventListener('click', function() {
       isMuted = !isMuted;
       muteButton.textContent = isMuted ? '🔇 Unmute' : '🔊 Mute';
-      
+
       if (isMuted) {
         // Stop all active sounds
         Object.values(activeSounds).forEach(sound => {
@@ -834,6 +1134,7 @@ function stopAudio(interactionData) {
     window.addEventListener('resize', function () {
       engine.resize();
     });
+
   </script>
 </body>
 </html>

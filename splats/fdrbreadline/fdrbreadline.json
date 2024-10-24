@@ -22,10 +22,11 @@
           "type": "audio",
           "data": {
             "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/music/july_johnpatitucci.mp3",
-            "volume": 0.49
+            "autoplay": false
           }
         }
-      ]
+      ],
+      "triggerDistance": 0.5
     },
     {
       "x": 1.7567649935805205,
@@ -45,25 +46,9 @@
           "data": {
             "text": "The FDR Memorial was commissioned in 1992 after 40 years of planning. It is a series of sculpture scenes and water features situated on the west side of the Tidal Basin in Washington, D.C."
           }
-        },
-        {
-          "id": "interaction-1729172992857",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/1.mp3",
-            "spatialSound": true,
-            "loop": false
-          }
-        },
-        {
-          "id": "interaction-1729173177562",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/1.mp3",
-            "loop": false
-          }
         }
-      ]
+      ],
+      "triggerDistance": 0.5
     },
     {
       "x": 2.7084529241269473,
@@ -83,17 +68,9 @@
           "data": {
             "text": "In this second scene of the memorial, scuptor George Segal depicts men standing in a breadline, representing the despair of the Great Depression."
           }
-        },
-        {
-          "id": "interaction-1729173202335",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/2.mp3",
-            "spatialSound": true,
-            "loop": false
-          }
         }
-      ]
+      ],
+      "triggerDistance": 0.5
     },
     {
       "x": 1.1466802225201465,
@@ -106,7 +83,8 @@
         "_z": 0.001275873835780514,
         "_w": 0.7181120564532162
       },
-      "interactions": []
+      "interactions": [],
+      "triggerDistance": 0.5
     },
     {
       "x": -0.27159940284467476,
@@ -119,7 +97,8 @@
         "_z": 0.005889510485546089,
         "_w": 0.8065851877754824
       },
-      "interactions": []
+      "interactions": [],
+      "triggerDistance": 0.5
     },
     {
       "x": -0.9564647656952449,
@@ -139,16 +118,9 @@
           "data": {
             "text": "In an adjacent scene, a couple listens to one of Roosevelt's Fireside Chats over the radio, symbolizing the hope of the New Deal."
           }
-        },
-        {
-          "id": "interaction-1729173235368",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/3.mp3",
-            "loop": false
-          }
         }
-      ]
+      ],
+      "triggerDistance": 0.5
     },
     {
       "x": -0.8149156368869387,
@@ -161,7 +133,8 @@
         "_z": -0.007669749196093273,
         "_w": 0.9912973259083925
       },
-      "interactions": []
+      "interactions": [],
+      "triggerDistance": 0.5
     },
     {
       "x": -0.7274648642353161,
@@ -181,24 +154,9 @@
           "data": {
             "text": "Roosevelt was the longest-serving president, and one of the most tested. He dealt with the Great Depression, the New Deal, and World War II."
           }
-        },
-        {
-          "id": "interaction-1729173139120",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/4.mp3",
-            "loop": false
-          }
-        },
-        {
-          "id": "interaction-1729173262316",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/4.mp3",
-            "loop": false
-          }
         }
-      ]
+      ],
+      "triggerDistance": 0.5
     },
     {
       "x": -0.11345789542205632,
@@ -218,19 +176,24 @@
           "data": {
             "text": "3D capture by Dan Pacheco. Audio by John Patitucci and YouTube Audio library. StorySplat fly-through technology by Sonny Cirasuolo."
           }
-        },
-        {
-          "id": "interaction-1729173280953",
-          "type": "audio",
-          "data": {
-            "url": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/audio/fdrbreadline/5.mp3",
-            "loop": false
-          }
         }
-      ]
+      ],
+      "triggerDistance": 0.5
     }
   ],
   "loadedModelUrl": "https://mambofishfiledump.s3.us-east-2.amazonaws.com/gs_FDR_1.splat",
   "hotspots": [],
-  "uiColor": "#4CAF50"
+  "uiColor": "#4CAF50",
+  "transitionSpeed": 0.5,
+  "scrollButtonMode": "waypoint",
+  "scrollAmount": 10,
+  "collisionMeshesData": [],
+  "allowedCameraModes": [
+    "tour",
+    "explore",
+    "auto"
+  ],
+  "loopMode": true,
+  "autoPlayEnabled": false,
+  "autoPlaySpeed": 0.05
 }
