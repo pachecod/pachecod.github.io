@@ -18,37 +18,33 @@
       crossorigin="anonymous"
     />
 
+    <!-- SCRIPT FOR UNIVERSAL NAVBAR -->
+   
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        fetch("https://pachecod.github.io/universalnavbar/navbar.html")
+          .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok.");
+            return response.text();
+          })
+          .then(data => {
+            document.getElementById("navbar").innerHTML = data;
+          })
+          .catch(error => {
+            console.error("Error loading the navigation:", error);
+          });
+      });
+    </script>
+
     <link rel="stylesheet" href="main.css" />
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="https://pachecod.github.io">Pachecod.github.io</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarsExampleDefault"
-          aria-controls="navbarsExampleDefault"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="http://pachecod.github.io">Home</a>
-            </li>
-            <li>
-              <a class="nav-link" href="https://github.com/pachecod/pachecod.github.io" target="_blank">Github repo</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+
+    <!-- LOAD UNIVERSAL NAVBAR -->
+      <div id="navbar"></div>
+    <!-- END NAVBAR -->
 
     <main class="container mt-5">
       <div class="starter-template text-left py-5 px-3">
