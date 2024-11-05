@@ -1,0 +1,76 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Article container */
+  .article-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    color: #333;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
+  
+  /* Article header */
+  .article-header {
+    margin-bottom: 20px;
+  }
+  
+  .article-header h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #111;
+  }
+  
+  .article-header .article-meta {
+    font-size: 0.9em;
+    color: #666;
+  }
+  
+  /* Main article content */
+  .article-content p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+  }
+  
+  /* Images within the article */
+  .article-content img {
+    width: 100%;
+    height: auto;
+    margin: 15px 0;
+    border-radius: 5px;
+  }
+  
+  /* Blockquotes */
+  .article-content blockquote {
+    border-left: 5px solid #333;
+    padding: 10px 20px;
+    margin: 15px 0;
+    font-style: italic;
+    color: #555;
+  }
+  
+  /* Article footer */
+  .article-footer {
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #666;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+  }
+  
+  .article-footer a {
+    color: #0077cc;
+    text-decoration: none;
+  }
+  
+  .article-footer a:hover {
+    text-decoration: underline;
+  }
+  
