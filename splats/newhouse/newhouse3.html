@@ -1,0 +1,1372 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    
+    /* Base Styles */
+    body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: Arial, sans-serif; }
+    #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+
+    /* Preloader Styles */
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1e1e1e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100000;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #preloader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #preloader-content {
+      display: flex;
+      align-items: center;
+      padding: 40px;
+    }
+
+    #preloader-media {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    #preloader-image {
+      height: 200px;
+      width: auto;
+      object-fit: contain;
+      filter: invert(1);
+      margin-right: -100px;
+    }
+
+    #preloader-lottie {
+      height: 200px;
+      width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      #preloader-image {
+        height: 100px;
+        margin-right: -50px;
+      }
+      
+      #preloader-lottie {
+        height: 100px;
+        width: 100px;
+      }
+    }
+
+    /* Start Experience Button Styles */
+    #startButtonContainer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5000;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #startButton {
+      padding: 20px 40px;
+      font-size: 24px;
+      background-color: rgba(255, 255, 255, 0.25);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #startButton:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Content Display Styles */
+    #hotspotContent {
+      position: fixed;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1001;
+      max-width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+      font-size: 14px;
+    }
+
+    #infoPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1002;
+      max-width: 80%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+      font-size: 16px;
+    }
+
+    /* Scroll Controls Styles */
+    #waypointInfo {
+      width: 100%;
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-top: 8px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none;
+    }
+
+    #scrollControls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+      color: white;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      max-width: 350px;
+    }
+
+    #scrollControlsContent {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    #scrollControlsContent.hidden {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    #scrollPercentage {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #progressBarContainer {
+      width: 200px;
+      height: 10px;
+      background-color: rgba(255,255,255,0.3);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background-color: #4CAF50;
+      transition: width 0.3s ease;
+    }
+
+    /* Button Styles */
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #scrollButtons {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    #toggleCameraMode {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover, #toggleCameraMode:hover {
+      background-color: #197c1d;
+    }
+
+    /* Mobile UI Overlay */
+    
+
+    /* Inline Button Position Styles */
+    
+    
+    /* Mode Toggle Styles */
+    #modeToggleContainer {
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    #modeToggle {
+      display: flex;
+      border: 1px solid #4CAF50;
+      border-radius: 5px;
+      overflow: hidden;
+      width: 250px;
+    }
+
+    .mode-button {
+      flex: 1;
+      padding: 10px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      width: 33%;
+    }
+
+    .mode-button:not(:last-child) {
+      border-right: 1px solid #4CAF50;
+    }
+
+    .mode-button.selected {
+      background-color: #7fe283;
+      color: white;
+    }
+
+    .mode-button:not(.selected):hover {
+      background-color: #7fe283;
+      color: white;
+    }
+  
+  </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-L2NG77PKGG"></script>
+  <script>
+    
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('set', {'user_id': '4f8NeHkYVcP4weJu3invjGLiKMD2'});
+    gtag('config', 'G-L2NG77PKGG', {
+      'scene_id': '',
+      'scene_name': '',
+      'creator_name': 'Dan Pacheco'
+    });
+
+    // Add scene metadata object
+    const sceneMetadata = {
+      sceneId: '',
+      userId: '4f8NeHkYVcP4weJu3invjGLiKMD2',
+      sceneName: '',
+      creatorName: 'Dan Pacheco',
+      timestamp: new Date().toISOString()
+    };
+
+    // Enhanced tracking functions with metadata
+    function trackPageview() {
+      gtag('event', 'scene_view', {
+        ...sceneMetadata,
+        referrer: document.referrer,
+        viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+        user_agent: navigator.userAgent
+      });
+    }
+
+    function trackCameraMode(mode) {
+      gtag('event', 'camera_mode_change', {
+        ...sceneMetadata,
+        mode: mode,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    function trackWaypointReached(waypointName, waypointIndex) {
+      gtag('event', 'waypoint_reached', {
+        ...sceneMetadata,
+        waypoint_name: waypointName,
+        waypoint_index: waypointIndex,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    function trackHotspotInteraction(hotspotTitle, interactionType) {
+      gtag('event', 'hotspot_interaction', {
+        ...sceneMetadata,
+        hotspot_title: hotspotTitle,
+        interaction_type: interactionType,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+
+    function trackAudioInteraction(audioId, action) {
+      gtag('event', 'audio_interaction', {
+        ...sceneMetadata,
+        audio_id: audioId,
+        action: action,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    function trackUserEngagement(type, duration) {
+      gtag('event', 'user_engagement', {
+        ...sceneMetadata,
+        engagement_type: type,
+        duration_seconds: duration,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Track session duration
+    let sessionStartTime = Date.now();
+    window.addEventListener('beforeunload', () => {
+      const sessionDuration = (Date.now() - sessionStartTime) / 1000; // Convert to seconds
+      trackUserEngagement('session_duration', sessionDuration);
+    });
+
+    // Track initial pageview
+    window.addEventListener('load', trackPageview);
+
+    // Track visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        const visibleDuration = (Date.now() - sessionStartTime) / 1000;
+        trackUserEngagement('visible_duration', visibleDuration);
+      }
+    });
+
+    // Track user interactions
+    let lastInteractionTime = Date.now();
+    document.addEventListener('click', updateLastInteraction);
+    document.addEventListener('mousemove', updateLastInteraction);
+    document.addEventListener('keypress', updateLastInteraction);
+    document.addEventListener('scroll', updateLastInteraction);
+    document.addEventListener('touchstart', updateLastInteraction);
+
+    function updateLastInteraction() {
+      const now = Date.now();
+      const timeSinceLastInteraction = (now - lastInteractionTime) / 1000;
+      if (timeSinceLastInteraction > 30) { // Track engagement periods longer than 30 seconds
+        trackUserEngagement('active_period', timeSinceLastInteraction);
+      }
+      lastInteractionTime = now;
+    }
+  </script>
+</head>
+<body>
+  <script>
+    // Initialize global variables
+    window.cameraMode = 'tour';
+    window.autoPlayEnabled = false;
+  </script>
+  <div id="preloader">
+    <div id="preloader-content">
+      <div id="preloader-media">
+        <img id="preloader-image" src="https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Fimages%2FStorySplat.webp?alt=media&token=953e8ab3-1865-4ac1-a98d-b548b7066bda" alt="StorySplat Logo" />
+        <lottie-player id="preloader-lottie" 
+          src="https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Flotties%2FstorySplatLottie.json?alt=media&token=d7edc19d-9cb8-4c6e-a94c-cba1d2b65d5e"
+          background="transparent" 
+          speed="1" 
+          loop 
+          autoplay>
+        </lottie-player>
+      </div>
+    </div>
+  </div>
+  
+  <canvas id="renderCanvas"></canvas>
+
+  
+
+  <div id="hotspotContent"></div>
+  <div id="infoPopup"></div>
+
+  
+    <!-- Scroll Controls -->
+    <div id="scrollControls">
+      <!-- Waypoint Info -->
+      <div id="waypointInfo" style="display: none;">
+        <!-- Content populated dynamically -->
+      </div>
+
+      <!-- Scroll Controls Content -->
+      <div id="scrollControlsContent">
+        <!-- Scroll Percentage and Progress Bar -->
+        <div id="scrollPercentage">0%</div>
+        <div id="progressBarContainer">
+          <div id="progressBar"></div>
+        </div>
+
+        
+        <!-- Scroll Buttons -->
+        <div id="scrollButtons">
+          <button id="prevButton" class="button" onclick="handleButtonScroll(-1)">
+            <span class="button-icon">←</span>
+            <span class="button-text">Prev</span>
+          </button>
+          <button id="nextButton" class="button" onclick="handleButtonScroll(1)">
+            <span class="button-text">Next</span>
+            <span class="button-icon">→</span>
+          </button>
+        </div>
+        
+      </div>
+      <!-- Mode Toggle Buttons -->
+      <div id="modeToggleContainer">
+        <div id="modeToggle">
+          <button id="modeExplore" class="mode-button" onclick="changeCameraMode('explore')">Explore</button>
+          <button id="modeTour" class="mode-button" onclick="changeCameraMode('tour')">Tour</button>
+          <button id="modeAuto" class="mode-button" onclick="changeCameraMode('auto')">Auto</button>
+        </div>
+      </div>
+    </div>
+    
+
+  <button id="muteButton">🔊 Mute</button>
+
+  
+    <div class="storysplat-watermark" style="
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      z-index: 1000;
+      pointer-events: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    ">
+      Created with <a href="https://storysplat.com?ref=" target="_blank" 
+        style="color: #4CAF50; text-decoration: none; pointer-events: auto;">
+        StorySplat
+      </a>
+    </div>
+  
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script>
+    
+// Simplified AudioManager for exported HTML
+class AudioManager {
+  isMuted;
+  activeSounds;
+
+  constructor() {
+    this.isMuted = false;
+    this.activeSounds = new Map();
+  }
+
+  playSound(audioData, options = {}) {
+    if (typeof this.isMuted === 'undefined') {
+      this.isMuted = false;
+    }
+
+    if (this.isMuted) return;
+
+    const { 
+      scene, 
+      position, 
+      waypointIndex 
+    } = options;
+
+    const id = audioData.id;
+    const url = audioData.url;
+
+    // Check if sound is already playing
+    const existingSound = this.activeSounds.get(id);
+    if (existingSound) {
+      if (existingSound.isPlaying) {
+        return;
+      }
+
+      existingSound.dispose();
+      this.activeSounds.delete(id);
+    }
+
+    const sound = new BABYLON.Sound(
+      id,
+      url,
+      scene,
+      () => {
+        if (BABYLON.Engine.audioEngine.audioContext.state === 'suspended') {
+          BABYLON.Engine.audioEngine.audioContext.resume().then(() => {
+            if (!sound.isPlaying) {
+              sound.play();
+              // Track audio start
+              trackAudioInteraction(id, 'play');
+            }
+          });
+        } else {
+          if (!sound.isPlaying) {
+            sound.play();
+            // Track audio start
+            trackAudioInteraction(id, 'play');
+          }
+        }
+      },
+      {
+        loop: audioData.loop !== undefined ? audioData.loop : true,
+        volume: audioData.volume !== undefined ? audioData.volume : 1,
+        spatialSound: audioData.spatialSound !== undefined ? audioData.spatialSound : false,
+        distanceModel: audioData.distanceModel || "exponential",
+        maxDistance: audioData.maxDistance || 100,
+        refDistance: audioData.refDistance || 1,
+        rolloffFactor: audioData.rolloffFactor || 1,
+      }
+    );
+
+    sound.metadata = {
+      stopOnExit: audioData.stopOnExit,
+      spatialSound: audioData.spatialSound
+    };
+
+    if (audioData.spatialSound && position) {
+      sound.setPosition(position);
+    }
+
+    this.activeSounds.set(id, sound);
+  }
+
+  stopSound(id) {
+    const sound = this.activeSounds.get(id);
+    if (sound) {
+      sound.stop();
+      sound.dispose();
+      this.activeSounds.delete(id);
+      // Track audio stop
+      trackAudioInteraction(id, 'stop');
+    }
+  }
+
+  stopAllSounds() {
+    this.activeSounds.forEach((sound, id) => {
+      sound.stop();
+      sound.dispose();
+      // Track each audio stop
+      trackAudioInteraction(id, 'stop');
+    });
+    this.activeSounds.clear();
+  }
+
+  isSoundPlaying(id) {
+    const sound = this.activeSounds.get(id);
+    return sound ? sound.isPlaying : false;
+  }
+
+  mute() {
+    this.isMuted = true;
+    this.activeSounds.forEach((sound, id) => {
+      if (sound.isPlaying) {
+        sound.pause();
+        // Track audio mute
+        trackAudioInteraction(id, 'mute');
+      }
+    });
+  }
+
+  unmute() {
+    this.isMuted = false;
+    this.activeSounds.forEach((sound, id) => {
+      sound.play();
+      // Track audio unmute
+      trackAudioInteraction(id, 'unmute');
+    });
+  }
+}
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+function playAudio(interactionData, waypointIndex) {
+  audioManager.playSound(
+    { ...interactionData, id: interactionData.id }, 
+    { 
+      scene, 
+      position: waypointIndex !== undefined && waypoints[waypointIndex] 
+        ? new BABYLON.Vector3(
+            waypoints[waypointIndex].x, 
+            waypoints[waypointIndex].y, 
+            waypoints[waypointIndex].z
+          ) 
+        : undefined
+    }
+  );
+}
+
+function stopAudio(interactionData) {
+  audioManager.stopSound(interactionData.id);
+}
+
+function executeInteractions(interactions, waypointIndex) {
+  interactions.forEach((interaction) => {
+    switch (interaction.type) {
+      case "audio":
+        playAudio({ ...interaction.data, id: interaction.id }, waypointIndex);
+        break;
+      case "info":
+        if ('controls' === 'popup') {
+          showInfoPopup(interaction.data);
+        }
+        break;
+    }
+  });
+}
+
+function reverseInteractions(interactions) {
+  interactions.forEach((interaction) => {
+    switch (interaction.type) {
+      case "audio":
+        const data = interaction.data;
+        const sound = audioManager.activeSounds.get(interaction.id);
+        
+        if (sound && sound.metadata.stopOnExit) {
+          stopAudio({ ...data, id: interaction.id });
+        }
+        break;
+      case "info":
+        if ('controls' === 'popup') {
+          hideInfoPopup();
+        }
+        break;
+    }
+  });
+}
+
+// Update the mute button functionality
+const muteButton = document.getElementById('muteButton');
+muteButton.textContent = audioManager.isMuted ? '🔇 Unmute' : '🔊 Mute';
+muteButton.addEventListener('click', function() {
+  if (audioManager.isMuted) {
+    audioManager.unmute();
+    muteButton.textContent = '🔊 Mute';
+  } else {
+    audioManager.mute();
+    muteButton.textContent = '🔇 Unmute';
+  }
+});
+
+
+/* // Initialize autoplay sounds immediately when preloader is disabled
+waypoints.forEach((wp, index) => {
+  wp.interactions.forEach((interaction) => {
+    if (interaction.type === 'audio' && interaction.data.autoplay === true) {
+      playAudio({ ...interaction.data, id: interaction.id }, index);
+    }
+  });
+}); */
+
+    
+    const preloader = document.getElementById("preloader");
+    const canvas = document.getElementById('renderCanvas');
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    window.scene = scene;
+
+    scene.clearColor = BABYLON.Color3.FromHexString('#7D7D7D').toColor4(1);
+
+    // Debug mode setup
+    if (false) {
+      window.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key === 'i') {
+          if (scene.debugLayer.isVisible()) {
+            scene.debugLayer.hide();
+          } else {
+            scene.debugLayer.show();
+          }
+        }
+      });
+    }
+
+    const waypoints = [{"x":10.313435292527856,"y":-0.8229522566457169,"z":-10.008261399989856,"rotation":{"_isDirty":true,"_x":-0.06113141648305884,"_y":-0.21049089334601453,"_z":-0.013189516795658341,"_w":0.9755934446731421},"interactions":[],"triggerDistance":1,"name":"Waypoint 1"},{"x":7.526889669392275,"y":-0.13397978214391176,"z":-3.857443721123432,"rotation":{"_isDirty":true,"_x":-0.09077543574512902,"_y":-0.20871721791359812,"_z":-0.01946095192379041,"_w":0.9735595537821771},"interactions":[],"triggerDistance":1,"name":"Waypoint 2"},{"x":-0.31997118146772807,"y":2.266134696756795,"z":10.726764741024049,"rotation":{"_isDirty":true,"_x":-0.05243429136285727,"_y":-0.3942260132477436,"_z":-0.02253605546605055,"_w":0.9172396828592871},"interactions":[],"triggerDistance":1,"name":"Waypoint 3"},{"x":-11.568000581615038,"y":1.9821911085428456,"z":12.422024882089174,"rotation":{"_isDirty":true,"_x":-0.014900797960631514,"_y":-0.17561187010169305,"_z":-0.0026583790180296947,"_w":0.9843431195137453},"interactions":[],"triggerDistance":1,"name":"Waypoint 4"},{"x":4.4686912519926585,"y":2.6770299382084355,"z":2.7054038712562085,"rotation":{"_isDirty":true,"_x":-0.10486089105397431,"_y":-0.19337153115914493,"_z":-0.020790972440500034,"_w":0.975284258657568},"interactions":[],"triggerDistance":1,"name":"Waypoint 5"}];
+    const controlPoints = waypoints.map(
+      (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
+    );
+    const rotations = waypoints.map(
+      (wp) => new BABYLON.Quaternion(wp.rotation._x, wp.rotation._y, wp.rotation._z, wp.rotation._w).normalize()
+    );
+
+    let path = [];
+
+    if (controlPoints.length >= 2) {
+      const positionCurve = BABYLON.Curve3.CreateCatmullRomSpline(
+        controlPoints,
+        20,
+        false
+      );
+      path = positionCurve.getPoints();
+    } else if (controlPoints.length === 1) {
+      path = [controlPoints[0]];
+    }
+
+    const camera = new BABYLON.UniversalCamera(
+      'camera',
+      new BABYLON.Vector3(waypoints[0].x, waypoints[0].y, waypoints[0].z),
+      scene
+    );
+    camera.attachControl(canvas, true);
+    camera.speed = 0.2;
+    camera.angularSensibility = 4000;
+
+    camera.rotationQuaternion = new BABYLON.Quaternion(
+      waypoints[0].rotation.x,
+      waypoints[0].rotation.y,
+      waypoints[0].rotation.z,
+      waypoints[0].rotation.w
+    ).normalize();
+
+    camera.rotation = camera.rotationQuaternion.toEulerAngles();
+    camera.keysUp.push(87);    // W
+    camera.keysDown.push(83);  // S
+    camera.keysLeft.push(65);  // A
+    camera.keysRight.push(68); // D
+    camera.keysUpward.push(81);   // Q
+    camera.keysDownward.push(69); // E
+    camera.inputs.addGamepad();
+
+    let userControl = cameraMode === 'explore';
+    let animatingToPath = false;
+
+    function changeCameraMode(selectedMode) {
+      if (["tour","explore","auto"].includes(selectedMode)) {
+        cameraMode = selectedMode;
+        userControl = cameraMode === 'explore';
+
+        // Track camera mode change
+        trackCameraMode(selectedMode);
+
+        if (BABYLON.VirtualJoystick.Canvas) {
+          BABYLON.VirtualJoystick.Canvas.style.zIndex =
+            cameraMode === 'tour' ? '-10' : '10';
+        }
+
+        updateScrollControlsVisibility();
+        updateModeToggleUI();
+      }
+    }
+
+    function updateScrollControlsVisibility() {
+      const scrollControlsContent = document.getElementById('scrollControlsContent');
+      if (scrollControlsContent) {
+        if (cameraMode === 'explore') {
+          scrollControlsContent.classList.add('hidden');
+        } else {
+          scrollControlsContent.classList.remove('hidden');
+        }
+      }
+    }
+
+    function updateModeToggleUI() {
+      const modes = ['explore', 'tour', 'auto'];
+      modes.forEach(function(mode) {
+        const button = document.getElementById('mode' + capitalizeFirstLetter(mode));
+        if (button) {
+          if (cameraMode === mode) {
+            button.classList.add('selected');
+          } else {
+            button.classList.remove('selected');
+          }
+        }
+      });
+    }
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    const isMobileDevice = false;
+
+    if (isMobileDevice) {
+      var leftJoystick = new BABYLON.VirtualJoystick(true);
+      var rightJoystick = new BABYLON.VirtualJoystick(false);
+      if('tour' === 'tour'){
+        if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+        }
+      } else {
+        if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+        }
+      }
+  
+      scene.onBeforeRenderObservable.add(()=>{
+        if(leftJoystick.pressed){
+          userControl = true;
+          const deltaTime = engine.getDeltaTime() / 1000;
+          const moveSpeed = deltaTime * 5 * 0.2;
+      
+          const moveX = leftJoystick.deltaPosition.x * moveSpeed;
+          const moveZ = leftJoystick.deltaPosition.y * moveSpeed;
+      
+          const forward = camera.getDirection(BABYLON.Axis.Z);
+          const right = camera.getDirection(BABYLON.Axis.X);
+      
+          const move = forward.scale(moveZ).add(right.scale(moveX));
+          camera.position.addInPlace(move);
+        }
+
+        if (rightJoystick.pressed) {
+          const deltaX = rightJoystick.deltaPosition.x;
+          const deltaY = rightJoystick.deltaPosition.y;
+      
+          const angularSensibility = 200 * 0.2;
+      
+          const currentEuler = camera.rotationQuaternion.toEulerAngles();
+          let yaw = currentEuler.y;
+          let pitch = currentEuler.x;
+      
+          yaw += deltaX / angularSensibility;
+          pitch -= deltaY / angularSensibility;
+      
+          const maxPitch = Math.PI / 2;
+          pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+      
+          camera.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(yaw, pitch, 0);
+        }
+      });
+    }
+
+    camera.checkCollisions = true;
+    camera.applyGravity = false;
+    camera.ellipsoid = new BABYLON.Vector3(0.1, 0.1, 0.1);
+
+    new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+
+    let scrollPosition = 0;
+    let scrollTarget = 0.01;
+
+    const hotspots = [];
+
+    console.log('Initializing hotspots:', hotspots);
+
+    hotspots.forEach((h) => {
+      console.log('Creating hotspot:', h);
+      const sphere = BABYLON.MeshBuilder.CreateSphere(
+        `hotspot-${h.id}`, 
+        { diameter: 0.2 }, 
+        scene
+      );
+      
+      sphere.position = new BABYLON.Vector3(
+        h.position._x,
+        h.position._y,
+        h.position._z
+      );
+      
+      sphere.scaling = new BABYLON.Vector3(
+        h.scale._x,
+        h.scale._y,
+        h.scale._z
+      );
+      
+      console.log('Hotspot positioned at:', sphere.position);
+      
+      const material = new BABYLON.StandardMaterial(
+        `hotspot-material-${h.id}`,
+        scene
+      );
+      material.diffuseColor = BABYLON.Color3.FromHexString(h.color);
+      material.emissiveColor = BABYLON.Color3.FromHexString(h.color).scale(0.5);
+      sphere.material = material;
+
+      sphere.actionManager = new BABYLON.ActionManager(scene);
+      
+      sphere.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+          BABYLON.ActionManager.OnPointerOverTrigger,
+          () => {
+            console.log('Hotspot hover:', h.title);
+            material.emissiveColor = BABYLON.Color3.FromHexString(h.color);
+            if (h.activationMode === 'hover') {
+              // Track hotspot interaction
+              trackHotspotInteraction(h.title, 'hover');
+              showHotspotContent(h);
+            }
+          }
+        )
+      );
+
+      sphere.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+          BABYLON.ActionManager.OnPointerOutTrigger,
+          () => {
+            material.emissiveColor = BABYLON.Color3.FromHexString(h.color).scale(0.5);
+            if (h.activationMode === 'hover') {
+              hideHotspotContent();
+            }
+          }
+        )
+      );
+
+      sphere.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+          BABYLON.ActionManager.OnPickTrigger,
+          () => {
+            console.log('Hotspot clicked:', h.title);
+            if (h.activationMode === 'click') {
+              // Track hotspot interaction
+              trackHotspotInteraction(h.title, 'click');
+              showHotspotContent(h);
+            }
+          }
+        )
+      );
+
+      console.log('Hotspot created successfully:', h.title);
+    });
+
+    function showHotspotContent(hotspot) {
+      const hotspotContent = document.getElementById('hotspotContent');
+      hotspotContent.innerHTML = `
+        <h3>${hotspot.title}</h3>
+        ${hotspot.photoUrl ? `<img src="${hotspot.photoUrl}" alt="${hotspot.title}" style="width: 100%; margin-bottom: 10px; border-radius: 5px;">` : ''}
+        ${hotspot.information ? `<p>${hotspot.information}</p>` : ''}
+        ${hotspot.activationMode === 'click' ? '<button onclick="hideHotspotContent()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>' : ''}
+      `;
+      hotspotContent.style.display = 'block';
+      positionHotspotContent(hotspotContent);
+    }
+
+    function hideHotspotContent() {
+      const hotspotContent = document.getElementById('hotspotContent');
+      hotspotContent.style.display = 'none';
+    }
+
+    function showInfoPopup(data) {
+        const infoPopup = document.getElementById('infoPopup');
+        infoPopup.innerHTML = `
+          <p>${data.text}</p>
+          <button onclick="hideInfoPopup()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>
+        `;
+        infoPopup.style.display = 'block';
+    }
+
+    function hideInfoPopup() {
+      const infoPopup = document.getElementById('infoPopup');
+      const waypointInfo = document.getElementById('waypointInfo');
+      infoPopup.style.display = 'none';
+      if(waypointInfo){
+        waypointInfo.style.display = 'none';
+      }
+    }
+
+    function showWaypointInfo(waypoint) {
+      const waypointInfo = document.getElementById('waypointInfo');
+
+      if (waypointInfo) {
+        waypointInfo.innerHTML = '';
+
+        if (waypoint.name) {
+          const nameElement = document.createElement('h3');
+          nameElement.style.fontWeight = 'bold';
+          nameElement.style.margin = '0 0 8px 0';
+          nameElement.style.textAlign = 'center';
+          nameElement.textContent = waypoint.name;
+          waypointInfo.appendChild(nameElement);
+        }
+
+        const infoInteraction = waypoint.interactions.find(
+          (interaction) => interaction.type === 'info'
+        );
+
+        if (
+          infoInteraction &&
+          infoInteraction.data &&
+          infoInteraction.data.text &&
+          'controls' === 'controls'
+        ) {
+          const descElement = document.createElement('p');
+          descElement.style.textAlign = 'center';
+          descElement.textContent = infoInteraction.data.text;
+          waypointInfo.appendChild(descElement);
+        }
+
+        waypointInfo.style.display = 'block';
+      }
+    }
+
+    function updateActiveWaypoint() {
+      let closestWaypoint = null;
+      let minDistance = Infinity;
+
+      waypoints.forEach((wp, index) => {
+        const distance = BABYLON.Vector3.Distance(
+          camera.position,
+          new BABYLON.Vector3(wp.x, wp.y, wp.z)
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestWaypoint = wp;
+        }
+
+        const triggerDistance = wp.triggerDistance ?? 1.0;
+        if (distance <= triggerDistance) {
+          if (!activeWaypoints.has(index)) {
+            activeWaypoints.add(index);
+            // Track waypoint reached
+            trackWaypointReached(wp.name || `Waypoint ${index + 1}`, index);
+            executeInteractions(wp.interactions, index);
+          }
+        } else {
+          if (activeWaypoints.has(index)) {
+            activeWaypoints.delete(index);
+            reverseInteractions(wp.interactions);
+          }
+        }
+      });
+
+      if (closestWaypoint) {
+        showWaypointInfo(closestWaypoint);
+      }
+    }
+
+    function positionHotspotContent(element) {
+      const rect = element.getBoundingClientRect();
+      let left = scene.pointerX + 10;
+      let top = scene.pointerY + 10;
+
+      if (left + rect.width > window.innerWidth) {
+        left = window.innerWidth - rect.width - 10;
+      }
+      if (top + rect.height > window.innerHeight) {
+        top = window.innerHeight - rect.height - 10;
+      }
+
+      element.style.left = `${left}px`;
+      element.style.top = `${top}px`;
+    }
+
+    const collisionMeshesData = [];
+
+    function createCollisionMeshes() {
+      collisionMeshesData.forEach((data, index) => {
+        let mesh;
+        
+        switch(data.meshType) {
+          case 'cube':
+            mesh = BABYLON.MeshBuilder.CreateBox(
+              `collisionMesh-${index}`,
+              { size: 3 },
+              scene
+            );
+            break;
+          case 'sphere':
+            mesh = BABYLON.MeshBuilder.CreateSphere(
+              `collisionMesh-${index}`,
+              { diameter: 3 },
+              scene
+            );
+            break;
+          case 'custom':
+            if (data.customMeshUrl) {
+              BABYLON.SceneLoader.ImportMesh("", "", data.customMeshUrl, scene, function(meshes) {
+                if (meshes.length > 0) {
+                  mesh = meshes[0];
+                  configureMesh(mesh, data);
+                }
+              });
+              return;
+            }
+          case 'plane':
+          default:
+            mesh = BABYLON.MeshBuilder.CreatePlane(
+              `collisionMesh-${index}`,
+              { size: 3 },
+              scene
+            );
+        }
+        
+        configureMesh(mesh, data);
+      });
+    }
+
+    function configureMesh(mesh, data) {
+      mesh.position = new BABYLON.Vector3(
+        data.position[0],
+        data.position[1],
+        data.position[2]
+      );
+      
+      mesh.rotation = new BABYLON.Vector3(
+        data.rotation[0],
+        data.rotation[1],
+        data.rotation[2]
+      );
+      
+      mesh.scaling = new BABYLON.Vector3(
+        data.scaling[0],
+        data.scaling[1],
+        data.scaling[2]
+      );
+      
+      mesh.checkCollisions = true;
+      mesh.isVisible = false;
+    }
+
+    createCollisionMeshes();
+
+    let transitionSpeed = 0.5;
+    
+    function updateTransitionSpeed(value) {
+      transitionSpeed = parseFloat(value);
+    }
+
+    function updateScrollUI(percentage) {
+      const scrollPercentage = document.getElementById('scrollPercentage');
+      const progressBar = document.getElementById('progressBar');
+      if (scrollPercentage && progressBar) {
+        scrollPercentage.textContent = `${Math.round(percentage)}%`;
+        progressBar.style.width = `${percentage}%`;
+      }
+    }
+
+    const scrollButtonMode = 'waypoint';
+    const scrollAmount = 10;
+
+    function handleButtonScroll(direction) {
+      if (cameraMode === 'explore') {
+        return;
+      }
+      if (scrollButtonMode === 'percentage') {
+        adjustScroll(direction * scrollAmount / 100);
+      } else {
+        moveToWaypoint(direction);
+      }
+    }
+
+    function adjustScroll(amount) {
+      const pathLength = path.length;
+      if (pathLength > 1) {
+        const scrollIncrement = (pathLength - 1) * amount;
+        scrollTarget += scrollIncrement;
+
+        if (scrollTarget < 0) scrollTarget = 0;
+        if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+
+        userControl = false;
+      }
+    }
+
+    function moveToWaypoint(direction) {
+      const subdivisionsPerSegment = 20;
+      let currentWaypointIndex = Math.round(scrollPosition / subdivisionsPerSegment);
+      let nextWaypointIndex = currentWaypointIndex + direction;
+
+      nextWaypointIndex = Math.max(0, Math.min(nextWaypointIndex, waypoints.length - 1));
+
+      scrollTarget = nextWaypointIndex * subdivisionsPerSegment;
+      userControl = false;
+    }
+
+    window.addEventListener('wheel', (event) => {
+      if (cameraMode === 'tour' || cameraMode === 'auto') {
+        userControl = false;
+        scrollTarget += event.deltaY * 0.1;
+        if (scrollTarget < 0) scrollTarget = 0;
+        if (scrollTarget > path.length - 1) {
+          scrollTarget = path.length - 1;
+        }
+        return;
+      }
+
+      if (cameraMode === 'explore') {
+        userControl = true;
+      } else {
+        userControl = false;
+        scrollTarget += event.deltaY * 0.1;
+        if (scrollTarget < 0) scrollTarget = 0;
+        if (scrollTarget > path.length - 1) {
+          scrollTarget = path.length - 1;
+        }
+      }
+    });
+
+    let targetRotation = camera.rotationQuaternion.clone();
+    let targetPosition = camera.position.clone();
+
+    const activeWaypoints = new Set();
+    
+    if(true) {
+      const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100 }, scene);    
+      ground.isVisible = false;
+
+      const xr = scene.createDefaultXRExperienceAsync({
+        floorMeshes: [ground],
+      });
+    }
+
+    BABYLON.SceneLoader.ImportMeshAsync('', '', 'https://mambofishfiledump.s3.us-east-2.amazonaws.com/newhousecomplex/newhouse3.splat', scene)
+      .then((result) => {
+        const loadedMeshes = result.meshes;
+        loadedMeshes.forEach((mesh) => {
+          if (mesh instanceof BABYLON.Mesh) {
+            mesh.position = BABYLON.Vector3.Zero();
+          }
+        });
+         preloader.classList.add("hidden");
+      })
+      .catch((error) => {
+        console.error('Error loading model file:', error);
+        alert('Error loading model file: ' + error.message);
+        preloader.classList.add("hidden");
+      });
+
+    engine.runRenderLoop(function () {
+      const scrollInterpolationSpeed = 0.01 + transitionSpeed * 0.1;
+
+      if (window.autoPlayEnabled && !userControl) {
+        scrollTarget += 0.05;
+      }
+      scrollPosition += (scrollTarget - scrollPosition) * scrollInterpolationSpeed;
+
+      if (true) {
+        if (scrollPosition >= path.length - 1.1) {
+          scrollPosition = 0.2;
+          scrollTarget = 0.2;
+        } else if (scrollPosition <= 0.1) {
+          scrollPosition = path.length - 1.11;
+          scrollTarget = path.length - 1.11;
+        }
+      }
+
+      scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));    
+
+      const scrollPercentage = (scrollPosition / (path.length - 1 || 1)) * 100;
+
+      if (cameraMode !== 'explore') {
+        updateScrollUI(scrollPercentage);
+      }
+
+      if ((cameraMode === 'auto' && !userControl) || (cameraMode === 'tour' && !userControl)) {
+        const t = scrollPosition / (path.length - 1 || 1);
+
+        const totalSegments = waypoints.length - 1;
+        if (totalSegments >= 1) {
+          const segmentT = t * totalSegments;
+          const segmentIndex = Math.floor(segmentT);
+          const clampedSegmentIndex = Math.min(segmentIndex, totalSegments - 1);
+          const lerpFactor = segmentT - clampedSegmentIndex;
+
+          const r1 = rotations[clampedSegmentIndex];
+          const nextIndex = (clampedSegmentIndex + 1) % rotations.length;
+          const r2 = rotations[nextIndex];
+
+          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
+
+          const floorIndex = Math.floor(scrollPosition);
+          const ceilIndex = Math.min(floorIndex + 1, path.length - 1);
+          const lerpFactorPos = scrollPosition - floorIndex;
+
+          const interpolatedPosition = BABYLON.Vector3.Lerp(
+            path[floorIndex],
+            path[ceilIndex],
+            lerpFactorPos
+          );
+
+          targetPosition = interpolatedPosition;
+        } else if (rotations.length === 1) {
+          targetRotation = rotations[0].clone();
+          targetPosition = path[0].clone();
+        }
+
+        if (camera.rotationQuaternion) {
+          camera.rotationQuaternion = BABYLON.Quaternion.Slerp(
+            camera.rotationQuaternion,
+            targetRotation,
+            0.05
+          ).normalize();
+        }
+
+        const positionDampingFactor = 0.1;
+        camera.position = BABYLON.Vector3.Lerp(
+          camera.position,
+          targetPosition,
+          positionDampingFactor
+        );
+      }
+
+      updateActiveWaypoint();
+      scene.render();
+    });
+
+    scene.onPointerObservable.add(function (evt) {
+      if (evt.type === BABYLON.PointerEventTypes.POINTERDOWN) {
+        if (cameraMode === 'explore' || cameraMode === 'auto') {
+          userControl = true;
+        } else {
+          userControl = false;
+        }
+      }
+    });
+
+    window.addEventListener('keydown', function () {
+      if (cameraMode === 'explore' || cameraMode === 'auto') {
+        userControl = true;
+      } else {
+        userControl = false;
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      engine.resize();
+    });
+
+    updateModeToggleUI();
+    updateScrollControlsVisibility();
+  </script>
+</body>
+</html>
+  
