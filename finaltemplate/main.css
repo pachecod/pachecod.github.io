@@ -1,0 +1,21 @@
+body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  p {
+    font-family: arial 12px;
+    font:size: 50px;
+  }
+  
+.headerfont {
+    font-family: Miltonian Tattoo;
+    
+  }
+  
+  /* Remove the following style for div to remove the border. */
+  
+div {
+    border-style: solid;
+    border: 1px solid black;
+}
