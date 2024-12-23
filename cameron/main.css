@@ -1,0 +1,45 @@
+body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  p {
+    font-family: arial 12px;
+    font:size: 50px;
+  }
+  
+
+.newheaderfont {
+  font-family: Yuji Mai;
+}  
+
+  
+  /* Remove the following style for div to remove the border. */
+  
+div {
+    border-style: solid;
+    border: 1px solid black;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Styling Example</title>
+    <style>
+        .date-info {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="row"> 
+    <div class="col-sm date-info">
+        December 9, 2024, By Cameron Crook
+    </div>   
+</div>
+
+</body>
+</html>
