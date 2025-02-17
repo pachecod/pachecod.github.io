@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Simple Trigger System Example</title>
+    <meta name="description" content="A-Frame trigger system">
+    <script src="https://aframe.io/releaes/0.7.0/aframe.min.js"></script>
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes" />
+    <meta aframe-injected="" name="theme-color" content="black" />
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+    
+    <!-- Simple Trigger System Script -->
+    <script>
+      AFRAME.registerComponent('trigger-zone', {
+        schema: {
+          // Selector for the target (for example, the camera/player)
+          target: {type: 'selector'},
+          // Radius of the trigger zone (in meters)
+          radius: {type: 'number', default: 1},
+          // Action type: 'playAudio' or 'toggleAnimation'
+          action: {type: 'string', default: 'playAudio'}
+        },
+        init: function () {
+          this.triggered = false;
+        },
+        tick: function () {
+          // Only proceed if we have a target and haven't already triggered.
+          if (!this.data.target || this.triggered) { return; }
+  
+          // Get world positions for the trigger entity and the target entity.
+          const triggerPos = new THREE.Vector3();
+          const targetPos = new THREE.Vector3();
+          this.el.object3D.getWorldPosition(triggerPos);
+          this.data.target.object3D.getWorldPosition(targetPos);
+  
+          // Check the distance between the two.
+          if (triggerPos.distanceTo(targetPos) < this.data.radius) {
+            this.triggered = true; // Prevent retriggering (remove or modify this flag if you want repeated triggers)
+  
+            // Emit a custom event based on the defined action.
+            if (this.data.action === 'playAudio') {
+              this.el.emit('playAudio', null, false);
+              console.log('Trigger zone activated: playAudio');
+            } else if (this.data.action === 'toggleAnimation') {
+              this.el.emit('toggleAnimation', null, false);
+              console.log('Trigger zone activated: toggleAnimation');
+            }
+          }
+        }
+      });
+      
+      // Example: A component that listens for the playAudio event and plays an attached sound.
+      AFRAME.registerComponent('audio-trigger', {
+        init: function () {
+          this.el.addEventListener('playAudio', () => {
+            // Assuming the entity has a sound component attached.
+            this.el.components.sound.playSound();
+          });
+        }
+      });
+      
+      // Example: A component that listens for the toggleAnimation event.
+      AFRAME.registerComponent('animation-trigger', {
+        schema: {
+          // Name of the animation to toggle.
+          animationName: {type: 'string', default: 'spin'}
+        },
+        init: function () {
+          this.el.addEventListener('toggleAnimation', () => {
+            // Toggle the animation state.
+            const animation = this.el.getAttribute('animation');
+            if (animation && animation.enabled) {
+              this.el.setAttribute('animation', 'enabled', false);
+            } else {
+              this.el.setAttribute('animation', 'enabled', true);
+            }
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Camera/player entity. Make sure this is the target for triggers. -->
+      <a-entity id="player" camera look-controls position="0 1.6 0"></a-entity>
+      
+      <!-- A box that plays audio when the player enters its trigger zone.
+           The box has a collider (the trigger zone) and an audio component.
+           Make sure to provide a valid audio file URL. -->
+      <a-box position="0 1 -4" color="#EF2D5E" 
+             trigger-zone="target: #player; radius: 2; action: playAudio"
+             audio-trigger
+             sound="src: url(https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav)">
+      </a-box>
+      
+      <!-- A sphere that toggles an animation when the player enters its trigger zone. -->
+      <a-sphere position="2 1 -4" radius="1" color="#4CC3D9"
+                trigger-zone="target: #player; radius: 2; action: toggleAnimation"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; enabled: false"
+                animation-trigger>
+      </a-sphere>
+      
+      <!-- A simple floor -->
+      <a-plane rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+    </a-scene>
+  </body>
+</html>
