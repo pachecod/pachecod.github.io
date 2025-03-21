@@ -35,17 +35,20 @@ h3 {
 }
 
 code, pre {
-  font-family: "Courier New", Courier, monospace;
-  background: #f8f9fa;
-  color: #212529;
-}
-
-pre {
-  border-left: 4px solid #007bff;
-  padding: 1em;
-  overflow-x: auto;
-  margin: 1.5em 0;
-}
+    font-family: "Courier New", Courier, monospace;
+    background: #f8f9fa;
+    color: #212529;
+  }
+  
+  pre {
+    border-left: 4px solid #007bff;
+    padding: 1em;
+    overflow-x: auto;
+    margin: 1.5em auto;
+    max-width: 90%;
+    white-space: pre-wrap;       /* CSS3 property to wrap text */
+    word-wrap: break-word;       /* For IE and legacy browsers */
+  }
 
 ul, ol {
   padding-left: 2em;
