@@ -14,10 +14,12 @@
     IST 687<br>
     Friday, Mar. 21, 2025</p>
 
+    <i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a>
+
   <h2>Introduction</h2>
-  <p>As interest in electric vehicles (EVs) grows, so does concern about charging infrastructure. And this is backed up by recent research. A <a href="https://www.hbs.edu/bigs/the-state-of-ev-charging-in-america" target="_blank">recent Harvard study</a> showed that drivers can successfully recharge their cars using non-residential EV equipment only 78% of the time. Potential buyers (myself included!) worry about where and how often they can charge on the road — especially when leaving urban areas. The most extreme example of this is planning a road trip. Unless every American plans to have a combusion-engine car for road trips and an electric car for city driving only, this is a problem that must be solved.</p>
+  <p>As interest in electric vehicles (EVs) grows, so does concern about charging infrastructure. And this is backed up by recent research. A <a href="https://www.hbs.edu/bigs/the-state-of-ev-charging-in-america" target="_blank">recent Harvard study</a> showed that drivers can successfully recharge their cars using non-residential EV equipment only 78% of the time. Potential buyers (myself included!) worry about where and how often they can charge on the road — especially when leaving urban areas. The most extreme example of this is planning a road trip. Unless every American plans to have a combustion-engine car for road trips and an electric car for city driving only, this is a problem that must be solved.</p>
   
-  <p>This project examines how EV charging is distributed across the U.S. and what kind of experience drivers can expect based on where they live or plan to travel. I used R Studio and the functions and processes I learned in IST 687: Introduction to Data Science to try to get a better picture of what the charging infrastructure across the United States is really like, and began building a Shiny App using <a href="https://leafletjs.com" target="_blank">Leaflet.js</a> that could potentially help EV road-trippers plan their trips with more confidence. I was super exdited to learn that Leaflet is supported natively in R using a package! I have more about that in an <a href="#appendix">Appendix</a> at the end of this writeup.</p>
+  <p>This project examines how EV charging is distributed across the U.S. and what kind of experience drivers can expect based on where they live or plan to travel. I used R Studio and the functions and processes I learned in IST 687: Introduction to Data Science to try to get a better picture of what the charging infrastructure across the United States is really like, and began building a Shiny App using <a href="https://leafletjs.com" target="_blank">Leaflet.js</a> that could potentially help EV road-trippers plan their trips with more confidence. I was super excited to learn that Leaflet is supported natively in R using a package! I have more about that in an <a href="#appendix">Appendix</a> at the end of this writeup.</p>
 
   <h2>Data Sources</h2>
   <p>The data for this project comes from the <a href="https://afdc.energy.gov/stations#/find/nearest" target="_blank">U.S. Department of Energy's Alternative Fueling Station Locator</a> web site. This data set covers all types of alternative fuels including things like hydrogen fuel, but I wanted to focus only on electric vehicles. I was able to download a subset of 83,000+ records of EV charging stations nationwide, as well as in Canada and some U.S. territories. I filtered the dataset to focus solely on electric vehicle stations.</p>
@@ -36,7 +38,7 @@
 
   <p>I used the jsonlite library for importing the CSV, and the tidyverse library for subsetting and cleaning it to be in the formats I needed. I also renamed the column headers for the columns I planned to use.</p>
 
-  <p>A key point of cleaning is that I needed to remove Canadian provinces, the District of Columbia and Puerto Rico because the ggplot maps I'm using don't display those locations. I also wanted to compare only states to other state. However, I did copy the states data into its own US file, with a plan of eventually creating a subset of just Canada, and perhaps also a subset that is only the island of Puerto Rico so that I can do analyses of them individaully, and even compare them to U.S. states.</p>
+  <p>A key point of cleaning is that I needed to remove Canadian provinces, the District of Columbia and Puerto Rico because the ggplot maps I'm using don't display those locations. I also wanted to compare only states to other states. However, I did copy the states data into its own US file, with a plan of eventually creating a subset of just Canada, and perhaps also a subset that is only the island of Puerto Rico so that I can do analyses of them individually, and even compare them to U.S. states.</p>
 
   <pre><code># Load libraries
 library(tidyverse)
@@ -96,7 +98,7 @@ ggplot(map_data_final, aes(x = long, y = lat, group = group, fill = StationCount
 
   <h3>Map 2: With California Removed</h3>
 
-  <P>This map lets you see more clearly how the other states compare. Texas, New York, Massachussetts and Florida are all on par numerically. States like Washington, Georgia, North and South Carolina, Colorado, Pennsylvania and Michigan make the middle tier. The rest are at the bottom. (But don't feel too big in your britches, mid-levels, because you are all still way way WAY behind California!)</P>
+  <P>This map lets you see more clearly how the other states compare. Texas, New York, Massachusetts and Florida are all on par numerically. States like Washington, Georgia, North and South Carolina, Colorado, Pennsylvania and Michigan make the middle tier. The rest are at the bottom. (But don't feel too big in your britches, mid-levels, because you are all still way way WAY behind California!)</P>
 
   <img src="map2.png" class="img-fluid" alt="...">
 
@@ -115,7 +117,7 @@ ggplot(map_data_no_ca, aes(x = long, y = lat, group = group, fill = StationCount
 
   <P>As I thought more about what these numbers mean, the total number is not that useful because every state has differently sized populations. I decided to import a dataframe of state population size, then join that into the data of totals per state. This allowed me to show the total number of charging stations per 1,000 residents.</P>
 
-  <p>This led to some interesting insights. As compared to their populations, California, Washington, Oregon Utah, Colorado, Arizona, and Fermont are actually on par with each other. So California, you're not as far ahead of every state as you thought. And surprise: Nevada is ahead of everyone, including California!</p>
+  <p>This led to some interesting insights. As compared to their populations, California, Washington, Oregon Utah, Colorado, Arizona, and Vermont are actually on par with each other. So California, you're not as far ahead of every state as you thought. And surprise: Nevada is ahead of everyone, including California!</p>
 
 
   <h4>Code for the map above:</h4>
@@ -175,7 +177,7 @@ ggplot(new_map_ev_data, aes(x = long, y = lat, group = group, fill = StationsPer
 
   <p>Enough with maps. Now I was ready to do some histograms. The one that made the most sense to me was this: what types of facilities tend to have the most charging stations? To get at that, I used the tidyverse piping function to mutate / group facility types and basically sum them up. </p>
 
-  <p>What I found is that approximately 16 facility types were leaders in having charging station, with hotels, car dealers, and "public" locations have the most. I am slightly concerned about the "public" designiation because it may mean just unknown, but I need to do more research into that.</p>
+  <p>What I found is that approximately 16 facility types were leaders in having charging station, with hotels, car dealers, and "public" locations have the most. I am slightly concerned about the "public" designation because it may mean just unknown, but I need to do more research into that.</p>
 
   <p>In a later step, I called out those 16 facility types to create an interactive map.</p>
 
@@ -215,9 +217,9 @@ summary(model_poisson)</code></pre>
 
   <h2>Interactive Road Trip Planner (Shiny + Leaflet)</h2>
 
-  <p>OK, so with all that out of the way, I started to get excited about what I could do to make these maps interactive. And I will admit: I had not idea, but I did know that Leaflet.js is used a lot by news organizations to make such maps.</p>
+  <p>OK, so with all that out of the way, I started to get excited about what I could do to make these maps interactive. And I will admit: I had no idea, but I did know that Leaflet.js is used a lot by news organizations to make such maps.</p>
 
-  <p>So, I dedided to go ask a new model of ChatGPT (the o3-mini-high model which is good at reasoning and code) if it knew of ways to do this. I specifically asked it: Based on the data set I had and the types of fields in it, did it know if it could use Leaflet to make a road trip planner?</p>
+  <p>So, I decided to go ask a new model of ChatGPT (the o3-mini-high model which is good at reasoning and code) if it knew of ways to do this. I specifically asked it: Based on the data set I had and the types of fields in it, did it know if it could use Leaflet to make a road trip planner?</p>
 
   <p>It did, and the video below shows what we made together. I had to do some more data munging but was really excited to see that most of the code was supported directly in Leaflet's R package.</p>
 
@@ -463,7 +465,7 @@ summary(model_poisson)</code></pre>
     </code></pre>
     
   <h2>Conclusion</h2>
-  <p>This project showcases how powerful data visualization and interactive tools can be for public understanding of EV infrastructure. Not only does this analysis provide a clearer picture of where infrastructure exists, but it helps identify where improvement is still needed. Tools like the road trip planner have the potential to reduce anxiety for future EV drivers, helping them make informed travel decisions.</p>
+  <p>I really enjoyed delving into this large data set and using the skills I picked up in IST 687 to turn it into something that tells a story about the state of electric vehicle infrastructure in the United States. I'm also very proud of the EV Road Trip Planner, and I intend to publish it online after this class is over. My main reason for doing that? I'm sure my next car will be electric, and I don't want to get stuck or get bored while charging at a slow station with nothing to do. </p>
 
 
     <a name="appendix"></a>
@@ -480,6 +482,8 @@ summary(model_poisson)</code></pre>
     <li><a href="https://r-charts.com/spatial/interactive-maps-leaflet/"  target="_blank">R-Charts tutorials:</a> </li></p>
 
 </ul>
+
+<i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a>
 
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
