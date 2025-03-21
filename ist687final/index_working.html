@@ -76,7 +76,7 @@ fuelstations_us &lt;- fuelstations_us %&gt;% filter(StateAbbrev != "DC")</code><
 
   <h4>Code for the map above:</h4>
 
-<pre><code># Count stations per state
+ <!-- <pre><code># Count stations per state
 state_counts &lt;- fuelstations_us %&gt;%
   group_by(StateAbbrev) %&gt;%
   summarise(StationCount = n())
@@ -94,6 +94,39 @@ ggplot(map_data_final, aes(x = long, y = lat, group = group, fill = StationCount
   theme_void() +
   labs(title = "Total Charging Stations by State")</code></pre>
 
+  -->
+
+  <div class="accordion mb-3" id="accordionCode1">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingCode1">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCode1" aria-expanded="false" aria-controls="collapseCode1">
+          Show Code for the Map Above
+        </button>
+      </h2>
+      <div id="collapseCode1" class="accordion-collapse collapse" aria-labelledby="headingCode1" data-bs-parent="#accordionCode1">
+        <div class="accordion-body">
+          <pre class="code-block"><code># Count stations per state
+  state_counts <- fuelstations_us %>%
+    group_by(StateAbbrev) %>%
+    summarise(StationCount = n())
+  
+  # Join with map data
+  state_data <- state_counts %>%
+    left_join(data.frame(StateAbbrev = state.abb, region = tolower(state.name)), by = "StateAbbrev")
+  
+  map_data_final <- left_join(map_data("state"), state_data, by = "region")
+  
+  # Plot
+  ggplot(map_data_final, aes(x = long, y = lat, group = group, fill = StationCount)) +
+    geom_polygon(color = "white") +
+    scale_fill_gradient(low = "lightblue", high = "darkblue") +
+    coord_fixed(1.3) +
+    theme_void() +
+    labs(title = "Total Charging Stations by State")</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
    
 
 <p>The map above looks good, but unfortunately California is so far beyond every other state in its electric vehicle infrastructure, it makes it hard to compare the other states. So much as I love California, I decided to make a map that removes it so I could see how that looks:</p>
@@ -124,7 +157,8 @@ ggplot(map_data_no_ca, aes(x = long, y = lat, group = group, fill = StationCount
 
   <h4>Code for the map above:</h4>
 
-  <pre><code>new_state_population &lt;- data.frame(region = tolower(rownames(state.x77)), Population = state.x77[,"Population"])
+  <pre>
+            <code>new_state_population &lt;- data.frame(region = tolower(rownames(state.x77)), Population = state.x77[,"Population"])
 new_state_data &lt;- state_data %&gt;%
   left_join(new_state_population, by = "region") %&gt;%
   mutate(StationsPer100k = (StationCount / Population) * 100000)
@@ -138,6 +172,8 @@ ggplot(new_map_data_final, aes(x = long, y = lat, group = group, fill = Stations
   coord_fixed(1.3) +
   theme_void() +
   labs(title = "Charging Stations per 100,000 Residents")</code></pre>
+
+
 
   <h3>Map 4: Stations Per Electric Vehicle</h3>
 
@@ -173,6 +209,8 @@ ggplot(new_map_ev_data, aes(x = long, y = lat, group = group, fill = StationsPer
   coord_fixed(1.3) +
   theme_void() +
   labs(title = "Charging Stations per 1,000 Electric Vehicles")</code></pre>
+
+
 
   <h2>Where Are These Stations Located?</h2>
 
@@ -212,143 +250,10 @@ ggplot(facility_summary, aes(x = reorder(FacilityType, -Total), y = Total)) +
 
   <h4>Code for the predictive model:</h4>
 
-  <pre><code>
-    
-    # --- Step 1: Create the Binary Outcome Variable ---
+  <pre><code>fuelstations_us$EVfast &lt;- as.numeric(fuelstations_us$EVfast)
 
-# Assuming EVfast (or ev_dc_fast_num) represents fast chargers, convert it to numeric
-fuelstations_us$EVfast <- as.numeric(fuelstations_us$EVfast)
-
-# Create a new binary variable: has_fast (1 if there is at least one fast charger, 0 otherwise)
-fuelstations_us <- fuelstations_us %>%
-  mutate(has_fast = ifelse(EVfast > 0, 1, 0))
-
-# --- Step 2: Filter for Relevant Facility Types ---
-facility_types <- c("HOTEL", "CAR_DEALER", "PUBLIC", "PARKING_LOT", "SHOPPING_CENTER", "MUNI_GOV", "GAS_STATION", "RESTAURANT", "OFFICE_BUILDING", "PARKING_GARAGE", "PAY_GARAGE", "COLLEGE_CAMPUS", "GROCERY","INN","BREWERY_DISTILLERY_WINERY","CONVENIENCE_STORE","PARK")
-
-
-fuelstations_filtered <- fuelstations_us %>%
-  filter(FacilityType %in% facility_types)
-
-# Check how many facility types are in the filtered dataset
-table(fuelstations_filtered$FacilityType)
-
-# --- Step 3: Split Data into Training and Test Sets ---
-set.seed(123)  # For reproducibility
-sample_size <- floor(0.7 * nrow(fuelstations_filtered))
-train_indices <- sample(seq_len(nrow(fuelstations_filtered)), size = sample_size)
-train_set <- fuelstations_filtered[train_indices, ]
-test_set  <- fuelstations_filtered[-train_indices, ]
-
-# Convert FacilityType to factor and drop unused levels in train_set
-train_set$FacilityType <- droplevels(as.factor(train_set$FacilityType))
-# Verify that FacilityType has more than one level
-table(train_set$FacilityType)
-
-# --- Step 4: Build a Logistic Regression Model ---
-model <- glm(has_fast ~ FacilityType, data = train_set, family = "binomial")
-summary(model)
-
-# --- Step 5: Make Predictions and Evaluate ---
-# Predict probabilities on the test set
-predicted_probs <- predict(model, newdata = test_set, type = "response")
-# Convert probabilities to binary predictions using a threshold of 0.5
-predicted_classes <- ifelse(predicted_probs > 0.5, 1, 0)
-
-# Use the caret package for an easy confusion matrix (install if necessary)
-if (!require(caret)) {
-  install.packages("caret")
-  library(caret)
-}
-
-print("These reults indicate that all of my charging stations have fast chargers, so I can't use this regression model to determine anything useful")
-
-# Change approach to instead precict the number of chargers of different speeds are likely to be at each facility type.
-
-# --- Updated Code: Predicting the Count of Fast Chargers (EVfast) by FacilityType ---
-
-# Make sure FacilityType is a factor in the overall dataset if not already done.
-fuelstations_us$FacilityType <- as.factor(fuelstations_us$FacilityType)
-
-# --- Step 1: Ensure EVfast is numeric ---
-fuelstations_us$EVfast <- as.numeric(as.character(fuelstations_us$EVfast))
-
-# --- Step 2: Filter for Relevant Facility Types ---
-facility_types <- c("HOTEL", "CAR_DEALER", "PUBLIC", "PARKING_LOT", "SHOPPING_CENTER", "MUNI_GOV", "GAS_STATION", "RESTAURANT", "OFFICE_BUILDING", "PARKING_GARAGE", "PAY_GARAGE", "COLLEGE_CAMPUS", "GROCERY","INN","BREWERY_DISTILLERY_WINERY","CONVENIENCE_STORE","PARK")
-
-fuelstations_filtered <- fuelstations_us %>%
-  filter(FacilityType %in% facility_types)
-
-# Check how many facility types are in the filtered dataset
-table(fuelstations_filtered$FacilityType)
-
-# --- Step 3: Split Data into Training and Test Sets ---
-set.seed(123)  # For reproducibility
-sample_size <- floor(0.7 * nrow(fuelstations_filtered))
-train_indices <- sample(seq_len(nrow(fuelstations_filtered)), size = sample_size)
-train_set <- fuelstations_filtered[train_indices, ]
-test_set  <- fuelstations_filtered[-train_indices, ]
-
-# Convert FacilityType to factor and drop unused levels in train_set
-train_set$FacilityType <- droplevels(as.factor(train_set$FacilityType))
-table(train_set$FacilityType)
-
-# --- Step 4: Build a Poisson Regression Model ---
-# We are predicting the count of EVfast chargers based on FacilityType.
-model_poisson <- glm(EVfast ~ FacilityType, data = train_set, family = "poisson")
-summary(model_poisson)
-
-# Optionally, check for overdispersion:
-# overdispersion <- sum(residuals(model_poisson, type = "pearson")^2) / df.residual(model_poisson)
-# print(paste("Overdispersion:", overdispersion))
-# If overdispersion is high (e.g., > 2), consider using a negative binomial model:
-# library(MASS)
-# model_nb <- glm.nb(EVfast ~ FacilityType, data = train_set)
-# summary(model_nb)
-
-# --- Step 5: Make Predictions and Evaluate the Model ---
-# Predict counts on the test set using the Poisson model
-predicted_counts <- predict(model_poisson, newdata = test_set, type = "response")
-
-# Extract actual counts of EVfast from the test set
-actual_counts <- test_set$EVfast
-
-# Compute evaluation metrics: Mean Absolute Error (MAE) and Root Mean Square Error (RMSE)
-MAE <- mean(abs(predicted_counts - actual_counts))
-RMSE <- sqrt(mean((predicted_counts - actual_counts)^2))
-
-print(paste("Mean Absolute Error (MAE):", MAE))
-print(paste("Root Mean Square Error (RMSE):", RMSE))
-
-# Now let's graph them.
-
-# Generate new data for each facility type present in the training set
-new_df <- data.frame(FacilityType = levels(train_set$FacilityType))
-
-# Get predictions on the link scale along with standard errors
-# Using type = "link" returns predictions on the log scale.
-predictions <- predict(model_poisson, newdata = new_df, type = "link", se.fit = TRUE)
-
-# Convert predictions and confidence intervals from log-scale to counts
-new_df$fit <- exp(predictions$fit)
-new_df$lower <- exp(predictions$fit - 1.96 * predictions$se.fit)
-new_df$upper <- exp(predictions$fit + 1.96 * predictions$se.fit)
-
-# Load ggplot2 (if not already loaded)
-library(ggplot2)
-
-# Create a bar plot with error bars for the predicted count of EVfast chargers
-ggplot(new_df, aes(x = FacilityType, y = fit)) +
-  geom_col(fill = "skyblue") +
-  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2) +
-  labs(x = "Facility Type", y = "Predicted Count of Fast Chargers",
-       title = "Predicted Count of EVfast Chargers by Facility Type") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
-
-</code></pre>
+model_poisson &lt;- glm(EVfast ~ FacilityType, data = fuelstations_us, family = "poisson")
+summary(model_poisson)</code></pre>
 
   <h2>Interactive Road Trip Planner (Shiny + Leaflet)</h2>
 
