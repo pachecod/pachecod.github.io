@@ -76,3 +76,36 @@ hr {
     color: black;
   }
 }
+
+@media (max-width: 600px) {
+    body {
+      padding: 1em;
+      margin: 0.5em;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 100%;
+      box-shadow: none;
+    }
+  
+    h1 {
+      font-size: 1.6em;
+    }
+  
+    h2 {
+      font-size: 1.3em;
+    }
+  
+    h3 {
+      font-size: 1.1em;
+    }
+  
+    pre {
+      font-size: 14px;
+      padding: 0.5em;
+    }
+  
+    .container {
+      padding: 0 1em;
+      max-width: 100%;
+    }
+  }
