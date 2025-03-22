@@ -1,0 +1,1167 @@
+---
+title: "altfuelstations"
+author: "Dan Pacheco"
+date: "2025-02-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+```{r}
+# Load necessary libraries
+# uncomment these if packages not installed
+# install.packages("tidyverse")
+# install.packages(data.table"")
+# install.packages("dplyr")
+# install.packages("jsonlite")
+# install.packages("ggplot2")
+# install.packages("maps")
+# install.packages("scales")
+# install.packages("stringr")
+# install.packages("shiny")
+# install.packages("tidyr")
+# install.packages("leaflet")
+
+library(tidyverse)
+library(data.table)
+library(dplyr)
+library(jsonlite)
+library(ggplot2)
+library(maps)
+library(scales)
+library(stringr)
+library(shiny)
+library(tidyr)
+library(leaflet)
+library(sf)  # for gelolocation
+
+# Read the CSV file (without header)
+
+fuelstations <- read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/IST 687/My Work/Final Project/altfuelstations/Final Project Final/altfuelstations.csv", header = FALSE)
+
+
+
+# Glimpse at the data
+glimpse(fuelstations)
+
+# Rename columns of interest
+colnames(fuelstations)[1] <- "FuelTypeCode"
+colnames(fuelstations)[2] <- "StationName"
+colnames(fuelstations)[3] <- "StreetAddress"
+colnames(fuelstations)[5] <- "City"
+colnames(fuelstations)[6] <- "StateAbbrev"  # note: renamed to StateAbbrev
+colnames(fuelstations)[7] <- "Zip"
+colnames(fuelstations)[11] <- "ExpectedDate"
+colnames(fuelstations)[12] <- "AccessType"
+colnames(fuelstations)[13] <- "DaysTime"
+colnames(fuelstations)[18] <- "EVL1"
+colnames(fuelstations)[19] <- "EVL2"
+colnames(fuelstations)[20] <- "EVfast"
+colnames(fuelstations)[25] <- "Latitude"
+colnames(fuelstations)[26] <- "Longitude"
+colnames(fuelstations)[28] <- "ID"
+colnames(fuelstations)[29] <- "UpdatedAt"
+colnames(fuelstations)[33] <- "OpenDate"
+colnames(fuelstations)[38] <- "ConnectorTypes"
+colnames(fuelstations)[43] <- "PublicOrPrivate"
+colnames(fuelstations)[48] <- "FacilityType"
+colnames(fuelstations)[55] <- "Pricing"
+colnames(fuelstations)[65] <- "RestrictedAccess"
+
+# Remove the header row (if the first row actually contains header information)
+fuelstations <- fuelstations[-1,]
+
+# Remove rows that belong to Canadian provinces/territories
+canadian_codes <- c("AB","BC","MB","NB","NL","NS","NT","ON","PE","PR","QC","SK","YT")
+fuelstations_us <- fuelstations[!(fuelstations$StateAbbrev %in% canadian_codes), ]
+
+# Now remove DC
+fuelstations_us <- fuelstations_us %>%
+  filter(StateAbbrev != "DC")
+
+# Check structure
+glimpse(fuelstations_us)
+
+```
+
+
+
+# Let's make a map showing the percentage difference in charging stations state by state, with each state having a differently shaded color
+
+```{r}
+
+
+# Count charging stations by state
+state_counts <- fuelstations_us %>%
+  group_by(StateAbbrev) %>%
+  summarise(StationCount = n()) %>%
+  ungroup()
+
+# Compute national average
+national_avg <- mean(state_counts$StationCount, na.rm = TRUE)
+
+# Calculate percentage difference
+# state_counts <- state_counts %>%
+#  mutate(PercentageDiff = ((StationCount - national_avg) / national_avg) * 100)
+
+# Load built-in state map data
+states_map <- map_data("state")
+
+# Convert state abbreviations to full names (needed for mapping)
+state_abbrev_to_name <- data.frame(
+  StateAbbrev = state.abb, 
+  region = tolower(state.name)
+)
+
+# Merge state_counts with full state names
+state_data <- state_counts %>%
+  left_join(state_abbrev_to_name, by = "StateAbbrev")
+
+# Merge charging station data with state map data
+map_data_final <- left_join(states_map, state_data, by = "region")
+
+# Create the choropleth map with ggplot2
+ggplot(data = map_data_final, aes(x = long, y = lat, group = group, fill = StationCount)) +
+  geom_polygon(color = "white") +                  # Draw state borders in white
+  coord_fixed(1.3) +                               # Fix aspect ratio
+  scale_fill_gradient(low = "lightblue", high = "darkblue", 
+                      na.value = "grey50", name = "Charging Stations") +
+  theme_void() +                                   # Remove background, grid, etc.
+  labs(title = "Total Charging Stations by State")
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+```{r}
+
+# California has way more, so this map shows relative differences by state with california excluded.
+
+map_data_no_ca <- map_data_final %>%
+  filter(region != "california")
+
+ggplot(data = map_data_no_ca, aes(x = long, y = lat, group = group, fill = StationCount)) +
+  geom_polygon(color = "white") +                  
+  coord_fixed(1.3) +                               
+  scale_fill_gradient(low = "lightblue", high = "darkblue", 
+                      na.value = "grey50", name = "Charging Stations") +
+  theme_void() +                                   
+  labs(title = "Total Charging Stations by State (Excluding CA)")
+
+
+# New York, Texas and Florida move up the list.
+# This is not that interesting because those are also
+# the most populous states.
+
+```
+
+
+
+
+```{r}
+# We need to see these in terms of per capita population of each state.
+
+# 1. Create a new dataframe for state population using state.x77
+new_state_population <- data.frame(
+  region = tolower(rownames(state.x77)),
+  Population = state.x77[,"Population"]
+)
+
+# 2. Merge your existing state_data (which has StationCount and region) with the new population data,
+#    creating a new dataframe that includes the per capita metric.
+new_state_data <- state_data %>%
+  left_join(new_state_population, by = "region") %>%
+  mutate(StationsPer100k = (StationCount / Population) * 100000)
+
+# 3. Create a new map data frame by merging the built-in states map with the new state data
+new_map_data_final <- left_join(states_map, new_state_data, by = "region")
+
+# 4. Plot the choropleth map using the new map data (charging stations per 100k residents)
+ggplot(data = new_map_data_final, aes(x = long, y = lat, group = group, fill = StationsPer100k)) +
+  geom_polygon(color = "white") +                  
+  coord_fixed(1.3) +                               
+  scale_fill_gradient(low = "darkred", high = "orange", 
+                      na.value = "grey50", name = "Stations per 100k") +
+  theme_void() +                                   
+  labs(title = "Charging Stations per 100,000 Residents by State")
+
+# This shows that Colorado, Utah and Vermont have the most charging stations available for the people in their state. But that doesn't say anything about the number of electric vehicles in each state, so we need to get that data in there.
+
+```
+
+
+
+
+```{r}
+# Import registered vehicles by state and fuel tytpe
+
+carsbystate <- read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/IST 687/My Work/Final Project/altfuelstations/Final Project Final/2023_light_duty_vehicle_registration_by_fueltype.csv", header=FALSE)
+
+# Rename columns of interest
+colnames(carsbystate)[1] <- "region"
+colnames(carsbystate)[2] <- "electricvehicle"
+
+# Remove the first row of carsbystate
+carsbystate <- carsbystate[-1, ]
+
+# Make statenames all lower case to match region in state_data
+carsbystate$region <- tolower(carsbystate$region)
+
+# Make the new electricvehicles column numeric
+carsbystate <- carsbystate %>%
+  mutate(electricvehicle = as.numeric(gsub("[^0-9.]", "", electricvehicle)))
+
+state_data <- state_data %>% mutate(region = as.character(region))
+
+carsbystate %>%
+  mutate(electricvehicle_numeric = as.numeric(electricvehicle)) %>%
+  filter(is.na(electricvehicle_numeric)) %>%
+  select(electricvehicle)
+
+carsbystate <- carsbystate %>%
+  mutate(electricvehicle = as.numeric(gsub(",", "", electricvehicle)))
+
+carsbystate <- carsbystate %>%
+  mutate(electricvehicle = as.numeric(trimws(electricvehicle)))
+
+new_state_ev_data <- state_data %>%
+  left_join(carsbystate, by = "region") %>%
+  mutate(StationsPer1000EVs = (StationCount / electricvehicle) * 1000)
+
+# Merge charging station data (state_data) with EV data (new_carsbystate)
+new_state_ev_data <- state_data %>%
+  left_join(carsbystate, by = "region") %>%
+  mutate(StationsPer1000EVs = (StationCount / electricvehicle) * 100000)
+
+# Merge the resulting data with the state map data
+new_map_ev_data <- left_join(states_map, new_state_ev_data, by = "region")
+
+# Plot the choropleth map
+ggplot(data = new_map_ev_data, aes(x = long, y = lat, group = group, fill = StationsPer1000EVs)) +
+  geom_polygon(color = "white") +
+  coord_fixed(1.3) +
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen", 
+                      na.value = "grey50", name = "Stations per 1000 EVs") +
+  theme_void() +
+  labs(title = "Charging Stations per 1,000 Electric Vehicles by State")
+
+
+```
+
+
+
+
+```{r}
+# Scatterplots
+
+# write.csv(new_state_ev_data, "newstateevdata.csv", row.names = FALSE)
+
+# Electric vehicle registrations by station counts.
+
+# Make sure the column is numeric
+new_state_ev_data$electricvehicle <- as.numeric(as.character(new_state_ev_data$electricvehicle))
+
+ggplot(new_state_ev_data, aes(x = electricvehicle, y = StationCount)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Station Count vs. Electric Vehicle Registrations",
+       x = "Electric Vehicle Registrations",
+       y = "Station Count")
+
+```
+
+
+
+
+```{r}
+
+# Histograms and heatmap plots of facility types hosting EV charging stations
+
+# Replace blank FacilityType values with "Unknown"
+fuelstations_us <- fuelstations_us %>%
+  mutate(FacilityType = ifelse(str_trim(FacilityType) == "" | is.na(FacilityType), "Unknown", FacilityType))  
+
+# Now, regenerate the summary table
+facility_summary <- fuelstations_us %>%
+  group_by(FacilityType) %>%
+  summarise(Total = n()) %>%
+  arrange(desc(Total))
+
+# Plot the national distribution of Facility Types
+ggplot(facility_summary, aes(x = reorder(FacilityType, -Total), y = Total)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Total Number of Fueling Locations by Facility Type",
+       x = "Facility Type",
+       y = "Total Count") +
+  theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))  # Rotates labels for readability
+
+# Filter out "Unknown" before summarizing
+facility_summary_filtered <- fuelstations_us %>%
+  filter(FacilityType != "Unknown") %>%  # Exclude Unknown
+  group_by(FacilityType) %>%
+  summarise(Total = n()) %>%
+  arrange(desc(Total))
+
+# Plot the national distribution of Facility Types (excluding Unknown)
+ggplot(facility_summary_filtered, aes(x = reorder(FacilityType, -Total), y = Total)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Total Number of Fueling Locations by Facility Type (Excluding Unknown)",
+       x = "Facility Type",
+       y = "Total Count") +
+  theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))  # Rotates labels for readability
+
+# STATE-BY-STATE BREAKDOWN
+state_facility_summary <- fuelstations_us %>%
+  group_by(StateAbbrev, FacilityType) %>%
+  summarise(Total = n(), .groups = "drop")
+
+# Stacked Bar Chart of Facility Types by State
+ggplot(state_facility_summary, aes(x = StateAbbrev, y = Total, fill = FacilityType)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Breakdown of Facility Types by State",
+       x = "State",
+       y = "Total Count",
+       fill = "Facility Type") +
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))  # Reducing font size
+
+
+```
+
+```{r}
+
+## Create new binary columns for connector types. 1 means it has it, 0 means it doesn't.
+
+# Provided list of unique connector types
+unique_connectors <- c("CHADEMO", "J1772", "J1772COMBO", "TESLA", "NEMA515", "NEMA1450", "NEMA520")
+
+# Split the ConnectorTypes column by the period delimiter.
+# Note: "\\." is used so that the period is treated as a literal period.
+fuelstations_us$ConnectorTypesList <- str_split(fuelstations_us$ConnectorTypes, "\\.")
+
+# Trim any extra whitespace from each element of the list
+fuelstations_us$ConnectorTypesList <- lapply(fuelstations_us$ConnectorTypesList, str_trim)
+
+# For each connector type in the list, create a new binary column
+for (conn in unique_connectors) {
+  fuelstations_us[[conn]] <- sapply(fuelstations_us$ConnectorTypesList, function(x) {
+    if (conn %in% x) 1 else 0
+  })
+}
+
+# Optional: remove the temporary ConnectorTypesList column
+fuelstations_us$ConnectorTypesList <- NULL
+
+# Verify by viewing a few rows of the updated dataframe
+head(fuelstations_us[, c("ConnectorTypes", unique_connectors)])
+
+
+```
+
+
+```{r}
+
+# Shinyapp 1 - show EV stations across the nation
+
+library(shiny)
+library(leaflet)
+library(dplyr)
+library(stringr)
+
+
+# Read in the data (update the file path accordingly)
+fuelstations <- read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/IST 687/My Work/Final Project/altfuelstations/Final Project Final/altfuelstations.csv", 
+                           header = FALSE, stringsAsFactors = FALSE)
+
+# Rename columns as required
+colnames(fuelstations)[1] <- "FuelTypeCode"
+colnames(fuelstations)[2] <- "StationName"
+colnames(fuelstations)[3] <- "StreetAddress"
+colnames(fuelstations)[5] <- "City"
+colnames(fuelstations)[6] <- "StateAbbrev"  # renamed to StateAbbrev
+colnames(fuelstations)[7] <- "Zip"
+colnames(fuelstations)[11] <- "ExpectedDate"
+colnames(fuelstations)[12] <- "AccessType"
+colnames(fuelstations)[13] <- "DaysTime"
+colnames(fuelstations)[18] <- "EVL1"
+colnames(fuelstations)[19] <- "EVL2"
+colnames(fuelstations)[20] <- "EVfast"
+colnames(fuelstations)[25] <- "Latitude"
+colnames(fuelstations)[26] <- "Longitude"
+colnames(fuelstations)[28] <- "ID"
+colnames(fuelstations)[29] <- "UpdatedAt"
+colnames(fuelstations)[33] <- "OpenDate"
+colnames(fuelstations)[38] <- "ConnectorTypes"
+colnames(fuelstations)[43] <- "PublicOrPrivate"
+colnames(fuelstations)[48] <- "FacilityType"
+colnames(fuelstations)[55] <- "Pricing"
+colnames(fuelstations)[65] <- "RestrictedAccess"
+
+# Remove the header row if it contains header information
+fuelstations <- fuelstations[-1,]
+
+# Remove Canadian provinces/territories and Washington, DC
+canadian_codes <- c("AB", "BC", "MB", "NB", "NL", "NS", "NT", "ON", "PE", "PR", "QC", "SK", "YT")
+fuelstations_us <- fuelstations[!(fuelstations$StateAbbrev %in% canadian_codes), ]
+fuelstations_us <- fuelstations_us %>% filter(StateAbbrev != "DC")
+
+# Convert Latitude and Longitude to numeric and remove any rows with missing coordinates
+fuelstations_us$Latitude <- as.numeric(fuelstations_us$Latitude)
+fuelstations_us$Longitude <- as.numeric(fuelstations_us$Longitude)
+fuelstations_us <- fuelstations_us %>% filter(!is.na(Latitude), !is.na(Longitude))
+
+# Replace blank FacilityType values with "Unknown"
+fuelstations_us <- fuelstations_us %>%
+  mutate(FacilityType = ifelse(str_trim(FacilityType) == "" | is.na(FacilityType), "Unknown", FacilityType))
+
+# --- Create new binary columns for each connector type ---
+# Provided list of unique connector types:
+unique_connectors <- c("CHADEMO", "J1772", "J1772COMBO", "TESLA", "NEMA515", "NEMA1450", "NEMA520")
+
+# Split the ConnectorTypes column by the "." delimiter and trim whitespace
+fuelstations_us$ConnectorTypesList <- str_split(fuelstations_us$ConnectorTypes, "\\.")
+fuelstations_us$ConnectorTypesList <- lapply(fuelstations_us$ConnectorTypesList, str_trim)
+
+# For each connector type, add a new column with 1 if present, 0 if not.
+for (conn in unique_connectors) {
+  fuelstations_us[[conn]] <- sapply(fuelstations_us$ConnectorTypesList, function(x) {
+    if (conn %in% x) 1 else 0
+  })
+}
+# Remove the temporary list column
+fuelstations_us$ConnectorTypesList <- NULL
+
+### Shiny App Code
+
+ui <- fluidPage(
+  titlePanel("Electric Car Charging Stations in the US"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("state", "Select State:", 
+                  choices = c("All", sort(unique(fuelstations_us$StateAbbrev))),
+                  selected = "All"),
+      selectInput("facility", "Select Facility Type:", 
+                  choices = c("All", sort(unique(fuelstations_us$FacilityType))),
+                  selected = "All"),
+      selectInput("fuel", "Select Fuel Type:", 
+                  choices = c("All", sort(unique(fuelstations_us$FuelTypeCode))),
+                  selected = "All"),
+      # Use fixed connector choices (the binary columns already exist)
+      checkboxGroupInput("connectors", "Select Connector Types:",
+                         choices = unique_connectors,
+                         selected = unique_connectors[1])
+    ),
+    mainPanel(
+      leafletOutput("map", height = 600)
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  # Create a reactive subset of the data based on filter selections
+  filteredData <- reactive({
+    data <- fuelstations_us
+    if (input$state != "All") {
+      data <- data %>% filter(StateAbbrev == input$state)
+    }
+    if (input$facility != "All") {
+      data <- data %>% filter(FacilityType == input$facility)
+    }
+    if (input$fuel != "All") {
+      data <- data %>% filter(FuelTypeCode == input$fuel)
+    }
+    if (!is.null(input$connectors) && length(input$connectors) > 0) {
+      # Filter rows where at least one of the selected connector binary columns equals 1
+      data <- data %>% filter(if_any(all_of(input$connectors), ~ . == 1))
+    }
+    data
+  })
+  
+  # Render the base Leaflet map
+  output$map <- renderLeaflet({
+    leaflet() %>% 
+      addProviderTiles("CartoDB.Positron") %>% 
+      setView(lng = -98.583, lat = 39.833, zoom = 4)  # Center on the US
+  })
+  
+  # Update the map markers when filters change using marker clustering
+  observe({
+    data <- filteredData()
+    
+    leafletProxy("map", data = data) %>%
+      clearMarkers() %>%
+      clearMarkerClusters() %>%  # Clear clusters before adding new ones
+      addMarkers(~Longitude, ~Latitude,
+                 popup = ~paste("<strong>", StationName, "</strong><br/>",
+                                StreetAddress, "<br/>",
+                                City, ", ", StateAbbrev, "<br/>",
+                                "Facility: ", FacilityType, "<br/>",
+                                "Fuel: ", FuelTypeCode, "<br/>",
+                                "Connectors: ", ConnectorTypes),
+                 clusterOptions = markerClusterOptions()
+      )
+  })
+}
+
+# Run the Shiny app
+shinyApp(ui, server)
+
+```
+
+```{r}
+
+# Shiny app # 2 -- Road Trip Planner!
+
+# library(shiny)
+# library(leaflet)
+# library(dplyr)
+# library(stringr)
+# library(sf)  # using sf as an alternative to geosphere
+
+# Create the city_coords data frame directly in the code
+city_coords <- data.frame(
+  city = c(
+    "Seattle, WA", "Denver, CO", "Los Angeles, CA", "San Diego, CA", 
+    "Chicago, IL", "Las Vegas, NV", "Albuquerque, NM", "New Orleans, LA", 
+    "Kansas City, KS", "Minneapolis, MN", "Miami, FL", "Orlando, FL", 
+    "Atlanta, GA", "Washington, DC", "New York, NY", "Syracuse, NY",
+    "Honolulu, HI", "Key West, FL", "San Francisco, CA", "Nashville, TN", 
+    "Charleston, SC", "Aspen, CO", "Sedona, AZ", "Palm Springs, CA", 
+    "Myrtle Beach, SC", "Newport, RI",
+    "Boston, MA", "Portland, OR", "Austin, TX", "Savannah, GA", 
+    "Scottsdale, AZ", "Lake Tahoe, CA", "San Antonio, TX", "Burlington, VT", 
+    "Santa Fe, NM", "Fort Lauderdale, FL"
+  ),
+  lat = c(
+    47.6062, 39.7392, 34.0522, 32.7157, 
+    41.8781, 36.1699, 35.0844, 29.9511, 
+    39.1141, 44.9778, 25.7617, 28.5383, 
+    33.7490, 38.9072, 40.7128, 43.0481,
+    21.3069, 24.5551, 37.7749, 36.1627, 
+    32.7765, 39.1911, 34.8697, 33.8303, 
+    33.6891, 41.4901,
+    42.3601, 45.5152, 30.2672, 32.0809, 
+    33.4942, 39.0968, 29.4241, 44.4759, 
+    35.6870, 26.1224
+  ),
+  lon = c(
+    -122.3321, -104.9903, -118.2437, -117.1611, 
+    -87.6298, -115.1398, -106.6504, -90.0715, 
+    -94.6275, -93.2650, -80.1918, -81.3792, 
+    -84.3880, -77.0369, -74.0060, -76.1474,
+    -157.8583, -81.7800, -122.4194, -86.7816, 
+    -79.9311, -106.8175, -111.7609, -116.5453, 
+    -78.8867, -71.3128,
+    -71.0589, -122.6784, -97.7431, -81.0912, 
+    -111.9261, -120.0324, -98.4936, -73.2121, 
+    -105.9378, -80.1373
+  ),
+  stringsAsFactors = FALSE
+)
+
+### Updated geocode function that looks up coordinates from city_coords
+geocode <- function(address) {
+  match_row <- city_coords[city_coords$city == address, ]
+  if (nrow(match_row) > 0) {
+    return(c(lat = as.numeric(match_row$lat), lon = as.numeric(match_row$lon)))
+  } else {
+    # Default: approximate center of the US if address not found
+    return(c(lat = 39.8283, lon = -98.5795))
+  }
+}
+
+### Assume fuelstations_us is already loaded and cleaned, with required columns,
+### including: Latitude, Longitude (numeric), FacilityType, ConnectorTypes, etc.
+### Also assume that binary connector columns (e.g. "CHADEMO", "J1772", etc.) have been created.
+
+ui <- fluidPage(
+  titlePanel("Road Trip Planner for EV Charging & Fun Stops"),
+  sidebarLayout(
+    sidebarPanel(
+      # Pulldown menus for origin and destination based on city_coords
+      selectInput("origin", "Where are you leaving from?", 
+                  choices = city_coords$city, selected = "New York, NY"),
+      selectInput("destination", "Where are you driving to?", 
+                  choices = city_coords$city, selected = "Washington, DC"),
+      checkboxGroupInput("facilities", "Select desired facility types for charging stops:",
+                         choices = sort(unique(fuelstations_us$FacilityType)),
+                         selected = unique(fuelstations_us$FacilityType)[1]),
+      checkboxGroupInput("connectors", "Select Charging Types:",
+                         choices = c("CHADEMO", "J1772", "J1772COMBO", "TESLA", 
+                                     "NEMA515", "NEMA1450", "NEMA520"),
+                         selected = "CHADEMO"),
+      actionButton("plan", "Plan My Route")
+    ),
+    mainPanel(
+      leafletOutput("map", height = 600)
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  observeEvent(input$plan, {
+    
+    # Geocode the selected origin and destination
+    origin_coords <- geocode(input$origin)
+    destination_coords <- geocode(input$destination)
+    
+    # Calculate a bounding box around the route with a 1-degree buffer
+    min_lat <- min(origin_coords["lat"], destination_coords["lat"]) - 1
+    max_lat <- max(origin_coords["lat"], destination_coords["lat"]) + 1
+    min_lon <- min(origin_coords["lon"], destination_coords["lon"]) - 1
+    max_lon <- max(origin_coords["lon"], destination_coords["lon"]) + 1
+    
+    # First filter charging stations by facility type and bounding box
+    stops_data <- fuelstations_us %>%
+      filter(FacilityType %in% input$facilities,
+             Latitude >= min_lat, Latitude <= max_lat,
+             Longitude >= min_lon, Longitude <= max_lon)
+    
+    # Further filter by selected connector types using binary columns
+    if (!is.null(input$connectors) && length(input$connectors) > 0) {
+      stops_data <- stops_data %>% filter(if_any(all_of(input$connectors), ~ . == 1))
+    }
+    
+    # Use sf to refine by selecting stations that are "near" the route
+    # Create a LINESTRING from origin to destination
+    line_coords <- matrix(c(origin_coords["lon"], origin_coords["lat"],
+                            destination_coords["lon"], destination_coords["lat"]),
+                          ncol = 2, byrow = TRUE)
+    route_line <- st_sfc(st_linestring(line_coords), crs = 4326)
+    
+    # Convert stops_data to an sf object
+    stops_sf <- st_as_sf(stops_data, coords = c("Longitude", "Latitude"), crs = 4326)
+    
+    # Compute distances (in meters) from each station to the route
+    distances <- st_distance(stops_sf, route_line)
+    
+    # Set a threshold (e.g., 50 km = 50000 meters) and filter
+    threshold <- 50000
+    stops_data <- stops_data[as.numeric(distances) <= threshold, ]
+    
+    # Create a color palette for facility types
+    pal <- colorFactor("Set1", domain = unique(stops_data$FacilityType))
+    
+    # Render the Leaflet map
+    output$map <- renderLeaflet({
+      leaflet() %>% 
+        addProviderTiles("CartoDB.Positron") %>% 
+        setView(lng = mean(c(origin_coords["lon"], destination_coords["lon"])),
+                lat = mean(c(origin_coords["lat"], destination_coords["lat"])), zoom = 7) %>%
+        # Add markers for origin and destination
+        addMarkers(lng = origin_coords["lon"], lat = origin_coords["lat"], popup = "Origin") %>%
+        addMarkers(lng = destination_coords["lon"], lat = destination_coords["lat"], popup = "Destination") %>%
+        # Draw a polyline connecting origin and destination
+        addPolylines(lng = c(origin_coords["lon"], destination_coords["lon"]),
+                     lat = c(origin_coords["lat"], destination_coords["lat"]),
+                     color = "blue", weight = 3, opacity = 0.7) %>%
+        # Add charging station markers (circle markers) with popups showing amenities
+        addCircleMarkers(data = stops_data, 
+                         lng = ~Longitude, 
+                         lat = ~Latitude,
+                         color = ~pal(FacilityType),
+                         radius = 6,
+                         fillOpacity = 0.8,
+                         popup = ~paste("<strong>", StationName, "</strong><br/>",
+                                        StreetAddress, "<br/>",
+                                        City, ", ", StateAbbrev, "<br/>",
+                                        "Facility: ", FacilityType, "<br/>",
+                                        "Connectors: ", ConnectorTypes)) %>%
+        # Add a legend for facility types
+        addLegend("bottomright", 
+                  pal = pal, 
+                  values = stops_data$FacilityType,
+                  title = "Facility Type", 
+                  opacity = 1)
+    })
+  })
+}
+
+shinyApp(ui, server)
+
+
+```
+
+
+```{r}
+# This is the road trip planner with some interface improvements, try 1
+
+library(shiny)
+library(leaflet)
+library(dplyr)
+library(stringr)
+library(sf)  # using sf as an alternative to geosphere
+
+# Create the city_coords data frame directly in the code
+city_coords <- data.frame(
+  city = c(
+    "Seattle, WA", "Denver, CO", "Los Angeles, CA", "San Diego, CA", 
+    "Chicago, IL", "Las Vegas, NV", "Albuquerque, NM", "New Orleans, LA", 
+    "Kansas City, KS", "Minneapolis, MN", "Miami, FL", "Orlando, FL", 
+    "Atlanta, GA", "Washington, DC", "New York, NY", "Syracuse, NY",
+    "Honolulu, HI", "Key West, FL", "San Francisco, CA", "Nashville, TN", 
+    "Charleston, SC", "Aspen, CO", "Sedona, AZ", "Palm Springs, CA", 
+    "Myrtle Beach, SC", "Newport, RI",
+    "Boston, MA", "Portland, OR", "Austin, TX", "Savannah, GA", 
+    "Scottsdale, AZ", "Lake Tahoe, CA", "San Antonio, TX", "Burlington, VT", 
+    "Santa Fe, NM", "Fort Lauderdale, FL"
+  ),
+  lat = c(
+    47.6062, 39.7392, 34.0522, 32.7157, 
+    41.8781, 36.1699, 35.0844, 29.9511, 
+    39.1141, 44.9778, 25.7617, 28.5383, 
+    33.7490, 38.9072, 40.7128, 43.0481,
+    21.3069, 24.5551, 37.7749, 36.1627, 
+    32.7765, 39.1911, 34.8697, 33.8303, 
+    33.6891, 41.4901,
+    42.3601, 45.5152, 30.2672, 32.0809, 
+    33.4942, 39.0968, 29.4241, 44.4759, 
+    35.6870, 26.1224
+  ),
+  lon = c(
+    -122.3321, -104.9903, -118.2437, -117.1611, 
+    -87.6298, -115.1398, -106.6504, -90.0715, 
+    -94.6275, -93.2650, -80.1918, -81.3792, 
+    -84.3880, -77.0369, -74.0060, -76.1474,
+    -157.8583, -81.7800, -122.4194, -86.7816, 
+    -79.9311, -106.8175, -111.7609, -116.5453, 
+    -78.8867, -71.3128,
+    -71.0589, -122.6784, -97.7431, -81.0912, 
+    -111.9261, -120.0324, -98.4936, -73.2121, 
+    -105.9378, -80.1373
+  ),
+  stringsAsFactors = FALSE
+)
+
+### Updated geocode function that looks up coordinates from city_coords
+geocode <- function(address) {
+  match_row <- city_coords[city_coords$city == address, ]
+  if (nrow(match_row) > 0) {
+    return(c(lat = as.numeric(match_row$lat), lon = as.numeric(match_row$lon)))
+  } else {
+    # Default: approximate center of the US if address not found
+    return(c(lat = 39.8283, lon = -98.5795))
+  }
+}
+
+### Assume fuelstations_us is already loaded and cleaned, with required columns,
+### including: Latitude, Longitude (numeric), FacilityType, ConnectorTypes, etc.
+### Also assume that binary connector columns (e.g. "CHADEMO", "J1772", etc.) have been created.
+unique_connectors <- c("CHADEMO", "J1772", "J1772COMBO", "TESLA", "NEMA515", "NEMA1450", "NEMA520")
+
+ui <- fluidPage(
+  # Optional: Add custom CSS directly
+  tags$head(
+    tags$style(HTML("
+      .well { margin-bottom: 15px; }
+      .help-text { font-size: 0.9em; color: #555; }
+    "))
+  ),
+  titlePanel("Road Trip Planner for EV Charging & Fun Stops"),
+  sidebarLayout(
+    sidebarPanel(
+      wellPanel(
+        h4("Trip Settings"),
+        selectInput("origin", "Leaving from:", 
+                    choices = city_coords$city, selected = "New York, NY"),
+        selectInput("destination", "Driving to:", 
+                    choices = city_coords$city, selected = "Washington, DC")
+      ),
+      wellPanel(
+        h4("Filter Options"),
+        selectInput("state", "State:", 
+                    choices = c("All", sort(unique(fuelstations_us$StateAbbrev))),
+                    selected = "All"),
+        selectInput("facility", "Facility Type:", 
+                    choices = c("All", sort(unique(fuelstations_us$FacilityType))),
+                    selected = "All"),
+        selectInput("fuel", "Fuel Type:", 
+                    choices = c("All", sort(unique(fuelstations_us$FuelTypeCode))),
+                    selected = "All"),
+        checkboxGroupInput("connectors", "Connector Types:",
+                           choices = unique_connectors,
+                           selected = unique_connectors[1])
+      ),
+      actionButton("plan", "Plan My Route"),
+      br(), br(),
+      helpText("Use the controls above to filter charging stations along your route. 
+               The map will update with locations and available amenities.", class = "help-text")
+    ),
+    mainPanel(
+      leafletOutput("map", height = 600)
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  # Reactive subset based on filters
+  filteredData <- reactive({
+    data <- fuelstations_us
+    if (input$state != "All") {
+      data <- data %>% filter(StateAbbrev == input$state)
+    }
+    if (input$facility != "All") {
+      data <- data %>% filter(FacilityType == input$facility)
+    }
+    if (input$fuel != "All") {
+      data <- data %>% filter(FuelTypeCode == input$fuel)
+    }
+    if (!is.null(input$connectors) && length(input$connectors) > 0) {
+      data <- data %>% filter(if_any(all_of(input$connectors), ~ . == 1))
+    }
+    data
+  })
+  
+  # Render the base Leaflet map
+  output$map <- renderLeaflet({
+    leaflet() %>% 
+      addProviderTiles("CartoDB.Positron") %>% 
+      setView(lng = -98.583, lat = 39.833, zoom = 4)  # Center on the US
+  })
+  
+  # Update map markers when filters change using marker clustering
+  observe({
+    data <- filteredData()
+    
+    leafletProxy("map", data = data) %>%
+      clearMarkers() %>%
+      clearMarkerClusters() %>%  # Clear clusters before adding new ones
+      addMarkers(~Longitude, ~Latitude,
+                 popup = ~paste("<strong>", StationName, "</strong><br/>",
+                                StreetAddress, "<br/>",
+                                City, ", ", StateAbbrev, "<br/>",
+                                "Facility: ", FacilityType, "<br/>",
+                                "Fuel: ", FuelTypeCode, "<br/>",
+                                "Connectors: ", ConnectorTypes),
+                 clusterOptions = markerClusterOptions()
+      )
+  })
+  
+  observeEvent(input$plan, {
+    # Geocode the selected origin and destination
+    origin_coords <- geocode(input$origin)
+    destination_coords <- geocode(input$destination)
+    
+    # Calculate a bounding box around the route with a 1-degree buffer
+    min_lat <- min(origin_coords["lat"], destination_coords["lat"]) - 1
+    max_lat <- max(origin_coords["lat"], destination_coords["lat"]) + 1
+    min_lon <- min(origin_coords["lon"], destination_coords["lon"]) - 1
+    max_lon <- max(origin_coords["lon"], destination_coords["lon"]) + 1
+    
+    # First filter charging stations by facility type and bounding box
+    stops_data <- fuelstations_us %>%
+      filter(FacilityType %in% input$facilities,
+             Latitude >= min_lat, Latitude <= max_lat,
+             Longitude >= min_lon, Longitude <= max_lon)
+    
+    # Further filter by selected connector types using binary columns
+    if (!is.null(input$connectors) && length(input$connectors) > 0) {
+      stops_data <- stops_data %>% filter(if_any(all_of(input$connectors), ~ . == 1))
+    }
+    
+    # Use sf to refine by selecting stations that are "near" the route
+    # Create a LINESTRING from origin to destination
+    line_coords <- matrix(c(origin_coords["lon"], origin_coords["lat"],
+                            destination_coords["lon"], destination_coords["lat"]),
+                          ncol = 2, byrow = TRUE)
+    route_line <- st_sfc(st_linestring(line_coords), crs = 4326)
+    
+    # Convert stops_data to an sf object
+    stops_sf <- st_as_sf(stops_data, coords = c("Longitude", "Latitude"), crs = 4326)
+    
+    # Compute distances (in meters) from each station to the route
+    distances <- st_distance(stops_sf, route_line)
+    
+    # Set a threshold (e.g., 50 km = 50000 meters) and filter
+    threshold <- 50000
+    stops_data <- stops_data[as.numeric(distances) <= threshold, ]
+    
+    # Create a color palette for facility types
+    pal <- colorFactor("Set1", domain = unique(stops_data$FacilityType))
+    
+    # Render the Leaflet map with route and station markers
+    output$map <- renderLeaflet({
+      leaflet() %>% 
+        addProviderTiles("CartoDB.Positron") %>% 
+        setView(lng = mean(c(origin_coords["lon"], destination_coords["lon"])),
+                lat = mean(c(origin_coords["lat"], destination_coords["lat"])), zoom = 7) %>%
+        # Add markers for origin and destination
+        addMarkers(lng = origin_coords["lon"], lat = origin_coords["lat"], popup = "Origin") %>%
+        addMarkers(lng = destination_coords["lon"], lat = destination_coords["lat"], popup = "Destination") %>%
+        # Draw a polyline connecting origin and destination
+        addPolylines(lng = c(origin_coords["lon"], destination_coords["lon"]),
+                     lat = c(origin_coords["lat"], destination_coords["lat"]),
+                     color = "blue", weight = 3, opacity = 0.7) %>%
+        # Add charging station markers (circle markers) with popups showing amenities
+        addCircleMarkers(data = stops_data, 
+                         lng = ~Longitude, 
+                         lat = ~Latitude,
+                         color = ~pal(FacilityType),
+                         radius = 6,
+                         fillOpacity = 0.8,
+                         popup = ~paste("<strong>", StationName, "</strong><br/>",
+                                        StreetAddress, "<br/>",
+                                        City, ", ", StateAbbrev, "<br/>",
+                                        "Facility: ", FacilityType, "<br/>",
+                                        "Connectors: ", ConnectorTypes)) %>%
+        # Add a legend for facility types
+        addLegend("bottomright", 
+                  pal = pal, 
+                  values = stops_data$FacilityType,
+                  title = "Facility Type", 
+                  opacity = 1)
+    })
+  })
+}
+
+shinyApp(ui, server)
+
+```
+
+
+```{r}
+# Road trip planner reformat, try 2 ...
+# THIS IS THE BEST ONE
+# Added an All for facility type, and default checked all types.
+
+library(shiny)
+library(leaflet)
+library(dplyr)
+library(stringr)
+library(sf)  # using sf as an alternative to geosphere
+
+# Create the city_coords data frame directly in the code
+city_coords <- data.frame(
+  city = c(
+    "Seattle, WA", "Denver, CO", "Los Angeles, CA", "San Diego, CA", 
+    "Chicago, IL", "Las Vegas, NV", "Albuquerque, NM", "New Orleans, LA", 
+    "Kansas City, KS", "Minneapolis, MN", "Miami, FL", "Orlando, FL", 
+    "Atlanta, GA", "Washington, DC", "New York, NY", "Syracuse, NY",
+    "Honolulu, HI", "Key West, FL", "San Francisco, CA", "Nashville, TN", 
+    "Charleston, SC", "Aspen, CO", "Sedona, AZ", "Palm Springs, CA", 
+    "Myrtle Beach, SC", "Newport, RI",
+    "Boston, MA", "Portland, OR", "Austin, TX", "Savannah, GA", 
+    "Scottsdale, AZ", "Lake Tahoe, CA", "San Antonio, TX", "Burlington, VT", 
+    "Santa Fe, NM", "Fort Lauderdale, FL"
+  ),
+  lat = c(
+    47.6062, 39.7392, 34.0522, 32.7157, 
+    41.8781, 36.1699, 35.0844, 29.9511, 
+    39.1141, 44.9778, 25.7617, 28.5383, 
+    33.7490, 38.9072, 40.7128, 43.0481,
+    21.3069, 24.5551, 37.7749, 36.1627, 
+    32.7765, 39.1911, 34.8697, 33.8303, 
+    33.6891, 41.4901,
+    42.3601, 45.5152, 30.2672, 32.0809, 
+    33.4942, 39.0968, 29.4241, 44.4759, 
+    35.6870, 26.1224
+  ),
+  lon = c(
+    -122.3321, -104.9903, -118.2437, -117.1611, 
+    -87.6298, -115.1398, -106.6504, -90.0715, 
+    -94.6275, -93.2650, -80.1918, -81.3792, 
+    -84.3880, -77.0369, -74.0060, -76.1474,
+    -157.8583, -81.7800, -122.4194, -86.7816, 
+    -79.9311, -106.8175, -111.7609, -116.5453, 
+    -78.8867, -71.3128,
+    -71.0589, -122.6784, -97.7431, -81.0912, 
+    -111.9261, -120.0324, -98.4936, -73.2121, 
+    -105.9378, -80.1373
+  ),
+  stringsAsFactors = FALSE
+)
+
+### Updated geocode function that looks up coordinates from city_coords
+geocode <- function(address) {
+  match_row <- city_coords[city_coords$city == address, ]
+  if (nrow(match_row) > 0) {
+    return(c(lat = as.numeric(match_row$lat), lon = as.numeric(match_row$lon)))
+  } else {
+    # Default: approximate center of the US if address not found
+    return(c(lat = 39.8283, lon = -98.5795))
+  }
+}
+
+### Assume fuelstations_us is already loaded and cleaned, with required columns,
+### including: Latitude, Longitude (numeric), FacilityType, ConnectorTypes, etc.
+### Also assume that binary connector columns (e.g. "CHADEMO", "J1772", etc.) have been created.
+unique_connectors <- c("CHADEMO", "J1772", "J1772COMBO", "TESLA", "NEMA515", "NEMA1450", "NEMA520")
+
+ui <- fluidPage(
+  tags$head(
+    tags$style(HTML("
+      .well { margin-bottom: 15px; }
+      .help-text { font-size: 0.9em; color: #555; }
+    "))
+  ),
+  titlePanel("Road Trip Planner for EV Charging & Fun Stops"),
+  sidebarLayout(
+    sidebarPanel(
+      wellPanel(
+        h4("Trip Settings"),
+        selectInput("origin", "Leaving from:", 
+                    choices = city_coords$city, selected = "New York, NY"),
+        selectInput("destination", "Driving to:", 
+                    choices = city_coords$city, selected = "Washington, DC")
+      ),
+      wellPanel(
+        h4("Filter Options"),
+        selectInput("state", "State:", 
+                    choices = c("All", sort(unique(fuelstations_us$StateAbbrev))),
+                    selected = "All"),
+        # Multi-select for Facility Type using selectizeInput with remove_button plugin
+        selectizeInput("facility", "Facility Type:", 
+                       choices = c("All", sort(unique(fuelstations_us$FacilityType))),
+                       selected = "All", multiple = TRUE,
+                       options = list(plugins = list("remove_button"))),
+        checkboxGroupInput("connectors", "Connector Types:",
+                           choices = unique_connectors,
+                           selected = unique_connectors)  # all default checked
+      ),
+      actionButton("plan", "Plan My Route"),
+      br(), br(),
+      helpText("Use the controls above to filter charging stations along your route. 
+               The map will update with locations and available amenities.", class = "help-text")
+    ),
+    mainPanel(
+      leafletOutput("map", height = 600)
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  # Reactive subset based on filters
+  filteredData <- reactive({
+    data <- fuelstations_us
+    if (input$state != "All") {
+      data <- data %>% filter(StateAbbrev == input$state)
+    }
+    # If "All" is selected in facility, do not filter by facility type.
+    if (!("All" %in% input$facility)) {
+      data <- data %>% filter(FacilityType %in% input$facility)
+    }
+    if (!is.null(input$connectors) && length(input$connectors) > 0) {
+      data <- data %>% filter(if_any(all_of(input$connectors), ~ . == 1))
+    }
+    data
+  })
+  
+  # Render the base Leaflet map
+  output$map <- renderLeaflet({
+    leaflet() %>% 
+      addProviderTiles("CartoDB.Positron") %>% 
+      setView(lng = -98.583, lat = 39.833, zoom = 4)  # Center on the US
+  })
+  
+  # Update map markers when filters change using marker clustering
+  observe({
+    data <- filteredData()
+    
+    leafletProxy("map", data = data) %>%
+      clearMarkers() %>%
+      clearMarkerClusters() %>%  # Clear clusters before adding new ones
+      addMarkers(~Longitude, ~Latitude,
+                 popup = ~paste("<strong>", StationName, "</strong><br/>",
+                                StreetAddress, "<br/>",
+                                City, ", ", StateAbbrev, "<br/>",
+                                "Facility: ", FacilityType, "<br/>",
+                                "Connectors: ", ConnectorTypes),
+                 clusterOptions = markerClusterOptions()
+      )
+  })
+  
+  observeEvent(input$plan, {
+    # Geocode the selected origin and destination
+    origin_coords <- geocode(input$origin)
+    destination_coords <- geocode(input$destination)
+    
+    # Calculate a bounding box around the route with a 1-degree buffer
+    min_lat <- min(origin_coords["lat"], destination_coords["lat"]) - 1
+    max_lat <- max(origin_coords["lat"], destination_coords["lat"]) + 1
+    min_lon <- min(origin_coords["lon"], destination_coords["lon"]) - 1
+    max_lon <- max(origin_coords["lon"], destination_coords["lon"]) + 1
+    
+    # First filter charging stations by facility type and bounding box
+    stops_data <- fuelstations_us %>%
+      filter(FacilityType %in% input$facility,
+             Latitude >= min_lat, Latitude <= max_lat,
+             Longitude >= min_lon, Longitude <= max_lon)
+    
+    # Further filter by selected connector types using binary columns
+    if (!is.null(input$connectors) && length(input$connectors) > 0) {
+      stops_data <- stops_data %>% filter(if_any(all_of(input$connectors), ~ . == 1))
+    }
+    
+    # Use sf to refine by selecting stations that are "near" the route
+    # Create a LINESTRING from origin to destination
+    line_coords <- matrix(c(origin_coords["lon"], origin_coords["lat"],
+                            destination_coords["lon"], destination_coords["lat"]),
+                          ncol = 2, byrow = TRUE)
+    route_line <- st_sfc(st_linestring(line_coords), crs = 4326)
+    
+    # Convert stops_data to an sf object
+    stops_sf <- st_as_sf(stops_data, coords = c("Longitude", "Latitude"), crs = 4326)
+    
+    # Compute distances (in meters) from each station to the route
+    distances <- st_distance(stops_sf, route_line)
+    
+    # Set a threshold (e.g., 50 km = 50000 meters) and filter
+    threshold <- 50000
+    stops_data <- stops_data[as.numeric(distances) <= threshold, ]
+    
+    # Create a color palette for facility types
+    pal <- colorFactor("Set1", domain = unique(stops_data$FacilityType))
+    
+    # Render the Leaflet map with route and station markers
+    output$map <- renderLeaflet({
+      leaflet() %>% 
+        addProviderTiles("CartoDB.Positron") %>% 
+        setView(lng = mean(c(origin_coords["lon"], destination_coords["lon"])),
+                lat = mean(c(origin_coords["lat"], destination_coords["lat"])), zoom = 7) %>%
+        # Add markers for origin and destination
+        addMarkers(lng = origin_coords["lon"], lat = origin_coords["lat"], popup = "Origin") %>%
+        addMarkers(lng = destination_coords["lon"], lat = destination_coords["lat"], popup = "Destination") %>%
+        # Draw a polyline connecting origin and destination
+        addPolylines(lng = c(origin_coords["lon"], destination_coords["lon"]),
+                     lat = c(origin_coords["lat"], destination_coords["lat"]),
+                     color = "blue", weight = 3, opacity = 0.7) %>%
+        # Add charging station markers (circle markers) with popups showing amenities
+        addCircleMarkers(data = stops_data, 
+                         lng = ~Longitude, 
+                         lat = ~Latitude,
+                         color = ~pal(FacilityType),
+                         radius = 6,
+                         fillOpacity = 0.8,
+                         popup = ~paste("<strong>", StationName, "</strong><br/>",
+                                        StreetAddress, "<br/>",
+                                        City, ", ", StateAbbrev, "<br/>",
+                                        "Facility: ", FacilityType, "<br/>",
+                                        "Connectors: ", ConnectorTypes)) %>%
+        # Add a legend for facility types
+        addLegend("bottomright", 
+                  pal = pal, 
+                  values = stops_data$FacilityType,
+                  title = "Facility Type", 
+                  opacity = 1)
+    })
+  })
+}
+
+shinyApp(ui, server)
+
+
+
+```

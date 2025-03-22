@@ -14,17 +14,21 @@
     IST 687<br>
     Friday, Mar. 21, 2025</p>
 
-    <i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a>
+  <p><i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a></p>
 
+  <p><b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing & Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a></p>
+
+  <a name="introduction""/>
   <h2>Introduction</h2>
   <p>As interest in electric vehicles (EVs) grows, so does concern about charging infrastructure. And this is backed up by recent research. A <a href="https://www.hbs.edu/bigs/the-state-of-ev-charging-in-america" target="_blank">recent Harvard study</a> showed that drivers can successfully recharge their cars using non-residential EV equipment only 78% of the time. Potential buyers (myself included!) worry about where and how often they can charge on the road — especially when leaving urban areas. The most extreme example of this is planning a road trip. Unless every American plans to have a combustion-engine car for road trips and an electric car for city driving only, this is a problem that must be solved.</p>
   
   <p>This project examines how EV charging is distributed across the U.S. and what kind of experience drivers can expect based on where they live or plan to travel. I used R Studio and the functions and processes I learned in IST 687: Introduction to Data Science to try to get a better picture of what the charging infrastructure across the United States is really like, and began building a Shiny App using <a href="https://leafletjs.com" target="_blank">Leaflet.js</a> that could potentially help EV road-trippers plan their trips with more confidence. I was super excited to learn that Leaflet is supported natively in R using a package! I have more about that in an <a href="#appendix">Appendix</a> at the end of this writeup.</p>
 
+  <a name="datasources"/>
   <h2>Data Sources</h2>
   <p>The data for this project comes from the <a href="https://afdc.energy.gov/stations#/find/nearest" target="_blank">U.S. Department of Energy's Alternative Fueling Station Locator</a> web site. This data set covers all types of alternative fuels including things like hydrogen fuel, but I wanted to focus only on electric vehicles. I was able to download a subset of 83,000+ records of EV charging stations nationwide, as well as in Canada and some U.S. territories. I filtered the dataset to focus solely on electric vehicle stations.</p>
 
-  <p>Because the Trump Administration has recently been haphazardly deleting federal data sets that it thinks are at odds with its preference for fossil fuel energy, I made a copy of this export in <a href="https://docs.google.com/document/d/1QsSVQ1j4bhzmUDQFrTcJsU-xxsuYRcOzdo5qL5ptLTw/edit?tab=t.0">Google Sheets</a> so that it will always be available (and available for my final project). I plan to later put all of this code as well as the data in a Github repository.</p>
+  <p>Because the Trump Administration has recently been haphazardly deleting federal data sets that it thinks are at odds with its preference for fossil fuel energy, I made a copy of this export in <a href="https://docs.google.com/document/d/1QsSVQ1j4bhzmUDQFrTcJsU-xxsuYRcOzdo5qL5ptLTw/edit?tab=t.0">Google Sheets</a> so that it will always be available (and available for my final project). I also have all of the data and code in a Github Repository.</p>
 
 
   <p>Other data sources include:</p>
@@ -34,6 +38,7 @@
     <li>U.S. map data from R's <code>maps</code> package</li>
   </ul>
 
+  <a name="importingandcleaning"/>
   <h2>Importing and Cleaning the Data</h2>
 
   <p>I used the jsonlite library for importing the CSV, and the tidyverse library for subsetting and cleaning it to be in the formats I needed. I also renamed the column headers for the columns I planned to use.</p>
@@ -66,6 +71,7 @@ canadian_codes &lt;- c("AB","BC","MB",...)
 fuelstations_us &lt;- fuelstations[!(fuelstations$StateAbbrev %in% canadian_codes), ]
 fuelstations_us &lt;- fuelstations_us %&gt;% filter(StateAbbrev != "DC")</code></pre>
 
+<a name="maps"/>
   <h2>Mapping the Charging Landscape</h2>
 
   <h3>Map 1: Total Stations by State</h3>
@@ -139,6 +145,8 @@ ggplot(new_map_data_final, aes(x = long, y = lat, group = group, fill = Stations
   theme_void() +
   labs(title = "Charging Stations per 100,000 Residents")</code></pre>
 
+
+
   <h3>Map 4: Stations Per Electric Vehicle</h3>
 
   <P>All this made me think even more about the average experience of an electric car driver. Do you care how many charging stations there are as compared to the entire population? No, because you're competing for "pumps" with other electric car drivers. I think this is going to become a bigger and bigger issue as electric vehicles increase across the country due to how much longer it takes to charge your EV than it does a gas engine car.</P>
@@ -174,6 +182,7 @@ ggplot(new_map_ev_data, aes(x = long, y = lat, group = group, fill = StationsPer
   theme_void() +
   labs(title = "Charging Stations per 1,000 Electric Vehicles")</code></pre>
 
+  <a name="topfacilitytypes"/>
   <h2>Where Are These Stations Located?</h2>
 
 
@@ -199,6 +208,7 @@ ggplot(facility_summary, aes(x = reorder(FacilityType, -Total), y = Total)) +
   labs(title = "Charging Stations by Facility Type") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 
+  <a name="regressionanalysis"/>
   <h2>Regression Analysis: Predicting Fast Charger Availability</h2>
 
   <P>Our professor wanted us to use predictive modeling if possible in this project. I thought a lot about what I could predict with the data I had. At first I wanted to try to predict which states were likely to have more stations based on their open dates. But this proved to be too much work, and I couldn't figure it out.</P>
@@ -350,6 +360,7 @@ ggplot(new_df, aes(x = FacilityType, y = fit)) +
 
 </code></pre>
 
+<a name="evroadtripplanner"/>
   <h2>Interactive Road Trip Planner (Shiny + Leaflet)</h2>
 
   <p>OK, so with all that out of the way, I started to get excited about what I could do to make these maps interactive. And I will admit: I had no idea, but I did know that Leaflet.js is used a lot by news organizations to make such maps.</p>
@@ -365,7 +376,15 @@ ggplot(new_df, aes(x = FacilityType, y = fit)) +
   <br/>
   <p><a href="https://youtu.be/2M1fDVqQKm8?si=s0RJdhbVZaXOGwJ8" target="_blank">View on YouTube.</a></p>
 
+  <h4>Try the Road Trip Planner on Shinyapps.io:</h4>
+
+  <div class="container-fluid">
+    If the embed isn't working, you can open it directly <a href="https://journovation.shinyapps.io/evroadtrip/">via this link.</a><br/>
+    <embed width="100%" height="1600" src="https://journovation.shinyapps.io/evroadtrip/"/>
+  </div>
+
   <h4>Code for the Leaflet road trip planner:</h4>
+
 
   <pre><code>Road trip planner 
     # Added an All for facility type, and default checked all types.
