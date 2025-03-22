@@ -5,48 +5,69 @@
   <title>Electric Vehicle Charging Infrastructure Analysis</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="main.css">
-
 </head>
 <body>
-  <h1>Electric Vehicle Charging Infrastructure in the U.S.: An Analysis, and a Consumer Tool</h1>
+  <div class="container">
+    <h1>Electric Vehicle Charging Infrastructure in the U.S.: An Analysis, and a Consumer Tool</h1>
+    
+    <p>
+      <strong>By <a href="https://danpacheco.com" target="_blank">Dan Pacheco</a></strong><br/>
+      Final Project for IST 687: Introduction to Data Science<br/>
+      Syracuse University iSchool Masters in Applied Data Science Program<br/>
+      Friday, Mar. 21, 2025
+    </p>
 
-  <p><strong>By <a href="https://danpacheco.com" target="_blank">Dan Pacheco</a></strong><br/>
-    Final Project for IST 687: Introduction to Data Science<br/>
-    Syracuse University iSchool Masters in Applied Data Science Program<br/>
-    Friday, Mar. 21, 2025</p>
+    <p>
+      <i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/" target="_blank">https://pachecod.github.io/ist687final/</a></i>
+    </p>
 
-  <p><i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a></p>
+    <p>
+      <b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing &amp; Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a> | <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository</a>
+    </p>
 
-  <p><b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing & Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a> | <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository</a></p>
+    <a name="introduction"></a>
+    <h2>Introduction</h2>
+    <p>
+      As interest in electric vehicles (EVs) grows, so does concern about charging infrastructure. And this is backed up by recent research. A 
+      <a href="https://www.hbs.edu/bigs/the-state-of-ev-charging-in-america" target="_blank">recent Harvard study</a> showed that drivers can successfully recharge their cars using non-residential EV equipment only 78% of the time. Potential buyers (myself included!) worry about where and how often they can charge on the road — especially when leaving urban areas. The most extreme example of this is planning a road trip. Unless every American plans to have a combustion-engine car for road trips and an electric car for city driving only, this is a problem that must be solved.
+    </p>
+    <p>
+      This project examines how EV charging is distributed across the U.S. and what kind of experience drivers can expect based on where they live or plan to travel. I used R Studio and the functions and processes I learned in IST 687: Introduction to Data Science to try to get a better picture of what the charging infrastructure across the United States is really like, and began building a Shiny App using 
+      <a href="https://leafletjs.com" target="_blank">Leaflet.js</a> that could potentially help EV road-trippers plan their trips with more confidence. I was super excited to learn that Leaflet is supported natively in R using a package! I have more about that in an <a href="#appendix">Appendix</a> at the end of this writeup.
+    </p>
 
-  <a name="introduction""/>
-  <h2>Introduction</h2>
-  <p>As interest in electric vehicles (EVs) grows, so does concern about charging infrastructure. And this is backed up by recent research. A <a href="https://www.hbs.edu/bigs/the-state-of-ev-charging-in-america" target="_blank">recent Harvard study</a> showed that drivers can successfully recharge their cars using non-residential EV equipment only 78% of the time. Potential buyers (myself included!) worry about where and how often they can charge on the road — especially when leaving urban areas. The most extreme example of this is planning a road trip. Unless every American plans to have a combustion-engine car for road trips and an electric car for city driving only, this is a problem that must be solved.</p>
-  
-  <p>This project examines how EV charging is distributed across the U.S. and what kind of experience drivers can expect based on where they live or plan to travel. I used R Studio and the functions and processes I learned in IST 687: Introduction to Data Science to try to get a better picture of what the charging infrastructure across the United States is really like, and began building a Shiny App using <a href="https://leafletjs.com" target="_blank">Leaflet.js</a> that could potentially help EV road-trippers plan their trips with more confidence. I was super excited to learn that Leaflet is supported natively in R using a package! I have more about that in an <a href="#appendix">Appendix</a> at the end of this writeup.</p>
+    <a name="datasources"></a>
+    <h2>Data Sources</h2>
+    <p>
+      The data for this project comes from the <a href="https://afdc.energy.gov/stations#/find/nearest" target="_blank">U.S. Department of Energy's Alternative Fueling Station Locator</a> web site. This data set covers all types of alternative fuels including things like hydrogen fuel, but I wanted to focus only on electric vehicles. I was able to download a subset of 83,000+ records of EV charging stations nationwide, as well as in Canada and some U.S. territories. I filtered the dataset to focus solely on electric vehicle stations.
+    </p>
+    <p>
+      Because the Trump Administration has recently been haphazardly deleting federal data sets that it thinks are at odds with its preference for fossil fuel energy, I made a copy of this export in 
+      <a href="https://docs.google.com/document/d/1QsSVQ1j4bhzmUDQFrTcJsU-xxsuYRcOzdo5qL5ptLTw/edit?tab=t.0" target="_blank">Google Sheets</a> so that it will always be available (and available for my final project). I also have all of the data and code in a 
+      <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository.</a>
+    </p>
+    <p>Other data sources include:</p>
+    <ul>
+      <li>State population data (<code>state.x77</code>)</li>
+      <li><a href="https://afdc.energy.gov/vehicle-registration" target="_blank">EV registrations by state (DOE)</a></li>
+      <li>U.S. map data from R's <code>maps</code> package</li>
+    </ul>
 
-  <a name="datasources"/>
-  <h2>Data Sources</h2>
-  <p>The data for this project comes from the <a href="https://afdc.energy.gov/stations#/find/nearest" target="_blank">U.S. Department of Energy's Alternative Fueling Station Locator</a> web site. This data set covers all types of alternative fuels including things like hydrogen fuel, but I wanted to focus only on electric vehicles. I was able to download a subset of 83,000+ records of EV charging stations nationwide, as well as in Canada and some U.S. territories. I filtered the dataset to focus solely on electric vehicle stations.</p>
-
-  <p>Because the Trump Administration has recently been haphazardly deleting federal data sets that it thinks are at odds with its preference for fossil fuel energy, I made a copy of this export in <a href="https://docs.google.com/document/d/1QsSVQ1j4bhzmUDQFrTcJsU-xxsuYRcOzdo5qL5ptLTw/edit?tab=t.0">Google Sheets</a> so that it will always be available (and available for my final project). I also have all of the data and code in a <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code">Github Repository.</a></p>
-
-
-  <p>Other data sources include:</p>
-  <ul>
-    <li>State population data (<code>state.x77</code>)</li>
-    <li><a href="https://afdc.energy.gov/vehicle-registration" target="_blank">EV registrations by state (DOE)</a></li>
-    <li>U.S. map data from R's <code>maps</code> package</li>
-  </ul>
-
-  <a name="importingandcleaning"/>
-  <h2>Importing and Cleaning the Data</h2>
-
-  <p>I used the jsonlite library for importing the CSV, and the tidyverse library for subsetting and cleaning it to be in the formats I needed. I also renamed the column headers for the columns I planned to use.</p>
-
-  <p>A key point of cleaning is that I needed to remove Canadian provinces, the District of Columbia and Puerto Rico because the ggplot maps I'm using don't display those locations. I also wanted to compare only states to other states. However, I did copy the states data into its own US file, with a plan of eventually creating a subset of just Canada, and perhaps also a subset that is only the island of Puerto Rico so that I can do analyses of them individually, and even compare them to U.S. states.</p>
-
-  <pre><code># Load libraries
+    <a name="importingandcleaning"></a>
+    <h2>Importing and Cleaning the Data</h2>
+    <p>
+      I used the jsonlite library for importing the CSV, and the tidyverse library for subsetting and cleaning it to be in the formats I needed. I also renamed the column headers for the columns I planned to use.
+    </p>
+    <p>
+      A key point of cleaning is that I needed to remove Canadian provinces, the District of Columbia and Puerto Rico because the ggplot maps I'm using don't display those locations. I also wanted to compare only states to other states. However, I did copy the states data into its own US file, with a plan of eventually creating a subset of just Canada, and perhaps also a subset that is only the island of Puerto Rico so that I can do analyses of them individually, and even compare them to U.S. states.
+    </p>
+    <!-- Code Example: Importing and Cleaning the Data -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-1" aria-expanded="false" aria-controls="collapse-code-1">
+        Show/Hide Code: Importing and Cleaning the Data
+      </button>
+      <div class="collapse" id="collapse-code-1">
+        <pre><code># Load libraries
 library(tidyverse)
 library(jsonlite)
 
@@ -70,20 +91,27 @@ fuelstations &lt;- fuelstations[-1, ]
 # Filter out non-U.S. entries
 canadian_codes &lt;- c("AB","BC","MB",...)
 fuelstations_us &lt;- fuelstations[!(fuelstations$StateAbbrev %in% canadian_codes), ]
-fuelstations_us &lt;- fuelstations_us %&gt;% filter(StateAbbrev != "DC")</code></pre>
+fuelstations_us &lt;- fuelstations_us %&gt;% filter(StateAbbrev != "DC")
+        </code></pre>
+      </div>
+    </div>
 
-<a name="maps"/>
-  <h2>Mapping the Charging Landscape</h2>
-
-  <h3>Map 1: Total Stations by State</h3>
-
-<P>My first map was showing the total number of stations across every state. I had to first count the number of fuel stations and tie those to state abbreviations. I then joined it with the map data so that I could use ggplot2.</P>
-
-  <img src="map1.png" class="img-fluid" alt="...">
-
-  <h4>Code for the map above:</h4>
-
-<pre><code># Count stations per state
+    <a name="maps"></a>
+    <h2>Mapping the Charging Landscape</h2>
+    
+    <h3>Map 1: Total Stations by State</h3>
+    <p>
+      My first map was showing the total number of stations across every state. I had to first count the number of fuel stations and tie those to state abbreviations. I then joined it with the map data so that I could use ggplot2.
+    </p>
+    <img src="map1.png" class="img-fluid" alt="...">
+    <h4>Code for the map above:</h4>
+    <!-- Code Example: Map 1 -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-2" aria-expanded="false" aria-controls="collapse-code-2">
+        Show/Hide Code: Map 1
+      </button>
+      <div class="collapse" id="collapse-code-2">
+        <pre><code># Count stations per state
 state_counts &lt;- fuelstations_us %&gt;%
   group_by(StateAbbrev) %&gt;%
   summarise(StationCount = n())
@@ -99,39 +127,49 @@ ggplot(map_data_final, aes(x = long, y = lat, group = group, fill = StationCount
   scale_fill_gradient(low = "lightblue", high = "darkblue") +
   coord_fixed(1.3) +
   theme_void() +
-  labs(title = "Total Charging Stations by State")</code></pre>
+  labs(title = "Total Charging Stations by State")
+        </code></pre>
+      </div>
+    </div>
 
-   
-
-<p>The map above looks good, but unfortunately California is so far beyond every other state in its electric vehicle infrastructure, it makes it hard to compare the other states. So much as I love California, I decided to make a map that removes it so I could see how that looks:</p>
-
-  <h3>Map 2: With California Removed</h3>
-
-  <P>This map lets you see more clearly how the other states compare. Texas, New York, Massachusetts and Florida are all on par numerically. States like Washington, Georgia, North and South Carolina, Colorado, Pennsylvania and Michigan make the middle tier. The rest are at the bottom. (But don't feel too big in your britches, mid-levels, because you are all still way way WAY behind California!)</P>
-
-  <img src="map2.png" class="img-fluid" alt="...">
-
-  <h4>Code for the map above:</h4>
-
-  <pre><code>map_data_no_ca &lt;- map_data_final %&gt;% filter(region != "california")
+    <h3>Map 2: With California Removed</h3>
+    <p>
+      This map lets you see more clearly how the other states compare. Texas, New York, Massachusetts and Florida are all on par numerically. States like Washington, Georgia, North and South Carolina, Colorado, Pennsylvania and Michigan make the middle tier. The rest are at the bottom. (But don't feel too big in your britches, mid-levels, because you are all still way way WAY behind California!)
+    </p>
+    <img src="map2.png" class="img-fluid" alt="...">
+    <h4>Code for the map above:</h4>
+    <!-- Code Example: Map 2 -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-3" aria-expanded="false" aria-controls="collapse-code-3">
+        Show/Hide Code: Map 2
+      </button>
+      <div class="collapse" id="collapse-code-3">
+        <pre><code>map_data_no_ca &lt;- map_data_final %&gt;% filter(region != "california")
 ggplot(map_data_no_ca, aes(x = long, y = lat, group = group, fill = StationCount)) +
   geom_polygon(color = "white") +
   coord_fixed(1.3) +
   theme_void() +
-  labs(title = "Charging Stations by State (Excluding California)")</code></pre>
+  labs(title = "Charging Stations by State (Excluding California)")
+        </code></pre>
+      </div>
+    </div>
 
-  <h3>Map 3: Stations Per Capita</h3>
-
-  <img src="map3.png" class="img-fluid" alt="...">
-
-  <P>As I thought more about what these numbers mean, the total number is not that useful because every state has differently sized populations. I decided to import a dataframe of state population size, then join that into the data of totals per state. This allowed me to show the total number of charging stations per 1,000 residents.</P>
-
-  <p>This led to some interesting insights. As compared to their populations, California, Washington, Oregon Utah, Colorado, Arizona, and Vermont are actually on par with each other. So California, you're not as far ahead of every state as you thought. And surprise: Nevada is ahead of everyone, including California!</p>
-
-
-  <h4>Code for the map above:</h4>
-
-  <pre><code>new_state_population &lt;- data.frame(region = tolower(rownames(state.x77)), Population = state.x77[,"Population"])
+    <h3>Map 3: Stations Per Capita</h3>
+    <img src="map3.png" class="img-fluid" alt="...">
+    <p>
+      As I thought more about what these numbers mean, the total number is not that useful because every state has differently sized populations. I decided to import a dataframe of state population size, then join that into the data of totals per state. This allowed me to show the total number of charging stations per 1,000 residents.
+    </p>
+    <p>
+      This led to some interesting insights. As compared to their populations, California, Washington, Oregon, Utah, Colorado, Arizona, and Vermont are actually on par with each other. So California, you're not as far ahead of every state as you thought. And surprise: Nevada is ahead of everyone, including California!
+    </p>
+    <h4>Code for the map above:</h4>
+    <!-- Code Example: Map 3 -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-4" aria-expanded="false" aria-controls="collapse-code-4">
+        Show/Hide Code: Map 3
+      </button>
+      <div class="collapse" id="collapse-code-4">
+        <pre><code>new_state_population &lt;- data.frame(region = tolower(rownames(state.x77)), Population = state.x77[,"Population"])
 new_state_data &lt;- state_data %&gt;%
   left_join(new_state_population, by = "region") %&gt;%
   mutate(StationsPer100k = (StationCount / Population) * 100000)
@@ -144,27 +182,30 @@ ggplot(new_map_data_final, aes(x = long, y = lat, group = group, fill = Stations
   scale_fill_gradient(low = "darkred", high = "orange") +
   coord_fixed(1.3) +
   theme_void() +
-  labs(title = "Charging Stations per 100,000 Residents")</code></pre>
+  labs(title = "Charging Stations per 100,000 Residents")
+        </code></pre>
+      </div>
+    </div>
 
-
-
-  <h3>Map 4: Stations Per Electric Vehicle</h3>
-
-  <P>All this made me think even more about the average experience of an electric car driver. Do you care how many charging stations there are as compared to the entire population? No, because you're competing for "pumps" with other electric car drivers. I think this is going to become a bigger and bigger issue as electric vehicles increase across the country due to how much longer it takes to charge your EV than it does a gas engine car.</P>
-
-  <p>To get at this question, I pulled in a dataset from the Department of Energy that shows the number of registered electric vehicles per state. This allowed me to make a dataframe that can be used to show charging stations per electric vehicle owners in each state.</p>
-
-  <p>What I got was this map. It shows a more even distribution across the country, with some outliers. At first I thought it showed that Wyoming and North Dakota are ahead of others, and they are. But their populations are also just really small compared to the other states. However, there could be some bigger story there so I flagged it for future investigation.</p>
-
-  <p></p>
-
-
-
-  <img src="map4.png" class="img-fluid" alt="...">
-
-  <h4>Code for the map above:</h4>
-
-  <pre><code>carsbystate &lt;- read.csv("vehicle_registration.csv", header = FALSE)
+    <h3>Map 4: Stations Per Electric Vehicle</h3>
+    <p>
+      All this made me think even more about the average experience of an electric car driver. Do you care how many charging stations there are as compared to the entire population? No, because you're competing for "pumps" with other electric car drivers. I think this is going to become a bigger and bigger issue as electric vehicles increase across the country due to how much longer it takes to charge your EV than it does a gas engine car.
+    </p>
+    <p>
+      To get at this question, I pulled in a dataset from the Department of Energy that shows the number of registered electric vehicles per state. This allowed me to make a dataframe that can be used to show charging stations per electric vehicle owners in each state.
+    </p>
+    <p>
+      What I got was this map. It shows a more even distribution across the country, with some outliers. At first I thought it showed that Wyoming and North Dakota are ahead of others, and they are. But their populations are also just really small compared to the other states. However, there could be some bigger story there so I flagged it for future investigation.
+    </p>
+    <img src="map4.png" class="img-fluid" alt="...">
+    <h4>Code for the map above:</h4>
+    <!-- Code Example: Map 4 -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-5" aria-expanded="false" aria-controls="collapse-code-5">
+        Show/Hide Code: Map 4
+      </button>
+      <div class="collapse" id="collapse-code-5">
+        <pre><code>carsbystate &lt;- read.csv("vehicle_registration.csv", header = FALSE)
 colnames(carsbystate) &lt;- c("region", "electricvehicle")
 carsbystate$region &lt;- tolower(carsbystate$region)
 carsbystate$electricvehicle &lt;- as.numeric(gsub(",", "", carsbystate$electricvehicle))
@@ -181,24 +222,29 @@ ggplot(new_map_ev_data, aes(x = long, y = lat, group = group, fill = StationsPer
   scale_fill_gradient(low = "lightgreen", high = "darkgreen") +
   coord_fixed(1.3) +
   theme_void() +
-  labs(title = "Charging Stations per 1,000 Electric Vehicles")</code></pre>
+  labs(title = "Charging Stations per 1,000 Electric Vehicles")
+        </code></pre>
+      </div>
+    </div>
 
-  <a name="topfacilitytypes"/>
-  <h2>Where Are These Stations Located?</h2>
-
-
-  <p>Enough with maps. Now I was ready to do some histograms. The one that made the most sense to me was this: what types of facilities tend to have the most charging stations? To get at that, I used the tidyverse piping function to mutate / group facility types and basically sum them up. </p>
-
-  <p>What I found is that approximately 16 facility types were leaders in having charging station, with hotels, car dealers, and "public" locations have the most. I am slightly concerned about the "public" designation because it may mean just unknown, but I need to do more research into that.</p>
-
-  <p>In a later step, I called out those 16 facility types to create an interactive map.</p>
-
-
-  <img src="histogram.png" class="img-fluid" alt="...">
-
-  <h4>Code for the histogram:</h4>
-
-  <pre><code>facility_summary &lt;- fuelstations_us %&gt;%
+    <a name="topfacilitytypes"></a>
+    <h2>Where Are These Stations Located?</h2>
+    <p>
+      Enough with maps. Now I was ready to do some histograms. The one that made the most sense to me was this: what types of facilities tend to have the most charging stations? To get at that, I used the tidyverse piping function to mutate / group facility types and basically sum them up.
+    </p>
+    <p>
+      What I found is that approximately 16 facility types were leaders in having charging station, with hotels, car dealers, and "public" locations have the most. I am slightly concerned about the "public" designation because it may mean just unknown, but I need to do more research into that.
+    </p>
+    <p>In a later step, I called out those 16 facility types to create an interactive map.</p>
+    <img src="histogram.png" class="img-fluid" alt="...">
+    <h4>Code for the histogram:</h4>
+    <!-- Code Example: Histogram -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-6" aria-expanded="false" aria-controls="collapse-code-6">
+        Show/Hide Code: Histogram
+      </button>
+      <div class="collapse" id="collapse-code-6">
+        <pre><code>facility_summary &lt;- fuelstations_us %&gt;%
   mutate(FacilityType = ifelse(FacilityType == "" | is.na(FacilityType), "Unknown", FacilityType)) %&gt;%
   group_by(FacilityType) %&gt;%
   summarise(Total = n()) %&gt;%
@@ -207,25 +253,32 @@ ggplot(new_map_ev_data, aes(x = long, y = lat, group = group, fill = StationsPer
 ggplot(facility_summary, aes(x = reorder(FacilityType, -Total), y = Total)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(title = "Charging Stations by Facility Type") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        </code></pre>
+      </div>
+    </div>
 
-  <a name="regressionanalysis"/>
-  <h2>Regression Analysis: Predicting Fast Charger Availability</h2>
-
-  <P>Our professor wanted us to use predictive modeling if possible in this project. I thought a lot about what I could predict with the data I had. At first I wanted to try to predict which states were likely to have more stations based on their open dates. But this proved to be too much work, and I couldn't figure it out.</P>
-
-  <p>Instead, I found a way that I <i>think</i> predicts what each of the 16 top facility types are likely to have FAST chargers, as the data set has counts for how many chargers of different speeds are available at each location.</p>
-
-  <p>What it shows is that Distilleries and Wineries, Gas stations, Grocery stores, Hotels, Parking garages, parking lots, restaurants and shopping centers are more likely to have fast chargers. This makes sense, as those locations want you around just long enough to perform your task with them, and then they want you on your way.</p>
-
-
-  <img src="predictivemodel.png" class="img-fluid" alt="...">
-
-  <h4>Code for the predictive model:</h4>
-
-  <pre><code>
-    
-    # --- Step 1: Create the Binary Outcome Variable ---
+    <a name="regressionanalysis"></a>
+    <h2>Regression Analysis: Predicting Fast Charger Availability</h2>
+    <p>
+      Our professor wanted us to use predictive modeling if possible in this project. I thought a lot about what I could predict with the data I had. At first I wanted to try to predict which states were likely to have more stations based on their open dates. But this proved to be too much work, and I couldn't figure it out.
+    </p>
+    <p>
+      Instead, I found a way that I <i>think</i> predicts what each of the 16 top facility types are likely to have FAST chargers, as the data set has counts for how many chargers of different speeds are available at each location.
+    </p>
+    <p>
+      What it shows is that Distilleries and Wineries, Gas stations, Grocery stores, Hotels, Parking garages, parking lots, restaurants and shopping centers are more likely to have fast chargers. This makes sense, as those locations want you around just long enough to perform your task with them, and then they want you on your way.
+    </p>
+    <img src="predictivemodel.png" class="img-fluid" alt="...">
+    <h4>Code for the predictive model:</h4>
+    <!-- Code Example: Predictive Model -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-7" aria-expanded="false" aria-controls="collapse-code-7">
+        Show/Hide Code: Predictive Model
+      </button>
+      <div class="collapse" id="collapse-code-7">
+        <pre><code>
+# --- Step 1: Create the Binary Outcome Variable ---
 
 # Assuming EVfast (or ev_dc_fast_num) represents fast chargers, convert it to numeric
 fuelstations_us$EVfast <- as.numeric(fuelstations_us$EVfast)
@@ -236,7 +289,6 @@ fuelstations_us <- fuelstations_us %>%
 
 # --- Step 2: Filter for Relevant Facility Types ---
 facility_types <- c("HOTEL", "CAR_DEALER", "PUBLIC", "PARKING_LOT", "SHOPPING_CENTER", "MUNI_GOV", "GAS_STATION", "RESTAURANT", "OFFICE_BUILDING", "PARKING_GARAGE", "PAY_GARAGE", "COLLEGE_CAMPUS", "GROCERY","INN","BREWERY_DISTILLERY_WINERY","CONVENIENCE_STORE","PARK")
-
 
 fuelstations_filtered <- fuelstations_us %>%
   filter(FacilityType %in% facility_types)
@@ -356,38 +408,42 @@ ggplot(new_df, aes(x = FacilityType, y = fit)) +
        title = "Predicted Count of EVfast Chargers by Facility Type") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        </code></pre>
+      </div>
+    </div>
 
-
-
-</code></pre>
-
-<a name="evroadtripplanner"/>
-  <h2>Interactive Road Trip Planner (Shiny + Leaflet)</h2>
-
-  <p>OK, so with all that out of the way, I started to get excited about what I could do to make these maps interactive. And I will admit: I had no idea, but I did know that Leaflet.js is used a lot by news organizations to make such maps.</p>
-
-  <p>So, I decided to go ask a new model of ChatGPT (the o3-mini-high model which is good at reasoning and code) if it knew of ways to do this. I specifically asked it: Based on the data set I had and the types of fields in it, did it know if it could use Leaflet to make a road trip planner?</p>
-
-  <p>It did, and the video below shows what we made together. I had to do some more data munging but was really excited to see that most of the code was supported directly in Leaflet's R package.</p>
-
-  <p>One part I designed myself was importing the geocoordinates of common locations for the Traveling From and Traveling To fields. If I were to spend more time on this, I would figure out a way for someone to type in any city in those fields, but I think it would require using an API and even paying for some geocoding services.</p>
-
-  
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/2M1fDVqQKm8?si=oUQl8lVdSz3BSRsU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  <br/>
-  <p><a href="https://youtu.be/2M1fDVqQKm8?si=s0RJdhbVZaXOGwJ8" target="_blank">View on YouTube.</a></p>
-
-  <h4>Try the Road Trip Planner on Shinyapps.io:</h4>
-
-  <div class="container-fluid">
-    If the embed isn't working, you can open it directly <a href="https://journovation.shinyapps.io/evroadtrip/">via this link.</a><br/>
-    <embed width="100%" height="1600" src="https://journovation.shinyapps.io/evroadtrip/"/>
-  </div>
-
-  <h4>Code for the Leaflet road trip planner:</h4>
-
-
-  <pre><code>Road trip planner 
+    <a name="evroadtripplanner"></a>
+    <h2>Interactive Road Trip Planner (Shiny + Leaflet)</h2>
+    <p>
+      OK, so with all that out of the way, I started to get excited about what I could do to make these maps interactive. And I will admit: I had no idea, but I did know that Leaflet.js is used a lot by news organizations to make such maps.
+    </p>
+    <p>
+      So, I decided to go ask a new model of ChatGPT (the o3-mini-high model which is good at reasoning and code) if it knew of ways to do this. I specifically asked it: Based on the data set I had and the types of fields in it, did it know if it could use Leaflet to make a road trip planner?
+    </p>
+    <p>
+      It did, and the video below shows what we made together. I had to do some more data munging but was really excited to see that most of the code was supported directly in Leaflet's R package.
+    </p>
+    <p>
+      One part I designed myself was importing the geocoordinates of common locations for the Traveling From and Traveling To fields. If I were to spend more time on this, I would figure out a way for someone to type in any city in those fields, but I think it would require using an API and even paying for some geocoding services.
+    </p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/2M1fDVqQKm8?si=oUQl8lVdSz3BSRsU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <br/>
+    <p>
+      <a href="https://youtu.be/2M1fDVqQKm8?si=s0RJdhbVZaXOGwJ8" target="_blank">View on YouTube.</a>
+    </p>
+    <h4>Try the Road Trip Planner on Shinyapps.io:</h4>
+    <div class="container-fluid">
+      If the embed isn't working, you can open it directly <a href="https://journovation.shinyapps.io/evroadtrip/">via this link.</a><br/>
+      <embed width="100%" height="1600" src="https://journovation.shinyapps.io/evroadtrip/"/>
+    </div>
+    <h4>Code for the Leaflet road trip planner:</h4>
+    <!-- Code Example: Road Trip Planner -->
+    <div class="mb-3">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-code-8" aria-expanded="false" aria-controls="collapse-code-8">
+        Show/Hide Code: Road Trip Planner
+      </button>
+      <div class="collapse" id="collapse-code-8">
+        <pre><code>Road trip planner 
     # Added an All for facility type, and default checked all types.
     
     library(shiny)
@@ -617,35 +673,32 @@ ggplot(new_df, aes(x = FacilityType, y = fit)) +
     }
     
     shinyApp(ui, server)
-    </code></pre>
-    
-  <h2>Conclusion</h2>
-  <p>I really enjoyed delving into this large data set and using the skills I picked up in IST 687 to turn it into something that tells a story about the state of electric vehicle infrastructure in the United States. I'm also very proud of the EV Road Trip Planner, and I intend to publish it online after this class is over. My main reason for doing that? I'm sure my next car will be electric, and I don't want to get stuck or get bored while charging at a slow station with nothing to do. </p>
+        </code></pre>
+      </div>
+    </div>
 
+    <h2>Conclusion</h2>
+    <p>
+      I really enjoyed delving into this large data set and using the skills I picked up in IST 687 to turn it into something that tells a story about the state of electric vehicle infrastructure in the United States. I'm also very proud of the EV Road Trip Planner, and I intend to publish it online after this class is over. My main reason for doing that? I'm sure my next car will be electric, and I don't want to get stuck or get bored while charging at a slow station with nothing to do.
+    </p>
 
     <a name="appendix"></a>
-  <h2>Appendix</h2>
-
-  <p>Here are some resources for using Leaflet.js in R:</p>
-
-  <ul>
-
-    <li><a href="https://leafletjs.com" target="_blank">https://leafletjs.com</a> is an open source alternative to Google Maps. It uses Open Street Maps for visuals.</li>
-
-    <li>R Studio's instructions about <a href="https://rstudio.github.io/leaflet/" target="_blank">how to use Leaflet in R.</a></li>
-    
-    <li><a href="https://r-charts.com/spatial/interactive-maps-leaflet/"  target="_blank">R-Charts tutorials:</a> </li></p>
-
-</ul>
-
-<p>
-<i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a></p>
-
-<p><b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing & Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a> | <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository</a></p>
-
-
+    <h2>Appendix</h2>
+    <p>Here are some resources for using Leaflet.js in R:</p>
+    <ul>
+      <li><a href="https://leafletjs.com" target="_blank">https://leafletjs.com</a> is an open source alternative to Google Maps. It uses Open Street Maps for visuals.</li>
+      <li>R Studio's instructions about <a href="https://rstudio.github.io/leaflet/" target="_blank">how to use Leaflet in R.</a></li>
+      <li><a href="https://r-charts.com/spatial/interactive-maps-leaflet/"  target="_blank">R-Charts tutorials:</a></li>
+    </ul>
+    <p>
+      <i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/" target="_blank">https://pachecod.github.io/ist687final/</a></i>
+    </p>
+    <p>
+      <b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing &amp; Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a> | <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository</a>
+    </p>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>
 </html>
