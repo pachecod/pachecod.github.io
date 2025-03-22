@@ -10,13 +10,14 @@
 <body>
   <h1>Electric Vehicle Charging Infrastructure in the U.S.: An Analysis, and a Consumer Tool</h1>
 
-  <p><strong>By <a href="https://danpacheco.com" target="_blank">Dan Pacheco</a></strong><br>
-    IST 687<br>
+  <p><strong>By <a href="https://danpacheco.com" target="_blank">Dan Pacheco</a></strong><br/>
+    Final Project for IST 687: Introduction to Data Science<br/>
+    Syracuse University iSchool Masters in Applied Data Science Program<br/>
     Friday, Mar. 21, 2025</p>
 
   <p><i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a></p>
 
-  <p><b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing & Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a></p>
+  <p><b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing & Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a> | <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository</a></p>
 
   <a name="introduction""/>
   <h2>Introduction</h2>
@@ -28,7 +29,7 @@
   <h2>Data Sources</h2>
   <p>The data for this project comes from the <a href="https://afdc.energy.gov/stations#/find/nearest" target="_blank">U.S. Department of Energy's Alternative Fueling Station Locator</a> web site. This data set covers all types of alternative fuels including things like hydrogen fuel, but I wanted to focus only on electric vehicles. I was able to download a subset of 83,000+ records of EV charging stations nationwide, as well as in Canada and some U.S. territories. I filtered the dataset to focus solely on electric vehicle stations.</p>
 
-  <p>Because the Trump Administration has recently been haphazardly deleting federal data sets that it thinks are at odds with its preference for fossil fuel energy, I made a copy of this export in <a href="https://docs.google.com/document/d/1QsSVQ1j4bhzmUDQFrTcJsU-xxsuYRcOzdo5qL5ptLTw/edit?tab=t.0">Google Sheets</a> so that it will always be available (and available for my final project). I also have all of the data and code in a Github Repository.</p>
+  <p>Because the Trump Administration has recently been haphazardly deleting federal data sets that it thinks are at odds with its preference for fossil fuel energy, I made a copy of this export in <a href="https://docs.google.com/document/d/1QsSVQ1j4bhzmUDQFrTcJsU-xxsuYRcOzdo5qL5ptLTw/edit?tab=t.0">Google Sheets</a> so that it will always be available (and available for my final project). I also have all of the data and code in a <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code">Github Repository.</a></p>
 
 
   <p>Other data sources include:</p>
@@ -637,7 +638,11 @@ ggplot(new_df, aes(x = FacilityType, y = fit)) +
 
 </ul>
 
-<i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a>
+<p>
+<i>This paper is also available online here: <a href="https://pachecod.github.io/ist687final/">https://pachecod.github.io/ist687final/</i></a></p>
+
+<p><b>Sections:</b> <a href="#introduction">Introduction</a> | <a href="#datasources">Data Sources</a> | <a href="#importingandcleaning">Importing & Cleaning</a> | <a href="#maps">Maps</a> | <a href="#topfacilitytypes">Top Facility Types</a> | <a href="#regressionanalysis">Regression Analysis</a> | <a href="#evroadtripplanner">EV Road Trip Planner</a> | <a href="https://github.com/pachecod/pachecod.github.io/tree/master/ist687final/code" target="_blank">Github Repository</a></p>
+
 
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
