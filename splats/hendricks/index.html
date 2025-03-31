@@ -1,0 +1,2748 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Hendricks Chapel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta property="og:title" content="Hendricks Chapel">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="undefined">
+  <meta property="og:url" content="">
+  <script>
+    document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
+  </script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    
+    /* Base Styles */
+    html, body { 
+      margin: 0; 
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    
+    #renderCanvas { 
+      width: 100vw; 
+      height: 100vh; 
+      touch-action: none;
+      display: block;
+    }
+
+    /* Preloader Styles */
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1e1e1e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100000;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #preloader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #preloader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      gap: 20px;
+    }
+
+    #preloader-media {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    #preloader-image {
+      height: 200px;
+      width: auto;
+      object-fit: contain;
+    }
+   #preloader-image-inverted {
+      height: 200px;
+      width: auto;
+      object-fit: contain;
+      filter: invert(1);
+      margin-right: -100px;
+    }
+    #preloader-lottie {
+      height: 200px;
+      width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      #preloader-image {
+        height: 100px;
+      }
+      #preloader-image-inverted {
+        height: 100px;
+        margin-right: -50px;
+      }
+      #preloader-lottie {
+        height: 100px;
+        width: 100px;
+      }
+    }
+
+    #preloader-progress {
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    #preloader-progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #4CAF50;
+      border-radius: 2px;
+      transition: width 0.3s ease-out;
+      position: relative;
+    }
+
+    #preloader-progress-text {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    /* Button Styles */
+    .button {
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin: 0 2px;
+    }
+    .button:hover { background: rgba(0, 0, 0, 0.5); }
+    
+    /* Waypoint Info Styles */
+    #waypointInfo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      text-align: center;
+      z-index: 1000;
+      pointer-events: none;
+      display: none;
+    }
+    #waypointInfo.hasContent {
+      padding: 15px;
+    }
+    /* Scroll Controls Styles */
+    #scrollControls {
+      position: fixed;
+      bottom: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+
+      @media (max-width: 540px) {
+        margin-bottom: 45px;
+      }
+    
+    }
+    
+    #scrollControlsContent {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    #scrollPercentage {
+      font-size: 18px;
+      color: white;
+    }
+    #progressBarContainer {
+      width: 90%;
+      max-width: 300px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    
+    #scrollButtons {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+    
+    
+    #modeToggle {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 5px;
+    }
+    
+    .mode-button {
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      color: white;
+      padding: 3px 6px;
+      font-size: 11px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    
+    .mode-button.selected {
+      background: #4CAF50;
+    }
+
+    .mode-button:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Walk Mode Toggle Button */
+    #walkToggleButton {
+      position: fixed;
+      bottom: 50px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 1000;
+      display: none;
+    }
+
+    #walkToggleButton.selected {
+      background: #4CAF50;
+    }
+
+    #walkToggleButton:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Start Button Styles */
+    #startButton {
+      padding: 20px 40px;
+      font-size: 24px;
+      background-color: rgba(255, 255, 255, 0.25);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+   /* Start Experience Button Styles */
+    #startButtonContainer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5000;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Control Button Styles */
+    #fullscreenButton {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0);
+      border: none;
+      padding: 5px;
+      border-radius: 3px;
+      cursor: pointer;
+      z-index: 100000;
+    }
+    
+    #fullscreenButton svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+    
+    #muteButton {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      color: white;
+      padding: 5px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    
+    /* UI Overlay Styles */
+    .ui-overlay {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      z-index: 1000;
+    }
+    
+    .ui-overlay p {
+      margin: 3px 0;
+    }
+
+    /* Content Display Styles */
+    #hotspotContent {
+      position: fixed;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 100001;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+      font-size: 14px;
+    }
+
+    #infoPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1002;
+      max-width: 80%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: none;
+      font-size: 16px;
+    }
+
+    /* Inline Button Position Styles */
+    
+  
+    
+    #prevButton, #nextButton {
+      transition: background-color 0.3s, color 0.3s;
+    }
+    #prevButton:hover, #nextButton:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    #helpButton {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: background-color 0.3s;
+    }
+
+    #helpPanel {
+      position: fixed;
+      top: 100px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      max-width: 300px;
+      z-index: 999;
+      display: none;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+    }
+
+    #helpPanel.visible {
+      display: block;
+    }
+
+    #helpPanel h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+
+    #helpPanel p {
+      margin: 5px 0;
+      line-height: 1.4;
+    }
+
+    #exploreToggleContainer {
+      position: fixed;
+      bottom: 60px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      height: 90px;
+    }
+
+    #droneToggleButton {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #droneToggleButton svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    #droneToggleButton.selected {
+      background-color: #4CAF50;
+    }
+
+    #droneToggleButton:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    #walkToggleButton {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #walkToggleButton svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    #walkToggleButton.selected {
+      background-color: #4CAF50;
+    }
+
+    #walkToggleButton:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-L2NG77PKGG"></script>
+  <script>
+    
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    // Configure custom dimensions
+    gtag('config', 'G-L2NG77PKGG', {
+      custom_map: {
+        'dimension1': 'scene_id',
+        'dimension2': 'scene_name',
+        'dimension3': 'creator_name',
+        'dimension4': 'user_id'
+      }
+    });
+
+    // Set default values for custom dimensions
+    gtag('event', 'set', {
+      'scene_id': '1743112533853',
+      'scene_name': 'Hendricks Chapel',
+      'creator_name': 'Dan Pacheco',
+      'user_id': '4f8NeHkYVcP4weJu3invjGLiKMD2'
+    });
+
+    // Add scene metadata object
+    const sceneMetadata = {
+      scene_id: '1743112533853',
+      scene_name: 'Hendricks Chapel',
+      creator_name: 'Dan Pacheco',
+      user_id: '4f8NeHkYVcP4weJu3invjGLiKMD2',
+      timestamp: new Date().toISOString()
+    };
+
+    // Enhanced tracking functions with metadata
+    function trackPageview() {
+      gtag('event', 'page_view', {
+        ...sceneMetadata,
+        page_title: document.title,
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        referrer: document.referrer,
+        viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+        user_agent: navigator.userAgent
+      });
+    }
+
+    function trackCameraMode(mode) {
+      gtag('event', 'camera_mode_change', {
+        ...sceneMetadata,
+        mode: mode
+      });
+    }
+
+    function trackWaypointReached(waypointName, waypointIndex) {
+      gtag('event', 'waypoint_reached', {
+        ...sceneMetadata,
+        waypoint_name: waypointName,
+        waypoint_index: waypointIndex
+      });
+    }
+
+    function trackHotspotInteraction(hotspotTitle, interactionType) {
+      gtag('event', 'hotspot_interaction', {
+        ...sceneMetadata,
+        hotspot_title: hotspotTitle,
+        interaction_type: interactionType
+      });
+    }
+
+    function trackAudioInteraction(audioId, action) {
+      gtag('event', 'audio_interaction', {
+        ...sceneMetadata,
+        audio_id: audioId,
+        action: action
+      });
+    }
+
+    function trackUserEngagement(type, duration) {
+      gtag('event', 'user_engagement', {
+        ...sceneMetadata,
+        engagement_type: type,
+        duration_seconds: duration
+      });
+    }
+
+    // Track session duration
+    let sessionStartTime = Date.now();
+    window.addEventListener('beforeunload', () => {
+      const sessionDuration = (Date.now() - sessionStartTime) / 1000; // Convert to seconds
+      trackUserEngagement('session_duration', sessionDuration);
+    });
+
+    // Track initial pageview
+    window.addEventListener('load', trackPageview);
+
+    // Track visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        const visibleDuration = (Date.now() - sessionStartTime) / 1000;
+        trackUserEngagement('visible_duration', visibleDuration);
+      }
+    });
+
+    // Track user interactions
+    let lastInteractionTime = Date.now();
+    document.addEventListener('click', updateLastInteraction);
+    document.addEventListener('mousemove', updateLastInteraction);
+    document.addEventListener('keypress', updateLastInteraction);
+    document.addEventListener('scroll', updateLastInteraction);
+    document.addEventListener('touchstart', updateLastInteraction);
+
+    function updateLastInteraction() {
+      const now = Date.now();
+      const timeSinceLastInteraction = (now - lastInteractionTime) / 1000;
+      if (timeSinceLastInteraction > 30) { // Track engagement periods longer than 30 seconds
+        trackUserEngagement('active_period', timeSinceLastInteraction);
+      }
+      lastInteractionTime = now;
+    }
+  </script>
+</head>
+<body>
+  <button id="helpButton" title="Toggle Help">?</button>
+  <div id="helpPanel">
+    <h3>Controls & Help</h3>
+    <p><strong>Camera Modes:</strong></p>
+    <p>• Tour - Follow predefined path</p>
+    <p>• Explore - Free movement</p>
+    <p>• Hybrid - Mix of both</p>
+    
+    <p><strong>Navigation:</strong></p>
+    <p>• Mouse/Touch - Look around</p>
+    <p>• WASD/Arrows - Move camera</p>
+    <p>• Q/E - Move up/down</p>
+    <p>• Scroll - Move along path</p>
+    
+  </div>
+
+  <script>
+    window.cameraMode = 'tour';
+    window.autoPlayEnabled = false;
+  </script>
+  
+  
+  <div id="preloader">
+    <div id="preloader-content">
+      <div id="preloader-media">
+          <img id="preloader-image-inverted" src="https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Fimages%2FStorySplat.webp?alt=media&token=953e8ab3-1865-4ac1-a98d-b548b7066bda" alt="StorySplat Logo" />
+        
+          <lottie-player id="preloader-lottie" 
+            src="https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Flotties%2FstorySplatLottie.json?alt=media&token=d7edc19d-9cb8-4c6e-a94c-cba1d2b65d5e"
+            background="transparent" 
+            speed="1" 
+            loop 
+            autoplay>
+          </lottie-player>
+        
+      </div>
+      <div id="preloader-progress">
+        <div id="preloader-progress-bar"></div>
+        <div id="preloader-progress-text">Loading... 0%</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Preloader service to handle loading progress
+    const preloaderService = {
+      progressBar: null,
+      progressText: null,
+      preloader: null,
+      
+      init() {
+        this.progressBar = document.getElementById('preloader-progress-bar');
+        this.progressText = document.getElementById('preloader-progress-text');
+        this.preloader = document.getElementById('preloader');
+      },
+
+      updateProgress(percent) {
+        if (!this.progressBar || !this.progressText) return;
+        
+        // Ensure percent is between 0 and 100
+        percent = Math.max(0, Math.min(100, percent));
+        
+        // Update progress bar width
+        this.progressBar.style.width = percent + '%';
+        
+        // Update progress text
+        this.progressText.textContent = 'Loading... ' + Math.round(percent) + '%';
+        
+        // Hide preloader when loading is complete
+        if (percent >= 100) {
+          setTimeout(() => {
+            if (this.preloader) {
+              this.preloader.classList.add('hidden');
+              // Remove preloader from DOM after fade out animation
+              setTimeout(() => {
+                if (this.preloader && this.preloader.parentNode) {
+                  this.preloader.parentNode.removeChild(this.preloader);
+                }
+              }, 500);
+            }
+          }, 500);
+        }
+      }
+    };
+
+    // Initialize preloader service when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      preloaderService.init();
+    });
+
+    // Function to update progress that can be called from other scripts
+    function updateProgress(percent) {
+      preloaderService.updateProgress(percent);
+    }
+  </script>
+  
+
+
+  <button id="fullscreenButton" title="Toggle Fullscreen">
+    <svg id="expandIcon" viewBox="0 0 24 24">
+      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+    </svg>
+    <svg id="compressIcon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+    </svg>
+  </button>
+
+  
+
+  <canvas id="renderCanvas"></canvas>
+
+  <div id="hotspotContent"></div>
+  <div id="infoPopup"></div>
+  
+  <div id="waypointInfo" style="display: none;"></div>
+
+  
+    <div id="scrollControls">
+      <div id="scrollControlsContent">
+        <div id="scrollPercentage">0%</div>
+        <div id="progressBarContainer">
+          <div id="progressBar"></div>
+        </div>
+        
+        <div id="scrollButtons">
+          <button id="prevButton" class="button" onclick="handleButtonScroll(-1)">
+            <span class="button-icon">←</span>
+            <span class="button-text">Prev</span>
+          </button>
+          <button id="nextButton" class="button" onclick="handleButtonScroll(1)">
+            <span class="button-text">Next</span>
+            <span class="button-icon">→</span>
+          </button>
+        </div>
+        
+      </div>
+      <div id="modeToggleContainer">
+        <div id="modeToggle">
+                  
+          <button id="modeExplore" class="mode-button" onclick="changeCameraMode('explore')">Explore</button>
+          <button id="modeTour" class="mode-button" onclick="changeCameraMode('tour')">Tour</button>
+          <button id="modeHybrid" class="mode-button" onclick="changeCameraMode('hybrid')">Hybrid</button>
+        </div>
+      </div>
+    </div>
+    
+
+  
+  <button id="muteButton">🔊 Mute</button>
+
+  
+    <div class="storysplat-watermark" style="
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      z-index: 1000;
+      pointer-events: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    ">
+      Created with <a href="https://storysplat.com?ref=1743112533853" target="_blank" style="color: #4CAF50; text-decoration: none; pointer-events: auto;">
+          StorySplat
+        </a>
+    </div>
+  
+
+  <script src="https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Fbabylon%2Fcdn%2Fbabylon-7.38.0.js?alt=media&token=848987a3-68a6-47b5-8f7b-0e42185b7a09" onerror="this.onerror=null;this.src='https://cdn.babylonjs.com/babylon.js'"></script>
+  <script src="https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Fbabylon%2Fcdn%2Fbabylonjs.loaders.min.js?alt=media&token=789d9d2f-c308-419c-9899-2650e62bdae1" onerror="this.onerror=null;this.src='https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js'"></script>
+
+  <script>
+    
+// Simplified AudioManager for exported HTML
+class AudioManager {
+  isMuted;
+  activeSounds;
+
+  constructor() {
+    this.isMuted = false;
+    this.activeSounds = new Map();
+  }
+
+  playSound(audioData, options = {}) {
+    if (typeof this.isMuted === 'undefined') {
+      this.isMuted = false;
+    }
+
+    if (this.isMuted) return;
+
+    const { 
+      scene, 
+      position, 
+      waypointIndex 
+    } = options;
+
+    const id = audioData.id;
+    const url = audioData.url;
+
+    // Check if sound is already playing
+    const existingSound = this.activeSounds.get(id);
+    if (existingSound) {
+      if (existingSound.isPlaying) {
+        return;
+      }
+
+      existingSound.dispose();
+      this.activeSounds.delete(id);
+    }
+
+    const sound = new BABYLON.Sound(
+      id,
+      url,
+      scene,
+      () => {
+        if (BABYLON.Engine.audioEngine.audioContext.state === 'suspended') {
+          BABYLON.Engine.audioEngine.audioContext.resume().then(() => {
+            if (!sound.isPlaying) {
+              sound.play();
+              // Track audio start
+              trackAudioInteraction(id, 'play');
+            }
+          });
+        } else {
+          if (!sound.isPlaying) {
+            sound.play();
+            // Track audio start
+            trackAudioInteraction(id, 'play');
+          }
+        }
+      },
+      {
+        loop: audioData.loop !== undefined ? audioData.loop : true,
+        volume: audioData.volume !== undefined ? audioData.volume : 1,
+        spatialSound: audioData.spatialSound !== undefined ? audioData.spatialSound : false,
+        distanceModel: audioData.distanceModel || "exponential",
+        maxDistance: audioData.maxDistance || 100,
+        refDistance: audioData.refDistance || 1,
+        rolloffFactor: audioData.rolloffFactor || 1,
+      }
+    );
+
+    sound.metadata = {
+      stopOnExit: audioData.stopOnExit,
+      spatialSound: audioData.spatialSound
+    };
+
+    if (audioData.spatialSound && position) {
+      sound.setPosition(position);
+    }
+
+    this.activeSounds.set(id, sound);
+  }
+
+  stopSound(id) {
+    const sound = this.activeSounds.get(id);
+    if (sound) {
+      sound.stop();
+      sound.dispose();
+      this.activeSounds.delete(id);
+      // Track audio stop
+      trackAudioInteraction(id, 'stop');
+    }
+  }
+
+  stopAllSounds() {
+    this.activeSounds.forEach((sound, id) => {
+      sound.stop();
+      sound.dispose();
+      // Track each audio stop
+      trackAudioInteraction(id, 'stop');
+    });
+    this.activeSounds.clear();
+  }
+
+  isSoundPlaying(id) {
+    const sound = this.activeSounds.get(id);
+    return sound ? sound.isPlaying : false;
+  }
+
+  mute() {
+    this.isMuted = true;
+    this.activeSounds.forEach((sound, id) => {
+      if (sound.isPlaying) {
+        sound.pause();
+        // Track audio mute
+        trackAudioInteraction(id, 'mute');
+      }
+    });
+  }
+
+  unmute() {
+    this.isMuted = false;
+    this.activeSounds.forEach((sound, id) => {
+      sound.play();
+      // Track audio unmute
+      trackAudioInteraction(id, 'unmute');
+    });
+  }
+}
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+function playAudio(interactionData, waypointIndex) {
+  audioManager.playSound(
+    { ...interactionData, id: interactionData.id }, 
+    { 
+      scene, 
+      position: waypointIndex !== undefined && waypoints[waypointIndex] 
+        ? new BABYLON.Vector3(
+            waypoints[waypointIndex].x, 
+            waypoints[waypointIndex].y, 
+            waypoints[waypointIndex].z
+          ) 
+        : undefined
+    }
+  );
+}
+
+function stopAudio(interactionData) {
+  audioManager.stopSound(interactionData.id);
+}
+
+function executeInteractions(interactions, waypointIndex) {
+  interactions.forEach((interaction) => {
+    switch (interaction.type) {
+      case "audio":
+        playAudio({ ...interaction.data, id: interaction.id }, waypointIndex);
+        break;
+      case "info":
+        if ('controls' === 'popup') {
+          showInfoPopup(interaction.data);
+        }
+        break;
+    }
+  });
+}
+
+function reverseInteractions(interactions) {
+  interactions.forEach((interaction) => {
+    switch (interaction.type) {
+      case "audio":
+        const data = interaction.data;
+        const sound = audioManager.activeSounds.get(interaction.id);
+        
+        if (sound && sound.metadata.stopOnExit) {
+          stopAudio({ ...data, id: interaction.id });
+        }
+        break;
+      case "info":
+        if ('controls' === 'popup') {
+          hideInfoPopup();
+        }
+        break;
+    }
+  });
+}
+
+// Update the mute button functionality
+const muteButton = document.getElementById('muteButton');
+muteButton.textContent = audioManager.isMuted ? '🔇 Unmute' : '🔊 Mute';
+muteButton.addEventListener('click', function() {
+  if (audioManager.isMuted) {
+    audioManager.unmute();
+    muteButton.textContent = '🔊 Mute';
+  } else {
+    audioManager.mute();
+    muteButton.textContent = '🔇 Unmute';
+  }
+});
+
+
+/* // Initialize autoplay sounds immediately when preloader is disabled
+waypoints.forEach((wp, index) => {
+  wp.interactions.forEach((interaction) => {
+    if (interaction.type === 'audio' && interaction.data.autoplay === true) {
+      playAudio({ ...interaction.data, id: interaction.id }, index);
+    }
+  });
+}); */
+
+    
+    
+    class ImagePreloader {
+      static imageCache = new Map();
+
+      static preloadImages(urls) {
+        const uniqueUrls = [...new Set(urls)];
+        const loadPromises = uniqueUrls.map(url => {
+          if (this.imageCache.has(url)) {
+            return Promise.resolve();
+          }
+
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+              this.imageCache.set(url, img);
+              resolve();
+            };
+            img.onerror = reject;
+            img.src = url;
+          });
+        });
+
+        return Promise.all(loadPromises);
+      }
+
+      static getPreloadedImage(url) {
+        return this.imageCache.get(url);
+      }
+
+      static isImagePreloaded(url) {
+        return this.imageCache.has(url);
+      }
+    }
+  
+
+    window.addEventListener("keydown",
+      function(e) {
+        //if wasd or arrow keys, and canvas is not focused
+        if([32, 37, 38, 39, 40, 87, 65, 83, 68, 81, 69].indexOf(e.keyCode) > -1 && 
+            document.activeElement !== canvas &&
+            !(document.activeElement instanceof HTMLInputElement) &&
+            !(document.activeElement instanceof HTMLTextAreaElement)) {
+          e.preventDefault();
+          canvas.focus();
+          //resend the event to the canvas  
+          canvas.dispatchEvent(new KeyboardEvent('keydown', e));
+        }
+      }, false
+    );
+
+    // Initialize shared variables
+    const waypoints = [{"x":-0.15188030826482646,"y":-0.08818692939131575,"z":-2.5354502576806173,"rotation":{"_isDirty":true,"_x":0.011963653214105084,"_y":0.03639724818812716,"_z":-0.00043576402099500293,"_w":0.9992656911131406},"interactions":[{"id":"interaction-1743112676744","type":"info","data":{"text":"Caption 1 text. Caption 1 text. Caption 1 text. Caption 1 text. Caption 1 text. Caption 1 text. "}}],"triggerDistance":1,"name":"Waypoint 1"},{"x":-0.11270703291681874,"y":-0.5215418298806469,"z":-1.5215820866957355,"rotation":{"_isDirty":true,"_x":-0.1134500145265618,"_y":0.06431336025707445,"_z":0.00735940157428003,"_w":0.9914326629200971},"interactions":[{"id":"interaction-1743112690078","type":"info","data":{"text":"Caption 2 text. Caption 2 text. Caption 2 text. Caption 2 text. Caption 2 text. "}}],"triggerDistance":1,"name":"Waypoint 2"},{"x":0.02537015421738641,"y":-0.29264556982617096,"z":-0.644392884825412,"rotation":{"_isDirty":true,"_x":-0.03247845275054369,"_y":0.08312083695546316,"_z":0.0027104610793891345,"_w":0.996006390527436},"interactions":[{"id":"interaction-1743112703510","type":"info","data":{"text":"Caption 3 text. Caption 3 text. Caption 3 text. Caption 3 text. Caption 3 text. Caption 3 text. "}}],"triggerDistance":1,"name":"Waypoint 3"},{"x":-0.6871598258779016,"y":0.6944243275918526,"z":-0.8183641326652993,"rotation":{"_isDirty":true,"_x":0.004534556648558683,"_y":0.27962234754724496,"_z":-0.0013206595142610737,"_w":0.9600984514135081},"interactions":[{"id":"interaction-1743112720488","type":"info","data":{"text":"Caption 4 text. Caption 4 text. Caption 4 text. Caption 4 text. Caption 4 text. Caption 4 text. "}}],"triggerDistance":1,"name":"Waypoint 4"},{"x":-1.2129418425311853,"y":0.7132207589114027,"z":-2.228728937658954,"rotation":{"_isDirty":true,"_x":-0.0025483643649933272,"_y":0.3099139132570989,"_z":0.0008306753131237175,"_w":0.9507608438441597},"interactions":[{"id":"interaction-1743112730887","type":"info","data":{"text":"Caption 5 text. Caption 5 text. Caption 5 text. Caption 5 text. Caption 5 text. Caption 5 text. "}}],"triggerDistance":1,"name":"Waypoint 5"}];
+    let userControl = cameraMode === 'explore';
+    let scrollPosition = 0;
+    let scrollTarget = 0.01;
+    let targetRotation = null;
+    let targetPosition = null;
+    const activeWaypoints = new Set();
+    let transitionSpeed = 0.5;
+
+    // Then set up the scene (which will use the splat system)
+    
+    const preloader = document.getElementById("preloader");
+    const canvas = document.getElementById('renderCanvas');
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    window.scene = scene;
+
+    scene.clearColor = BABYLON.Color3.FromHexString('#7D7D7D').toColor4(1);
+
+    const camera = new BABYLON.UniversalCamera(
+      'camera',
+      new BABYLON.Vector3(waypoints[0].x, waypoints[0].y, waypoints[0].z),
+      scene
+    );
+    camera.fov = 0.8;
+     camera.minZ = 0.1;
+    camera.maxZ = 1000;
+    camera.invertRotation = false;
+    camera.inverseRotationSpeed = 2;
+    camera.attachControl(canvas, true);
+    camera.speed = 0.2;
+    camera.angularSensibility = 4000;
+
+    camera.rotationQuaternion = new BABYLON.Quaternion(
+      waypoints[0].rotation._x,
+      waypoints[0].rotation._y,
+      waypoints[0].rotation._z,
+      waypoints[0].rotation._w
+    ).normalize();
+
+    camera.rotation = camera.rotationQuaternion.toEulerAngles();
+    camera.keysUp.push(87);    // W
+    camera.keysDown.push(83);  // S
+    camera.keysLeft.push(65);  // A
+    camera.keysRight.push(68); // D
+    camera.keysUpward.push(81);   // Q
+    camera.keysDownward.push(69); // E
+    camera.inputs.addGamepad();
+
+    camera.checkCollisions = true;
+    camera.applyGravity = false;
+    camera.ellipsoid = new BABYLON.Vector3(0.1, 0.1, 0.1);
+
+    // Initialize scene but don't load model yet
+    // The splatSystem will handle the initial model load
+    // This ensures consistent behavior between initial load and splat swaps
+  
+
+    // Initialize splat system first
+    
+    // ---------------------------------------------
+    // SPLAT SYSTEM with toggle for disposal vs. retain
+    // and a background preloader for next splats
+    // ---------------------------------------------
+    const additionalSplats = [];
+    const keepMeshesInMemory = false; // top-level toggle
+    const useNodeMaterial = true; // toggle for node material
+
+    // Store materials to reuse them
+    let fadeMaterial = null;
+    let inverseFadeMaterial = null;
+
+    // Initialize materials if node material is enabled
+    async function initializeMaterials() {
+      if (useNodeMaterial) {
+        if (!fadeMaterial) {
+          fadeMaterial = await BABYLON.NodeMaterial.ParseFromFileAsync(
+            "nodeMat",
+            "https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Fmaterials%2FsplatFadeNodeMaterial.json?alt=media&token=00ea0eea-ea77-40bf-9f98-ed9bc54c25f9",
+            scene
+          );
+        }
+        if (!inverseFadeMaterial) {
+          inverseFadeMaterial = await BABYLON.NodeMaterial.ParseFromFileAsync(
+            "nodeMat",
+            "https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/public%2Fmaterials%2FsplatFadeNodeMaterialInverse.json?alt=media&token=669d70b9-5957-4070-8b80-d01f9327fa08",
+            scene
+          );
+        }
+      }
+    }
+
+    // Initialize materials when the system starts
+    initializeMaterials();
+
+    let currentSplatUrl = null; 
+    let isLoadingSplat = false;
+    let lastWaypointIndex = -1;
+    let lastPercentage = -1;
+    let scrollPaused = false;
+
+    // Because we only want the preloader to show for the *first* load,
+    // we can track when the initial load is done:
+    let initialLoadDone = false;
+
+    // A map of splatUrl -> array of meshes
+    // For Option 1: we never remove them, just hide or show.
+    // For Option 2: we remove them whenever we switch splats.
+    let preloadedSplats = new Map();
+
+    // =========================================================
+    // For Option 1: Hide a splat instead of disposing
+    // =========================================================
+    async function hidePreloadedSplat(url) {
+      const meshes = preloadedSplats.get(url);
+      if (meshes) {
+        if (useNodeMaterial && inverseFadeMaterial) {
+          for (const mesh of meshes) {
+            // Clone the material for this instance to avoid shared state
+            const meshInverseMaterial = inverseFadeMaterial.clone("inverseFadeMat");
+            mesh.material = meshInverseMaterial;
+
+            const fadeAmountFloat = meshInverseMaterial.getBlockByName("FadeAmountFloat");
+            if (fadeAmountFloat && fadeAmountFloat.isInput) {
+              // Start from 10 and decrease to -10
+              fadeAmountFloat._storedValue = 10;
+              const observer = scene.onBeforeRenderObservable.add(() => {
+                fadeAmountFloat._storedValue -= scene.getEngine().getDeltaTime() / 100;
+                if (fadeAmountFloat._storedValue <= -10) {
+                  mesh.isVisible = false;
+                  mesh.isPickable = false;
+                  scene.onBeforeRenderObservable.remove(observer);
+                  meshInverseMaterial.dispose();
+                }
+              });
+            }
+          }
+        } else {
+          for (const mesh of meshes) {
+            mesh.isVisible = false;
+            mesh.isPickable = false;
+          }
+        }
+      }
+    }
+
+    // =========================================================
+    // For Option 2: Fully dispose of a splat
+    // =========================================================
+    function disposePreloadedSplat(url) {
+      const meshes = preloadedSplats.get(url);
+
+      if (meshes && inverseFadeMaterial) {
+        for (const mesh of meshes) {
+          // Clone the material for this instance to avoid shared state
+          const meshInverseMaterial = inverseFadeMaterial.clone("inverseFadeMat");
+          mesh.material = meshInverseMaterial;
+
+          const fadeAmountFloat = meshInverseMaterial.getBlockByName("FadeAmountFloat");
+          if (fadeAmountFloat && fadeAmountFloat.isInput) {
+            // Start from 10 and decrease to -10
+            fadeAmountFloat._storedValue = 10;
+            const observer = scene.onBeforeRenderObservable.add(() => {
+              fadeAmountFloat._storedValue -= scene.getEngine().getDeltaTime() / 100;
+              if (fadeAmountFloat._storedValue <= -10) {
+                mesh.dispose();
+                scene.onBeforeRenderObservable.remove(observer);
+                meshInverseMaterial.dispose();
+              }
+            });
+          }
+        }
+      }
+      preloadedSplats.delete(url);
+    }
+
+    // =========================================================
+    // Make a splat visible (both Option 1 or 2 end up here)
+    // =========================================================
+    function showPreloadedSplat(url) {
+      const meshes = preloadedSplats.get(url);
+      if (!meshes || (useNodeMaterial && !fadeMaterial)) {
+        return false;
+      }
+      meshes.forEach(mesh => {
+        mesh.isVisible = true;
+        mesh.isPickable = true;
+        
+        if (useNodeMaterial && fadeMaterial) {
+          // Clone the material for this instance to avoid shared state
+          const meshFadeMaterial = fadeMaterial.clone("fadeMat");
+          mesh.material = meshFadeMaterial;
+          
+          const fadeAmountFloat = meshFadeMaterial.getBlockByName("FadeAmountFloat");
+          if (fadeAmountFloat && fadeAmountFloat.isInput) {
+            fadeAmountFloat._storedValue = -10;
+            scene.registerBeforeRender(() => {
+              fadeAmountFloat._storedValue += scene.getEngine().getDeltaTime() / 100;
+            });
+          }
+        }
+      });
+      currentSplatUrl = url;
+      return true;
+    }
+
+    // =========================================================
+    // preloadSplat: background load a splat *without* showing preloader
+    // =========================================================
+    async function preloadSplat(url) {
+      // If we already have it in memory, or it was loaded before, skip
+      if (preloadedSplats.has(url)) {
+        return;
+      }
+      // If it's the current splat, skip
+      if (url === currentSplatUrl) {
+        return;
+      }
+
+      try {
+        // We do a background load. No preloader shown.
+        const result = await BABYLON.SceneLoader.ImportMeshAsync("", url, "", scene);
+        
+        // Hide them initially and apply cloned fade material
+        result.meshes.forEach(mesh => {
+          mesh.checkCollisions = true;
+          mesh.isVisible = false;
+          mesh.isPickable = false;
+          if (fadeMaterial) {
+            const meshFadeMaterial = fadeMaterial.clone("fadeMat");
+            mesh.material = meshFadeMaterial;
+            const fadeAmountFloat = meshFadeMaterial.getBlockByName("FadeAmountFloat");
+            if (fadeAmountFloat && fadeAmountFloat.isInput) {
+              fadeAmountFloat._storedValue = -10;
+              scene.registerBeforeRender(() => {
+                fadeAmountFloat._storedValue += scene.getEngine().getDeltaTime() / 100;
+              });
+            }
+          }
+        });
+
+        // Store in the map
+        preloadedSplats.set(url, result.meshes);
+      } catch (error) {
+        console.error('Error preloading splat:', error);
+      }
+    }
+
+    // =========================================================
+    // preloadNextSplats: a simple example that preloads
+    // the next item in additionalSplats, if any
+    // =========================================================
+    async function preloadNextSplats(currentIndex) {
+      if (!additionalSplats || additionalSplats.length === 0) {
+        return;
+      }
+      // For instance, preload the next splat in the list:
+      const nextIndex = currentIndex % additionalSplats.length; 
+      const nextSplat = additionalSplats[nextIndex];
+      if (nextSplat && nextSplat.url) {
+        await preloadSplat(nextSplat.url);
+      }
+    }
+
+    // =========================================================
+    // loadSplat: Switch to a new splat. Behavior depends on 
+    // keepMeshesInMemory toggle: hide or dispose old.
+    // =========================================================
+    async function loadSplat(url) {
+      if (url === currentSplatUrl) {
+        return;
+      }
+      if (isLoadingSplat) {
+        return;
+      }
+
+      isLoadingSplat = true;
+
+      // Show preloader only if not done initial load
+      if (!initialLoadDone) {
+        showPreloader();
+      }
+
+      // Pause scroll while loading
+      if (!scrollPaused) {
+        scrollPaused = true;
+      }
+
+      try {
+        // If we have a current splat, either hide or dispose it 
+        if (currentSplatUrl && preloadedSplats.has(currentSplatUrl)) {
+          if (keepMeshesInMemory) {
+            // Option 1: Just hide
+            hidePreloadedSplat(currentSplatUrl);
+          } else {
+            // Option 2: Dispose & remove from preloadedSplats
+            disposePreloadedSplat(currentSplatUrl);
+          }
+        }
+
+        // If the new splat is already loaded (and not disposed), show it
+        if (preloadedSplats.has(url)) {
+          showPreloadedSplat(url);
+        } else {
+          // Otherwise, import from scratch
+          
+          const result = await BABYLON.SceneLoader.ImportMeshAsync("", url, "", scene, (progress)=>{
+            updateProgress(progress.loaded / progress.total * 100);
+          } );
+
+          result.meshes.forEach(mesh => {
+            mesh.checkCollisions = true;
+            mesh.isVisible = true;
+            mesh.isPickable = true;
+            if (fadeMaterial) {
+              const meshFadeMaterial = fadeMaterial.clone("fadeMat");
+              mesh.material = meshFadeMaterial;
+              const fadeAmountFloat = meshFadeMaterial.getBlockByName("FadeAmountFloat");
+              if (fadeAmountFloat && fadeAmountFloat.isInput) {
+                fadeAmountFloat._storedValue = -10;
+                scene.registerBeforeRender(() => {
+                  fadeAmountFloat._storedValue += scene.getEngine().getDeltaTime() / 100;
+                });
+              }
+            }
+          });
+
+          // Store it in our map
+          preloadedSplats.set(url, result.meshes);
+          currentSplatUrl = url;
+  
+        }
+
+        // Now that we've loaded the main splat, let's do
+        // a quick background preload of the next one:
+        const currentIndex = additionalSplats.findIndex(s => s.url === url);
+        if (currentIndex !== -1) {
+          preloadNextSplats(currentIndex + 1);
+        } else {
+          preloadNextSplats(0); 
+        }
+
+      } catch (error) {
+        console.error('Error loading splat:', error);
+        currentSplatUrl = null;
+      } finally {
+        isLoadingSplat = false;
+
+        // Hide the preloader if it was shown
+        if (!initialLoadDone) {
+            hidePreloader();
+        }
+        // Mark that we've done at least one load
+        initialLoadDone = true;
+
+        // Resume scrolling
+        if (scrollPaused) {
+          scrollPaused = false;
+        }
+      }
+    }
+
+    // =========================================================
+    // updateSplats: checks progress & chooses which splat to load
+    // =========================================================
+    function updateSplats() {
+      // If no splat loaded yet, start with default
+      if (!currentSplatUrl) {
+        loadSplat('assets/gs_Hendricks.splat');
+        return;
+      }
+
+      if (!additionalSplats || additionalSplats.length === 0) {
+        return;
+      }
+
+      // Evaluate user progress
+      const currentWaypointIndex = Math.round(scrollPosition / 20);
+      const currentPercentage = ((scrollPosition / 20) / (waypoints.length - 1)) * 100;
+
+      // Only proceed if there's a real change
+      if (
+        currentWaypointIndex === lastWaypointIndex &&
+        Math.abs(currentPercentage - lastPercentage) < 0.1
+      ) {
+        return;
+      }
+
+      let bestSplat = null;
+      let bestTrigger = -Infinity;
+
+      // Pick the largest trigger <= current progress
+      additionalSplats.forEach(splat => {
+        if (splat.waypointIndex !== -1) {
+          const triggerValue = splat.waypointIndex;
+          if (currentWaypointIndex >= triggerValue && triggerValue > bestTrigger) {
+            bestTrigger = triggerValue;
+            bestSplat = splat;
+          }
+        } else if (splat.percentage !== -1) {
+          const triggerValue = splat.percentage;
+          if (currentPercentage >= triggerValue && triggerValue > bestTrigger) {
+            bestTrigger = triggerValue;
+            bestSplat = splat;
+          }
+        }
+      });
+
+      // If we have a best splat, load it; else revert to default
+      if (bestSplat && bestSplat.url !== currentSplatUrl) {
+        loadSplat(bestSplat.url);
+      } else if (!bestSplat && currentSplatUrl !== 'assets/gs_Hendricks.splat') {
+        loadSplat('assets/gs_Hendricks.splat');
+      }
+
+      // Update trackers
+      lastWaypointIndex = currentWaypointIndex;
+      lastPercentage = currentPercentage;
+    }
+
+    // ----------------------------------------------------
+    // Show/hide preloader (only used for initial load)
+    // ----------------------------------------------------
+    function showPreloader() {
+      const preloader = document.getElementById('preloader');
+      if (!preloader) {
+        return;
+      }
+      preloader.style.display = 'flex';
+      updateProgress(0);
+    }
+
+    function hidePreloader() {
+      const preloader = document.getElementById('preloader');
+      if (!preloader) {
+        return;
+      }
+         console.log('SPLATSWAP:: Hiding preloader');
+        preloader.style.display = 'none';
+    }
+  
+
+    // Initialize lighting system
+    
+    
+    function createLight(lightData) {
+      let light;
+      
+      switch (lightData.type) {
+        case 'hemispheric':
+          light = new BABYLON.HemisphericLight(
+            lightData.id,
+            new BABYLON.Vector3(
+              lightData.position.x,
+              lightData.position.y,
+              lightData.position.z
+            ),
+            scene
+          );
+          if (lightData.groundColor) {
+            light.groundColor = BABYLON.Color3.FromHexString(lightData.groundColor);
+          }
+          break;
+
+        case 'point':
+          light = new BABYLON.PointLight(
+            lightData.id,
+            new BABYLON.Vector3(
+              lightData.position.x,
+              lightData.position.y,
+              lightData.position.z
+            ),
+            scene
+          );
+          if (lightData.range) light.range = lightData.range;
+          break;
+
+        case 'directional':
+          light = new BABYLON.DirectionalLight(
+            lightData.id,
+            new BABYLON.Vector3(
+              lightData.direction?.x || 0,
+              lightData.direction?.y || -1,
+              lightData.direction?.z || 0
+            ),
+            scene
+          );
+          light.position = new BABYLON.Vector3(
+            lightData.position.x,
+            lightData.position.y,
+            lightData.position.z
+          );
+          break;
+
+        case 'spot':
+          light = new BABYLON.SpotLight(
+            lightData.id,
+            new BABYLON.Vector3(
+              lightData.position.x,
+              lightData.position.y,
+              lightData.position.z
+            ),
+            new BABYLON.Vector3(
+              lightData.direction?.x || 0,
+              lightData.direction?.y || -1,
+              lightData.direction?.z || 0
+            ),
+            lightData.angle || Math.PI/4,
+            lightData.exponent || 1,
+            scene
+          );
+          if (lightData.range) light.range = lightData.range;
+          break;
+      }
+
+      if (light) {
+        light.intensity = lightData.intensity;
+        light.diffuse = BABYLON.Color3.FromHexString(lightData.color);
+        light.specular = BABYLON.Color3.FromHexString(lightData.color);
+        light.setEnabled(lightData.enabled);
+      }
+
+      return light;
+    }
+  
+    
+    // Setup scene lights
+    
+    createLight({"id":"default","type":"hemispheric","name":"Default Light","intensity":1,"color":"#ffffff","position":{"x":0,"y":1,"z":0},"groundColor":"#ffffff","enabled":true});
+  
+  
+
+    // After scene setup, initialize target positions
+    targetRotation = camera.rotationQuaternion.clone();
+    targetPosition = camera.position.clone();
+
+    
+
+    
+    
+    // Initialize global variables
+    const hotspots = [];
+    console.log('Initializing hotspots:', hotspots);
+    
+    let isInAR = false;
+    let contentPlane = null;
+    let xrHelper = null;
+
+    // Preload all hotspot images
+    const imageUrls = hotspots
+      .filter(h => h.photoUrl || (h.type === 'image' && h.imageUrl))
+      .flatMap(h => [h.photoUrl, h.imageUrl].filter(Boolean));
+    
+    if (imageUrls.length > 0) {
+      ImagePreloader.preloadImages(imageUrls)
+        .catch(error => console.error('Failed to preload hotspot images:', error));
+    }
+
+    // Initialize XR event handling
+    function initializeXREvents() {
+      if (!scene.xrHelper) {
+        //console.log('Waiting for XR initialization...');
+        setTimeout(initializeXREvents, 100);
+        return;
+      }
+      
+      xrHelper = scene.xrHelper;
+      xrHelper.baseExperience.onStateChangedObservable.add((state) => {
+        isInAR = state === BABYLON.WebXRState.IN_XR;
+        if (!isInAR && contentPlane) {
+          contentPlane.setEnabled(false);
+        }
+      });
+    }
+
+    // Start XR event initialization
+    initializeXREvents();
+
+    function createSphereMesh(h, scene) {
+      const mesh = BABYLON.MeshBuilder.CreateSphere(
+        `hotspot-${h.id}`,
+        { diameter: 0.2 },
+        scene
+      );
+      
+      const material = new BABYLON.StandardMaterial(
+        `hotspot-material-${h.id}`,
+        scene
+      );
+      material.diffuseColor = BABYLON.Color3.FromHexString(h.color);
+      material.emissiveColor = BABYLON.Color3.FromHexString(h.color).scale(0.5);
+      mesh.material = material;
+      return mesh;
+    }
+
+    // Create AR content plane
+    function createContentPlane() {
+      if (contentPlane) {
+        contentPlane.dispose();
+      }
+
+      contentPlane = BABYLON.MeshBuilder.CreatePlane("contentPlane", {
+        width: 1,
+        height: 0.5
+      }, scene);
+      
+      const material = new BABYLON.StandardMaterial("contentPlaneMat", scene);
+      material.diffuseColor = BABYLON.Color3.Black();
+      material.specularColor = BABYLON.Color3.Black();
+      material.emissiveColor = BABYLON.Color3.White();
+      material.backFaceCulling = false;
+      contentPlane.material = material;
+      
+      // Hide initially
+      contentPlane.setEnabled(false);
+      
+      return contentPlane;
+    }
+
+    // Update content plane position relative to camera
+    function updateContentPlanePosition() {
+      if (!contentPlane || !contentPlane.isEnabled()) return;
+      
+      const camera = scene.activeCamera;
+      const distance = 2; // 2 meters in front of camera
+      
+      // Get forward direction of camera
+      const forward = camera.getForwardRay().direction;
+      
+      // Position plane in front of camera
+      contentPlane.position = camera.position.add(forward.scale(distance));
+      
+      // Make plane face camera
+      contentPlane.lookAt(camera.position);
+    }
+
+    // Register scene before render to update content plane
+    scene.registerBeforeRender(() => {
+      updateContentPlanePosition();
+    });
+
+    function showARContent(hotspot) {
+      if (!contentPlane) {
+        contentPlane = createContentPlane();
+      }
+
+      // Create dynamic texture for text
+      const texture = new BABYLON.DynamicTexture("contentTexture", {
+        width: 512,
+        height: 256
+      }, scene);
+      
+      const ctx = texture.getContext();
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, 512, 256);
+      
+      // Add text
+      const fontSize = 24;
+      ctx.fillStyle = "white";
+      ctx.font = `${fontSize}px Arial`;
+      
+      // Title
+      ctx.fillText(hotspot.title, 20, 40);
+      
+      // Information (with word wrap)
+      if (hotspot.information) {
+        const words = hotspot.information.split(' ');
+        let line = '';
+        let y = 80;
+        
+        words.forEach(word => {
+          const testLine = line + word + ' ';
+          const metrics = ctx.measureText(testLine);
+          
+          if (metrics.width > 480) {
+            ctx.fillText(line, 20, y);
+            line = word + ' ';
+            y += fontSize + 10;
+          } else {
+            line = testLine;
+          }
+        });
+        
+        ctx.fillText(line, 20, y);
+      }
+      
+      texture.update();
+      
+      // Apply texture to plane
+      contentPlane.material.diffuseTexture = texture;
+      contentPlane.material.opacityTexture = texture;
+      
+      contentPlane.setEnabled(true);
+    }
+
+    hotspots.forEach((h) => {
+      console.log('Creating hotspot:', h);
+      let mesh;
+      
+      // Create a transform node to hold the position and rotation
+      const transformNode = new BABYLON.TransformNode(`hotspot-transform-${h.id}`, scene);
+      transformNode.position = new BABYLON.Vector3(
+        h.position._x,
+        h.position._y,
+        h.position._z
+      );
+      
+      transformNode.rotation = new BABYLON.Vector3(
+        h.rotation._x,
+        h.rotation._y,
+        h.rotation._z
+      );
+
+      if (h.type === 'image' && h.imageUrl) {
+        console.log('Creating image plane hotspot:', h);
+        mesh = BABYLON.MeshBuilder.CreatePlane(
+          `hotspot-${h.id}`,
+          { size: 1 },
+          scene
+        );
+          const material = new BABYLON.StandardMaterial(
+            `hotspot-material-${h.id}`,
+            scene
+          );
+
+          const texture = new BABYLON.Texture(
+            h.imageUrl,
+            scene,
+            true,
+            true,
+            undefined,
+            undefined,
+            () => {
+              console.error(`Failed to load hotspot image:`, h.imageUrl);
+              mesh.dispose();
+              mesh = createSphereMesh(h, scene);
+              setupHotspotBehavior(mesh, h);
+            }
+          );
+
+          if(h.imageUrl.includes('.png')){
+            texture.hasAlpha = true;
+          }
+
+          material.diffuseTexture = texture;
+          if (!h.useLighting){
+            material.emissiveColor = BABYLON.Color3.White();
+            material.disableLighting = true;
+          }
+          material.backFaceCulling = false;
+          material.useAlphaFromDiffuseTexture = true;
+          material.specularColor = new BABYLON.Color3(0, 0, 0);
+
+          mesh.material = material;
+      } else {
+        mesh = createSphereMesh(h, scene);
+      }
+
+      // Parent the mesh to the transform node
+      mesh.parent = transformNode;
+      
+      // Apply billboard mode to the mesh only
+      if (h.billboard) {
+        mesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+      }
+      
+      // Apply scaling to the mesh
+      mesh.scaling = new BABYLON.Vector3(
+        h.scale._x,
+        h.scale._y,
+        h.scale._z
+      );
+
+      setupHotspotBehavior(mesh, h);
+      
+      console.log('Hotspot positioned at:', transformNode.position);
+    });
+
+    function setupHotspotBehavior(mesh, h) {
+      mesh.actionManager = new BABYLON.ActionManager(scene);
+      
+      // Only set up interactions if activation mode is not 'none'
+      if (h.activationMode !== 'none') {
+        mesh.actionManager.registerAction(
+          new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPointerOverTrigger,
+            () => {
+              console.log('Hotspot hover:', h.title);
+              if (h.type !== 'image') {
+                mesh.material.emissiveColor = BABYLON.Color3.FromHexString(h.color);
+              }
+              if (h.activationMode === 'hover' && !isInAR) {
+                trackHotspotInteraction(h.title, 'hover');
+                showHotspotContent(h);
+              }
+            }
+          )
+        );
+
+        mesh.actionManager.registerAction(
+          new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPointerOutTrigger,
+            () => {
+              if (h.type !== 'image') {
+                mesh.material.emissiveColor = BABYLON.Color3.FromHexString(h.color).scale(0.5);
+              }
+              if (h.activationMode === 'hover' && !isInAR) {
+                hideHotspotContent();
+              }
+            }
+          )
+        );
+
+        mesh.actionManager.registerAction(
+          new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,
+            () => {
+              console.log('Hotspot clicked:', h.title);
+              if (h.activationMode === 'click') {
+                trackHotspotInteraction(h.title, 'click');
+                if (isInAR) {
+                  showARContent(h);
+                } else {
+                  showHotspotContent(h);
+                }
+              }
+            }
+          )
+        );
+      }
+    }
+
+    // Function to check if hotspot should be visible based on current scroll position
+    function updateHotspotVisibility(hotspot, mesh, scrollPercentage, currentWaypointIndex) {
+      if (!hotspot.visibilityRange) {
+        mesh.setEnabled(true);
+        return;
+      }
+
+      const { type, start, end } = hotspot.visibilityRange;
+      let isVisible = false;
+      if (type === 'percentage') {
+        console.log('Scroll percentage:', scrollPercentage);
+        isVisible = scrollPercentage >= start && scrollPercentage <= end;
+        console.log('Is visible:', isVisible);
+      } else if (type === 'waypoint') {
+        console.log('Current waypoint index:', currentWaypointIndex);
+        isVisible = currentWaypointIndex >= start && currentWaypointIndex <= end;
+      }
+
+      // Get the transform node parent
+      const transformNode = mesh.parent;
+      if (transformNode) {
+        transformNode.setEnabled(isVisible);
+      }
+      console.log('Updating hotspot visibility:', isVisible);
+      mesh.setEnabled(isVisible);
+    }
+
+    // Register scene before render to update hotspot visibility
+    scene.registerBeforeRender(() => {
+      // Calculate current percentage and waypoint index
+      const subdivisionsPerSegment = 20;
+      let currentWaypointIndex = (scrollPosition+1) / subdivisionsPerSegment;
+      const scrollPercent = (scrollPosition / (path.length - 1 || 1)) * 100;
+
+      hotspots.forEach((h) => {
+        const mesh = scene.getMeshByName(`hotspot-${h.id}`);
+        if (mesh) {
+          updateHotspotVisibility(h, mesh, scrollPercent, currentWaypointIndex);
+        }
+      });
+    });
+
+    function showHotspotContent(hotspot) {
+      if (isInAR) {
+        showARContent(hotspot);
+        return;
+      }
+
+      const hotspotContent = document.getElementById('hotspotContent');
+      
+      // Reset any previous styles
+      hotspotContent.style = '';
+      
+      // Base styles
+      Object.assign(hotspotContent.style, {
+        position: 'fixed',
+        backgroundColor: hotspot.backgroundColor || 'rgba(0, 0, 0, 0.8)',
+        color: hotspot.textColor || 'white',
+        fontSize: hotspot.fontSize ? `${hotspot.fontSize}px` : 'inherit',
+        fontFamily: hotspot.fontFamily || 'inherit',
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: '1001'
+      });
+
+      // For click activation with image or iframe, make it fullscreen
+      if (hotspot.activationMode === 'click' && (hotspot.photoUrl || hotspot.contentType === 'iframe')) {
+        Object.assign(hotspotContent.style, {
+          top: '0',
+          left: '0',
+          right: '0',
+          bottom: '0',
+          margin: '0',
+          width: '100%',
+          height: '100%',
+          borderRadius: '0',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: '100000',
+          padding: '0'
+
+          });
+      } else if (hotspot.activationMode === 'hover' && (hotspot.photoUrl || hotspot.contentType === 'iframe')) {
+        Object.assign(hotspotContent.style, {
+          height: 'auto',
+          width: '300px',
+          borderRadius: '10px'
+        });
+      } else {
+        Object.assign(hotspotContent.style, {
+          height: 'auto',
+          width: 'auto',
+          borderRadius: '10px'
+        });
+      }
+
+      const titleHtml = `<h3 style="margin: 0 0 10px 0">${hotspot.title}</h3>`;
+
+      const photoHtml = hotspot.photoUrl ? 
+        `<div style="display: flex; 
+                     align-items: center; 
+                     justify-content: center;
+                     width: ${hotspot.activationMode === 'click' ? '80%' : '300px'};
+                     height: ${hotspot.activationMode === 'click' ? '80vh' : 'auto'};
+                     margin: 0 0 10px 0;">
+           <img src="${ImagePreloader.getPreloadedImage(hotspot.photoUrl)?.src || hotspot.photoUrl}" 
+                alt="${hotspot.title}" 
+                style="max-width: 100%;
+                       max-height: 100%;
+                       object-fit: contain;
+                       border-radius: 5px;
+                       border: 2px solid rgba(255, 255, 255);">
+         </div>` : '';
+
+      const iframeHtml = hotspot.contentType === 'iframe' && hotspot.iframeUrl ?
+        `<iframe src="${hotspot.iframeUrl}" 
+                 style="width: ${hotspot.activationMode === 'click' ? '80%' : '100%'};
+                        height: 80vh;
+                        border: none;
+                        margin: 0 0 10px 0;" 
+                 title="${hotspot.title}"></iframe>` : '';
+
+      const infoHtml = hotspot.information ? 
+        `<p style="margin: 0 0 10px 0">${hotspot.information}</p>` : '';
+
+      const linkHtml = hotspot.externalLinkUrl ? 
+        `<div onclick="window.open('${hotspot.externalLinkUrl}', '_blank', 'noopener,noreferrer')" 
+              style="display: block;
+                     padding: 8px 16px;
+                     background-color: ${hotspot.externalLinkButtonColor || '#007bff'};
+                     color: white;
+                     text-decoration: none;
+                     border-radius: 4px;
+                     text-align: center;
+                     margin: 0 0 10px 0;
+                     cursor: pointer">
+              ${hotspot.externalLinkText || 'Open External Link'}
+         </div>` : '';
+
+      const closeButtonHtml = hotspot.activationMode === 'click' ? 
+        `<button onclick="hideHotspotContent()" 
+                 style="width: auto;
+                        padding: 10px;
+                        background-color: ${hotspot.closeButtonColor || '#4CAF50'};
+                        border: none;
+                        color: white;
+                        cursor: pointer;
+                        border-radius: 5px;
+                        margin: 0;">
+           Close
+         </button>` : '';
+
+      hotspotContent.innerHTML = `
+        ${titleHtml}
+        ${iframeHtml}
+        ${photoHtml}
+        ${infoHtml}
+        ${linkHtml}
+        ${closeButtonHtml}
+      `;
+
+      hotspotContent.style.display = 'flex';
+      
+      // Only position if not fullscreen
+      if (hotspot.activationMode !== 'click' || (!hotspot.photoUrl && hotspot.contentType !== 'iframe')) {
+        positionHotspotContent(hotspotContent, hotspot);
+      }
+    }
+
+    function hideHotspotContent() {
+      if (isInAR && contentPlane) {
+        contentPlane.setEnabled(false);
+        return;
+      }
+
+      const hotspotContent = document.getElementById('hotspotContent');
+      hotspotContent.style.display = 'none';
+    }
+
+    function showInfoPopup(data) {
+      const infoPopup = document.getElementById('infoPopup');
+      infoPopup.innerHTML = `
+        <p>${data.text}</p>
+        <button onclick="hideInfoPopup()" style="width: 100%; padding: 10px; background-color: #4CAF50; border: none; color: white; cursor: pointer; border-radius: 5px;">Close</button>
+      `;
+      infoPopup.style.display = 'block';
+    }
+
+    function hideInfoPopup() {
+      const infoPopup = document.getElementById('infoPopup');
+      const waypointInfo = document.getElementById('waypointInfo');
+      infoPopup.style.display = 'none';
+      if(waypointInfo){
+        waypointInfo.style.display = 'none';
+      }
+    }
+
+    function positionHotspotContent(element, hotspot) {
+      const rect = element.getBoundingClientRect();
+      let left, top;
+
+      if (hotspot.activationMode === 'hover') {
+        // Position above cursor for hover
+        const padding = 10;
+        left = scene.pointerX - (rect.width / 2);
+        top = scene.pointerY - rect.height - padding;
+      } else {
+        // Center on screen for click
+        left = (window.innerWidth - rect.width) / 2;
+        top = (window.innerHeight - rect.height) / 2;
+      }
+
+      // Boundary checks
+      if (left + rect.width > window.innerWidth) {
+        left = window.innerWidth - rect.width - 10;
+      }
+      if (left < 10) {
+        left = 10;
+      }
+      if (top < 10) {
+        top = 10;
+      }
+      if (top + rect.height > window.innerHeight) {
+        top = window.innerHeight - rect.height - 10;
+      }
+
+      element.style.left = `${left}px`;
+      element.style.top = `${top}px`;
+    }
+  
+    
+    // Create control points and rotations from waypoints
+    const controlPoints = waypoints.map(
+      (wp) => new BABYLON.Vector3(wp.x, wp.y, wp.z)
+    );
+    const rotations = waypoints.map(
+      (wp) => new BABYLON.Quaternion(wp.rotation._x, wp.rotation._y, wp.rotation._z, wp.rotation._w).normalize()
+    );
+
+    // Generate path from control points
+    let path = [];
+    if (controlPoints.length >= 2) {
+      const positionCurve = BABYLON.Curve3.CreateCatmullRomSpline(
+        controlPoints,
+        20,
+        false
+      );
+      path = positionCurve.getPoints();
+    } else if (controlPoints.length === 1) {
+      path = [controlPoints[0]];
+    }
+
+    function changeCameraMode(selectedMode) {
+      if (["tour","explore","hybrid",""].includes(selectedMode)) {
+
+        if (selectedMode != 'walk') {
+          disableWalkMode();
+                }
+
+        cameraMode = selectedMode;
+        userControl = cameraMode === 'explore' || cameraMode === 'walk';
+
+        trackCameraMode(selectedMode);
+
+        if (BABYLON.VirtualJoystick.Canvas) {
+          BABYLON.VirtualJoystick.Canvas.style.zIndex =
+            cameraMode === 'tour' ? '-10' : '10';
+        }
+
+        updateScrollControlsVisibility();
+        updateModeToggleUI();
+      }
+    }
+
+    function updateScrollControlsVisibility() {
+      const scrollControlsContent = document.getElementById('scrollControlsContent');
+      if (scrollControlsContent) {
+        if (cameraMode === 'explore' || cameraMode === 'walk') {
+          scrollControlsContent.classList.add('hidden');
+        } else {
+          scrollControlsContent.classList.remove('hidden');
+        }
+      }
+    }
+
+    function updateModeToggleUI() {
+      const modes = ['explore', 'tour', 'hybrid', 'walk'];
+      modes.forEach(function(mode) {
+        const button = document.getElementById('mode' + capitalizeFirstLetter(mode));
+        if (button) {
+          if (cameraMode === mode) {
+            button.classList.add('selected');
+          } else {
+            button.classList.remove('selected');
+          }
+        }
+      });
+    }
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function showWaypointInfo(waypoint) {
+      const waypointInfo = document.getElementById('waypointInfo');
+
+      if (waypointInfo) {
+        waypointInfo.innerHTML = '';
+        waypointInfo.classList.remove('hasContent');
+
+        let hasContent = false;
+
+        if (waypoint.name) {
+          const nameElement = document.createElement('h3');
+          nameElement.style.fontWeight = 'bold';
+          nameElement.style.margin = '0 0 8px 0';
+          nameElement.style.textAlign = 'center';
+          nameElement.style.marginTop = '10px';
+          nameElement.textContent = waypoint.name;
+          waypointInfo.appendChild(nameElement);
+          hasContent = true;
+        }
+
+        const infoInteraction = waypoint.interactions.find(
+          (interaction) => interaction.type === 'info'
+        );
+
+        if (
+          infoInteraction &&
+          infoInteraction.data &&
+          infoInteraction.data.text &&
+          'controls' === 'controls'
+        ) {
+          const descElement = document.createElement('p');
+          descElement.style.textAlign = 'center';
+          descElement.textContent = infoInteraction.data.text;
+          waypointInfo.appendChild(descElement);
+          hasContent = true;
+        }
+
+        if (hasContent) {
+          waypointInfo.classList.add('hasContent');
+        }
+        waypointInfo.style.display = 'block';
+      }
+    }
+
+    function updateActiveWaypoint() {
+      let closestWaypoint = null;
+      let minDistance = Infinity;
+
+      waypoints.forEach((wp, index) => {
+        const distance = BABYLON.Vector3.Distance(
+          camera.position,
+          new BABYLON.Vector3(wp.x, wp.y, wp.z)
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestWaypoint = wp;
+        }
+
+        const triggerDistance = wp.triggerDistance ?? 1.0;
+        if (distance <= triggerDistance) {
+          if (!activeWaypoints.has(index)) {
+            activeWaypoints.add(index);
+            trackWaypointReached(wp.name || `Waypoint ${index + 1}`, index);
+            executeInteractions(wp.interactions, index);
+          }
+        } else {
+          if (activeWaypoints.has(index)) {
+            activeWaypoints.delete(index);
+            reverseInteractions(wp.interactions);
+          }
+        }
+      });
+
+      if (closestWaypoint) {
+        showWaypointInfo(closestWaypoint);
+      }
+    }
+
+    function handleButtonScroll(direction) {
+      if (cameraMode === 'explore' || cameraMode === 'walk') {
+        return;
+      }
+      if ('waypoint' === 'percentage') {
+        adjustScroll(direction * 10 / 100);
+      } else {
+        moveToWaypoint(direction);
+      }
+    }
+
+    function adjustScroll(amount) {
+      if(!scrollPaused){
+        const pathLength = path.length;
+        if (pathLength > 1) {
+          const scrollIncrement = (pathLength - 1) * amount;
+          scrollTarget += scrollIncrement;
+
+          if (scrollTarget < 0) scrollTarget = 0;
+          if (scrollTarget > path.length - 1) scrollTarget = path.length - 1;
+
+          userControl = false;
+        }
+      }
+    }
+
+    function moveToWaypoint(direction) {
+      if(!scrollPaused){
+        const subdivisionsPerSegment = 20;
+        let currentWaypointIndex = Math.round(scrollPosition / subdivisionsPerSegment);
+        let nextWaypointIndex = currentWaypointIndex + direction;
+
+        nextWaypointIndex = Math.max(0, Math.min(nextWaypointIndex, waypoints.length - 1));
+
+        scrollTarget = nextWaypointIndex * subdivisionsPerSegment;
+        userControl = false;
+      }
+    }
+
+    function updateScrollUI(percentage) {
+      const scrollPercentage = document.getElementById('scrollPercentage');
+      const progressBar = document.getElementById('progressBar');
+        if (scrollPercentage && progressBar) {
+         scrollPercentage.textContent = `${Math.round(percentage)}%`;
+         progressBar.style.width = `${percentage}%`;
+         } 
+        const rounded = Math.round(percentage);
+        window.parent.postMessage({ type: 'scrollUpdate', value: rounded }, '*');
+        if (rounded >= 100) {
+          window.parent.postMessage({ type: 'scrollComplete', value: 100 }, '*');
+        }
+    }
+
+    window.addEventListener('wheel', (event) => {
+      if(!scrollPaused){
+        if (cameraMode === 'tour' || cameraMode === 'hybrid') {
+          userControl = false;
+          scrollTarget += event.deltaY * 0.1;
+          if (scrollTarget < 0) scrollTarget = 0;
+          if (scrollTarget > path.length - 1) {
+            scrollTarget = path.length - 1;
+          }
+          return;
+        }
+
+        if (cameraMode === 'explore' || cameraMode === 'walk') {
+          userControl = true;
+        }
+      }
+    });
+
+    scene.onPointerObservable.add(function (evt) {
+      if (evt.type === BABYLON.PointerEventTypes.POINTERDOWN) {
+        if (cameraMode === 'explore' || cameraMode === 'hybrid' || cameraMode === 'walk') {
+          userControl = true;
+        } else {
+          userControl = false;
+        }
+      }
+    });
+
+    window.addEventListener('keydown', function () {
+      if (cameraMode === 'explore' || cameraMode === 'hybrid' || cameraMode === 'walk') {
+        userControl = true;
+      } else {
+        userControl = false;
+      }
+    });
+  
+    
+    const collisionMeshesData = [];
+    let floorMesh = null;
+
+    function createCollisionMeshes() {
+      collisionMeshesData.forEach((data, index) => {
+        let mesh;
+        
+        switch(data.meshType) {
+          case 'cube':
+            mesh = BABYLON.MeshBuilder.CreateBox(
+              `collisionMesh-${index}`,
+              { size: 3 },
+              scene
+            );
+            break;
+          case 'sphere':
+            mesh = BABYLON.MeshBuilder.CreateSphere(
+              `collisionMesh-${index}`,
+              { diameter: 3 },
+              scene
+            );
+            break;
+          case 'custom':
+            if (data.customMeshUrl) {
+              BABYLON.SceneLoader.ImportMesh("", "", data.customMeshUrl, scene, function(meshes) {
+                if (meshes.length > 0) {
+                  mesh = meshes[0];
+                  configureMesh(mesh, data);
+                }
+              });
+              return;
+            }
+          case 'floor':
+            mesh = BABYLON.MeshBuilder.CreateGround(
+              `collisionMesh-${index}`,
+              { width: 100, height: 100 },
+              scene
+            );
+            floorMesh = mesh;
+            break;
+          case 'plane':
+          default:
+            mesh = BABYLON.MeshBuilder.CreatePlane(
+              `collisionMesh-${index}`,
+              { size: 3 },
+              scene
+            );
+        }
+        
+        configureMesh(mesh, data);
+      });
+    }
+
+    function configureMesh(mesh, data) {
+      mesh.position = new BABYLON.Vector3(
+        data.position[0],
+        data.position[1],
+        data.position[2]
+      );
+      
+      mesh.rotation = new BABYLON.Vector3(
+        data.rotation[0],
+        data.rotation[1],
+        data.rotation[2]
+      );
+      
+      mesh.scaling = new BABYLON.Vector3(
+        data.scaling[0],
+        data.scaling[1],
+        data.scaling[2]
+      );
+      
+      mesh.checkCollisions = true;
+      mesh.isVisible = false;
+    }
+
+    function enableWalkMode() {
+      if (!floorMesh) {
+        console.warn('Cannot enable walk mode: No floor collision mesh found');
+        return false;
+      }
+
+      camera.applyGravity = true;
+      camera.ellipsoid = new BABYLON.Vector3(1, 1.8 ?? 1.8, 1);
+      console.log('Walk mode enabled');
+      return true;
+    }
+
+    function disableWalkMode() {
+      camera.applyGravity = false;
+      camera.ellipsoid = new BABYLON.Vector3(0.1, 0.1, 0.1);
+      walkToggleButton?.classList.remove('selected');
+    }
+
+    createCollisionMeshes();
+  
+    
+    
+    if (false) {
+      var leftJoystick = new BABYLON.VirtualJoystick(true);
+      var rightJoystick = new BABYLON.VirtualJoystick(false);
+      
+      if('tour' === 'tour'){
+        if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "-10";
+        }
+      } else {
+        if(BABYLON.VirtualJoystick.Canvas){
+          BABYLON.VirtualJoystick.Canvas.style.zIndex = "10";
+        }
+      }
+  
+      scene.onBeforeRenderObservable.add(()=>{
+        if(leftJoystick.pressed){
+          userControl = true;
+          const deltaTime = engine.getDeltaTime() / 1000;
+          const moveSpeed = deltaTime * 5 * 0.2;
+      
+          const moveX = leftJoystick.deltaPosition.x * moveSpeed;
+          const moveZ = leftJoystick.deltaPosition.y * moveSpeed;
+      
+          const forward = camera.getDirection(BABYLON.Axis.Z);
+          const right = camera.getDirection(BABYLON.Axis.X);
+      
+          const move = forward.scale(moveZ).add(right.scale(moveX));
+          camera.position.addInPlace(move);
+        }
+
+        if (rightJoystick.pressed) {
+          const deltaX = rightJoystick.deltaPosition.x;
+          const deltaY = rightJoystick.deltaPosition.y;
+      
+          const angularSensibility = 200 * 0.2;
+      
+          const currentEuler = camera.rotationQuaternion.toEulerAngles();
+          let yaw = currentEuler.y;
+          let pitch = currentEuler.x;
+      
+          yaw += deltaX / angularSensibility;
+          pitch -= deltaY / angularSensibility;
+      
+          const maxPitch = Math.PI / 2;
+          pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+      
+          camera.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(yaw, pitch, 0);
+        }
+      });
+    }
+  
+    
+    // Fullscreen functionality
+    const fullscreenButton = document.getElementById('fullscreenButton');
+    const expandIcon = document.getElementById('expandIcon');
+    const compressIcon = document.getElementById('compressIcon');
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement &&
+          !document.mozFullScreenElement &&
+          !document.webkitFullscreenElement &&
+          !document.msFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) {
+          document.documentElement.msRequestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+          document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+        expandIcon.style.display = 'none';
+        compressIcon.style.display = 'block';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+        expandIcon.style.display = 'block';
+        compressIcon.style.display = 'none';
+      }
+    }
+
+    fullscreenButton.addEventListener('click', toggleFullscreen);
+
+    // Update button icons when fullscreen changes
+    document.addEventListener('fullscreenchange', updateFullscreenIcons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenIcons);
+    document.addEventListener('mozfullscreenchange', updateFullscreenIcons);
+    document.addEventListener('MSFullscreenChange', updateFullscreenIcons);
+
+    function updateFullscreenIcons() {
+      if (document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement ||
+          document.msFullscreenElement) {
+        expandIcon.style.display = 'none';
+        compressIcon.style.display = 'block';
+      } else {
+        expandIcon.style.display = 'block';
+        compressIcon.style.display = 'none';
+      }
+    }
+  
+    
+    
+
+    // Handle window resize
+    window.addEventListener('resize', function () {
+      engine.resize();
+    });
+
+    // Main render loop
+    engine.runRenderLoop(function () {
+      const scrollInterpolationSpeed = 0.01 + transitionSpeed * 0.1;
+      const animationRatio = scene.getAnimationRatio();
+
+      // Only update scroll position and camera if not paused for splat loading
+      if (!scrollPaused) {
+        if (window.autoPlayEnabled && !userControl) {
+          scrollTarget += 0.05 * animationRatio;
+        }
+        scrollPosition += (scrollTarget - scrollPosition) * scrollInterpolationSpeed;
+
+        if (true) {
+          if (scrollPosition >= path.length - 1.1) {
+            scrollPosition = 0.2;
+            scrollTarget = 0.2;
+          } else if (scrollPosition <= 0.1) {
+            scrollPosition = path.length - 1.11;
+            scrollTarget = path.length - 1.11;
+          }
+        }
+
+        scrollPosition = Math.max(0, Math.min(scrollPosition, path.length - 1));    
+
+        const scrollPercentage = (scrollPosition / (path.length - 1 || 1)) * 100;
+
+        // Update splats based on current position
+        updateSplats();
+
+        if (cameraMode !== 'explore') {
+          updateScrollUI(scrollPercentage);
+        }
+
+        if ((cameraMode === 'hybrid' && !userControl) || (cameraMode === 'tour' && !userControl)) {
+        const t = scrollPosition / (path.length - 1 || 1);
+
+        const totalSegments = waypoints.length - 1;
+        if (totalSegments >= 1) {
+          const segmentT = t * totalSegments;
+          const segmentIndex = Math.floor(segmentT);
+          const clampedSegmentIndex = Math.min(segmentIndex, totalSegments - 1);
+          const lerpFactor = segmentT - clampedSegmentIndex;
+
+          const r1 = rotations[clampedSegmentIndex];
+          const nextIndex = (clampedSegmentIndex + 1) % rotations.length;
+          const r2 = rotations[nextIndex];
+
+          targetRotation = BABYLON.Quaternion.Slerp(r1, r2, lerpFactor).normalize();
+
+          const floorIndex = Math.floor(scrollPosition);
+          const ceilIndex = Math.min(floorIndex + 1, path.length - 1);
+          const lerpFactorPos = scrollPosition - floorIndex;
+
+          const interpolatedPosition = BABYLON.Vector3.Lerp(
+            path[floorIndex],
+            path[ceilIndex],
+            lerpFactorPos
+          );
+
+          targetPosition = interpolatedPosition;
+        } else if (rotations.length === 1) {
+          targetRotation = rotations[0].clone();
+          targetPosition = path[0].clone();
+        }
+
+        if (camera.rotationQuaternion) {
+          camera.rotationQuaternion = BABYLON.Quaternion.Slerp(
+            camera.rotationQuaternion,
+            targetRotation,
+            0.05
+          ).normalize();
+        }
+
+        const positionDampingFactor = 0.1;
+        camera.position = BABYLON.Vector3.Lerp(
+          camera.position,
+          targetPosition,
+          positionDampingFactor
+        );
+      }
+    }
+
+      updateActiveWaypoint();
+      scene.render();
+
+      
+    });
+  
+  
+
+    const helpButton = document.getElementById('helpButton');
+    const helpPanel = document.getElementById('helpPanel');
+    let helpVisible = false;
+
+    helpButton.addEventListener('click', () => {
+      helpVisible = !helpVisible;
+      helpPanel.classList.toggle('visible', helpVisible);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (helpVisible && !helpPanel.contains(event.target) && event.target !== helpButton) {
+        helpVisible = false;
+        helpPanel.classList.remove('visible');
+      }
+    });
+
+    function updateCameraModeButtons() {
+      const buttons = document.querySelectorAll('.mode-button');
+      buttons.forEach(button => {
+        const mode = button.id.replace('mode', '').toLowerCase();
+        button.classList.toggle('selected', mode === window.cameraMode || 
+          (mode === 'explore' && (window.cameraMode === 'explore' || window.cameraMode === 'walk')));
+      });
+
+      // Update scroll controls visibility based on camera mode
+      const scrollControls = document.getElementById('scrollControls');
+      if (scrollControls) {
+        scrollControls.classList.toggle('visible', window.cameraMode !== 'explore' && window.cameraMode !== 'walk');
+      }
+
+      // Update explore toggle buttons visibility and state
+      const droneToggleButton = document.getElementById('droneToggleButton');
+      const walkToggleButton = document.getElementById('walkToggleButton');
+      
+      if (droneToggleButton && walkToggleButton) {
+        droneToggleButton.classList.toggle('selected', window.cameraMode === 'explore');
+        walkToggleButton.classList.toggle('selected', window.cameraMode === 'walk');
+      }
+    }
+
+    // Handle explore/walk mode buttons
+    const droneToggleButton = document.getElementById('droneToggleButton');
+    const walkToggleButton = document.getElementById('walkToggleButton');
+
+    if (droneToggleButton) {
+      droneToggleButton.addEventListener('click', () => {
+        if (window.cameraMode === 'walk') {
+          disableWalkMode();
+        }
+        changeCameraMode('explore');
+      });
+    }
+
+    if (walkToggleButton) {
+      walkToggleButton.addEventListener('click', () => {
+        if (window.cameraMode !== 'walk' && enableWalkMode()) {
+          changeCameraMode('walk');
+        }
+      });
+    }
+
+    const originalChangeCameraMode = window.changeCameraMode;
+    window.changeCameraMode = function(mode) {
+      originalChangeCameraMode(mode);
+      updateCameraModeButtons();
+    };
+
+    updateCameraModeButtons();
+  </script>
+</body>
+</html>
+  
