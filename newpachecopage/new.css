@@ -1,0 +1,133 @@
+body {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  padding-left: 40px;
+  padding-right: 10px;
+  text-align: left;
+}
+
+/* This is a comment */
+
+.newheader {
+  background-color: rgb(227, 83, 12);
+  color: white;
+  font-size: 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10%;
+  padding-right: 10%;
+  margin-bottom: 15px;
+  border: 3px solid #3d08db; 
+  border-radius: 12px;
+
+}
+
+.orangebox {
+  background-color: rgb(227, 83, 12);
+  color: white;
+  font-size: 14px;
+  border: 3px solid #3d08db; 
+  border-radius: 12px;
+  max-width: 200px;
+  text-align: left;
+  padding: 10px;
+  float: left;
+  margin-left; 10px;
+  margin-right: 10px;
+
+}
+
+.newheader a {
+  text-decoration: none;  /* removes underline */
+  color: white;           /* default color */
+}
+
+.newheader a:hover {
+  color: red;             /* color on hover */
+}
+
+
+img {
+  width: 50px;
+  float:right;
+}
+
+/* This is a comment */
+
+.caption {
+  font-size: 14px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 5px
+}
+
+h1 {
+  font-style: bold;
+  font-size: 40px;
+  text-align:left
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+  text-align: left
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 1.5rem;
+  text-align: left
+}
+
+p {
+  font-size: 20px;
+  line-height: 2;
+}
+
+.parsmall {
+  max-width: 350px;
+}
+
+.otherimg {
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+li {
+  text-align: left;
+}
+
+/* unvisited link */
+a:link {
+  color: rgb(81, 0, 255);
+}
+
+/* visited link */
+a:visited {
+  color: green;
+}
+
+/* mouse over link */
+a:hover {
+  color: hotpink;
+}
+
+/* selected link */
+a:active {
+  color: blue;
+}
+
+.fancytext {
+  font-family: Georgia, serif;
+  font-size: 30px;
+
+}

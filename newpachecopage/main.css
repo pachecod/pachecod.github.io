@@ -1,10 +1,13 @@
 body {
+  background-color: #95debe;
   font-family: Arial, sans-serif;
   max-width: 70rem;
   margin-left: 10px;
   margin-right: 10px;
   text-align: left;
 }
+
+/* This is a comment */
 
 .newheader {
   background-color: darkblue;
@@ -18,8 +21,10 @@ body {
 }
 
 img {
-  width: 50%;
+  width: 434px;
 }
+
+/* This is a comment */
 
 .caption {
   font-size: 14px;
