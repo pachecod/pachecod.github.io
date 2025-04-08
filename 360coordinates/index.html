@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>A-Frame 360 Hotspot Example</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Camera and cursor -->
+      <a-entity id="camera" camera look-controls position="0 1.6 0">
+        <a-entity cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
+      </a-entity>
+
+      <!-- 360 sky image -->
+      <a-sky id="sky" radius="5000" src="#skyTexture" scale="-1 1 1"></a-sky>
+
+      <!-- Hotspot (position will be set with JS) -->
+      <a-image 
+        id="hotspot" 
+        src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/cursor.png" 
+        class="clickable" 
+        width="300" 
+        height="300" 
+        position="0 0 0"
+        look-at="#camera">
+      </a-image>
+
+      <!-- Assets -->
+      <a-assets>
+        <img id="skyTexture" src="your-equirectangular-image.jpg">
+      </a-assets>
+    </a-scene>
+
+    <script>
+      // --- CONFIG ---
+      const imageWidth = 4000;   // replace with your actual image width
+      const imageHeight = 2000;  // replace with your actual image height
+      const sphereRadius = 5000; // must match a-sky radius
+      const u = 3200;            // example x coordinate in image pixels
+      const v = 1000;            // example y coordinate in image pixels
+
+      // --- Conversion ---
+      const lon = (u / imageWidth) * 360 - 180;
+      const lat = 90 - (v / imageHeight) * 180;
+
+      const phi = THREE.MathUtils.degToRad(90 - lat);
+      const theta = THREE.MathUtils.degToRad(lon);
+
+      const x = sphereRadius * Math.sin(phi) * Math.cos(theta);
+      const y = sphereRadius * Math.cos(phi);
+      const z = sphereRadius * Math.sin(phi) * Math.sin(theta);
+
+      const hotspot = document.querySelector('#hotspot');
+      hotspot.setAttribute('position', { x, y, z });
+    </script>
+  </body>
+</html>
