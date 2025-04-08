@@ -2,58 +2,219 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>A-Frame 360 Hotspot Example</title>
+    <title>A-Frame 360 Hotspot Editor</title>
+    <!-- A-Frame library -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+    <style>
+      /* Styles for the 2D editor */
+      #editorWrapper {
+        margin-top: 20px;
+      }
+      #editorContainer {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #ccc;
+      }
+      #editorImage {
+        display: block;
+        max-width: 100%;
+      }
+      .hotspot-marker {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background-color: red;
+        border-radius: 50%;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+        border: 2px solid white;
+      }
+    </style>
   </head>
   <body>
+    <h1>A-Frame 360 Hotspot Editor</h1>
+
+    <!-- A-Frame Scene: The 360 sky and hotspots -->
     <a-scene>
-      <!-- Camera and cursor -->
+      <a-assets>
+        <!-- Replace these image sources with your own! -->
+        <img id="skyTexture" src="your-equirectangular-image.jpg">
+        <img id="hotspotTexture" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/cursor.png">
+      </a-assets>
+
+      <!-- 360 sky with inverted scale so it wraps around the viewer -->
+      <a-sky id="sky" radius="5000" src="#skyTexture" scale="-1 1 1"></a-sky>
+
+      <!-- Hotspots will be added dynamically to this group -->
+      <a-entity id="hotspotsGroup"></a-entity>
+
+      <!-- Basic camera with mouse cursor -->
       <a-entity id="camera" camera look-controls position="0 1.6 0">
         <a-entity cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
       </a-entity>
-
-      <!-- 360 sky image -->
-      <a-sky id="sky" radius="5000" src="#skyTexture" scale="-1 1 1"></a-sky>
-
-      <!-- Hotspot (position will be set with JS) -->
-      <a-image 
-        id="hotspot" 
-        src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/cursor.png" 
-        class="clickable" 
-        width="300" 
-        height="300" 
-        position="0 0 0"
-        look-at="#camera">
-      </a-image>
-
-      <!-- Assets -->
-      <a-assets>
-        <img id="skyTexture" src="day.jpg">
-      </a-assets>
     </a-scene>
 
+    <!-- 2D Editor: Displays the equirectangular image with draggable hotspot markers -->
+    <div id="editorWrapper">
+      <h2>2D Hotspot Editor</h2>
+      <p>Drag the red markers to reposition hotspots. Their positions in the 360 scene will update automatically.</p>
+      <div id="editorContainer">
+        <!-- Use the same equirectangular image (but scaled down) for editing -->
+        <img id="editorImage" src="day.jpg">
+        <!-- Draggable markers will be added here by JavaScript -->
+      </div>
+    </div>
+
     <script>
-      // --- CONFIG ---
-      const imageWidth = 3840;   // replace with your actual image width
-      const imageHeight = 1920;  // replace with your actual image height
-      const sphereRadius = 5000; // must match a-sky radius
-      const u = 3200;            // example x coordinate in image pixels
-      const v = 1000;            // example y coordinate in image pixels
+      /***********************************
+       * Configuration & Global Variables
+       ***********************************/
+      // These dimensions are the actual dimensions of your equirectangular image.
+      const imageOriginalWidth = 4000;  // e.g., 4000 pixels wide
+      const imageOriginalHeight = 2000; // e.g., 2000 pixels tall
+      const sphereRadius = 5000;        // Must match the a-sky radius
 
-      // --- Conversion ---
-      const lon = (u / imageWidth) * 360 - 180;
-      const lat = 90 - (v / imageHeight) * 180;
+      // Initial hotspots with their positions (u, v) in the original image coordinates.
+      const hotspots = [
+        { id: "hotspot1", u: 3200, v: 1000 },
+        { id: "hotspot2", u: 800,  v: 500 }
+      ];
 
-      const phi = THREE.MathUtils.degToRad(90 - lat);
-      const theta = THREE.MathUtils.degToRad(lon);
+      /****************************************************
+       * Utility Functions: Converting 2D (u,v) to 3D (xyz)
+       ****************************************************/
+      function convertUVtoXYZ(u, v) {
+        // Convert pixel coordinates to spherical angles:
+        // Longitude: maps from [0, imageOriginalWidth] → [-180°, 180°]
+        // Latitude: maps from [0, imageOriginalHeight] → [90°, -90°]
+        const lon = (u / imageOriginalWidth) * 360 - 180;
+        const lat = 90 - (v / imageOriginalHeight) * 180;
+        // Spherical conversion:
+        // phi: angle from the positive Y axis (zenith)
+        // theta: angle around Y axis
+        const phi = AFRAME.THREE.MathUtils.degToRad(90 - lat);
+        const theta = AFRAME.THREE.MathUtils.degToRad(lon);
+        // Convert to Cartesian coordinates on the sphere surface:
+        const x = sphereRadius * Math.sin(phi) * Math.cos(theta);
+        const y = sphereRadius * Math.cos(phi);
+        const z = sphereRadius * Math.sin(phi) * Math.sin(theta);
+        return { x, y, z };
+      }
 
-      const x = sphereRadius * Math.sin(phi) * Math.cos(theta);
-      const y = sphereRadius * Math.cos(phi);
-      const z = sphereRadius * Math.sin(phi) * Math.sin(theta);
+      /**********************************************
+       * Create A-Frame Hotspot Entities Dynamically
+       **********************************************/
+      function createHotspotEntities() {
+        const group = document.getElementById('hotspotsGroup');
+        // Clear any existing hotspots
+        while (group.firstChild) {
+          group.removeChild(group.firstChild);
+        }
+        // For each hotspot data entry, compute its 3D position and add an <a-image>
+        hotspots.forEach(hotspot => {
+          const pos = convertUVtoXYZ(hotspot.u, hotspot.v);
+          const aHotspot = document.createElement('a-image');
+          aHotspot.setAttribute('id', hotspot.id);
+          aHotspot.setAttribute('src', '#hotspotTexture');
+          aHotspot.setAttribute('width', '300');
+          aHotspot.setAttribute('height', '300');
+          aHotspot.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
+          // Make it always face the camera
+          aHotspot.setAttribute('look-at', '#camera');
+          aHotspot.classList.add('clickable');
+          group.appendChild(aHotspot);
+        });
+      }
 
-      const hotspot = document.querySelector('#hotspot');
-      hotspot.setAttribute('position', { x, y, z });
+      /**********************************************
+       * Create Draggable Markers in the 2D Editor
+       **********************************************/
+      function createEditorMarkers() {
+        const container = document.getElementById('editorContainer');
+        hotspots.forEach(hotspot => {
+          const marker = document.createElement('div');
+          marker.classList.add('hotspot-marker');
+          marker.setAttribute('id', hotspot.id + "-marker");
+          // Place marker based on its u, v coordinates on the displayed image
+          positionMarker(marker, hotspot.u, hotspot.v);
+          // Set up dragging so the hotspot can be repositioned visually
+          makeMarkerDraggable(marker, hotspot);
+          container.appendChild(marker);
+        });
+      }
+
+      // Position a hotspot marker on the 2D editor by mapping u,v (original image pixels)
+      // to the current displayed dimensions of the image.
+      function positionMarker(marker, u, v) {
+        const img = document.getElementById('editorImage');
+        const rect = img.getBoundingClientRect();
+        // Calculate scale factors (original → displayed)
+        const scaleX = rect.width / imageOriginalWidth;
+        const scaleY = rect.height / imageOriginalHeight;
+        // Calculate left and top positions relative to the container.
+        const left = u * scaleX;
+        const top = v * scaleY;
+        marker.style.left = `${left}px`;
+        marker.style.top = `${top}px`;
+      }
+
+      /***********************************
+       * Make Markers Draggable in 2D
+       ***********************************/
+      function makeMarkerDraggable(marker, hotspotData) {
+        let offsetX, offsetY;
+        // When the user presses the mouse button on the marker:
+        marker.addEventListener('mousedown', function(e) {
+          // Get the initial offset within the marker.
+          const rect = marker.getBoundingClientRect();
+          offsetX = e.clientX - rect.left;
+          offsetY = e.clientY - rect.top;
+          // Listen for mouse movement over the document.
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+          e.preventDefault();
+        });
+
+        function onMouseMove(e) {
+          const containerRect = document.getElementById('editorContainer').getBoundingClientRect();
+          // Calculate the new position relative to the container.
+          let newLeft = e.clientX - containerRect.left - offsetX;
+          let newTop  = e.clientY - containerRect.top - offsetY;
+          // Constrain marker position within the container boundaries.
+          newLeft = Math.max(0, Math.min(newLeft, containerRect.width));
+          newTop  = Math.max(0, Math.min(newTop, containerRect.height));
+          marker.style.left = `${newLeft}px`;
+          marker.style.top = `${newTop}px`;
+          // Update the hotspot's 2D coordinates.
+          const img = document.getElementById('editorImage');
+          const imgRect = img.getBoundingClientRect();
+          const scaleX = imageOriginalWidth / imgRect.width;
+          const scaleY = imageOriginalHeight / imgRect.height;
+          hotspotData.u = newLeft * scaleX;
+          hotspotData.v = newTop * scaleY;
+          // Convert updated 2D coordinates to 3D and update the corresponding A-Frame entity.
+          const pos = convertUVtoXYZ(hotspotData.u, hotspotData.v);
+          const aHotspot = document.getElementById(hotspotData.id);
+          if(aHotspot) {
+            aHotspot.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
+          }
+        }
+        function onMouseUp(e) {
+          // Remove mousemove and mouseup events when dragging ends.
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+      }
+
+      /**********************************************
+       * Initialization when the page loads
+       **********************************************/
+      window.addEventListener('load', () => {
+        // Create the initial 360 A-Frame hotspot entities.
+        createHotspotEntities();
+        // Create the draggable markers for the 2D editor.
+        createEditorMarkers();
+      });
     </script>
   </body>
 </html>
