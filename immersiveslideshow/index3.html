@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <title>A-Frame Image Timeline with Blink Controls</title>
+    <!-- Added viewport meta to disable scaling which might interfere with touch events -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
     <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
@@ -10,29 +12,19 @@
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
 
-
-    
-    <!-- Add necessary components for hotspots -->
+    <!-- Custom components -->
     <script>
       // Face-camera component to make hotspots always face the user
       AFRAME.registerComponent('face-camera', {
         tick: function () {
           var camera = document.querySelector('[camera]');
           if (!camera) return;
-          
           var cameraPosition = camera.object3D.position;
-          var selfPosition = this.el.object3D.position;
-          
-          // Calculate direction to face camera
-          var direction = new THREE.Vector3();
-          direction.subVectors(cameraPosition, selfPosition).normalize();
-          
-          // Apply the rotation
           this.el.object3D.lookAt(cameraPosition);
         }
       });
       
-      // Spot component to handle hotspot behavior
+      // Spot component for hotspot behavior
       AFRAME.registerComponent('spot', {
         schema: {
           linkto: {type: 'string'},
@@ -41,12 +33,9 @@
           audio: {type: 'selector', default: null},
           labelBackground: {type: 'string', default: '#000000'}
         },
-        
         init: function() {
           var data = this.data;
           var el = this.el;
-          
-          // Create spot appearance
           el.setAttribute('geometry', {primitive: 'circle', radius: 0.5});
           el.setAttribute('material', {
             color: '#FFFFFF',
@@ -54,8 +43,6 @@
             transparent: true,
             src: 'images/arrow-circle.png'
           });
-          
-          // Add label if provided
           if (data.label) {
             var textEntity = document.createElement('a-text');
             textEntity.setAttribute('value', data.label);
@@ -63,41 +50,29 @@
             textEntity.setAttribute('position', '0 0.6 0');
             textEntity.setAttribute('scale', '0.5 0.5 0.5');
             textEntity.setAttribute('color', '#FFFFFF');
-            
-            // Add background for label
             var bgEntity = document.createElement('a-plane');
             bgEntity.setAttribute('color', data.labelBackground);
             bgEntity.setAttribute('position', '0 0.6 -0.01');
             bgEntity.setAttribute('width', data.label.length * 0.15 + 0.2);
             bgEntity.setAttribute('height', '0.3');
             bgEntity.setAttribute('opacity', '0.8');
-            
             el.appendChild(bgEntity);
             el.appendChild(textEntity);
           }
-          
-          // Handle click events for navigation between hotspots
           el.addEventListener('click', function() {
-            // Hide all spot groups
             var allGroups = document.querySelectorAll('[id^="group-"]');
             allGroups.forEach(function(group) {
               group.setAttribute('visible', false);
             });
-            
-            // Show the target group
             if (data.spotgroup) {
               var targetGroup = document.querySelector('#' + data.spotgroup);
               if (targetGroup) {
                 targetGroup.setAttribute('visible', true);
               }
             }
-            
-            // Play audio if specified
             if (data.audio) {
               data.audio.play();
             }
-            
-            // Move the camera rig to the new position
             if (data.linkto) {
               var targetPoint = document.querySelector(data.linkto);
               if (targetPoint) {
@@ -112,7 +87,6 @@
       // Hotspots container component
       AFRAME.registerComponent('hotspots', {
         init: function() {
-          // Initialize hotspot points if needed
           var point1 = document.createElement('a-entity');
           point1.setAttribute('id', 'point1');
           point1.setAttribute('position', '-11 1 2');
@@ -134,38 +108,83 @@
           this.el.appendChild(point4);
         }
       });
+      
+      // Custom component to move the camera rig based on one or two finger touches on mobile.
+      AFRAME.registerComponent('mobile-thumb-move', {
+        schema: {
+          speed: {type: 'number', default: 0.5}  // adjust movement speed as needed
+        },
+        init: function () {
+          var self = this;
+          // Handler that checks the number of touches and moves the rig accordingly.
+          this.handleTouch = function (event) {
+            // Prevent default to avoid pinch-zoom or scrolling
+            event.preventDefault();
+            var moveAmount = 0;
+            if (event.touches.length === 1) {
+              moveAmount = self.data.speed; // one finger moves forward
+            } else if (event.touches.length === 2) {
+              moveAmount = -self.data.speed; // two fingers moves backward
+            }
+            if (moveAmount !== 0) {
+              // Get the camera so we can determine the facing direction
+              var cameraEl = self.el.querySelector('[camera]');
+              if (cameraEl) {
+                var direction = new THREE.Vector3();
+                cameraEl.object3D.getWorldDirection(direction);
+                direction.multiplyScalar(moveAmount);
+                self.el.object3D.position.add(direction);
+              }
+            }
+          };
+          
+          // Wait until the canvas is loaded before adding event listeners
+          this.el.sceneEl.addEventListener('renderstart', function () {
+            self.el.sceneEl.canvas.addEventListener('touchstart', self.handleTouch, {passive: false});
+            self.el.sceneEl.canvas.addEventListener('touchmove', self.handleTouch, {passive: false});
+          });
+        },
+        remove: function () {
+          if (this.el.sceneEl.canvas) {
+            this.el.sceneEl.canvas.removeEventListener('touchstart', this.handleTouch);
+            this.el.sceneEl.canvas.removeEventListener('touchmove', this.handleTouch);
+          }
+        }
+      });
     </script>
   </head>
 
   <body>
     <a-scene cursor="rayOrigin: mouse">
-      <!-- Camera Rig with Blink Controls and Controllers -->
-      <!-- a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; position="0 0 0" -->
-      <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 0 0" rotation="0 0 0">   
-        <a-entity id="head" camera="active: true" look-controls=""pointerLockEnabled: true; reverseMouseDrag: false" wasd-controls position="0 1.6 0">
-          <a-cursor
-            fuse="true"
-            fuse-timeout="500"
-            raycaster="objects: .clickable"
-          ></a-cursor>
+      <!-- Camera Rig with Blink Controls and our Mobile Thumb Movement Component -->
+      <a-entity id="cameraRig" 
+                mobile-thumb-move
+                movement-controls="constrainToNavMesh: false;" 
+                navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" 
+                position="0 0 0" 
+                rotation="0 0 0">
+        <!-- Fixed and corrected look-controls syntax -->
+        <a-entity id="head" camera="active: true" 
+                  look-controls="pointerLockEnabled: true; reverseMouseDrag: false" 
+                  wasd-controls 
+                  position="0 1.6 0">
+          <a-cursor fuse="true" fuse-timeout="500" raycaster="objects: .clickable"></a-cursor>
         </a-entity>
 
-        <a-entity
-          id="left-controller"
-          laser-controls="hand: left"
-          raycaster="objects: .clickable, .ground"
-          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig"
-        ></a-entity>
+        <a-entity id="left-controller"
+                  laser-controls="hand: left"
+                  raycaster="objects: .clickable, .ground"
+                  blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
+        </a-entity>
 
-        <a-entity
-          id="right-controller"
-          laser-controls="hand: right"
-          raycaster="objects: .clickable, .ground"
-          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig"
-        ></a-entity>
+        <a-entity id="right-controller"
+                  laser-controls="hand: right"
+                  raycaster="objects: .clickable, .ground"
+                  blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
+        </a-entity>
       </a-entity>
 
-      <!-- Assets -->
+      <!-- Assets and scene elements remain unchanged -->
       <a-assets>
         <img id="image1" src="images/1.jpg" />
         <img id="image2" src="images/2.jpg" />
@@ -175,177 +194,106 @@
         <img id="grid" src="images/border.jpg" />
         <img id="sky" src="skies/day.jpg" />
         <img id="ground" src="grounds/grass.jpg" />
-        <!-- Hotspot icon -->
         <img id="hotspot" src="images/hotspot.png" />
-
-        <!-- Models -->
-        <a-asset-item id="library" src="models/library.glb"><a-asset-item>
+        <a-asset-item id="library" src="models/library.glb"></a-asset-item>
         <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
-        <audio id="audio1" src="./audio/music.mp3" preload="auto"></a-asset-item>audio>
+        <audio id="audio1" src="./audio/music.mp3" preload="auto"></audio>
       </a-assets>
 
-      <a-plane
-        width="100"
-        height="100"
-        rotation="-90 0 0"
-        material="src: #ground; repeat:10 10; transparent: false; opacity: 1;"
-        shadow="cast: false; receive: true"
-        class="ground"
-      ></a-plane>
+      <a-plane width="100" height="100" rotation="-90 0 0" 
+               material="src: #ground; repeat:10 10; transparent: false; opacity: 1;" 
+               shadow="cast: false; receive: true"
+               class="ground">
+      </a-plane>
 
-      <!-- Sky -->
       <a-sky src="#sky"></a-sky>
 
-      <!-- Image Planes -->
-      <a-plane
-        id="image-plane-1"
-        position="0 1.6 -4"
-        width="4"
-        height="2.5"
-        material="src: #image1"
-        visible="true"
-      ></a-plane>
-      <a-plane
-        id="image-plane-2"
-        position="0 1.6 -4"
-        width="4"
-        height="2.5"
-        material="src: #image1"
-        visible="false"
-      ></a-plane>
+      <a-plane id="image-plane-1" position="0 1.6 -4" width="4" height="2.5"
+               material="src: #image1" visible="true">
+      </a-plane>
+      <a-plane id="image-plane-2" position="0 1.6 -4" width="4" height="2.5"
+               material="src: #image1" visible="false">
+      </a-plane>
 
-      <!-- Arrows -->
-      <a-image
-        id="right-arrow"
-        src="#arrowRight"
-        position="2 1.6 -3.5"
-        scale="0.5 0.5 0.5"
-        class="clickable"
-      ></a-image>
-      <a-image
-        id="left-arrow"
-        src="#arrowLeft"
-        position="-2 1.6 -3.5"
-        scale="0.5 0.5 0.5"
-        class="clickable"
-      ></a-image>
+      <a-image id="right-arrow" src="#arrowRight" position="2 1.6 -3.5" scale="0.5 0.5 0.5" class="clickable"></a-image>
+      <a-image id="left-arrow" src="#arrowLeft" position="-2 1.6 -3.5" scale="0.5 0.5 0.5" class="clickable"></a-image>
 
-      <!-- Little free library -->
-      <a-entity
-        gltf-model="#library"
-        position="5 0 -2.746"
-        scale="0.5 0.5 0.5"
-        rotation="0 -116 0"
-        shadow="cast: true; receive: true"
-      ></a-entity>
-
-      <!-- Bench -->
-      <a-entity
-        gltf-model="#bench"
-        position="-6.246 0 -2.896"
-        scale="0.015 0.015 0.015"
-        rotation="0 53 0"
-        shadow="cast: true; receive: true"
-      ></a-entity>
-
-      <!-- Fog -->
+      <a-entity gltf-model="#library" position="5 0 -2.746" scale="0.5 0.5 0.5" rotation="0 -116 0" shadow="cast: true; receive: true"></a-entity>
+      <a-entity gltf-model="#bench" position="-6.246 0 -2.896" scale="0.015 0.015 0.015" rotation="0 53 0" shadow="cast: true; receive: true"></a-entity>
       <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
 
       <!-- Audio and Hotspots -->
       <a-entity id="spots" hotspots>
-        <!-- Group for point1 -->
         <a-entity id="group-point1" visible="true">
-          <a-entity
-            face-camera
-            class="clickable"
-            spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
-            position="-11 1.5 2"
-          ></a-entity>
+          <a-entity face-camera class="clickable"
+                    spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
+                    position="-11 1.5 2">
+          </a-entity>
         </a-entity>
         
-        <!-- Group for point2 -->
         <a-entity id="group-point2" visible="false">
-          <a-entity
-            face-camera
-            class="clickable"
-            spot="linkto:#point1;spotgroup:group-point1;label:Point 1;audio:#audio1;"
-            position="10 1.5 -8"
-          ></a-entity>
-          <a-entity
-            face-camera
-            class="clickable"
-            spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
-            position="0 1.5 10"
-          ></a-entity>
+          <a-entity face-camera class="clickable"
+                    spot="linkto:#point1;spotgroup:group-point1;label:Point 1;audio:#audio1;"
+                    position="10 1.5 -8">
+          </a-entity>
+          <a-entity face-camera class="clickable"
+                    spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
+                    position="0 1.5 10">
+          </a-entity>
         </a-entity>
         
-        <!-- Group for point3 -->
         <a-entity id="group-point3" visible="false">
-          <a-entity
-            face-camera
-            class="clickable"
-            spot="linkto:#point2;spotgroup:group-point2;label:Point 2;audio:#audio1"
-            position="10 1.5 3"
-          ></a-entity>
-          <a-entity
-            face-camera
-            class="clickable"
-            spot="linkto:#point4;spotgroup:group-point4;label:Point 4;audio:#audio1"
-            position="-10 1.5 -3"
-          ></a-entity>
+          <a-entity face-camera class="clickable"
+                    spot="linkto:#point2;spotgroup:group-point2;label:Point 2;audio:#audio1"
+                    position="10 1.5 3">
+          </a-entity>
+          <a-entity face-camera class="clickable"
+                    spot="linkto:#point4;spotgroup:group-point4;label:Point 4;audio:#audio1"
+                    position="-10 1.5 -3">
+          </a-entity>
         </a-entity>
         
-        <!-- Group for point4 -->
         <a-entity id="group-point4" visible="false">
-          <a-entity
-            face-camera
-            class="clickable"
-            spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
-            position="0 1.5 -10"
-          ></a-entity>
+          <a-entity face-camera class="clickable"
+                    spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
+                    position="0 1.5 -10">
+          </a-entity>
         </a-entity>
       </a-entity>
     </a-scene>
 
     <script>
+      // Existing transition logic for image planes remains unchanged.
       document.addEventListener("DOMContentLoaded", () => {
         const images = ["#image1", "#image2", "#image3"];
         let currentIndex = 0;
         let isAnimating = false;
-
         const planes = [
           document.querySelector("#image-plane-1"),
-          document.querySelector("#image-plane-2"),
+          document.querySelector("#image-plane-2")
         ];
 
         function animateTransition(direction) {
           if (isAnimating) return;
           isAnimating = true;
-
           const currentPlane = planes[0];
           const nextPlane = planes[1];
-
-          currentIndex =
-            (currentIndex + direction + images.length) % images.length;
-
+          currentIndex = (currentIndex + direction + images.length) % images.length;
           nextPlane.setAttribute("material", "src", images[currentIndex]);
           nextPlane.setAttribute("visible", "true");
           nextPlane.setAttribute("position", `${4 * direction} 1.6 -4`);
-
           currentPlane.setAttribute("animation", {
             property: "position",
             to: `${-4 * direction} 1.6 -4`,
             dur: 1000,
-            easing: "easeInOutQuad",
+            easing: "easeInOutQuad"
           });
-
           nextPlane.setAttribute("animation", {
             property: "position",
             to: "0 1.6 -4",
             dur: 1000,
-            easing: "easeInOutQuad",
+            easing: "easeInOutQuad"
           });
-
           setTimeout(() => {
             currentPlane.setAttribute("visible", "false");
             currentPlane.removeAttribute("animation");
