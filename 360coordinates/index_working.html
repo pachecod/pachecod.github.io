@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Tour A-Frame with Hotspot Data</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <style>
+      /* A simple style for the data panel */
+      #dataPanel {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border: 1px solid #ccc;
+        font-family: Arial, sans-serif;
+        max-width: 300px;
+        z-index: 999;
+      }
+      #dataPanel h3 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- A-Frame Scene -->
+    <a-scene
+      inspector=""
+      keyboard-shortcuts=""
+      screenshot=""
+      vr-mode-ui=""
+      device-orientation-permission-ui=""
+    >
+      <!-- Camera -->
+      <a-entity
+        camera=""
+        position=""
+        wasd-controls=""
+        rotation=""
+        look-controls=""
+        aframe-injected=""
+      ></a-entity>
+
+      <!-- Default Lights -->
+      <a-entity light="" data-aframe-default-light="" aframe-injected=""></a-entity>
+      <a-entity
+        light=""
+        position=""
+        data-aframe-default-light=""
+        aframe-injected=""
+      ></a-entity>
+
+      <!-- Cursor -->
+      <a-entity cursor="rayOrigin: mouse"></a-entity>
+
+      <!-- WeLink Component -->
+      <script>
+        AFRAME.registerComponent("weblink", {
+          schema: {
+            url: { default: "" },
+          },
+          init: function () {
+            this.el.addEventListener("click", () => {
+              window.location = this.data.url;
+            });
+          },
+        });
+      </script>
+
+      <!-- Hotspot Entities -->
+      <!-- BLOCK PLACEMENT -->
+      <!-- X: right positive, left negative -->
+      <!-- Y: up positive, down negative -->
+      <!-- Z: toward you positive, away from you negative -->
+      <!-- BLOCK ROTATION-->
+      <!-- X: tilts toward or away from you -->
+      <!-- Y: spins horizontally -->
+      <!-- Z: spins like a fan with blades facing you -->
+
+      <a-circle
+        id="forward"
+        position="-2.13523 -8.24823 -22.20722"
+        rotation="90 260 80"
+        width="20"
+        height="20"
+        radius="2"
+        weblink="url: photo7.html"
+      >
+        <a-entity
+          geometry="primitive: circle; radius: 2"
+          material="src: https://cdn.glitch.global/286de6c4-0d50-4877-8284-0cbfe22386f6/arrow.png?v=1731441293572; roughness: 1; side: double"
+          position="0.025 -0.073 0.06"
+        ></a-entity>
+      </a-circle>
+
+      <a-circle
+        id="upstairs"
+        position="-12.12824 -6.60754 -19.60389"
+        rotation="90 230 0"
+        width="20"
+        height="20"
+        radius="2"
+        weblink="url: photo2.html"
+      >
+        <a-entity
+          geometry="primitive: circle; radius: 2"
+          material="src: https://cdn.glitch.global/286de6c4-0d50-4877-8284-0cbfe22386f6/arrow.png?v=1731441293572; roughness: 1; side: double"
+          position="0.025 -0.073 0.06"
+        ></a-entity>
+      </a-circle>
+
+      <a-circle
+        id="downstairs"
+        position="-17.12475 -6.60754 -10.39705"
+        rotation="90 -20 0"
+        width="20"
+        height="20"
+        radius="2"
+        weblink="url: photo8.html"
+      >
+        <a-entity
+          geometry="primitive: circle; radius: 2"
+          material="src: https://cdn.glitch.global/286de6c4-0d50-4877-8284-0cbfe22386f6/arrow.png?v=1731441293572; roughness: 1; side: double"
+          position="0.025 -0.073 0.06"
+        ></a-entity>
+      </a-circle>
+
+      <!-- 360 Background Sky -->
+      <a-sky
+        src="https://cdn.glitch.global/ea85879b-f3ca-413b-9c96-c7fc20e9cf92/blurred%20image%201.JPEG?v=1733862596761"
+        rotation="0 70 0"
+      ></a-sky>
+    </a-scene>
+
+    <!-- Data Panel for Hotspot Coordinates -->
+    <div id="dataPanel">
+      <h3>Hotspot Data</h3>
+      <div id="hotspotData">
+        <!-- Data will appear here -->
+      </div>
+      <button id="refreshButton">Refresh Data</button>
+    </div>
+
+    <!-- JavaScript to Read Coordinates -->
+    <script>
+      function updateHotspotData() {
+        var dataContainer = document.getElementById("hotspotData");
+        dataContainer.innerHTML = ""; // Clear previous data
+
+        // Select all hotspots based on a common attribute (here we use the weblink attribute)
+        var hotspots = document.querySelectorAll("a-circle[weblink]");
+        hotspots.forEach(function (hotspot) {
+          var id = hotspot.getAttribute("id");
+          // Read the position and rotation from the element. They are returned as objects.
+          var pos = hotspot.getAttribute("position");
+          var rot = hotspot.getAttribute("rotation");
+          
+          // Format the information nicely.
+          var dataString =
+            "<p><strong>" + id + "</strong><br>" +
+            "Position: X: " + pos.x.toFixed(2) + ", Y: " + pos.y.toFixed(2) + ", Z: " + pos.z.toFixed(2) + "<br>" +
+            "Rotation: X: " + rot.x.toFixed(2) + ", Y: " + rot.y.toFixed(2) + ", Z: " + rot.z.toFixed(2) +
+            "</p>";
+          
+          dataContainer.innerHTML += dataString;
+        });
+      }
+      
+      // Refresh button to update the data manually
+      document.getElementById("refreshButton").addEventListener("click", updateHotspotData);
+      
+      // Update the data panel when the scene loads.
+      window.addEventListener("load", function(){
+        updateHotspotData();
+      });
+    </script>
+  </body>
+</html>
