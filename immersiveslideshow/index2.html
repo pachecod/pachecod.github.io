@@ -140,7 +140,7 @@
   <body>
     <a-scene cursor="rayOrigin: mouse">
       <!-- Camera Rig with Blink Controls and Controllers -->
-      <a-entity id="cameraRig" movement-controls position="0 0 0">
+      <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; position="0 0 0">
         <a-entity camera look-controls wasd-controls position="0 1.6 0">
           <a-cursor
             fuse="true"
