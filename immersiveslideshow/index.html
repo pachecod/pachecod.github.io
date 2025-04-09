@@ -47,6 +47,7 @@
         <img id="ground" src="grounds/grass.jpg" />
         <model id="library" src="models/library.glb" />
         <model id="bench" src="models/bench.glb" />
+        <audio id="audio1" src="./audio/music.mp3"></audio>
 
       </a-assets>
 
@@ -118,6 +119,64 @@
             shadow="cast: true; receive: true"
         ></a-entity>
 
+
+        <!-- Fog -->
+
+        <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
+
+
+        <!-- Audio -->
+
+        <a-entity id="spots" hotspots>
+            <!-- Group for point1 -->
+            <a-entity id="group-point1" visible="true">
+              <a-image
+                face-camera
+                class="clickable"
+                spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
+                position="-11 0 2"
+              ></a-image>
+            </a-entity>
+            <!-- Group for point2 -->
+            <a-entity id="group-point2" visible="false">
+              <a-image
+                face-camera
+                class="clickable"
+                spot="linkto:#point1;spotgroup:group-point1;label:Point 1;audio:#audio1;"
+                position="10 0 -8"
+              ></a-image>
+              <a-image
+                face-camera
+                class="clickable"
+                spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
+                position="0 0 10"
+              ></a-image>
+            </a-entity>
+            <!-- Group for point3 -->
+            <a-entity id="group-point3" visible="false">
+              <a-image
+                face-camera
+                class="clickable"
+                spot="linkto:#point2;spotgroup:group-point2;label:Point 2;audio:#audio1"
+                position="10 0 3"
+              ></a-image>
+              <a-image
+                face-camera
+                class="clickable"
+                spot="linkto:#point4;spotgroup:group-point4;label:Point 4;audio:#audio1"
+                position="-10 0 -3"
+              ></a-image>
+            </a-entity>
+            <!-- Group for point4 -->
+            <a-entity id="group-point4" visible="false">
+              <a-image
+                face-camera
+                class="clickable"
+                spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
+                position="0 0 -10"
+              ></a-image>
+            </a-entity>
+          </a-entity>
 
 
     </a-scene>
