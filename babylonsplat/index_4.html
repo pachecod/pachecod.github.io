@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Babylon.js .splat Drag‑Drop FlyCam with Controls & Export</title>
+  <style>
+    html, body {
+      width: 100%; height: 100%; margin: 0; overflow: hidden;
+    }
+    #renderCanvas {
+      width: 100%; height: 100%; display: block;
+      border: 3px dashed #444;
+    }
+    #info {
+      position: absolute; bottom: 10px; left: 10px;
+      padding: 8px 12px; background: rgba(0,0,0,0.5);
+      color: #fff; font-family: sans-serif; font-size: 14px;
+      border-radius: 4px;
+    }
+    #controls {
+      position: absolute; top: 10px; right: 10px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    #moveControls, #rotateControls, #speedControls, #exportControls {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 5px; border-radius: 4px;
+    }
+    #moveControls {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-auto-rows: 40px;
+      grid-gap: 5px;
+    }
+    #rotateControls {
+      display: grid;
+      grid-template-columns: repeat(2, 80px);
+      grid-auto-rows: 40px;
+      grid-gap: 5px;
+    }
+    #speedControls {
+      color: #fff; font-family: sans-serif;
+      display: flex; flex-direction: column;
+    }
+    #speedControls label {
+      margin: 4px 0;
+      display: flex; align-items: center;
+      font-size: 13px;
+    }
+    #speedControls input {
+      margin-left: 8px;
+      flex: 1;
+    }
+    #exportControls {
+      display: flex; gap: 5px;
+    }
+    .group-label {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    #controls button {
+      font-size: 14px; padding: 4px;
+      cursor: pointer; border: none;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.8);
+    }
+    #controls button:hover {
+      background: rgba(255,255,255,1);
+    }
+    #loadingOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: sans-serif;
+      font-size: 24px;
+      z-index: 100;
+      visibility: hidden;
+    }
+  </style>
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <div id="info">
+    Drag & drop a <code>.splat</code> file here.<br/>
+    Click to lock pointer, then <strong>W/A/S/D</strong> + mouse to fly.
+  </div>
+  <div id="loadingOverlay">Loading...</div>
+  
+  <div id="controls">
+    <div id="moveControls">
+      <div class="group-label">Move</div>
+      <button id="btnUp">Up</button>
+      <button id="btnForward">Forward</button>
+      <button id="btnDown">Down</button>
+      <button id="btnLeft">Left</button>
+      <button id="btnBackward">Backward</button>
+      <button id="btnRight">Right</button>
+    </div>
+    <div id="rotateControls">
+      <div class="group-label">Rotate</div>
+      <button id="btnRotLeft">Left</button>
+      <button id="btnRotUp">Up</button>
+      <button id="btnRotDown">Down</button>
+      <button id="btnRotRight">Right</button>
+    </div>
+    <div id="speedControls">
+      <div class="group-label">Speed</div>
+      <label>
+        Move Speed
+        <input type="range" id="sliderMoveSpeed" min="1" max="20" value="5">
+      </label>
+      <label>
+        Mouse Speed
+        <input type="range" id="sliderMouseSpeed" min="100" max="2000" value="1000">
+      </label>
+    </div>
+    <div id="exportControls">
+      <div class="group-label">Export</div>
+      <button id="btnSetOpen">Set Opening Position</button>
+      <button id="btnExport">Export HTML</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("renderCanvas");
+    const engine = new BABYLON.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true
+    });
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    
+    // Variables to store the current file and opening position
+    let currentFile = null;
+    let opening = null;
+
+    function createScene() {
+      const scene = new BABYLON.Scene(engine);
+
+      // Camera & Light ------------------------------------------------
+      const camera = new BABYLON.FlyCamera("FlyCam",
+        new BABYLON.Vector3(0, 5, -10), scene);
+      camera.attachControl(canvas, true);
+      camera.keysUp    = [87];  // W
+      camera.keysDown  = [83];  // S
+      camera.keysLeft  = [65];  // A
+      camera.keysRight = [68];  // D
+      camera.speed     = 5;
+      camera.angularSensibility = 8000;
+      canvas.addEventListener("click", () => canvas.requestPointerLock());
+      new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), scene);
+
+      // Move Controls -------------------------------------------------
+      const moveAmount = 1;
+      const moveCam = dir => {
+        let delta;
+        switch (dir) {
+          case 'up':       delta = new BABYLON.Vector3(0, moveAmount, 0); break;
+          case 'down':     delta = new BABYLON.Vector3(0, -moveAmount, 0); break;
+          case 'left':     delta = camera.getDirection(BABYLON.Axis.X).scale(-moveAmount); break;
+          case 'right':    delta = camera.getDirection(BABYLON.Axis.X).scale(moveAmount); break;
+          case 'forward':  delta = camera.getDirection(BABYLON.Axis.Z).scale(moveAmount); break;
+          case 'backward': delta = camera.getDirection(BABYLON.Axis.Z).scale(-moveAmount); break;
+        }
+        camera.position.addInPlace(delta);
+      };
+      document.getElementById("btnUp").onclick = () => moveCam('up');
+      document.getElementById("btnDown").onclick = () => moveCam('down');
+      document.getElementById("btnLeft").onclick = () => moveCam('left');
+      document.getElementById("btnRight").onclick = () => moveCam('right');
+      document.getElementById("btnForward").onclick = () => moveCam('forward');
+      document.getElementById("btnBackward").onclick = () => moveCam('backward');
+
+      // Rotate Controls -----------------------------------------------
+      const rotateAmount = 0.1;
+      const rotateCam = dir => {
+        switch (dir) {
+          case 'left':  camera.rotation.y -= rotateAmount; break;
+          case 'right': camera.rotation.y += rotateAmount; break;
+          case 'up':    camera.rotation.x -= rotateAmount; break;
+          case 'down':  camera.rotation.x += rotateAmount; break;
+        }
+      };
+      document.getElementById("btnRotLeft").onclick = () => rotateCam('left');
+      document.getElementById("btnRotRight").onclick = () => rotateCam('right');
+      document.getElementById("btnRotUp").onclick = () => rotateCam('up');
+      document.getElementById("btnRotDown").onclick = () => rotateCam('down');
+
+      // Speed Controls ------------------------------------------------
+      document.getElementById("sliderMoveSpeed").addEventListener("input", e => {
+        camera.speed = +e.target.value;
+      });
+      document.getElementById("sliderMouseSpeed").addEventListener("input", e => {
+        camera.angularSensibility = +e.target.value;
+      });
+
+      // Export Controls -----------------------------------------------
+      document.getElementById("btnSetOpen").addEventListener("click", () => {
+        opening = { 
+          pos: new BABYLON.Vector3(
+            camera.position.x,
+            camera.position.y,
+            camera.position.z
+          ), 
+          rot: new BABYLON.Vector3(
+            camera.rotation.x,
+            camera.rotation.y,
+            camera.rotation.z
+          ) 
+        };
+        alert('Opening position saved.');
+      });
+      
+      document.getElementById("btnExport").addEventListener("click", () => {
+        if (!currentFile) {
+          alert('Load a .splat file first');
+          return;
+        }
+        if (!opening) {
+          alert('Set opening position first');
+          return;
+        }
+        
+        loadingOverlay.style.visibility = 'visible';
+        
+        const reader = new FileReader();
+        reader.onload = e => {
+          try {
+            const dataUrl = e.target.result;
+            const html = buildExportHTML(dataUrl, opening, currentFile.name);
+            const blob = new Blob([html], {type:'text/html'});
+            const link = URL.createObjectURL(blob);
+            const a = document.createElement('a'); 
+            a.href = link;
+            a.download = currentFile.name.replace(/\.[^/.]+$/,'') + '.html';
+            a.click(); 
+            URL.revokeObjectURL(link);
+            loadingOverlay.style.visibility = 'hidden';
+          } catch (error) {
+            console.error("Export error:", error);
+            loadingOverlay.style.visibility = 'hidden';
+            alert("Export failed: " + error.message);
+          }
+        };
+        reader.onerror = () => {
+          loadingOverlay.style.visibility = 'hidden';
+          alert("Failed to read the file for export");
+        };
+        reader.readAsDataURL(currentFile);
+      });
+
+      // Drag & Drop Loader --------------------------------------------
+      ["dragenter","dragover","dragleave","drop"].forEach(evt =>
+        canvas.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); })
+      );
+      canvas.addEventListener("dragover",  () => canvas.style.borderColor = "#f0c040");
+      canvas.addEventListener("dragleave", () => canvas.style.borderColor = "#444");
+      canvas.addEventListener("drop", evt => {
+        canvas.style.borderColor = "#444";
+        const file = evt.dataTransfer.files[0];
+        if (!file || !file.name.toLowerCase().endsWith(".splat")) {
+          alert("Please drop a .splat file");
+          return;
+        }
+        
+        currentFile = file;
+        const url = URL.createObjectURL(file);
+        
+        // Clean up previous meshes
+        scene.meshes.slice().forEach(m => {
+          if (m.name !== "ground") {
+            m.dispose();
+          }
+        });
+        
+        loadingOverlay.style.visibility = 'visible';
+        
+        BABYLON.SceneLoader.Append("", url, scene,
+          () => {
+            console.log("Loaded successfully");
+            loadingOverlay.style.visibility = 'hidden';
+            URL.revokeObjectURL(url);
+          },
+          null,
+          (scene, msg, err) => {
+            console.error("Load error:", msg, err);
+            loadingOverlay.style.visibility = 'hidden';
+            URL.revokeObjectURL(url);
+            alert("Error loading .splat file: " + msg);
+          },
+          ".splat"
+        );
+      });
+
+      return scene;
+    }
+
+    // Function to build the exported HTML file
+    function buildExportHTML(dataUrl, opening, fname) {
+      return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>${fname} Viewer</title>
+<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}#renderCanvas{width:100%;height:100%;display:block}#exportViewerControls{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;background:rgba(0,0,0,0.3);padding:5px;border-radius:4px}#exportViewerControls button{font-size:14px;padding:4px;color:#fff;background:rgba(0,0,0,0.5);border:none;border-radius:3px;cursor:pointer}#exportViewerControls button:hover{background:rgba(0,0,0,0.7)}#loadingText{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-family:sans-serif;font-size:24px}</style>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+</head><body>
+<canvas id="renderCanvas"></canvas>
+<div id="loadingText">Loading SPLAT file...</div>
+<div id="exportViewerControls">
+  <button data-act="up">Up</button>
+  <button data-act="forward">Forward</button>
+  <button data-act="down">Down</button>
+  <button data-act="left">Left</button>
+  <button data-act="backward">Backward</button>
+  <button data-act="right">Right</button>
+  <button data-act="rot-left">Left</button>
+  <button data-act="rot-up">Up</button>
+  <button data-act="rot-down">Down</button>
+  <button data-act="rot-right">Right</button>
+</div>
+<script>(function(){const canvas=document.getElementById('renderCanvas');const engine=new BABYLON.Engine(canvas,true);const loadingText=document.getElementById('loadingText');let camera;window.addEventListener('load',init);function init(){const scene=new BABYLON.Scene(engine);camera=new BABYLON.FlyCamera('cam',new BABYLON.Vector3(${opening.pos.x},${opening.pos.y},${opening.pos.z}),scene);camera.rotation=new BABYLON.Vector3(${opening.rot.x},${opening.rot.y},${opening.rot.z});camera.attachControl(canvas,true);new BABYLON.HemisphericLight('light',new BABYLON.Vector3(0,1,0),scene);const bin=atob(dataUrl.split(',')[1]);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++){arr[i]=bin.charCodeAt(i);}const blob=new Blob([arr],{type:'application/octet-stream'});const blobUrl=URL.createObjectURL(blob);BABYLON.SceneLoader.Append('',blobUrl,scene,()=>{loadingText.style.display='none';URL.revokeObjectURL(blobUrl);},null,null,'.splat');engine.runRenderLoop(()=>scene.render());window.addEventListener('resize',()=>engine.resize());document.querySelectorAll('#exportViewerControls button').forEach(btn=>btn.addEventListener('click',()=>{const act=btn.dataset.act;const m=1,r=0.1;switch(act){case 'up':camera.position.y+=m;break;case 'down':camera.position.y-=m;break;case 'forward':camera.position.addInPlace(camera.getDirection(BABYLON.Axis.Z).scale(m));break;case 'backward':camera.position.addInPlace(camera.getDirection(BABYLON.Axis.Z).scale(-m));break;case 'left':camera.position.addInPlace(camera.getDirection(BABYLON.Axis.X).scale(-m));break;case 'right':camera.position.addInPlace(camera.getDirection(BABYLON.Axis.X).scale(m));break;case 'rot-left':camera.rotation.y-=r;break;case 'rot-right':camera.rotation.y+=r;break;case 'rot-up':camera.rotation.x-=r;break;case 'rot-down':camera.rotation.x+=r;break;}}));}</script>
+</body></html>`;
+    }
+
+    const scene = createScene();
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener("resize", () => engine.resize());
+  </script>
+</body>
+</html>

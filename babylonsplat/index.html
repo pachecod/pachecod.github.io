@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Babylon.js .splat Drag‑Drop & FlyCam</title>
+  <style>
+    html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+    #renderCanvas { width:100%; height:100%; display:block; border: 3px dashed #444; }
+    #info {
+      position:absolute; top:10px; left:10px;
+      padding:8px 12px; background:rgba(0,0,0,0.5); color:#fff;
+      font-family:sans-serif; font-size:14px; border-radius:4px;
+    }
+  </style>
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <div id="info">
+    Drag & drop a <code>.splat</code> file here.<br/>
+    Click to lock pointer, then <strong>W/A/S/D</strong> + mouse to fly.
+  </div>
+
+  <script>
+    const canvas = document.getElementById("renderCanvas");
+    const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer:true, stencil:true });
+
+    // Define createScene for Playground or your own code
+    function createScene() {
+      const scene = new BABYLON.Scene(engine);
+
+      // Camera & Controls
+      const camera = new BABYLON.FlyCamera("FlyCam",
+        new BABYLON.Vector3(0, 5, -10), scene);
+      camera.attachControl(canvas, true);
+      camera.keysUp    = [87];  // W
+      camera.keysDown  = [83];  // S
+      camera.keysLeft  = [65];  // A
+      camera.keysRight = [68];  // D
+      camera.speed     = 5;
+      camera.angularSensibility = 8000;
+      canvas.addEventListener("click", () => canvas.requestPointerLock());
+
+      // Light
+      new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
+
+      // Drag & Drop
+      ["dragenter","dragover","dragleave","drop"].forEach(evt =>
+        canvas.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); })
+      );
+      canvas.addEventListener("dragover", () => canvas.style.borderColor = "#f0c040");
+      canvas.addEventListener("dragleave", () => canvas.style.borderColor = "#444");
+      canvas.addEventListener("drop", (evt) => {
+        canvas.style.borderColor = "#444";
+        const files = evt.dataTransfer.files;
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (file.name.toLowerCase().endsWith(".splat")) {
+            const url = URL.createObjectURL(file);
+            BABYLON.SceneLoader.Append("", url, scene, () => {
+              URL.revokeObjectURL(url);
+            }, null, (scene, msg, err) => {
+              console.error("Load error:", msg, err);
+            }, ".splat");
+          }
+        }
+      });
+
+      return scene;
+    }
+
+    // Create and start
+    const scene = createScene();
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener("resize", () => engine.resize());
+  </script>
+</body>
+</html>
