@@ -37,7 +37,7 @@
           direction.y = 0; // Keep hotspot upright by ignoring Y component
           direction.normalize();
           
-          // Convert to rotation and apply it (add 90 degrees to make the front face the camera)
+          // Convert to rotation and apply it
           var lookRotation = new THREE.Euler();
           lookRotation.y = Math.atan2(-direction.x, -direction.z);
           
@@ -60,13 +60,16 @@
           var el = this.el;
           el.setAttribute('geometry', {primitive: 'circle', radius: 0.5});
           
-          // Use the original hotspot image
+          // Use the hotspot image
           el.setAttribute('material', {
             color: '#FFFFFF',
             opacity: 0.6,
             transparent: true,
             src: 'images/hotspot.png'
           });
+          
+          // Ensure the element is clickable
+          el.classList.add('clickable');
           
           if (data.label) {
             var textEntity = document.createElement('a-text');
@@ -199,7 +202,7 @@
         }
       });
       
-      // NEW: Info panel component for VR-friendly floating panels
+      // Info panel component for VR-friendly floating panels
       AFRAME.registerComponent('info-panel', {
         schema: {
           title: {type: 'string', default: 'Information'},
@@ -320,7 +323,7 @@
         }
       });
       
-      // NEW: Component to toggle info panel visibility
+      // Component to toggle info panel visibility
       AFRAME.registerComponent('toggle-info-panel', {
         schema: {
           target: {type: 'selector'}
@@ -403,8 +406,7 @@
         <img id="grid" src="images/border.jpg" />
         <img id="sky" src="skies/day.jpg" />
         <img id="ground" src="grounds/grass.jpg" />
-        <!-- Keep using your original hotspot image -->
-        <img id="hotspot" src="images/hotspot.jpg" />
+        <img id="hotspot" src="images/hotspot.png" />
         <a-asset-item id="library" src="models/library.glb"></a-asset-item>
         <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
         <audio id="audio1" src="./audio/music.mp3" preload="auto"></audio>
@@ -416,7 +418,7 @@
         position="18 3 -3"
         rotation="0 0 0"
         radius="2"
-        material="src: images/hotspot.jpg; roughness: 1; side: double;"
+        material="src: https://cdn.glitch.global/e510d374-520a-427d-b633-7cea819cde23/five?v=1744304217293; roughness: 1; side: double;"
         toggle-info-panel="target: #alice-info-panel"
         class="clickable"
         look-at="[camera]">
@@ -428,7 +430,7 @@
         info-panel="
           title: A Headline Goes Here;
           content: A caption goes here. A caption goes here. A caption goes here.;
-          imageUrl: images/2.jpg;
+          imageUrl: https://cdn.glitch.global/e510d374-520a-427d-b633-7cea819cde23/Cubes%20at%20Jab%2C%20Nov%201979.jpeg?v=1744304288155;
           imageCaption: A caption goes here. A caption goes here. A caption goes here. A caption goes here. A caption goes here.;"
         position="0 0 0">
       </a-entity>
