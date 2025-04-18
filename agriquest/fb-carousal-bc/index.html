@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>A-Frame Image Timeline with Z-Axis Transitions & Blink</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+  </head>
+  <body>
+    <a-scene cursor="rayOrigin: mouse">
+      <!-- Camera Rig with Controllers inside -->
+      <a-entity id="cameraRig" movement-controls position="0 0 0">
+        <a-entity camera look-controls wasd-controls position="0 1.6 0">
+          <a-cursor
+            fuse="true"
+            fuse-timeout="500"
+            raycaster="objects: .clickable, .ground"
+          ></a-cursor>
+        </a-entity>
+
+        <a-entity
+          id="right-controller"
+          laser-controls="hand: right"
+          raycaster="objects: .clickable, .ground"
+          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig"
+        ></a-entity>
+
+        <a-entity
+          id="left-controller"
+          laser-controls="hand: left"
+          raycaster="objects: .clickable, .ground"
+          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Assets -->
+      <a-assets>
+        <img id="image1" src="./t1.jpg" />
+        <img id="image2" src="./t1.jpg" />
+        <img id="image3" src="./t1.jpg" />
+        <img id="arrowLeft" src="./left-arrow.png" />
+        <img id="arrowRight" src="./right-arrow.png" />
+        <img id="grid" src="./border.jpg" />
+        <img id="sky" src="./stars.jpg" />
+      </a-assets>
+
+      <!-- Ground Plane -->
+      <a-plane
+        width="100"
+        height="100"
+        rotation="-90 0 0"
+        material="src: #grid; repeat:100 100; transparent: true; opacity: 0.75; alphaTest:0.5"
+        shadow="cast: false; receive: true"
+        class="ground"
+      ></a-plane>
+
+      <!-- Sky -->
+      <a-sky src="#sky"></a-sky>
+
+      <!-- Image Planes -->
+      <a-plane
+        id="image-plane-1"
+        position="0 1.6 -4"
+        width="4"
+        height="2.5"
+        material="src: #image1"
+        visible="true"
+      ></a-plane>
+
+      <a-plane
+        id="image-plane-2"
+        position="0 1.6 -4"
+        width="4"
+        height="2.5"
+        material="src: #image1"
+        visible="false"
+      ></a-plane>
+
+      <!-- Arrows -->
+      <a-image
+        id="right-arrow"
+        src="#arrowRight"
+        position="2 1.6 -3.5"
+        scale="0.5 0.5 0.5"
+        class="clickable"
+      ></a-image>
+
+      <a-image
+        id="left-arrow"
+        src="#arrowLeft"
+        position="-2 1.6 -3.5"
+        scale="0.5 0.5 0.5"
+        class="clickable"
+      ></a-image>
+    </a-scene>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const images = ["#image1", "#image2", "#image3"];
+        let currentIndex = 0;
+        let isAnimating = false;
+
+        const planes = [
+          document.querySelector("#image-plane-1"),
+          document.querySelector("#image-plane-2"),
+        ];
+
+        function animateTransition(direction) {
+          if (isAnimating) return;
+          isAnimating = true;
+
+          const currentPlane = planes[0];
+          const nextPlane = planes[1];
+
+          currentIndex =
+            (currentIndex + direction + images.length) % images.length;
+
+          nextPlane.setAttribute("material", "src", images[currentIndex]);
+          nextPlane.setAttribute("visible", "true");
+
+          if (direction === 1) {
+            nextPlane.setAttribute("position", "0 1.6 0");
+          } else {
+            nextPlane.setAttribute("position", "0 1.6 -10");
+          }
+
+          currentPlane.setAttribute("animation", {
+            property: "position",
+            to: direction === 1 ? "0 1.6 -10" : "0 1.6 0",
+            dur: 1000,
+            easing: "easeInOutQuad",
+          });
+
+          nextPlane.setAttribute("animation", {
+            property: "position",
+            to: "0 1.6 -4",
+            dur: 1000,
+            easing: "easeInOutQuad",
+          });
+
+          setTimeout(() => {
+            currentPlane.setAttribute("visible", "false");
+            currentPlane.removeAttribute("animation");
+            nextPlane.removeAttribute("animation");
+            planes.reverse();
+            isAnimating = false;
+          }, 1000);
+        }
+
+        document.querySelector("#right-arrow").addEventListener("click", () => {
+          if (!isAnimating) animateTransition(1);
+        });
+
+        document.querySelector("#left-arrow").addEventListener("click", () => {
+          if (!isAnimating) animateTransition(-1);
+        });
+      });
+    </script>
+  </body>
+</html>
