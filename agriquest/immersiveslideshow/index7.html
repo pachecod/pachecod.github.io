@@ -16,10 +16,33 @@
     <script>
       // Face-camera component to keep hotspots facing the camera.
       AFRAME.registerComponent('face-camera', {
+        init: function() {
+          // Add a class to make it clickable 
+          this.el.classList.add('clickable');
+        },
         tick: function () {
           var camera = document.querySelector('[camera]');
           if (!camera) return;
-          this.el.object3D.lookAt(camera.object3D.position);
+          
+          // Get the camera and element positions
+          var cameraPosition = new THREE.Vector3();
+          camera.object3D.getWorldPosition(cameraPosition);
+          
+          var elementPosition = new THREE.Vector3();
+          this.el.object3D.getWorldPosition(elementPosition);
+          
+          // Calculate direction toward the camera in the XZ plane (ignore Y)
+          var direction = new THREE.Vector3();
+          direction.subVectors(cameraPosition, elementPosition);
+          direction.y = 0; // Keep hotspot upright by ignoring Y component
+          direction.normalize();
+          
+          // Convert to rotation and apply it (add 90 degrees to make the front face the camera)
+          var lookRotation = new THREE.Euler();
+          lookRotation.y = Math.atan2(-direction.x, -direction.z);
+          
+          // Apply rotation
+          this.el.object3D.rotation.set(0, lookRotation.y, 0);
         }
       });
       
@@ -36,12 +59,15 @@
           var data = this.data;
           var el = this.el;
           el.setAttribute('geometry', {primitive: 'circle', radius: 0.5});
+          
+          // Use the original hotspot image
           el.setAttribute('material', {
             color: '#FFFFFF',
             opacity: 0.6,
             transparent: true,
             src: 'images/hotspot.png'
           });
+          
           if (data.label) {
             var textEntity = document.createElement('a-text');
             textEntity.setAttribute('value', data.label);
@@ -377,6 +403,7 @@
         <img id="grid" src="images/border.jpg" />
         <img id="sky" src="skies/day.jpg" />
         <img id="ground" src="grounds/grass.jpg" />
+        <!-- Keep using your original hotspot image -->
         <img id="hotspot" src="images/hotspot.png" />
         <a-asset-item id="library" src="models/library.glb"></a-asset-item>
         <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
@@ -431,33 +458,33 @@
       <!-- Audio and Hotspots -->
       <a-entity id="spots" hotspots>
         <a-entity id="group-point1" visible="true">
-          <a-entity face-camera class="clickable"
+          <a-entity face-camera
                     spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
                     position="-11 1.5 2">
           </a-entity>
         </a-entity>
         <a-entity id="group-point2" visible="false">
-          <a-entity face-camera class="clickable"
+          <a-entity face-camera
                     spot="linkto:#point1;spotgroup:group-point1;label:Point 1;audio:#audio1;"
                     position="10 1.5 -8">
           </a-entity>
-          <a-entity face-camera class="clickable"
+          <a-entity face-camera
                     spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
                     position="0 1.5 10">
           </a-entity>
         </a-entity>
         <a-entity id="group-point3" visible="false">
-          <a-entity face-camera class="clickable"
+          <a-entity face-camera
                     spot="linkto:#point2;spotgroup:group-point2;label:Point 2;audio:#audio1"
                     position="10 1.5 3">
           </a-entity>
-          <a-entity face-camera class="clickable"
+          <a-entity face-camera
                     spot="linkto:#point4;spotgroup:group-point4;label:Point 4;audio:#audio1"
                     position="-10 1.5 -3">
           </a-entity>
         </a-entity>
         <a-entity id="group-point4" visible="false">
-          <a-entity face-camera class="clickable"
+          <a-entity face-camera
                     spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
                     position="0 1.5 -10">
           </a-entity>
