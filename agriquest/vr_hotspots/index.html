@@ -7,6 +7,12 @@
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
     <script src="script.js"></script>
+    <style>
+      a-text {
+        font-family: Arial;
+        font-weight: bold;
+      }
+    </style>
   </head>
 
   <body>
@@ -31,6 +37,11 @@
         <img id="hotspot" src="./images/up-arrow.png" />
         <!-- Audio file -->
         <audio id="audio1" src="./audio/music.mp3"></audio>
+        <!-- Close icon -->
+        <img id="close" src="./images/close.png" />
+
+        <img id="play" src="./images/play.png" />
+        <img id="pause" src="./images/pause.png" />
       </a-assets>
 
       <a-entity id="spots" hotspots>
@@ -39,9 +50,17 @@
           <a-image
             face-camera
             class="clickable"
-            spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
+            spot="linkto:#point2;
+                 spotgroup:group-point2;
+                 label:Conference Room;
+                 audio:#audio1;
+                 popup:Welcome to the Conference Room! This space features...;
+                 popupWidth:4.5;
+                 popupHeight:2;
+                 popupColor:#F0F0F0"
             position="-11 0 2"
-          ></a-image>
+          >
+          </a-image>
         </a-entity>
         <!-- Group for point2 -->
         <a-entity id="group-point2" visible="false">

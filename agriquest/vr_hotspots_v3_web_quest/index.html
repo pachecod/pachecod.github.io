@@ -53,12 +53,14 @@
       <!-- Hotspot groups -->
       <a-entity id="spots">
         <!-- Group 1: Front of Newhouse 3 → courtyard -->
+        
         <a-entity id="group-point1" visible="true">
+
           <a-image
             class="clickable"
             src="#hotspot"
             position="0 1.6 -2"
-            scale="0.3 0.3 0.3"
+            scale="0.6 0.6 0.6"
             spot="linkto:#point2;
                   spotgroup:#group-point2;
                   audio:#audio1;
@@ -66,47 +68,49 @@
                   popupColor:#F0F0F0"
           >
             <!-- Controls for this hotspot -->
-            <a-entity position="0 -0.8 0">
+            <a-entity position="0 -1 0">
               <!-- Play/Pause buttons -->
               <a-image
                 class="clickable"
                 src="#play"
-                position="-0.2 0 0"
-                width="0.3"
-                height="0.3"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
                 play-audio="panorama:group-point1"
               ></a-image>
               <a-image
                 class="clickable"
                 src="#pause"
-                position="0.2 0 0"
-                width="0.3"
-                height="0.3"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
                 pause-audio="panorama:group-point1"
               ></a-image>
               
               <!-- Read Description button -->
-              <a-entity position="0 -0.4 0">
+              <!-- Moved this wrapper down to avoid overlap -->
+              <a-entity position="0 -0.6 0">
                 <a-plane
                   color="#0088FF"
-                  width="0.9"
-                  height="0.2"
+                  width="1.5"
+                  height="0.5"
                   opacity="0.8"
                   class="clickable"
                   show-description="panorama:group-point1;
                                   text:You are standing in front of Newhouse 3, completed in 2007, with the First Amendment emblazoned on its glass facade."
                 ></a-plane>
                 <a-text
-                  value="Read Description"
+                  value="Caption"
                   align="center"
                   color="white"
-                  width="2"
-                  position="0 0 0.5"
+                  width="4"
+                  position="0 0.35 0.7"
                 ></a-text>
               </a-entity>
             </a-entity>
           </a-image>
         </a-entity>
+        
 
         <!-- Group 2: Courtyard → inside Newhouse 1 -->
         <a-entity id="group-point2" visible="false">
