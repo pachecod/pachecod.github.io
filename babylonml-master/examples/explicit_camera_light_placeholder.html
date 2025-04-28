@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML Example: Explicit Camera & Light Placeholder</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            height: 100%;
+            width: 100%;
+        }
+        bml-scene {
+            width: 100vw; /* Viewport width */
+            height: 100vh; /* Viewport height */
+            display: block; /* Ensure it behaves like a block element */
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+    <!-- Import the bundled BabylonML library -->
+    <!-- Adjust the path based on your build output location -->
+    <script src="https://tinyurl.com/babylonml"></script>
+</head>
+<body>
+    <!--
+        This scene demonstrates:
+        1. Defining an explicit camera: The <bml-entity camera="..."> below creates an ArcRotateCamera.
+           This PREVENTS the default FreeCamera from being created.
+        2. Using a placeholder light attribute: The <bml-entity light="..."> below PREVENTS the
+           default HemisphericLight from being created. However, since there is no 'light'
+           component implemented yet, this attribute currently DOES NOT create a PointLight.
+           The scene will appear dark unless a light is added via JavaScript.
+    -->
+    <bml-scene>
+        <!-- Explicit ArcRotateCamera Definition -->
+        <bml-entity
+            id="myCamera"
+            camera="type: arcRotate; alpha: -1.57; beta: 1.4; radius: 8; target: 0 1 0; attachControl: true">
+            <!-- No geometry or material needed for a camera entity -->
+        </bml-entity>
+
+        <!-- Placeholder for a light source -->
+        <!-- IMPORTANT: This disables the default light, but doesn't create a PointLight yet! -->
+        <bml-entity
+            id="myLightSource"
+            light="type: point; intensity: 0.8; position: 0 5 0">
+            <!-- This entity currently does nothing visually -->
+        </bml-entity>
+
+        <!-- A simple box entity -->
+        <bml-entity
+            geometry="type: box; size: 1"
+            material="color: #FF6347" <!-- Tomato color -->
+            position="0 1 0">
+        </bml-entity>
+
+        <!-- A ground plane -->
+        <bml-entity
+            geometry="type: ground; width: 10; height: 10"
+            material="color: #B0C4DE"> <!-- LightSteelBlue color -->
+        </bml-entity>
+    </bml-scene>
+
+    <script>
+        // Optional: Add a light programmatically since the component doesn't exist yet
+        document.querySelector('bml-scene').addEventListener('bml-scene-ready', (event) => {
+            const babylonScene = event.detail.scene;
+            // Uncomment the lines below to add a light via JavaScript
+            // console.log("Adding programmatic light...");
+            // const pointLight = new BABYLON.PointLight("programmaticLight", new BABYLON.Vector3(0, 5, 0), babylonScene);
+            // pointLight.intensity = 0.8;
+            // console.log("Programmatic light added.");
+        });
+    </script>
+</body>
+</html>

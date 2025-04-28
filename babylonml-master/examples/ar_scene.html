@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BabylonML - AR Example</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            height: 100%;
+            width: 100%;
+        }
+
+        bml-scene {
+            width: 100vw; /* Viewport width */
+            height: 100vh; /* Viewport height */
+            display: block; /* Ensure it behaves like a block element */
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <!-- Import the bundled BabylonML library -->
+    <script src="../dist/babylonml.js"></script>
+</head>
+<body>
+    <!-- Enable AR mode using the xr attribute -->
+    <!-- Note: AR requires compatible device/browser and often HTTPS -->
+    <bml-scene xr="ar">
+
+        <!-- No explicit camera needed for basic AR, WebXR helper manages it -->
+        <!-- No explicit light needed for basic AR, WebXR helper often adds estimation -->
+
+        <!-- Add a simple box placed slightly in front -->
+        <bml-entity geometry="type: box; size: 0.2"
+                      position="0 0 0.5" <!-- Adjust position based on AR reference space -->
+                      material="color: mediumseagreen"></bml-entity>
+
+        <!-- Add a sphere slightly to the side -->
+        <bml-entity geometry="type: sphere; diameter: 0.15"
+                      position="-0.3 0 0.4"
+                      material="color: gold"></bml-entity>
+
+        <!-- AR scenes often don't have a ground plane, as the real world provides the ground -->
+
+    </bml-scene>
+
+    <script>
+        // Optional: Listen for scene ready event
+        const sceneEl = document.querySelector('bml-scene');
+        sceneEl.addEventListener('bml-scene-ready', (event) => {
+            console.log('AR Scene is ready!', event.detail);
+            // You might want to interact with AR features like hit-testing here
+            // if the WebXR helper exposes them or if you add specific AR components later.
+        });
+    </script>
+</body>
+</html>

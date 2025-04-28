@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="BabylonML Contributors">
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Rotation - BabylonML Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">BabylonML Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../getting-started/" class="nav-link">Getting Started</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Core Concepts</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../concepts/scene/" class="dropdown-item">Scene (`<bml-scene>`)</a>
+</li>
+                                    
+<li>
+    <a href="../../concepts/entity/" class="dropdown-item">Entity (`<bml-entity>`)</a>
+</li>
+                                    
+<li>
+    <a href="../../concepts/components/" class="dropdown-item">Components</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Components Reference</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../position/" class="dropdown-item">Position</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Rotation</a>
+</li>
+                                    
+<li>
+    <a href="../scale/" class="dropdown-item">Scale</a>
+</li>
+                                    
+<li>
+    <a href="../geometry/" class="dropdown-item">Geometry</a>
+</li>
+                                    
+<li>
+    <a href="../material/" class="dropdown-item">Material</a>
+</li>
+                                    
+<li>
+    <a href="../camera/" class="dropdown-item">Camera</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../examples/" class="nav-link">Live Examples</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../position/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../scale/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#component-reference-rotation" class="nav-link">Component Reference: rotation</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#attribute-syntax" class="nav-link">Attribute Syntax</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#properties" class="nav-link">Properties</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#underlying-babylonjs-property" class="nav-link">Underlying Babylon.js Property</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#example" class="nav-link">Example</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#notes" class="nav-link">Notes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="component-reference-rotation">Component Reference: <code>rotation</code></h1>
+<p>The <code>rotation</code> component controls the orientation of an entity in 3D space using Euler angles (degrees).</p>
+<h2 id="attribute-syntax">Attribute Syntax</h2>
+<p>The <code>rotation</code> attribute accepts a string representing Euler angles (in degrees). It can be specified in two ways:</p>
+<ol>
+<li><strong>Component/Map String:</strong> Using <code>x:</code>, <code>y:</code>, <code>z:</code> keys.
+    <code>html
+    &lt;bml-entity rotation="x: 0; y: 45; z: 15"&gt;&lt;/bml-entity&gt;</code></li>
+<li><strong>Direct Vector String:</strong> A space-separated string of three numbers (X Y Z degrees).
+    <code>html
+    &lt;bml-entity rotation="0 45 15"&gt;&lt;/bml-entity&gt;</code></li>
+</ol>
+<p>If any coordinate is omitted in the map string, it defaults to <code>0</code>. If the attribute is present but empty (<code>rotation=""</code>), it defaults to <code>0 0 0</code>.</p>
+<h2 id="properties">Properties</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">number</td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Rotation around the X-axis (pitch), degrees.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">number</td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Rotation around the Y-axis (yaw), degrees.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;">number</td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Rotation around the Z-axis (roll), degrees.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="underlying-babylonjs-property">Underlying Babylon.js Property</h2>
+<p>This component modifies the <code>rotation</code> property (a <code>Vector3</code>) of the entity's underlying Babylon.js <code>TransformNode</code> (or <code>Mesh</code>). <strong>Important:</strong> Babylon.js internally uses radians for rotation, but the <code>rotation</code> component schema handles the conversion from the degrees you provide in the HTML attribute to radians.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-html">&lt;bml-scene&gt;
+  &lt;!-- Rotate a box 45 degrees around the Y axis --&gt;
+  &lt;bml-entity
+    geometry=&quot;type: box&quot;
+    position=&quot;0 1 -5&quot;
+    rotation=&quot;0 45 0&quot;
+    material=&quot;type: standard; diffuseColor: purple&quot;&gt;
+  &lt;/bml-entity&gt;
+
+  &lt;!-- Rotate a cylinder using map syntax --&gt;
+  &lt;bml-entity
+    geometry=&quot;type: cylinder&quot;
+    position=&quot;-2 1 -5&quot;
+    rotation=&quot;x: 90; y: 0; z: 0&quot; &lt;!-- Lay the cylinder on its side --&gt;
+    material=&quot;type: standard; diffuseColor: grey&quot;&gt;
+  &lt;/bml-entity&gt;
+&lt;/bml-scene&gt;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Rotations are applied in a specific order (typically Y, then X, then Z in Babylon.js default Euler order).</li>
+<li>The rotation is relative to the entity's parent's orientation.</li>
+<li>Changing the <code>rotation</code> attribute dynamically via JavaScript (<code>element.setAttribute('rotation', '...')</code>) will update the entity's orientation in the scene.</li>
+<li>For complex rotations or avoiding gimbal lock issues, Babylon.js also supports Quaternions (<code>rotationQuaternion</code>), but this component currently focuses on the more intuitive Euler angles.</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

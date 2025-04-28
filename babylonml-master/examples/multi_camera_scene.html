@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML Example: Multiple Cameras</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            height: 100%;
+            width: 100%;
+        }
+        bml-scene {
+            width: 100vw; /* Viewport width */
+            height: 100vh; /* Viewport height */
+            display: block; /* Ensure it behaves like a block element */
+        }
+        canvas {
+            display: block;
+        }
+        /* Style for the button */
+        #switchCameraButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10; /* Ensure it's above the canvas */
+        }
+    </style>
+    <!-- Import the bundled BabylonML library -->
+    <!-- Adjust the path based on your build output location -->
+    <script src="https://tinyurl.com/babylonml"></script>
+</head>
+<body>
+    <!-- Button to switch cameras -->
+    <button id="switchCameraButton">Switch to Camera 2</button>
+
+    <!--
+        This scene demonstrates defining multiple cameras.
+        - The first camera entity encountered ("camera1", ArcRotate) will become the active camera by default.
+        - The second camera ("camera2", Universal) will be created but inactive initially.
+        - Click the button in the top-left corner to switch between them.
+        - Since at least one camera is defined, the default FreeCamera is NOT created.
+        - Since no light attribute is defined, the default HemisphericLight IS created.
+    -->
+    <bml-scene>
+        <!-- First Camera (ArcRotate, active initially) -->
+        <bml-entity
+            id="camera1"
+            camera="type: arcRotate; alpha: -1.57; beta: 1.4; radius: 8; target: 0 1 0; attachControl: true">
+            <!-- attachControl: true -->
+        </bml-entity>
+
+        <!-- Second Camera (Universal, inactive initially) -->
+        <bml-entity
+            id="camera2"
+            camera="type: universal; position: 5 2 5; target: 0 1 0; attachControl: false">
+            <!-- attachControl: false -->
+        </bml-entity>
+
+        <!-- A simple box entity -->
+        <bml-entity
+            geometry="type: box; size: 1"
+            material="color: #6A5ACD" <!-- SlateBlue color -->
+            position="0 1 0">
+        </bml-entity>
+
+        <!-- A ground plane -->
+        <bml-entity
+            geometry="type: ground; width: 10; height: 10"
+            material="color: #98FB98"> <!-- PaleGreen color -->
+        </bml-entity>
+    </bml-scene>
+
+    <script>
+        const sceneEl = document.querySelector('bml-scene');
+        const switchButton = document.getElementById('switchCameraButton');
+
+        let babylonScene = null;
+        let canvas = null;
+        let cam1 = null; // ArcRotate
+        let cam2 = null; // Universal
+        let cam1Attach = true; // Default based on attribute
+        let cam2Attach = false; // Default based on attribute
+
+        // Function to set up cameras and button once scene is ready
+        function setupCameraSwitcher() {
+            console.log("DEBUG: setupCameraSwitcher called.");
+            if (!sceneEl.isReady || !babylonScene) {
+                 console.log("DEBUG: Scene not ready yet in setupCameraSwitcher.");
+                 return; // Should not happen if called correctly, but good check
+            }
+            canvas = sceneEl.babylonCanvas; // Get canvas reference from scene element
+
+            // Add a small delay to ensure camera components have initialized AFTER scene is ready
+             setTimeout(() => {
+                console.log("DEBUG: setTimeout callback running..."); // <-- Log timeout callback
+                console.log("DEBUG: Available cameras:", babylonScene.cameras.map(c => c.name)); // <-- Log available camera names
+
+                 // Get camera instances using their auto-generated names (check inspector if needed)
+                 cam1 = babylonScene.getCameraByName('camera1_arcRotateCamera');
+                 cam2 = babylonScene.getCameraByName('camera2_universalCamera');
+
+                 // Get camera entities to check original attachControl attribute
+                 const camEntity1 = document.getElementById('camera1');
+                 const camEntity2 = document.getElementById('camera2');
+
+                 // Store original attachControl settings (simple check)
+                 cam1Attach = (camEntity1?.getAttribute('camera') || '').includes('attachControl: true');
+                 cam2Attach = (camEntity2?.getAttribute('camera') || '').includes('attachControl: true'); // Note: cam2 is false in HTML
+
+                 if (cam1 && cam2) {
+                     console.log("DEBUG: Cameras found by name:", cam1.name, cam2.name); // <-- Log success
+                     console.log("Initial active camera:", babylonScene.activeCamera.name);
+                     console.log("Camera 1 attachControl setting:", cam1Attach);
+                     console.log("Camera 2 attachControl setting:", cam2Attach);
+                     switchButton.disabled = false; // Enable the button
+                     // Set initial button text based on which camera is NOT active
+                     switchButton.textContent = (babylonScene.activeCamera === cam1) ? "Switch to Camera 2 (Universal)" : "Switch to Camera 1 (ArcRotate)";
+                 } else {
+                     console.error("DEBUG: Could not find one or both cameras by name after delay. Check IDs and camera types in HTML and Inspector."); // <-- Log failure
+                     switchButton.textContent = "Error finding cameras";
+                     switchButton.disabled = true;
+                 }
+             }, 100); // 100ms delay - adjust if needed
+        }
+
+        // Check if the scene is already ready when the script runs
+        if (sceneEl && sceneEl.isReady) {
+            console.log("DEBUG: Scene was already ready. Running setup directly.");
+            babylonScene = sceneEl.babylonScene; // Get scene reference directly
+            setupCameraSwitcher();
+        } else if (sceneEl) {
+            console.log("DEBUG: Scene not ready yet. Adding event listener.");
+            sceneEl.addEventListener('bml-scene-ready', (event) => {
+                 console.log("DEBUG: bml-scene-ready event fired!"); // <-- Log event firing
+                 babylonScene = event.detail.scene;
+                 setupCameraSwitcher();
+            });
+        } else {
+            console.error("DEBUG: Could not find bml-scene element!");
+            switchButton.textContent = "Scene Error";
+            switchButton.disabled = true;
+        }
+
+        switchButton.addEventListener('click', () => {
+            if (!babylonScene || !cam1 || !cam2 || !canvas) {
+                console.error("Scene or cameras not ready for switching.");
+                return;
+            }
+
+            const currentCam = babylonScene.activeCamera;
+            const targetCam = (currentCam === cam1) ? cam2 : cam1;
+            const targetAttach = (targetCam === cam1) ? cam1Attach : cam2Attach;
+
+            console.log(`Switching from ${currentCam.name} to ${targetCam.name}`);
+
+            // Detach controls from the current camera *if* it has the method
+            if (currentCam && typeof currentCam.detachControl === 'function') {
+                console.log(`Detaching controls from ${currentCam.name}`);
+                currentCam.detachControl(canvas);
+            }
+
+            // Set the new active camera
+            babylonScene.activeCamera = targetCam;
+
+            // Attach controls to the new camera *if* it has the method
+            if (targetCam && typeof targetCam.attachControl === 'function') {
+                console.log(`Attaching controls to ${targetCam.name}`);
+                targetCam.attachControl(canvas, true); // Always attach to the new active camera
+            } else {
+                 console.log(`Controls not attached to ${targetCam.name} (method missing)`);
+            }
+
+            // Update button text
+            switchButton.textContent = (targetCam === cam1) ? "Switch to Camera 2 (Universal)" : "Switch to Camera 1 (ArcRotate)";
+        });
+
+        // Disable button initially until cameras are confirmed
+        switchButton.disabled = true;
+
+    </script>
+</body>
+</html>

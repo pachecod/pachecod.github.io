@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML - Video Dome Example</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        bml-scene { width: 100%; height: 100%; display: block; }
+    </style>
+
+    <!-- Load BabylonML library (adjust path as needed) -->
+    <script src="https://tinyurl.com/babylonml"></script> </head>
+<body>
+    <bml-scene>
+        <!-- Camera -->
+        <bml-entity camera="type: arcRotate; target: 0 0 0; alpha: 1.57; beta: 1.57; radius: 0.1"></bml-entity>
+
+        <!-- Video Dome -->
+        <!-- Using a publicly available 360 video -->
+        <!-- Note: Autoplay might be blocked by browser policy if not muted or interacted with -->
+        <bml-entity
+            id="video-dome-entity"
+            geometry="type: videodome; src: https://codetricity.github.io/flutter_video_display/ageda.MP4; size: 1000; autoPlay: true; loop: true; muted: true; clickToPlay: true">
+            <!-- clickToPlay: true allows user interaction to start/pause -->
+        </bml-entity>
+
+        <!-- Optional: Add a small object inside the dome -->
+        <bml-entity geometry="type: sphere; diameter: 0.5" position="0 0 0" material="color: blue"></bml-entity>
+
+    </bml-scene>
+
+    <script>
+        const sceneEl = document.querySelector('bml-scene');
+        let babylonScene = null;
+        let canvas = null;
+        let camera = null;
+        // We only need the VideoDome instance, not necessarily its mesh for fovMultiplier
+        let videoDomeInstance = null;
+
+        // Function to initialize the custom zoom logic
+        function initializeVideoDomeZoom() {
+            console.log("DEBUG: initializeVideoDomeZoom called.");
+            if (!sceneEl.isReady || !babylonScene) {
+                console.log("DEBUG: Scene not ready yet in initializeVideoDomeZoom.");
+                return;
+            }
+            canvas = sceneEl.babylonCanvas;
+            camera = babylonScene.activeCamera; // Get active camera
+            const videoDomeEntity = document.getElementById('video-dome-entity');
+
+            if (!videoDomeEntity) {
+                console.error("DEBUG: Could not find video dome entity element by ID 'video-dome-entity'.");
+                return;
+            }
+                // --- Custom Zoom Logic Variables ---
+            var zoomLevel = 1;
+            // Function to set up the zoom logic *after* the VideoDome instance is confirmed
+            const setupZoomLogic = (domeInstance) => {
+                console.log("DEBUG: setupZoomLogic called with dome instance:", domeInstance);
+                if (!camera || !canvas || !domeInstance) {
+                    console.error(`DEBUG: Cannot setup zoom logic. Missing camera, canvas, or domeInstance.`);
+                    return;
+                }
+
+                // --- Detach Camera Controls ---
+                if (camera.inputs && camera.inputs.attached.mousewheel) {
+                    console.log("DEBUG: Detaching default mousewheel control.");
+                    camera.inputs.attached.mousewheel.detachControl(canvas);
+                } else {
+                    console.warn("Could not detach mousewheel control.");
+                }
+
+                // --- Register Render Loop Logic ---
+                // This function will run every frame AFTER setupZoomLogic is called
+                babylonScene.registerAfterRender(function() {
+                    // Ensure domeInstance is still valid and has the property
+                    if (!domeInstance || domeInstance.fovMultiplier === undefined) {
+                        // It might take a frame or two for fovMultiplier to be ready after instance creation
+                        // console.warn("Waiting for domeInstance or fovMultiplier...");
+                        return;
+                    }
+                    domeInstance.fovMultiplier = zoomLevel;
+                    domeInstance.material.alpha = 1 - (zoomLevel - 1) * 0.9; // Adjust alpha based on zoom level
+                    
+                });
+
+                // --- Register Pointer Observable Logic ---
+                // This function will run on mouse wheel events AFTER setupZoomLogic is called
+                babylonScene.onPointerObservable.add(function(e) {
+                    if (!domeInstance) { return; } // Ensure instance exists
+
+                    const wheelDelta = e.event.wheelDelta || -e.event.deltaY;
+                    if (wheelDelta === 0) return;
+
+                    zoomLevel += wheelDelta * -0.0005;
+                    if (zoomLevel < 0.1) { zoomLevel = 0.1; }
+                    if (zoomLevel > 2) { zoomLevel = 2; }
+                }, 8);
+
+                console.log("Custom video dome zoom script event listeners registered successfully.");
+            }; // End of setupZoomLogic function
+
+            // --- Wait for Geometry Readiness ---
+            // Check if the geometry object is already available when initializeVideoDomeZoom runs
+            if (videoDomeEntity.BabylonGeometryObject) {
+                console.log("DEBUG: Video dome geometry object was already available.");
+                // Assign the instance and call setup immediately
+                videoDomeInstance = videoDomeEntity.BabylonGeometryObject;
+                setupZoomLogic(videoDomeInstance);
+            } else {
+                // If not ready, wait for the component to dispatch the event
+                console.log("DEBUG: Waiting for 'bml-geometry-ready' event on video dome entity...");
+                videoDomeEntity.addEventListener('bml-geometry-ready', (event) => {
+                    console.log("DEBUG: 'bml-geometry-ready' event received for video dome.");
+                    // Assign the instance from the event and call setup
+                    videoDomeInstance = event.detail.geometryObject;
+                    setupZoomLogic(videoDomeInstance);
+                }, { once: true }); // Listen only once
+            }
+        } // End of initializeVideoDomeZoom function
+
+         // Check if the scene is already ready when the script runs
+        if (sceneEl && sceneEl.isReady) {
+            console.log("DEBUG: Scene was already ready. Running setup directly.");
+            babylonScene = sceneEl.babylonScene; // Get scene reference directly
+            initializeVideoDomeZoom();
+        } else if (sceneEl) {
+            console.log("DEBUG: Scene not ready yet. Adding event listener for bml-scene-ready.");
+            sceneEl.addEventListener('bml-scene-ready', (event) => {
+                 console.log("DEBUG: bml-scene-ready event fired!");
+                 babylonScene = event.detail.scene; // Get scene from event detail
+                 initializeVideoDomeZoom();
+            });
+        } else {
+            console.error("DEBUG: Could not find bml-scene element!");
+        }
+    </script>
+</body>
+</html>

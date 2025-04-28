@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="BabylonML Contributors">
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Components - BabylonML Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">BabylonML Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../getting-started/" class="nav-link">Getting Started</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Core Concepts</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../scene/" class="dropdown-item">Scene (`<bml-scene>`)</a>
+</li>
+                                    
+<li>
+    <a href="../entity/" class="dropdown-item">Entity (`<bml-entity>`)</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Components</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Components Reference</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../components/position/" class="dropdown-item">Position</a>
+</li>
+                                    
+<li>
+    <a href="../../components/rotation/" class="dropdown-item">Rotation</a>
+</li>
+                                    
+<li>
+    <a href="../../components/scale/" class="dropdown-item">Scale</a>
+</li>
+                                    
+<li>
+    <a href="../../components/geometry/" class="dropdown-item">Geometry</a>
+</li>
+                                    
+<li>
+    <a href="../../components/material/" class="dropdown-item">Material</a>
+</li>
+                                    
+<li>
+    <a href="../../components/camera/" class="dropdown-item">Camera</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../examples/" class="nav-link">Live Examples</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../entity/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../components/position/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#core-concepts-components" class="nav-link">Core Concepts: Components</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#purpose" class="nav-link">Purpose</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#defining-components" class="nav-link">Defining Components</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#component-schema-and-parsing" class="nav-link">Component Schema and Parsing</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#component-lifecycle-methods" class="nav-link">Component Lifecycle Methods</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#component-manager" class="nav-link">Component Manager</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#example-position-component-simplified" class="nav-link">Example: Position Component (Simplified)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="core-concepts-components">Core Concepts: Components</h1>
+<p>Components are the primary way to attach data and behavior to <code>&lt;bml-entity&gt;</code> elements in BabylonML. They are defined using HTML attributes and manage specific aspects of the entity's corresponding Babylon.js node(s).</p>
+<h2 id="purpose">Purpose</h2>
+<ul>
+<li><strong>Encapsulation:</strong> Each component focuses on a single aspect (e.g., position, geometry, material, light, custom behavior).</li>
+<li><strong>Reusability:</strong> Components can be applied to any entity.</li>
+<li><strong>Declarative Approach:</strong> Define an entity's properties directly in HTML using component attributes.</li>
+<li><strong>Extensibility:</strong> You can register custom components to add new functionality.</li>
+</ul>
+<h2 id="defining-components">Defining Components</h2>
+<p>Components are attached to <code>&lt;bml-entity&gt;</code> elements via attributes. The name of the attribute corresponds to the registered component name.</p>
+<pre><code class="language-html">&lt;bml-entity
+  position=&quot;x: 0; y: 1; z: -5&quot;  &lt;!-- Position component --&gt;
+  geometry=&quot;type: box; size: 2&quot; &lt;!-- Geometry component --&gt;
+  material=&quot;type: standard; diffuseColor: yellow&quot; &lt;!-- Material component --&gt;
+&gt;
+&lt;/bml-entity&gt;
+</code></pre>
+<h2 id="component-schema-and-parsing">Component Schema and Parsing</h2>
+<ul>
+<li><strong>Schema:</strong> Each component defines a <code>schema</code> that specifies the expected data structure and default values for its properties. This helps with parsing and validation. BabylonML currently supports simple types (<code>string</code>, <code>number</code>, <code>boolean</code>) and a <code>map</code> type for key-value string parsing (like <code>position</code> or <code>geometry</code>).</li>
+<li><strong>Parsing:</strong> The framework uses parsers (like <code>parseVector3</code>, <code>parseColor3</code>, <code>parseObjectString</code> found in <code>src/core/parsers.js</code>) to convert the attribute string value into a JavaScript object or value based on the component's schema.</li>
+<li><strong>Data Object:</strong> The parsed attribute value is passed as the <code>data</code> object to the component's lifecycle methods (<code>init</code>, <code>update</code>, <code>remove</code>).</li>
+</ul>
+<h2 id="component-lifecycle-methods">Component Lifecycle Methods</h2>
+<p>When a component is registered, it provides an object containing lifecycle methods:</p>
+<ul>
+<li><strong><code>schema</code> (Required):</strong> Defines the expected data structure and defaults.
+    <code>javascript
+    schema: {
+        type: 'map', // or 'string', 'number', 'vec3', etc.
+        default: { x: 0, y: 0, z: 0 } // Default value if attribute is empty or missing properties
+    }</code></li>
+<li><strong><code>init(data)</code> (Optional):</strong> Called <em>once</em> when the component is first attached to the entity and the entity is connected to the DOM. Use this for one-time setup related to the component. <code>data</code> contains the initial parsed attribute value.</li>
+<li><strong><code>update(data, oldData)</code> (Optional):</strong> Called initially after <code>init</code> and subsequently whenever the component's corresponding attribute value changes on the HTML element. <code>data</code> is the new parsed value, <code>oldData</code> is the previous value. Use this to apply changes to the Babylon.js scene based on the new data.</li>
+<li><strong><code>remove(data)</code> (Optional):</strong> Called when the component is detached from the entity (e.g., the attribute is removed) or when the entity itself is removed from the DOM. Use this for cleanup, like disposing of Babylon.js objects created by the component. <code>data</code> contains the last known parsed value.</li>
+</ul>
+<p><strong><code>this</code> Context:</strong> Inside these lifecycle methods, <code>this</code> refers to the <code>&lt;bml-entity&gt;</code> HTML element instance the component is attached to. This allows access to <code>this.babylonNode</code> (the entity's TransformNode/Mesh) and <code>this.sceneElement</code> (the parent <code>&lt;bml-scene&gt;</code>).</p>
+<h2 id="component-manager">Component Manager</h2>
+<p>The <code>ComponentManager</code> (in <code>src/core/ComponentManager.js</code>) is a central registry and handler for components:</p>
+<ul>
+<li><strong>Registration:</strong> <code>ComponentManager.registerComponent(name, definition)</code> is used to register a new component type.</li>
+<li><strong>Lifecycle Invocation:</strong> It hooks into the entity's lifecycle (<code>connectedCallback</code>, <code>attributeChangedCallback</code>, <code>disconnectedCallback</code>) to call the appropriate <code>init</code>, <code>update</code>, or <code>remove</code> methods on the relevant components.</li>
+<li><strong>Attribute Observation:</strong> It provides the list of all registered component attribute names to <code>BmlEntity.observedAttributes</code> so the browser knows which attribute changes to monitor.</li>
+<li><strong>Parsing:</strong> It uses the component's schema and the core parsers to handle attribute string conversion.</li>
+</ul>
+<h2 id="example-position-component-simplified">Example: Position Component (Simplified)</h2>
+<pre><code class="language-javascript">// Simplified structure - see src/components/position.js for full example
+ComponentManager.registerComponent('position', {
+  schema: { type: 'vec3', default: { x: 0, y: 0, z: 0 } }, // Expects parseVector3
+
+  update(data) {
+    // 'this' is the &lt;bml-entity&gt; element
+    if (this.babylonNode) {
+      this.babylonNode.position.set(data.x, data.y, data.z);
+    }
+  }
+  // No init or remove needed for simple position updates
+});
+</code></pre>
+<p>This component system provides a structured way to extend BabylonML's capabilities declaratively through HTML attributes.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

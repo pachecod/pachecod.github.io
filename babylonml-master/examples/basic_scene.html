@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>BabylonML - Local Test</title>
+  <style>
+    /* Basic styling to make the scene visible */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Prevent scrollbars */
+      height: 100%;
+      width: 100%;
+    }
+    bml-scene {
+      width: 100vw; /* Viewport width */
+      height: 100vh; /* Viewport height */
+      display: block; /* Make it a block element */
+    }
+    canvas {
+      display: block; /* Prevent potential small gap below canvas */
+    }
+  </style>
+  <!--
+    Load the FRAMEWORK SCRIPT.
+    IMPORTANT: We point to the *unminified* development build
+    ('../dist/babylonml.js') for easier debugging locally.
+    The path '../dist/' means "go up one level from 'examples/'
+    and then into the 'dist/' folder".
+  -->
+  <script src="https://tinyurl.com/babylonml"></script>
+</head>
+<body>
+  <!-- The root element for the Babylon.js experience -->
+  <bml-scene>
+    <!--
+        This scene relies on the default camera and light.
+        - No <bml-entity camera="..."> is defined, so a default FreeCamera is created.
+        - No <bml-entity light="..."> is defined, so a default HemisphericLight is created.
+        You can navigate using mouse/touch controls provided by the default FreeCamera.
+    -->
+        <bml-entity
+            id="my-box"
+            geometry="type: box; size: 1"
+            material="color: #4682B4"
+            position="0 0.5 0"
+            rotation="0 45 0">
+        </bml-entity>
+
+        <!-- A ground plane -->
+        <bml-entity
+            geometry="type: ground; width: 10; height: 10"
+            material="color: #8FBC8F">
+            <!-- Position defaults to 0 0 0 -->
+        </bml-entity>
+  </bml-scene>
+
+  <script>
+    // Optional: You can add JavaScript here to interact with the scene
+    // after it's potentially ready.
+    const sceneEl = document.querySelector('bml-scene');
+
+       // Check if the scene is already ready when the script runs
+        if (sceneEl && sceneEl.isReady) {
+            console.log("DEBUG: Scene was already ready. Running setup directly.");
+            babylonScene = sceneEl.babylonScene; // Get scene reference directly
+            console.log("DEBUG: babylonScene reference obtained. ", babylonScene);
+
+            // lets change the color of the box to blue
+            const box = document.getElementById('my-box');
+            if (box) {
+                console.log('Attempting to change box color via attribute...');
+                box.setAttribute('material', 'color: #0000FF'); // Change color to blue
+            }
+         
+
+        } else if (sceneEl) {
+            console.log("DEBUG: Scene not ready yet. Adding event listener.");
+            sceneEl.addEventListener('bml-scene-ready', (event) => {
+                 console.log("DEBUG: bml-scene-ready event fired!"); // <-- Log event firing
+                 babylonScene = event.detail.scene;
+                 consoler.log("DEBUG: babylonScene reference obtained. ", babylonScene);
+                   // Example: Simple interaction after a delay
+                setTimeout(() => {
+                    const box = document.getElementById('my-box');
+                    if (box) {
+                        console.log('Attempting to change box color via attribute...');
+                        box.setAttribute('material', 'color: #0000FF'); // Change color to blue
+                    }
+                }, 5000); // After 5 seconds
+            });
+        }
+
+
+
+    // Example: Accessing BML global API (if implemented)
+    if (window.BML) {
+      console.log('BML Global API found:', BML);
+      // Example: How a user might register their own component
+      // BML.registerComponent('my-custom-spin', { ... });
+    }
+
+
+  </script>
+
+</body>
+</html>

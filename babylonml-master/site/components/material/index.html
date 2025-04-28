@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="BabylonML Contributors">
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Material - BabylonML Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">BabylonML Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../getting-started/" class="nav-link">Getting Started</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Core Concepts</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../concepts/scene/" class="dropdown-item">Scene (`<bml-scene>`)</a>
+</li>
+                                    
+<li>
+    <a href="../../concepts/entity/" class="dropdown-item">Entity (`<bml-entity>`)</a>
+</li>
+                                    
+<li>
+    <a href="../../concepts/components/" class="dropdown-item">Components</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Components Reference</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../position/" class="dropdown-item">Position</a>
+</li>
+                                    
+<li>
+    <a href="../rotation/" class="dropdown-item">Rotation</a>
+</li>
+                                    
+<li>
+    <a href="../scale/" class="dropdown-item">Scale</a>
+</li>
+                                    
+<li>
+    <a href="../geometry/" class="dropdown-item">Geometry</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Material</a>
+</li>
+                                    
+<li>
+    <a href="../camera/" class="dropdown-item">Camera</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../../examples/" class="nav-link">Live Examples</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../geometry/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../camera/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#component-reference-material" class="nav-link">Component Reference: material</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#attribute-syntax" class="nav-link">Attribute Syntax</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#common-properties" class="nav-link">Common Properties</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#type-standard-properties" class="nav-link">type: standard Properties</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#underlying-babylonjs-object" class="nav-link">Underlying Babylon.js Object</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#example" class="nav-link">Example</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#notes" class="nav-link">Notes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="component-reference-material">Component Reference: <code>material</code></h1>
+<p>The <code>material</code> component defines the surface appearance of an entity's mesh (created by the <code>geometry</code> component). It primarily uses Babylon.js's <code>StandardMaterial</code>.</p>
+<h2 id="attribute-syntax">Attribute Syntax</h2>
+<p>The <code>material</code> attribute uses the component/map string format. The <code>type</code> property determines the kind of material (currently only <code>standard</code> is fully supported). Other properties control visual aspects like color and texture.</p>
+<pre><code class="language-html">&lt;!-- A simple red material --&gt;
+&lt;bml-entity material=&quot;type: standard; diffuseColor: red&quot;&gt;&lt;/bml-entity&gt;
+
+&lt;!-- A material with diffuse and emissive colors --&gt;
+&lt;bml-entity material=&quot;type: standard; diffuseColor: #00FF00; emissiveColor: #333333&quot;&gt;&lt;/bml-entity&gt;
+
+&lt;!-- A material using a texture (requires texture loading logic) --&gt;
+&lt;!-- &lt;bml-entity material=&quot;type: standard; diffuseTexture: path/to/texture.jpg&quot;&gt;&lt;/bml-entity&gt; --&gt;
+</code></pre>
+<h2 id="common-properties">Common Properties</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>type</code></td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;"><code>'standard'</code></td>
+<td style="text-align: left;">The type of material to create. Currently <code>standard</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="type-standard-properties"><code>type: standard</code> Properties</h2>
+<p>These properties apply when <code>type</code> is <code>standard</code> (or omitted). They correspond to properties of Babylon.js's <code>StandardMaterial</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>diffuseColor</code></td>
+<td style="text-align: left;">color</td>
+<td style="text-align: left;"><code>#FFFFFF</code> (White)</td>
+<td style="text-align: left;">The base color of the material under light.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>emissiveColor</code></td>
+<td style="text-align: left;">color</td>
+<td style="text-align: left;"><code>#000000</code> (Black)</td>
+<td style="text-align: left;">Color emitted by the material, independent of light (makes it glow).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>specularColor</code></td>
+<td style="text-align: left;">color</td>
+<td style="text-align: left;"><code>#FFFFFF</code> (White)</td>
+<td style="text-align: left;">Color of highlights from light sources.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ambientColor</code></td>
+<td style="text-align: left;">color</td>
+<td style="text-align: left;"><code>#000000</code> (Black)</td>
+<td style="text-align: left;">Color of the material in ambient light (less commonly used).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;">number</td>
+<td style="text-align: left;"><code>1.0</code></td>
+<td style="text-align: left;">Overall transparency (0 = fully transparent, 1 = fully opaque).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>specularPower</code></td>
+<td style="text-align: left;">number</td>
+<td style="text-align: left;"><code>64</code></td>
+<td style="text-align: left;">Controls the sharpness/size of specular highlights. Higher is sharper.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>wireframe</code></td>
+<td style="text-align: left;">boolean</td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: left;">If <code>true</code>, renders the mesh as a wireframe instead of solid surfaces.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>backFaceCulling</code></td>
+<td style="text-align: left;">boolean</td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;">If <code>true</code> (default), hides the back faces of polygons for performance. Set to <code>false</code> for double-sided materials.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>diffuseTexture</code></td>
+<td style="text-align: left;">string (URL)</td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: left;">URL of the texture image for the base color. <em>(Texture loading needs implementation)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>emissiveTexture</code></td>
+<td style="text-align: left;">string (URL)</td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: left;">URL of the texture for emissive color. <em>(Texture loading needs implementation)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><em>... (other StandardMaterial properties like bumpTexture, ambientTexture etc. could be added)</em></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Color Parsing:</strong> Color properties accept standard CSS color formats like <code>#RRGGBB</code>, <code>#RGB</code>, color names (<code>red</code>, <code>blue</code>), <code>rgb(r,g,b)</code>.</p>
+<h2 id="underlying-babylonjs-object">Underlying Babylon.js Object</h2>
+<p>This component creates and manages a <code>BABYLON.StandardMaterial</code> instance and applies it to the mesh created by the <code>geometry</code> component on the same entity.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-html">&lt;bml-scene&gt;
+  &lt;!-- A shiny blue sphere --&gt;
+  &lt;bml-entity
+    geometry=&quot;type: sphere&quot;
+    position=&quot;0 1 -5&quot;
+    material=&quot;type: standard; diffuseColor: #0000FF; specularColor: #AAAAFF; specularPower: 128&quot;&gt;
+  &lt;/bml-entity&gt;
+
+  &lt;!-- A semi-transparent green box --&gt;
+  &lt;bml-entity
+    geometry=&quot;type: box&quot;
+    position=&quot;2 1 -5&quot;
+    material=&quot;type: standard; diffuseColor: green; alpha: 0.6&quot;&gt;
+  &lt;/bml-entity&gt;
+
+   &lt;!-- A wireframe ground --&gt;
+  &lt;bml-entity
+    geometry=&quot;type: ground; subdivisions: 5&quot;
+    position=&quot;0 0 -5&quot;
+    material=&quot;type: standard; diffuseColor: grey; wireframe: true&quot;&gt;
+  &lt;/bml-entity&gt;
+&lt;/bml-scene&gt;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>The <code>material</code> component requires a <code>geometry</code> component on the same entity to have a mesh to apply the material to.</li>
+<li>If the <code>geometry</code> component recreates its mesh (e.g., on type change), the <code>material</code> component will reapply the current material to the new mesh.</li>
+<li>Texture properties (<code>diffuseTexture</code>, etc.) are defined in the schema but require specific loading logic within the component's <code>update</code> method, which is not yet implemented in the base version shown in previous steps.</li>
+<li>Changing material properties dynamically via <code>setAttribute</code> will update the appearance.</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

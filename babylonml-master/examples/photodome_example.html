@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML - Photo Dome Example</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        bml-scene { width: 100%; height: 100%; display: block; }
+    </style>
+
+    <!-- Load BabylonML library (adjust path as needed) -->
+    <script src="https://tinyurl.com/babylonml"></script> </head>
+<body>
+    <bml-scene>
+        <!-- Camera - ArcRotate might feel constrained inside a dome, but allows looking around -->
+        <!-- Setting radius small to be 'inside' the dome -->
+        <bml-entity camera="type: arcRotate; target: 0 0 0; alpha: 1.57; beta: 1.57; radius: 0.1"></bml-entity>
+
+        <!-- Photo Dome -->
+        <!-- Using a publicly available 360 image from BabylonJS examples -->
+        <bml-entity
+            geometry="type: photodome; src: https://playground.babylonjs.com/textures/360photo.jpg; size: 1000">
+            <!-- The size should be large enough to encompass the camera -->
+        </bml-entity>
+
+        <!-- Optional: Add a small object inside the dome to verify perspective -->
+        <bml-entity geometry="type: box; size: 0.5" position="0 -1 2" material="color: red"></bml-entity>
+
+    </bml-scene>
+</body>
+</html>

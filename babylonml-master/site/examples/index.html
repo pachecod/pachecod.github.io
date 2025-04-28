@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="BabylonML Contributors">
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Live Examples - BabylonML Documentation</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">BabylonML Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../getting-started/" class="nav-link">Getting Started</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Core Concepts</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../concepts/scene/" class="dropdown-item">Scene (`<bml-scene>`)</a>
+</li>
+                                    
+<li>
+    <a href="../concepts/entity/" class="dropdown-item">Entity (`<bml-entity>`)</a>
+</li>
+                                    
+<li>
+    <a href="../concepts/components/" class="dropdown-item">Components</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Components Reference</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../components/position/" class="dropdown-item">Position</a>
+</li>
+                                    
+<li>
+    <a href="../components/rotation/" class="dropdown-item">Rotation</a>
+</li>
+                                    
+<li>
+    <a href="../components/scale/" class="dropdown-item">Scale</a>
+</li>
+                                    
+<li>
+    <a href="../components/geometry/" class="dropdown-item">Geometry</a>
+</li>
+                                    
+<li>
+    <a href="../components/material/" class="dropdown-item">Material</a>
+</li>
+                                    
+<li>
+    <a href="../components/camera/" class="dropdown-item">Camera</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Live Examples</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../components/camera/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#live-examples" class="nav-link">Live Examples</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="live-examples">Live Examples</h1>
+<p>This page provides links to live, hosted examples demonstrating various features of BabylonML. These examples are hosted separately and load the latest version of the BabylonML library.</p>
+<ul>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/basic_scene.html">Basic Scene</a></strong></p>
+<ul>
+<li>Demonstrates a simple scene with a box, ground, and default camera/light. Includes dynamic material update via JavaScript.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>BabylonML - Local Test</title>
+  <style>
+    /<em> Basic styling to make the scene visible </em>/
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /<em> Prevent scrollbars </em>/
+      height: 100%;
+      width: 100%;
+    }
+    bml-scene {
+      width: 100vw; /<em> Viewport width </em>/
+      height: 100vh; /<em> Viewport height </em>/
+      display: block; /<em> Make it a block element </em>/
+    }
+    canvas {
+      display: block; /<em> Prevent potential small gap below canvas </em>/
+    }
+  </style>
+  <!-- Load the BabylonML library -->
+  <script src="https://tinyurl.com/babylonml"></script> 
+</head>
+<body>
+  <!-- The root element for the Babylon.js experience -->
+  <bml-scene>
+    <!--
+        This scene relies on the default camera and light.
+        - No <bml-entity camera="..."> is defined, so a default FreeCamera is created.
+        - No <bml-entity light="..."> is defined, so a default HemisphericLight is created.
+        You can navigate using mouse/touch controls provided by the default FreeCamera.
+    -->
+        <bml-entity
+            id="my-box"
+            geometry="type: box; size: 1"
+            material="color: #4682B4"
+            position="0 0.5 0"
+            rotation="0 45 0">
+        </bml-entity></p>
+<pre><code>    &lt;!-- A ground plane --&gt;
+    &lt;bml-entity
+        geometry="type: ground; width: 10; height: 10"
+        material="color: #8FBC8F"&gt;
+        &lt;!-- Position defaults to 0 0 0 --&gt;
+    &lt;/bml-entity&gt;
+</code></pre>
+<p></bml-scene></p>
+<p><script>
+    // Optional: You can add JavaScript here to interact with the scene
+    // after it's potentially ready.
+    const sceneEl = document.querySelector('bml-scene');</p>
+<pre><code>   // Check if the scene is already ready when the script runs
+    if (sceneEl &amp;&amp; sceneEl.isReady) {
+        console.log("DEBUG: Scene was already ready. Running setup directly.");
+        babylonScene = sceneEl.babylonScene; // Get scene reference directly
+        console.log("DEBUG: babylonScene reference obtained. ", babylonScene);
+
+        // lets change the color of the box to blue
+        const box = document.getElementById('my-box');
+        if (box) {
+            console.log('Attempting to change box color via attribute...');
+            box.setAttribute('material', 'color: #0000FF'); // Change color to blue
+        }
+
+    } else if (sceneEl) {
+        console.log("DEBUG: Scene not ready yet. Adding event listener.");
+        sceneEl.addEventListener('bml-scene-ready', (event) =&gt; {
+             console.log("DEBUG: bml-scene-ready event fired!"); // &lt;-- Log event firing
+             babylonScene = event.detail.scene;
+             consoler.log("DEBUG: babylonScene reference obtained. ", babylonScene);
+               // Example: Simple interaction after a delay
+            setTimeout(() =&gt; {
+                const box = document.getElementById('my-box');
+                if (box) {
+                    console.log('Attempting to change box color via attribute...');
+                    box.setAttribute('material', 'color: #0000FF'); // Change color to blue
+                }
+            }, 5000); // After 5 seconds
+        });
+    }
+
+// Example: Accessing BML global API (if implemented)
+if (window.BML) {
+  console.log('BML Global API found:', BML);
+  // Example: How a user might register their own component
+  // BML.registerComponent('my-custom-spin', { ... });
+}
+</code></pre>
+</script>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/explicit_camera_light_placeholder.html">Explicit Camera &amp; Light Placeholder</a></strong></p>
+<ul>
+<li>Shows how defining an explicit camera overrides the default, and how the (currently non-functional) <code>light</code> attribute placeholder prevents the default light.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML Example: Explicit Camera &amp; Light Placeholder</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /<em> Prevent scrollbars </em>/
+            height: 100%;
+            width: 100%;
+        }
+        bml-scene {
+            width: 100vw; /<em> Viewport width </em>/
+            height: 100vh; /<em> Viewport height </em>/
+            display: block; /<em> Ensure it behaves like a block element </em>/
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+    <!-- Import the bundled BabylonML library -->
+    <script src="https://tinyurl.com/babylonml"></script>
+</head>
+<body>
+    <!--
+        This scene demonstrates:
+        1. Defining an explicit camera: The <bml-entity camera="..."> below creates an ArcRotateCamera.
+           This PREVENTS the default FreeCamera from being created.
+        2. Using a placeholder light attribute: The <bml-entity light="..."> below PREVENTS the
+           default HemisphericLight from being created. However, since there is no 'light'
+           component implemented yet, this attribute currently DOES NOT create a PointLight.
+           The scene will appear dark unless a light is added via JavaScript.
+    -->
+    <bml-scene>
+        <!-- Explicit ArcRotateCamera Definition -->
+        <bml-entity
+            id="myCamera"
+            camera="type: arcRotate; alpha: -1.57; beta: 1.4; radius: 8; target: 0 1 0; attachControl: true">
+            <!-- No geometry or material needed for a camera entity -->
+        </bml-entity></p>
+<pre><code>    &lt;!-- Placeholder for a light source --&gt;
+    &lt;!-- IMPORTANT: This disables the default light, but doesn't create a PointLight yet! --&gt;
+    &lt;bml-entity
+        id="myLightSource"
+        light="type: point; intensity: 0.8; position: 0 5 0"&gt;
+        &lt;!-- This entity currently does nothing visually --&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- A simple box entity --&gt;
+    &lt;bml-entity
+        geometry="type: box; size: 1"
+        material="color: #FF6347" &lt;!-- Tomato color --&gt;
+        position="0 1 0"&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- A ground plane --&gt;
+    &lt;bml-entity
+        geometry="type: ground; width: 10; height: 10"
+        material="color: #B0C4DE"&gt; &lt;!-- LightSteelBlue color --&gt;
+    &lt;/bml-entity&gt;
+&lt;/bml-scene&gt;
+
+&lt;script&gt;
+    // Optional: Add a light programmatically since the component doesn't exist yet
+    document.querySelector('bml-scene').addEventListener('bml-scene-ready', (event) =&gt; {
+        const babylonScene = event.detail.scene;
+        // Uncomment the lines below to add a light via JavaScript
+        // console.log("Adding programmatic light...");
+        // const pointLight = new BABYLON.PointLight("programmaticLight", new BABYLON.Vector3(0, 5, 0), babylonScene);
+        // pointLight.intensity = 0.8;
+        // console.log("Programmatic light added.");
+    });
+&lt;/script&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/multi_camera_scene.html">Multiple Cameras</a></strong></p>
+<ul>
+<li>Illustrates defining multiple cameras and switching between them using JavaScript.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML Example: Multiple Cameras</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /<em> Prevent scrollbars </em>/
+            height: 100%;
+            width: 100%;
+        }
+        bml-scene {
+            width: 100vw; /<em> Viewport width </em>/
+            height: 100vh; /<em> Viewport height </em>/
+            display: block; /<em> Ensure it behaves like a block element </em>/
+        }
+        canvas {
+            display: block;
+        }
+        /<em> Style for the button </em>/
+        #switchCameraButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10; /<em> Ensure it's above the canvas </em>/
+        }
+    </style>
+    <!-- Import the bundled BabylonML library -->
+    <script src="https://tinyurl.com/babylonml"></script>
+</head>
+<body>
+    <!-- Button to switch cameras -->
+    <button id="switchCameraButton">Switch to Camera 2</button></p>
+<pre><code>&lt;!--
+    This scene demonstrates defining multiple cameras.
+    - The first camera entity encountered ("camera1", ArcRotate) will become the active camera by default.
+    - The second camera ("camera2", Universal) will be created but inactive initially.
+    - Click the button in the top-left corner to switch between them.
+    - Since at least one camera is defined, the default FreeCamera is NOT created.
+    - Since no light attribute is defined, the default HemisphericLight IS created.
+--&gt;
+&lt;bml-scene&gt;
+    &lt;!-- First Camera (ArcRotate, active initially) --&gt;
+    &lt;bml-entity
+        id="camera1"
+        camera="type: arcRotate; alpha: -1.57; beta: 1.4; radius: 8; target: 0 1 0; attachControl: true"&gt;
+        &lt;!-- attachControl: true --&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- Second Camera (Universal, inactive initially) --&gt;
+    &lt;bml-entity
+        id="camera2"
+        camera="type: universal; position: 5 2 5; target: 0 1 0; attachControl: false"&gt;
+        &lt;!-- attachControl: false --&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- A simple box entity --&gt;
+    &lt;bml-entity
+        geometry="type: box; size: 1"
+        material="color: #6A5ACD" &lt;!-- SlateBlue color --&gt;
+        position="0 1 0"&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- A ground plane --&gt;
+    &lt;bml-entity
+        geometry="type: ground; width: 10; height: 10"
+        material="color: #98FB98"&gt; &lt;!-- PaleGreen color --&gt;
+    &lt;/bml-entity&gt;
+&lt;/bml-scene&gt;
+
+&lt;script&gt;
+    const sceneEl = document.querySelector('bml-scene');
+    const switchButton = document.getElementById('switchCameraButton');
+
+    let babylonScene = null;
+    let canvas = null;
+    let cam1 = null; // ArcRotate
+    let cam2 = null; // Universal
+    let cam1Attach = true; // Default based on attribute
+    let cam2Attach = false; // Default based on attribute
+
+    // Function to set up cameras and button once scene is ready
+    function setupCameraSwitcher() {
+        console.log("DEBUG: setupCameraSwitcher called.");
+        if (!sceneEl.isReady || !babylonScene) {
+             console.log("DEBUG: Scene not ready yet in setupCameraSwitcher.");
+             return; // Should not happen if called correctly, but good check
+        }
+        canvas = sceneEl.babylonCanvas; // Get canvas reference from scene element
+
+        // Add a small delay to ensure camera components have initialized AFTER scene is ready
+         setTimeout(() =&gt; {
+            console.log("DEBUG: setTimeout callback running..."); // &lt;-- Log timeout callback
+            console.log("DEBUG: Available cameras:", babylonScene.cameras.map(c =&gt; c.name)); // &lt;-- Log available camera names
+
+             // Get camera instances using their auto-generated names (check inspector if needed)
+             cam1 = babylonScene.getCameraByName('camera1_arcRotateCamera');
+             cam2 = babylonScene.getCameraByName('camera2_universalCamera');
+
+             // Get camera entities to check original attachControl attribute
+             const camEntity1 = document.getElementById('camera1');
+             const camEntity2 = document.getElementById('camera2');
+
+             // Store original attachControl settings (simple check)
+             cam1Attach = (camEntity1?.getAttribute('camera') || '').includes('attachControl: true');
+             cam2Attach = (camEntity2?.getAttribute('camera') || '').includes('attachControl: true'); // Note: cam2 is false in HTML
+
+             if (cam1 &amp;&amp; cam2) {
+                 console.log("DEBUG: Cameras found by name:", cam1.name, cam2.name); // &lt;-- Log success
+                 console.log("Initial active camera:", babylonScene.activeCamera.name);
+                 console.log("Camera 1 attachControl setting:", cam1Attach);
+                 console.log("Camera 2 attachControl setting:", cam2Attach);
+                 switchButton.disabled = false; // Enable the button
+                 // Set initial button text based on which camera is NOT active
+                 switchButton.textContent = (babylonScene.activeCamera === cam1) ? "Switch to Camera 2 (Universal)" : "Switch to Camera 1 (ArcRotate)";
+             } else {
+                 console.error("DEBUG: Could not find one or both cameras by name after delay. Check IDs and camera types in HTML and Inspector."); // &lt;-- Log failure
+                 switchButton.textContent = "Error finding cameras";
+                 switchButton.disabled = true;
+             }
+         }, 100); // 100ms delay - adjust if needed
+    }
+
+    // Check if the scene is already ready when the script runs
+    if (sceneEl &amp;&amp; sceneEl.isReady) {
+        console.log("DEBUG: Scene was already ready. Running setup directly.");
+        babylonScene = sceneEl.babylonScene; // Get scene reference directly
+        setupCameraSwitcher();
+    } else if (sceneEl) {
+        console.log("DEBUG: Scene not ready yet. Adding event listener.");
+        sceneEl.addEventListener('bml-scene-ready', (event) =&gt; {
+             console.log("DEBUG: bml-scene-ready event fired!"); // &lt;-- Log event firing
+             babylonScene = event.detail.scene;
+             setupCameraSwitcher();
+        });
+    } else {
+        console.error("DEBUG: Could not find bml-scene element!");
+        switchButton.textContent = "Scene Error";
+        switchButton.disabled = true;
+    }
+
+    switchButton.addEventListener('click', () =&gt; {
+        if (!babylonScene || !cam1 || !cam2 || !canvas) {
+            console.error("Scene or cameras not ready for switching.");
+            return;
+        }
+
+        const currentCam = babylonScene.activeCamera;
+        const targetCam = (currentCam === cam1) ? cam2 : cam1;
+        const targetAttach = (targetCam === cam1) ? cam1Attach : cam2Attach;
+
+        console.log(`Switching from ${currentCam.name} to ${targetCam.name}`);
+
+        // Detach controls from the current camera *if* it has the method
+        if (currentCam &amp;&amp; typeof currentCam.detachControl === 'function') {
+            console.log(`Detaching controls from ${currentCam.name}`);
+            currentCam.detachControl(canvas);
+        }
+
+        // Set the new active camera
+        babylonScene.activeCamera = targetCam;
+
+        // Attach controls to the new camera *if* it has the method
+        if (targetCam &amp;&amp; typeof targetCam.attachControl === 'function') {
+            console.log(`Attaching controls to ${targetCam.name}`);
+            targetCam.attachControl(canvas, true); // Always attach to the new active camera
+        } else {
+             console.log(`Controls not attached to ${targetCam.name} (method missing)`);
+        }
+
+        // Update button text
+        switchButton.textContent = (targetCam === cam1) ? "Switch to Camera 2 (Universal)" : "Switch to Camera 1 (ArcRotate)";
+    });
+
+    // Disable button initially until cameras are confirmed
+    switchButton.disabled = true;
+
+&lt;/script&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/mesh_example.html">Mesh Loading (GLB)</a></strong></p>
+<ul>
+<li>Shows how to load an external <code>.glb</code> model using the <code>geometry</code> component.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML - Mesh Example</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        bml-scene { width: 100%; height: 100%; display: block; }
+    </style>
+    <!-- Load BabylonML library -->
+    <script src="https://tinyurl.com/babylonml"></script> 
+</head>
+<body>
+    <bml-scene>
+        <!-- Basic lighting and camera -->
+        <bml-entity light="type: hemispheric; intensity: 0.7"></bml-entity>
+        <bml-entity light="type: directional; direction: 1 -1 1; intensity: 0.7"></bml-entity>
+        <bml-entity camera="type: arcRotate; target: 0 1 0; alpha: -1.57; beta: 1.2; radius: 5"></bml-entity></p>
+<pre><code>    &lt;!-- Load the GLB mesh --&gt;
+    &lt;!-- Using a model from Firebase Storage --&gt;
+    &lt;bml-entity
+        geometry="type: mesh; src: https://firebasestorage.googleapis.com/v0/b/story-splat.firebasestorage.app/o/users%2FmFNJrfet99Qv9mMX2OC6hewy1xC2%2Fsplats%2FGreek_Statue_London_textured_mesh_lowpoly_glb.glb?alt=media&amp;token=d79e2c56-420b-4e1f-81d8-0a7f3cdcf43c"
+        position="0 0 0"
+        rotation="0 0 0"
+        scale="1 1 1"&gt;
+    &lt;/bml-entity&gt;
+
+&lt;/bml-scene&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/photodome_example.html">Photo Dome</a></strong></p>
+<ul>
+<li>Demonstrates creating a 360-degree photo environment using the <code>geometry</code> component.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML - Photo Dome Example</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        bml-scene { width: 100%; height: 100%; display: block; }
+    </style></p>
+<pre><code>&lt;!-- Load BabylonML library --&gt;
+&lt;script src="https://tinyurl.com/babylonml"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<body>
+    <bml-scene>
+        <!-- Camera - ArcRotate might feel constrained inside a dome, but allows looking around -->
+        <!-- Setting radius small to be 'inside' the dome -->
+        <bml-entity camera="type: arcRotate; target: 0 0 0; alpha: 1.57; beta: 1.57; radius: 0.1"></bml-entity></p>
+<pre><code>    &lt;!-- Photo Dome --&gt;
+    &lt;!-- Using a publicly available 360 image from BabylonJS examples --&gt;
+    &lt;bml-entity
+        geometry="type: photodome; src: https://playground.babylonjs.com/textures/360photo.jpg; size: 1000"&gt;
+        &lt;!-- The size should be large enough to encompass the camera --&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- Optional: Add a small object inside the dome to verify perspective --&gt;
+    &lt;bml-entity geometry="type: box; size: 0.5" position="0 -1 2" material="color: red"&gt;&lt;/bml-entity&gt;
+
+&lt;/bml-scene&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/videodome_example.html">Video Dome</a></strong></p>
+<ul>
+<li>Demonstrates creating a 360-degree video environment using the <code>geometry</code> component, including custom zoom interaction.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BabylonML - Video Dome Example</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        bml-scene { width: 100%; height: 100%; display: block; }
+    </style></p>
+<pre><code>&lt;!-- Load BabylonML library --&gt;
+&lt;script src="https://tinyurl.com/babylonml"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<body>
+    <bml-scene>
+        <!-- Camera -->
+        <bml-entity camera="type: arcRotate; target: 0 0 0; alpha: 1.57; beta: 1.57; radius: 0.1"></bml-entity></p>
+<pre><code>    &lt;!-- Video Dome --&gt;
+    &lt;!-- Using a publicly available 360 video --&gt;
+    &lt;!-- Note: Autoplay might be blocked by browser policy if not muted or interacted with --&gt;
+    &lt;bml-entity
+        id="video-dome-entity"
+        geometry="type: videodome; src: https://assets.babylonjs.com/photoDomes/solarProbeMission.mp4; size: 1000; autoPlay: true; loop: true; muted: true; clickToPlay: true"&gt;
+        &lt;!-- clickToPlay: true allows user interaction to start/pause --&gt;
+    &lt;/bml-entity&gt;
+
+    &lt;!-- Optional: Add a small object inside the dome --&gt;
+    &lt;bml-entity geometry="type: sphere; diameter: 0.5" position="0 0 0" material="color: blue"&gt;&lt;/bml-entity&gt;
+
+&lt;/bml-scene&gt;
+
+&lt;script&gt;
+    const sceneEl = document.querySelector('bml-scene');
+    let babylonScene = null;
+    let canvas = null;
+    let camera = null;
+    // We only need the VideoDome instance, not necessarily its mesh for fovMultiplier
+    let videoDomeInstance = null;
+
+    // Function to initialize the custom zoom logic
+    function initializeVideoDomeZoom() {
+        console.log("DEBUG: initializeVideoDomeZoom called.");
+        if (!sceneEl.isReady || !babylonScene) {
+            console.log("DEBUG: Scene not ready yet in initializeVideoDomeZoom.");
+            return;
+        }
+        canvas = sceneEl.babylonCanvas;
+        camera = babylonScene.activeCamera; // Get active camera
+        const videoDomeEntity = document.getElementById('video-dome-entity');
+
+        if (!videoDomeEntity) {
+            console.error("DEBUG: Could not find video dome entity element by ID 'video-dome-entity'.");
+            return;
+        }
+            // --- Custom Zoom Logic Variables ---
+        var zoomLevel = 1;
+        // Function to set up the zoom logic *after* the VideoDome instance is confirmed
+        const setupZoomLogic = (domeInstance) =&gt; {
+            console.log("DEBUG: setupZoomLogic called with dome instance:", domeInstance);
+            if (!camera || !canvas || !domeInstance) {
+                console.error(`DEBUG: Cannot setup zoom logic. Missing camera, canvas, or domeInstance.`);
+                return;
+            }
+
+            // --- Detach Camera Controls ---
+            if (camera.inputs &amp;&amp; camera.inputs.attached.mousewheel) {
+                console.log("DEBUG: Detaching default mousewheel control.");
+                camera.inputs.attached.mousewheel.detachControl(canvas);
+            } else {
+                console.warn("Could not detach mousewheel control.");
+            }
+
+            // --- Register Render Loop Logic ---
+            // This function will run every frame AFTER setupZoomLogic is called
+            babylonScene.registerAfterRender(function() {
+                // Ensure domeInstance is still valid and has the property
+                if (!domeInstance || domeInstance.fovMultiplier === undefined) {
+                    // It might take a frame or two for fovMultiplier to be ready after instance creation
+                    // console.warn("Waiting for domeInstance or fovMultiplier...");
+                    return;
+                }
+                domeInstance.fovMultiplier = zoomLevel;
+                domeInstance.material.alpha = 1 - (zoomLevel - 1) * 0.9; // Adjust alpha based on zoom level
+
+            });
+
+            // --- Register Pointer Observable Logic ---
+            // This function will run on mouse wheel events AFTER setupZoomLogic is called
+            babylonScene.onPointerObservable.add(function(e) {
+                if (!domeInstance) { return; } // Ensure instance exists
+
+                const wheelDelta = e.event.wheelDelta || -e.event.deltaY;
+                if (wheelDelta === 0) return;
+
+                zoomLevel += wheelDelta * -0.0005;
+                if (zoomLevel &lt; 0.1) { zoomLevel = 0.1; }
+                if (zoomLevel &gt; 2) { zoomLevel = 2; }
+            }, 8);
+
+            console.log("Custom video dome zoom script event listeners registered successfully.");
+        }; // End of setupZoomLogic function
+
+        // --- Wait for Geometry Readiness ---
+        // Check if the geometry object is already available when initializeVideoDomeZoom runs
+        if (videoDomeEntity.BabylonGeometryObject) {
+            console.log("DEBUG: Video dome geometry object was already available.");
+            // Assign the instance and call setup immediately
+            videoDomeInstance = videoDomeEntity.BabylonGeometryObject;
+            setupZoomLogic(videoDomeInstance);
+        } else {
+            // If not ready, wait for the component to dispatch the event
+            console.log("DEBUG: Waiting for 'bml-geometry-ready' event on video dome entity...");
+            videoDomeEntity.addEventListener('bml-geometry-ready', (event) =&gt; {
+                console.log("DEBUG: 'bml-geometry-ready' event received for video dome.");
+                // Assign the instance from the event and call setup
+                videoDomeInstance = event.detail.geometryObject;
+                setupZoomLogic(videoDomeInstance);
+            }, { once: true }); // Listen only once
+        }
+    } // End of initializeVideoDomeZoom function
+
+     // Check if the scene is already ready when the script runs
+    if (sceneEl &amp;&amp; sceneEl.isReady) {
+        console.log("DEBUG: Scene was already ready. Running setup directly.");
+        babylonScene = sceneEl.babylonScene; // Get scene reference directly
+        initializeVideoDomeZoom();
+    } else if (sceneEl) {
+        console.log("DEBUG: Scene not ready yet. Adding event listener for bml-scene-ready.");
+        sceneEl.addEventListener('bml-scene-ready', (event) =&gt; {
+             console.log("DEBUG: bml-scene-ready event fired!");
+             babylonScene = event.detail.scene; // Get scene from event detail
+             initializeVideoDomeZoom();
+        });
+    } else {
+        console.error("DEBUG: Could not find bml-scene element!");
+    }
+&lt;/script&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/vr_scene.html">VR Scene</a></strong></p>
+<ul>
+<li>Shows how to enable a basic VR experience using the <code>xr="vr"</code> attribute on <code>&lt;bml-scene&gt;</code>.</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BabylonML - VR Example</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /<em> Prevent scrollbars </em>/
+            height: 100%;
+            width: 100%;
+        }</p>
+<pre><code>    bml-scene {
+        width: 100vw; /* Viewport width */
+        height: 100vh; /* Viewport height */
+        display: block; /* Ensure it behaves like a block element */
+    }
+
+    canvas {
+        display: block;
+    }
+&lt;/style&gt;
+&lt;!-- Import the bundled BabylonML library --&gt;
+&lt;script src="https://tinyurl.com/babylonml"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<body>
+    <!-- Enable VR mode using the xr attribute -->
+    <bml-scene xr="vr"></p>
+<pre><code>    &lt;!-- Define a camera (optional, WebXR helper might provide one, but good practice) --&gt;
+    &lt;!-- Using ArcRotateCamera for easy navigation outside VR --&gt;
+    &lt;bml-entity camera="type: arcRotate; target: 0 1 0; radius: 5; alpha: -1.57; beta: 1.2"&gt;&lt;/bml-entity&gt;
+
+    &lt;!-- Add a ground plane --&gt;
+    &lt;bml-entity geometry="type: ground; width: 10; height: 10"
+                  material="color: #444444; roughness: 0.8"&gt;&lt;/bml-entity&gt;
+
+    &lt;!-- Add a simple box --&gt;
+    &lt;bml-entity geometry="type: box; size: 1"
+                  position="0 1 0"
+                  rotation="0 45 0"
+                  material="color: tomato"&gt;&lt;/bml-entity&gt;
+
+    &lt;!-- Add a sphere --&gt;
+    &lt;bml-entity geometry="type: sphere; diameter: 0.8"
+                  position="-2 1 1"
+                  material="color: cornflowerblue"&gt;&lt;/bml-entity&gt;
+
+&lt;/bml-scene&gt;
+
+&lt;script&gt;
+    // Optional: Listen for scene ready event
+    const sceneEl = document.querySelector('bml-scene');
+    sceneEl.addEventListener('bml-scene-ready', (event) =&gt; {
+        console.log('VR Scene is ready!', event.detail);
+        // You could potentially access the XR helper here if needed,
+        // though it's managed internally by BmlScene for now.
+        // const xrHelper = sceneEl.#xrHelper; // Note: #xrHelper is private
+    });
+&lt;/script&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+<li>
+<p><strong><a href="https://bayblonml-frontend.netlify.app/examples/ar_scene.html">AR Scene</a></strong></p>
+<ul>
+<li>Shows how to enable a basic AR experience using the <code>xr="ar"</code> attribute on <code>&lt;bml-scene&gt;</code> (requires compatible device/browser).</li>
+</ul>
+<p>```html
+&lt;!DOCTYPE html&gt;
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BabylonML - AR Example</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /<em> Prevent scrollbars </em>/
+            height: 100%;
+            width: 100%;
+        }</p>
+<pre><code>    bml-scene {
+        width: 100vw; /* Viewport width */
+        height: 100vh; /* Viewport height */
+        display: block; /* Ensure it behaves like a block element */
+    }
+
+    canvas {
+        display: block;
+    }
+&lt;/style&gt;
+&lt;!-- Import the bundled BabylonML library --&gt;
+&lt;script src="https://tinyurl.com/babylonml"&gt;&lt;/script&gt;
+</code></pre>
+<p></head>
+<body>
+    <!-- Enable AR mode using the xr attribute -->
+    <!-- Note: AR requires compatible device/browser and often HTTPS -->
+    <bml-scene xr="ar"></p>
+<pre><code>    &lt;!-- No explicit camera needed for basic AR, WebXR helper manages it --&gt;
+    &lt;!-- No explicit light needed for basic AR, WebXR helper often adds estimation --&gt;
+
+    &lt;!-- Add a simple box placed slightly in front --&gt;
+    &lt;bml-entity geometry="type: box; size: 0.2"
+                  position="0 0 0.5" &lt;!-- Adjust position based on AR reference space --&gt;
+                  material="color: mediumseagreen"&gt;&lt;/bml-entity&gt;
+
+    &lt;!-- Add a sphere slightly to the side --&gt;
+    &lt;bml-entity geometry="type: sphere; diameter: 0.15"
+                  position="-0.3 0 0.4"
+                  material="color: gold"&gt;&lt;/bml-entity&gt;
+
+    &lt;!-- AR scenes often don't have a ground plane, as the real world provides the ground --&gt;
+
+&lt;/bml-scene&gt;
+
+&lt;script&gt;
+    // Optional: Listen for scene ready event
+    const sceneEl = document.querySelector('bml-scene');
+    sceneEl.addEventListener('bml-scene-ready', (event) =&gt; {
+        console.log('AR Scene is ready!', event.detail);
+        // You might want to interact with AR features like hit-testing here
+        // if the WebXR helper exposes them or if you add specific AR components later.
+    });
+&lt;/script&gt;
+</code></pre>
+<p></body>
+</html>
+```</p>
+</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

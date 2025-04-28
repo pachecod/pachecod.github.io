@@ -1,0 +1,6 @@
+/* Allow vertical scrolling for the main content area */
+[role="main"] {
+    overflow-y: auto !important; /* Use !important to ensure override */
+    /* Adjust height calculation if necessary based on theme's header/footer */
+    /* Example: height: calc(100vh - 110px); */
+}
