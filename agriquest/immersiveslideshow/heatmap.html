@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EV Charging Heatmap with Route</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+<body>
+<div id="map" style="width: 100%; height: 600px;"></div>
+<script>
+    var map = L.map('map').setView([42.5, -76.7], 7); // Centered along the route (New York to Buffalo)
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+    }).addTo(map);
+
+    // Add heatmap layer with increased contrast
+    var heat = L.heatLayer([
+        [40.69017029, -73.98789978, 1], // Brooklyn [[1]](https://poe.com/citation?message_id=379750067815&citation=1)
+        [40.73431396, -74.00195313, 1], // New York City [[6]](https://poe.com/citation?message_id=379750067815&citation=6)
+        [40.78000259, -73.96448517, 1], // New York City [[5]](https://poe.com/citation?message_id=379750067815&citation=5)
+        [40.7179451, -74.00814819, 1], // New York City [[6]](https://poe.com/citation?message_id=379750067815&citation=6)
+        [42.1028884, -75.837234, 1],  // Binghamton [[2]](https://poe.com/citation?message_id=379750067815&citation=2)
+    ], {
+        radius: 30,  // Increased radius for better contrast
+        blur: 15,    // Reduced blur for sharper contrast
+        maxZoom: 1
+    }).addTo(map);
+
+    // Add a polyline for driving directions (approximate route from NYC to Buffalo)
+    var routeCoordinates = [
+        [40.712776, -74.005974], // New York City
+        [42.1028884, -75.837234], // Binghamton [[2]](https://poe.com/citation?message_id=379750067815&citation=2)
+        [42.886447, -78.878369]   // Buffalo
+    ];
+    var routeLine = L.polyline(routeCoordinates, {color: 'blue', weight: 4}).addTo(map);
+
+    // Add popups for charging station locations
+    L.marker([40.69017029, -73.98789978]).addTo(map).bindPopup('Edison ParkFast #93, Brooklyn [[1]](https://poe.com/citation?message_id=379750067815&citation=1)');
+    L.marker([40.73431396, -74.00195313]).addTo(map).bindPopup('Beam Charging - Travelers Garage [[6]](https://poe.com/citation?message_id=379750067815&citation=6)');
+    L.marker([40.78000259, -73.96448517]).addTo(map).bindPopup('Beam Charging, 206 E 88th St [[5]](https://poe.com/citation?message_id=379750067815&citation=5)');
+    L.marker([40.7179451, -74.00814819]).addTo(map).bindPopup('Edison ParkFast #4 [[6]](https://poe.com/citation?message_id=379750067815&citation=6)');
+    L.marker([42.1028884, -75.837234]).addTo(map).bindPopup('Clean Energy - New York State Department of Transportation, Binghamton [[2]](https://poe.com/citation?message_id=379750067815&citation=2)');
+</script>
+</body>
+</html>

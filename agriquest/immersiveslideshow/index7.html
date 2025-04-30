@@ -132,7 +132,7 @@
         }
       });
       
-      // Revised mobile-thumb-move component.
+      //Mobile-thumb-move component.
       AFRAME.registerComponent('mobile-thumb-move', {
         schema: {
           speed: {type: 'number', default: 1}  // Adjust movement speed as needed.
@@ -199,7 +199,7 @@
         }
       });
       
-      // NEW: Info panel component for VR-friendly floating panels
+      // Info panel component for VR-friendly floating panels
       AFRAME.registerComponent('info-panel', {
         schema: {
           title: {type: 'string', default: 'Information'},
@@ -320,7 +320,7 @@
         }
       });
       
-      // NEW: Component to toggle info panel visibility
+      // Component to toggle info panel visibility
       AFRAME.registerComponent('toggle-info-panel', {
         schema: {
           target: {type: 'selector'}
@@ -365,36 +365,43 @@
   </head>
 
   <body>
-    <a-scene cursor="rayOrigin: mouse">
-      <!-- Camera Rig with Mobile Thumb Movement Component -->
-      <a-entity id="cameraRig" 
-                mobile-thumb-move
-                movement-controls="constrainToNavMesh: false;" 
-                navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" 
-                position="0 0 0" rotation="0 0 0">
-        <!-- Corrected look-controls attribute syntax -->
-        <a-entity id="head" camera="active: true" 
-                  look-controls="pointerLockEnabled: true; reverseMouseDrag: false" 
-                  wasd-controls 
-                  position="0 1.6 0">
-          <a-cursor fuse="true" fuse-timeout="500" raycaster="objects: .clickable"></a-cursor>
-        </a-entity>
 
-        <!-- Left and right controllers (blink-controls removed on mobile by the component) -->
-        <a-entity id="left-controller"
-                  laser-controls="hand: left"
-                  raycaster="objects: .clickable, .ground"
-                  blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
-        </a-entity>
-        <a-entity id="right-controller"
-                  laser-controls="hand: right"
-                  raycaster="objects: .clickable, .ground"
-                  blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
-        </a-entity>
+    <a-scene cursor="rayOrigin: mouse">
+
+    <!-- Camera Rig and Controls -->
+
+        <a-entity id="cameraRig" mobile-thumb-move movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 0 0" rotation="0 0 0">
+
+            <!-- Camera -->
+        
+                <a-entity id="head" camera="active: true" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" wasd-controls position="0 1.6 0">
+
+                    <!-- Cursor for glance navigation -->
+
+                    <a-cursor fuse="true" fuse-timeout="500" raycaster="objects: .clickable"><a-cursor>
+
+                    <!-- End cursor -->
+
+                </a-entity>
+
+            <!-- End Camera -->
+
+            <!-- VR hand controllers -->
+                <a-entity id="left-controller" laser-controls="hand: left" raycaster="objects: .clickable, .ground" blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
+                </a-entity>
+
+                <a-entity id="right-controller" laser-controls="hand: right" raycaster="objects: .clickable, .ground" blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
+                </a-entity>
+
+            <!-- End VR hand controllers -->
+
       </a-entity>
+
+    <!-- End Camera Rig and Controls -->
 
       <!-- Assets -->
       <a-assets>
+
         <img id="image1" src="images/1.jpg" />
         <img id="image2" src="images/2.jpg" />
         <img id="image3" src="images/3.jpg" />
@@ -403,26 +410,31 @@
         <img id="grid" src="images/border.jpg" />
         <img id="sky" src="skies/day.jpg" />
         <img id="ground" src="grounds/grass.jpg" />
-        <!-- Keep using your original hotspot image -->
-        <img id="hotspot" src="images/hotspot.jpg" />
+    
+        <img id="hotspot" src="images/hotspot_new.png" />
+        
         <a-asset-item id="library" src="models/library.glb"></a-asset-item>
+
         <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
+
         <audio id="audio1" src="./audio/music.mp3" preload="auto"></audio>
+
       </a-assets>
 
       <!-- VR-Compatible Hotspot for floating caption -->
       <a-circle
         id="alice-hotspot"
-        position="18 3 -3"
-        rotation="0 0 0"
-        radius="2"
+        position="16 3 5"
+        rotation="0 90 0"
+        radius="1"
         material="src: images/hotspot.jpg; roughness: 1; side: double;"
         toggle-info-panel="target: #alice-info-panel"
         class="clickable"
         look-at="[camera]">
       </a-circle>
 
-      <!-- VR-Compatible Info Panel (initially hidden) -->
+      <!-- VR-Compatible Info Panel  -->
+
       <a-entity
         id="alice-info-panel"
         info-panel="
@@ -430,40 +442,65 @@
           content: A caption goes here. A caption goes here. A caption goes here.;
           imageUrl: images/2.jpg;
           imageCaption: A caption goes here. A caption goes here. A caption goes here. A caption goes here. A caption goes here.;"
-        position="0 0 0">
+        position="-14 0 0" rotation="0 -90 0">
       </a-entity>
 
-      <a-plane width="100" height="100" rotation="-90 0 0" 
-               material="src: #ground; repeat:10 10; transparent: false; opacity: 1;" 
-               shadow="cast: false; receive: true"
-               class="ground">
+      <!-- End VR-Compatible Info Panel  -->
+
+    <!-- Ground -->
+
+        <a-plane width="100" height="100" rotation="-90 0 0" material="src: #ground; repeat:10 10; transparent: false; opacity: 1;" shadow="cast: false; receive: true" class="ground">
+        </a-plane>
+
+    <!-- End Ground -->
+
+    <!-- Sky -->
+        <a-sky src="#sky"></a-sky>
+    <!-- End Sky -->
+
+    <!-- Photo Gallery Image 1 -->
+      <a-plane id="image-plane-1" position="0 1.6 -4" width="4" height="2.5" material="src: #image1" visible="true">
       </a-plane>
 
-      <a-sky src="#sky"></a-sky>
+    <!-- End Photo Gallery Image 1 -->
 
-      <a-plane id="image-plane-1" position="0 1.6 -4" width="4" height="2.5"
-               material="src: #image1" visible="true">
-      </a-plane>
-      <a-plane id="image-plane-2" position="0 1.6 -4" width="4" height="2.5"
-               material="src: #image1" visible="false">
+    <!-- Photo Gallery Image 2 -->
+
+      <a-plane id="image-plane-2" position="0 1.6 -4" width="4" height="2.5" material="src: #image1" visible="false">
       </a-plane>
 
+    <!-- End Photo Gallery Image 1 -->  
+
+    <!-- Photo Gallery Right Arrow -->
       <a-image id="right-arrow" src="#arrowRight" position="2 1.6 -3.5" scale="0.5 0.5 0.5" class="clickable"></a-image>
       <a-image id="left-arrow" src="#arrowLeft" position="-2 1.6 -3.5" scale="0.5 0.5 0.5" class="clickable"></a-image>
 
+    <!-- End Photo Gallery Right Arrow -->
+
+    <!-- 3D Model -->
       <a-entity gltf-model="#library" position="5 0 -2.746" scale="0.5 0.5 0.5" rotation="0 -116 0" shadow="cast: true; receive: true"></a-entity>
       <a-entity gltf-model="#bench" position="-6.246 0 -2.896" scale="0.015 0.015 0.015" rotation="0 53 0" shadow="cast: true; receive: true"></a-entity>
+
+    <!-- End 3D Model -->
+
+    <!-- Particle System (unknown what this does)-->
       <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
 
-      <!-- Audio and Hotspots -->
-      <a-entity id="spots" hotspots>
+    <!-- End Particle System -->
+  
+
+    <!-- Audio and Hotspots with entity id spots -->
+    <a-entity id="spots" hotspots>
+
+        <!-- Group Point 1 -->
+
         <a-entity id="group-point1" visible="true">
           <a-entity face-camera
                     spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
                     position="-11 1.5 2">
           </a-entity>
         </a-entity>
-        <a-entity id="group-point2" visible="false">
+        <a-entity id="group-point2" visible="true">
           <a-entity face-camera
                     spot="linkto:#point1;spotgroup:group-point1;label:Point 1;audio:#audio1;"
                     position="10 1.5 -8">
@@ -473,7 +510,12 @@
                     position="0 1.5 10">
           </a-entity>
         </a-entity>
-        <a-entity id="group-point3" visible="false">
+
+        <!-- End Group Point 1 -->
+
+        <!-- Group Point 2 -->
+
+        <a-entity id="group-point3" visible="true">
           <a-entity face-camera
                     spot="linkto:#point2;spotgroup:group-point2;label:Point 2;audio:#audio1"
                     position="10 1.5 3">
@@ -483,17 +525,33 @@
                     position="-10 1.5 -3">
           </a-entity>
         </a-entity>
-        <a-entity id="group-point4" visible="false">
+
+        <!-- End Grou Point 2 -->
+
+        <!-- Group Point 3 -->
+
+        <a-entity id="group-point4" visible="true">
           <a-entity face-camera
                     spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
                     position="0 1.5 -10">
           </a-entity>
         </a-entity>
-      </a-entity>
+
+        <!-- End Group Point 3 -->
+
+    
+    </a-entity>
+
+    <!-- End Audio & Hotspots with entity id spots -->
+
+
     </a-scene>
 
+
+    <!-- Transition script for photo gallery -->
+
     <script>
-      // Existing transition logic for image planes remains unchanged.
+      
       document.addEventListener("DOMContentLoaded", () => {
         const images = ["#image1", "#image2", "#image3"];
         let currentIndex = 0;
@@ -541,5 +599,8 @@
         });
       });
     </script>
+
+    <!-- End sript for photo gallery -->
+
   </body>
 </html>

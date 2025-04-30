@@ -32,7 +32,6 @@
         <img id="point3" src="./images/n1inside.jpg" />
         <img id="point4" src="./images/n3hallway.jpg" />
 
-
         <!-- Hotspot icon -->
         <img id="hotspot" src="./images/hotspot_yellow.png" />
         
@@ -53,9 +52,7 @@
       <!-- Hotspot groups -->
       <a-entity id="spots">
         <!-- Group 1: Front of Newhouse 3 → courtyard -->
-        
         <a-entity id="group-point1" visible="true">
-
           <a-image
             class="clickable"
             src="#hotspot"
@@ -118,7 +115,7 @@
             class="clickable"
             src="#hotspot"
             position="-1 1.6 -2"
-            scale="0.3 0.3 0.3"
+            scale="0.6 0.6 0.6"
             spot="linkto:#point3;
                   spotgroup:#group-point3;
                   audio:#audio2;
@@ -126,42 +123,42 @@
                   popupColor:#F0F0F0"
           >
             <!-- Controls for this hotspot -->
-            <a-entity position="0 -0.8 0">
+            <a-entity position="0 -1 0">
               <!-- Play/Pause buttons -->
               <a-image
                 class="clickable"
                 src="#play"
-                position="-0.2 0 0"
-                width="0.3"
-                height="0.3"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
                 play-audio="panorama:group-point2"
               ></a-image>
               <a-image
                 class="clickable"
                 src="#pause"
-                position="0.2 0 0"
-                width="0.3"
-                height="0.3"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
                 pause-audio="panorama:group-point2"
               ></a-image>
               
               <!-- Read Description button -->
-              <a-entity position="0 -0.4 0">
+              <a-entity position="0 -0.6 0">
                 <a-plane
                   color="#0088FF"
-                  width="0.9"
-                  height="0.2"
+                  width="1.5"
+                  height="0.5"
                   opacity="0.8"
                   class="clickable"
                   show-description="panorama:group-point2;
                                   text:The Newhouse Family Courtyard in front of Newhouse 1 honors the Newhouse legacy in journalism and communication."
                 ></a-plane>
                 <a-text
-                  value="Read Description"
+                  value="Caption"
                   align="center"
                   color="white"
-                  width="2"
-                  position="0 0 0.01"
+                  width="4"
+                  position="0.2 0.35 0.7"
                 ></a-text>
               </a-entity>
             </a-entity>
@@ -174,7 +171,7 @@
             class="clickable"
             src="#hotspot"
             position="1 1.6 -2"
-            scale="0.3 0.3 0.3"
+            scale="0.6 0.6 0.6"
             spot="linkto:#point1;
                   spotgroup:#group-point1;
                   audio:#audio3;
@@ -182,42 +179,42 @@
                   popupColor:#F0F0F0"
           >
             <!-- Controls for this hotspot -->
-            <a-entity position="0 -0.8 0">
+            <a-entity position="0 -1 0">
               <!-- Play/Pause buttons -->
               <a-image
                 class="clickable"
                 src="#play"
-                position="-0.2 0 0"
-                width="0.3"
-                height="0.3"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
                 play-audio="panorama:group-point3"
               ></a-image>
               <a-image
                 class="clickable"
                 src="#pause"
-                position="0.2 0 0"
-                width="0.3"
-                height="0.3"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
                 pause-audio="panorama:group-point3"
               ></a-image>
               
               <!-- Read Description button -->
-              <a-entity position="0 -0.4 0">
+              <a-entity position="0 -0.6 0">
                 <a-plane
                   color="#0088FF"
-                  width="0.9"
-                  height="0.2"
+                  width="1.5"
+                  height="0.5"
                   opacity="0.8"
                   class="clickable"
                   show-description="panorama:group-point3;
                                   text:Inside Newhouse 1, I.M. Pei's clean lines and light-filled interiors showcase mid-century modern design."
                 ></a-plane>
                 <a-text
-                  value="Read Description"
+                  value="Caption"
                   align="center"
                   color="white"
-                  width="2"
-                  position="0 0 0.01"
+                  width="4"
+                  position="-0.42 0.3 0.7"
                 ></a-text>
               </a-entity>
             </a-entity>

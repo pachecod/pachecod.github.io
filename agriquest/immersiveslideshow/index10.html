@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>A-Frame Image Timeline with Blink Controls</title>
+    <!-- Prevent default mobile zoom behavior -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+
+    <!-- Custom Components -->
+    <script>
+      // Face-camera component to keep hotspots facing the camera.
+      AFRAME.registerComponent('face-camera', {
+        init: function() {
+          // Add a class to make it clickable 
+          this.el.classList.add('clickable');
+        },
+        tick: function () {
+          var camera = document.querySelector('[camera]');
+          if (!camera) return;
+          
+          // Get the camera and element positions
+          var cameraPosition = new THREE.Vector3();
+          camera.object3D.getWorldPosition(cameraPosition);
+          
+          var elementPosition = new THREE.Vector3();
+          this.el.object3D.getWorldPosition(elementPosition);
+          
+          // Calculate direction toward the camera in the XZ plane (ignore Y)
+          var direction = new THREE.Vector3();
+          direction.subVectors(cameraPosition, elementPosition);
+          direction.y = 0; // Keep hotspot upright by ignoring Y component
+          direction.normalize();
+          
+          // Convert to rotation and apply it (add 90 degrees to make the front face the camera)
+          var lookRotation = new THREE.Euler();
+          lookRotation.y = Math.atan2(-direction.x, -direction.z);
+          
+          // Apply rotation
+          this.el.object3D.rotation.set(0, lookRotation.y, 0);
+        }
+      });
+      
+      // Spot component for hotspot behavior.
+      AFRAME.registerComponent('spot', {
+        schema: {
+          linkto: {type: 'string'},
+          spotgroup: {type: 'string'},
+          label: {type: 'string', default: ''},
+          audio: {type: 'selector', default: null},
+          labelBackground: {type: 'string', default: '#000000'}
+        },
+        init: function() {
+          var data = this.data;
+          var el = this.el;
+          el.setAttribute('geometry', {primitive: 'circle', radius: 0.5});
+          
+          // Use the original hotspot image
+          el.setAttribute('material', {
+            color: '#FFFFFF',
+            opacity: 0.6,
+            transparent: true,
+            src: 'images/hotspot_ new.png'
+          });
+          
+          if (data.label) {
+            var textEntity = document.createElement('a-text');
+            textEntity.setAttribute('value', data.label);
+            textEntity.setAttribute('align', 'center');
+            textEntity.setAttribute('position', '0 0.6 0');
+            textEntity.setAttribute('scale', '0.5 0.5 0.5');
+            textEntity.setAttribute('color', '#FFFFFF');
+            var bgEntity = document.createElement('a-plane');
+            bgEntity.setAttribute('color', data.labelBackground);
+            bgEntity.setAttribute('position', '0 0.6 -0.01');
+            bgEntity.setAttribute('width', data.label.length * 0.15 + 0.2);
+            bgEntity.setAttribute('height', '0.3');
+            bgEntity.setAttribute('opacity', '0.8');
+            el.appendChild(bgEntity);
+            el.appendChild(textEntity);
+          }
+          el.addEventListener('click', function() {
+            var allGroups = document.querySelectorAll('[id^="group-"]');
+            allGroups.forEach(function(group) {
+              group.setAttribute('visible', false);
+            });
+            if (data.spotgroup) {
+              var targetGroup = document.querySelector('#' + data.spotgroup);
+              if (targetGroup) {
+                targetGroup.setAttribute('visible', true);
+              }
+            }
+            if (data.audio) { data.audio.play(); }
+            if (data.linkto) {
+              var targetPoint = document.querySelector(data.linkto);
+              if (targetPoint) {
+                var cameraRig = document.querySelector('#cameraRig');
+                cameraRig.setAttribute('position', targetPoint.getAttribute('position'));
+              }
+            }
+          });
+        }
+      });
+      
+      // Hotspots container component.
+      AFRAME.registerComponent('hotspots', {
+        init: function() {
+          var point1 = document.createElement('a-entity');
+          point1.setAttribute('id', 'point1');
+          point1.setAttribute('position', '-11 1 2');
+          this.el.appendChild(point1);
+          
+          var point2 = document.createElement('a-entity');
+          point2.setAttribute('id', 'point2');
+          point2.setAttribute('position', '10 1 -8');
+          this.el.appendChild(point2);
+          
+          var point3 = document.createElement('a-entity');
+          point3.setAttribute('id', 'point3');
+          point3.setAttribute('position', '0 1 10');
+          this.el.appendChild(point3);
+          
+          var point4 = document.createElement('a-entity');
+          point4.setAttribute('id', 'point4');
+          point4.setAttribute('position', '-10 1 -3');
+          this.el.appendChild(point4);
+        }
+      });
+      
+      //Mobile-thumb-move component.
+      AFRAME.registerComponent('mobile-thumb-move', {
+        schema: {
+          speed: {type: 'number', default: 1}  // Adjust movement speed as needed.
+        },
+        init: function () {
+          var self = this;
+          this.numFingers = 0;  // Current number of touches.
+          
+          // Update touch state.
+          this.updateTouches = function (event) {
+            event.preventDefault();
+            self.numFingers = event.touches.length;
+          };
+          
+          // Clear state when touches end.
+          this.clearTouches = function (event) {
+            event.preventDefault();
+            // If there are remaining touches, update; otherwise clear.
+            self.numFingers = (event.touches && event.touches.length) || 0;
+          };
+          
+          // Wait for the scene's canvas to be available.
+          this.el.sceneEl.addEventListener('renderstart', function () {
+            var canvas = self.el.sceneEl.canvas;
+            // Use passive: false so that event.preventDefault() works.
+            canvas.addEventListener('touchstart', self.updateTouches, {passive: false});
+            canvas.addEventListener('touchmove', self.updateTouches, {passive: false});
+            canvas.addEventListener('touchend', self.clearTouches, {passive: false});
+            canvas.addEventListener('touchcancel', self.clearTouches, {passive: false});
+          });
+          
+          // Optionally, remove blink-controls on mobile to avoid conflict.
+          if (AFRAME.utils.device.isMobile()) {
+            var leftCtrl = document.querySelector('#left-controller');
+            var rightCtrl = document.querySelector('#right-controller');
+            if (leftCtrl) { leftCtrl.removeAttribute('blink-controls'); }
+            if (rightCtrl) { rightCtrl.removeAttribute('blink-controls'); }
+          }
+        },
+        tick: function (time, deltaTime) {
+          // Only move if any touches are active.
+          if (this.numFingers === 0) { return; }
+          
+          // Calculate move distance for this tick.
+          var distance = this.data.speed * (deltaTime / 1000);
+          // Adjust direction:
+          // One finger: move forward. Two fingers: move backward.
+          var moveMultiplier = (this.numFingers === 1) ? -1 : 1;
+          
+          var cameraEl = this.el.querySelector('[camera]');
+          if (cameraEl) {
+            var direction = new THREE.Vector3();
+            cameraEl.object3D.getWorldDirection(direction);
+            direction.multiplyScalar(distance * moveMultiplier);
+            this.el.object3D.position.add(direction);
+          }
+        },
+        remove: function () {
+          var canvas = this.el.sceneEl.canvas;
+          canvas.removeEventListener('touchstart', this.updateTouches);
+          canvas.removeEventListener('touchmove', this.updateTouches);
+          canvas.removeEventListener('touchend', this.clearTouches);
+          canvas.removeEventListener('touchcancel', this.clearTouches);
+        }
+      });
+      
+      // Info panel component for VR-friendly floating panels
+      AFRAME.registerComponent('info-panel', {
+        schema: {
+          title: {type: 'string', default: 'Information'},
+          content: {type: 'string', default: 'Content goes here'},
+          imageUrl: {type: 'string', default: ''},
+          imageCaption: {type: 'string', default: ''},
+          width: {type: 'number', default: 4},
+          height: {type: 'number', default: 3}
+        },
+        init: function() {
+          var data = this.data;
+          var el = this.el;
+          
+          // Set up basic panel
+          el.setAttribute('visible', false);
+          el.setAttribute('geometry', {
+            primitive: 'plane',
+            width: data.width,
+            height: data.height
+          });
+          el.setAttribute('material', {
+            color: 'white',
+            opacity: 0.9,
+            side: 'double'
+          });
+          
+          // Create title
+          var titleEl = document.createElement('a-text');
+          titleEl.setAttribute('value', data.title);
+          titleEl.setAttribute('align', 'center');
+          titleEl.setAttribute('color', '#333333');
+          titleEl.setAttribute('width', data.width * 0.8);
+          titleEl.setAttribute('position', {x: 0, y: data.height/2 - 0.3, z: 0.01});
+          titleEl.setAttribute('scale', '0.7 0.7 0.7');
+          el.appendChild(titleEl);
+          
+          // Create content text
+          var contentEl = document.createElement('a-text');
+          contentEl.setAttribute('value', data.content);
+          contentEl.setAttribute('align', 'left');
+          contentEl.setAttribute('color', '#333333');
+          contentEl.setAttribute('width', data.width * 0.8);
+          contentEl.setAttribute('position', {x: -data.width/2 + 0.3, y: data.height/2 - 0.7, z: 0.01});
+          contentEl.setAttribute('scale', '0.5 0.5 0.5');
+          el.appendChild(contentEl);
+          
+          // Create image if URL is provided
+          if (data.imageUrl) {
+            var imageContainer = document.createElement('a-plane');
+            imageContainer.setAttribute('width', data.width * 0.8);
+            imageContainer.setAttribute('height', data.width * 0.5); // 16:10 aspect ratio
+            imageContainer.setAttribute('position', {
+              x: 0,
+              y: 0,
+              z: 0.02
+            });
+            imageContainer.setAttribute('material', {
+              src: data.imageUrl,
+              transparent: true
+            });
+            el.appendChild(imageContainer);
+            
+            // Add image caption if provided
+            if (data.imageCaption) {
+              var captionEl = document.createElement('a-text');
+              captionEl.setAttribute('value', data.imageCaption);
+              captionEl.setAttribute('align', 'center');
+              captionEl.setAttribute('color', '#666666');
+              captionEl.setAttribute('width', data.width * 0.8);
+              captionEl.setAttribute('position', {
+                x: 0,
+                y: -data.width * 0.25 - 0.2, // Position just below image
+                z: 0.01
+              });
+              captionEl.setAttribute('scale', '0.4 0.4 0.4');
+              captionEl.setAttribute('font', 'italic');
+              el.appendChild(captionEl);
+            }
+          }
+          
+          // Create close button
+          var closeButton = document.createElement('a-entity');
+          closeButton.setAttribute('geometry', {
+            primitive: 'plane',
+            width: 0.6,
+            height: 0.3
+          });
+          closeButton.setAttribute('material', {
+            color: '#333333'
+          });
+          closeButton.setAttribute('position', {
+            x: 0,
+            y: -data.height/2 + 0.3,
+            z: 0.01
+          });
+          closeButton.setAttribute('class', 'clickable');
+          
+          var closeText = document.createElement('a-text');
+          closeText.setAttribute('value', 'Close');
+          closeText.setAttribute('align', 'center');
+          closeText.setAttribute('color', 'white');
+          closeText.setAttribute('position', {x: 0, y: 0, z: 0.01});
+          closeText.setAttribute('scale', '0.5 0.5 0.5');
+          closeButton.appendChild(closeText);
+          
+          // Add click handler to close button
+          closeButton.addEventListener('click', function() {
+            el.setAttribute('visible', false);
+          });
+          
+          el.appendChild(closeButton);
+          
+          // Make panel face camera
+          el.setAttribute('look-at', '[camera]');
+        },
+        update: function() {
+          // This will update the panel if properties change
+        }
+      });
+      
+      // Modified component to toggle info panel visibility with fixed position
+      AFRAME.registerComponent('toggle-info-panel', {
+  schema: {
+    target: {type: 'selector'},
+    // Add fixed position coordinates to the schema
+    positionX: {type: 'number', default: 0},
+    positionY: {type: 'number', default: 2},
+    positionZ: {type: 'number', default: -4}
+  },
+  init: function() {
+    var el = this.el;
+    var data = this.data;
+    
+    // Add click event to toggle panel
+    el.addEventListener('click', function() {
+      if (data.target) {
+        // Set the panel to the fixed position defined in the schema
+        data.target.setAttribute('position', {
+          x: data.positionX,
+          y: data.positionY, 
+          z: data.positionZ
+        });
+        data.target.setAttribute('visible', true);
+      }
+    });
+    
+    // Add hover effects for better UX
+    el.addEventListener('mouseenter', function() {
+      el.setAttribute('scale', '1.1 1.1 1.1');
+    });
+    
+    el.addEventListener('mouseleave', function() {
+      el.setAttribute('scale', '1 1 1');
+    });
+  }
+});
+    </script>
+  </head>
+
+  <body>
+
+    <a-scene cursor="rayOrigin: mouse">
+
+    <!-- Camera Rig and Controls -->
+
+        <a-entity id="cameraRig" mobile-thumb-move movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 0 0" rotation="0 0 0">
+
+            <!-- Camera -->
+        
+                <a-entity id="head" camera="active: true" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" wasd-controls position="0 1.6 0">
+
+                    <!-- Cursor for glance navigation -->
+
+                    <a-cursor fuse="true" fuse-timeout="500" raycaster="objects: .clickable"><a-cursor>
+
+                    <!-- End cursor -->
+
+                </a-entity>
+
+            <!-- End Camera -->
+
+            <!-- VR hand controllers -->
+                <a-entity id="left-controller" laser-controls="hand: left" raycaster="objects: .clickable, .ground" blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
+                </a-entity>
+
+                <a-entity id="right-controller" laser-controls="hand: right" raycaster="objects: .clickable, .ground" blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig">
+                </a-entity>
+
+            <!-- End VR hand controllers -->
+
+      </a-entity>
+
+    <!-- End Camera Rig and Controls -->
+
+      <!-- Assets -->
+      <a-assets>
+
+        <img id="image1" src="images/1.jpg" />
+        <img id="image2" src="images/2.jpg" />
+        <img id="image3" src="images/3.jpg" />
+        <img id="arrowLeft" src="images/left-arrow.png" />
+        <img id="arrowRight" src="images/right-arrow.png" />
+        <img id="grid" src="images/border.jpg" />
+        <img id="sky" src="skies/day.jpg" />
+        <img id="ground" src="grounds/grass.jpg" />
+    
+        <img id="hotspot" src="images/hotspot_new.png" />
+        
+        <a-asset-item id="library" src="models/library.glb"></a-asset-item>
+
+        <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
+
+        <audio id="audio1" src="./audio/music.mp3" preload="auto"></audio>
+
+      </a-assets>
+
+      <!-- VR-Compatible Hotspot for floating caption with fixed position panel -->
+<a-circle
+id="alice-hotspot"
+position="16 3 5"
+rotation="0 90 0"
+radius="1"
+material="src: images/hotspot.jpg; roughness: 1; side: double;"
+toggle-info-panel="target: #alice-info-panel; positionX: 16; positionY: 3; positionZ: 5"
+class="clickable"
+look-at="[camera]">
+</a-circle>
+
+<!-- VR-Compatible Info Panel with initial position -->
+<a-entity
+id="alice-info-panel"
+info-panel="
+  title: A Headline Goes Here;
+  content: A caption goes here. A caption goes here. A caption goes here.;
+  imageUrl: images/2.jpg;
+  imageCaption: A caption goes here. A caption goes here. A caption goes here. A caption goes here. A caption goes here.;"
+position="15 3 4.8" 
+rotation="0 -90 0"
+visible="false">
+</a-entity>
+
+      <!-- End VR-Compatible Info Panel  -->
+
+    <!-- Ground -->
+
+        <a-plane width="100" height="100" rotation="-90 0 0" material="src: #ground; repeat:10 10; transparent: false; opacity: 1;" shadow="cast: false; receive: true" class="ground">
+        </a-plane>
+
+    <!-- End Ground -->
+
+    <!-- Sky -->
+        <a-sky src="#sky"></a-sky>
+    <!-- End Sky -->
+
+    <!-- Photo Gallery Image 1 -->
+      <a-plane id="image-plane-1" position="0 1.6 -4" width="4" height="2.5" material="src: #image1" visible="true">
+      </a-plane>
+
+    <!-- End Photo Gallery Image 1 -->
+
+    <!-- Photo Gallery Image 2 -->
+
+      <a-plane id="image-plane-2" position="0 1.6 -4" width="4" height="2.5" material="src: #image1" visible="false">
+      </a-plane>
+
+    <!-- End Photo Gallery Image 1 -->  
+
+    <!-- Photo Gallery Right Arrow -->
+      <a-image id="right-arrow" src="#arrowRight" position="2 1.6 -3.5" scale="0.5 0.5 0.5" class="clickable"></a-image>
+      <a-image id="left-arrow" src="#arrowLeft" position="-2 1.6 -3.5" scale="0.5 0.5 0.5" class="clickable"></a-image>
+
+    <!-- End Photo Gallery Right Arrow -->
+
+    <!-- 3D Model -->
+      <a-entity gltf-model="#library" position="5 0 -2.746" scale="0.5 0.5 0.5" rotation="0 -116 0" shadow="cast: true; receive: true"></a-entity>
+      <a-entity gltf-model="#bench" position="-6.246 0 -2.896" scale="0.015 0.015 0.015" rotation="0 53 0" shadow="cast: true; receive: true"></a-entity>
+
+    <!-- End 3D Model -->
+
+    <!-- Particle System (unknown what this does)-->
+      <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
+
+    <!-- End Particle System -->
+  
+
+    <!-- Audio and Hotspots with entity id spots -->
+    <a-entity id="spots" hotspots>
+
+        <!-- Group Point 1 -->
+
+        <a-entity id="group-point1" visible="true">
+          <a-entity face-camera
+                    spot="linkto:#point2;spotgroup:group-point2;label:Conference Room;audio:#audio1;labelBackground:#333333;"
+                    position="-11 1.5 2">
+          </a-entity>
+        </a-entity>
+        <a-entity id="group-point2" visible="true">
+          <a-entity face-camera
+                    spot="linkto:#point1;spotgroup:group-point1;label:Point 1;audio:#audio1;"
+                    position="10 1.5 -8">
+          </a-entity>
+          <a-entity face-camera
+                    spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
+                    position="0 1.5 10">
+          </a-entity>
+        </a-entity>
+
+        <!-- End Group Point 1 -->
+
+        <!-- Group Point 2 -->
+
+        <a-entity id="group-point3" visible="true">
+          <a-entity face-camera
+                    spot="linkto:#point2;spotgroup:group-point2;label:Point 2;audio:#audio1"
+                    position="10 1.5 3">
+          </a-entity>
+          <a-entity face-camera
+                    spot="linkto:#point4;spotgroup:group-point4;label:Point 4;audio:#audio1"
+                    position="-10 1.5 -3">
+          </a-entity>
+        </a-entity>
+
+        <!-- End Grou Point 2 -->
+
+        <!-- Group Point 3 -->
+
+        <a-entity id="group-point4" visible="true">
+          <a-entity face-camera
+                    spot="linkto:#point3;spotgroup:group-point3;label:Point 3;audio:#audio1"
+                    position="0 1.5 -10">
+          </a-entity>
+        </a-entity>
+
+        <!-- End Group Point 3 -->
+
+    
+    </a-entity>
+
+    <!-- End Audio & Hotspots with entity id spots -->
+
+
+    </a-scene>
+
+
+    <!-- Transition script for photo gallery -->
+
+    <script>
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        const images = ["#image1", "#image2", "#image3"];
+        let currentIndex = 0;
+        let isAnimating = false;
+        const planes = [
+          document.querySelector("#image-plane-1"),
+          document.querySelector("#image-plane-2")
+        ];
+
+        function animateTransition(direction) {
+          if (isAnimating) return;
+          isAnimating = true;
+          const currentPlane = planes[0];
+          const nextPlane = planes[1];
+          currentIndex = (currentIndex + direction + images.length) % images.length;
+          nextPlane.setAttribute("material", "src", images[currentIndex]);
+          nextPlane.setAttribute("visible", "true");
+          nextPlane.setAttribute("position", `${4 * direction} 1.6 -4`);
+          currentPlane.setAttribute("animation", {
+            property: "position",
+            to: `${-4 * direction} 1.6 -4`,
+            dur: 1000,
+            easing: "easeInOutQuad"
+          });
+          nextPlane.setAttribute("animation", {
+            property: "position",
+            to: "0 1.6 -4",
+            dur: 1000,
+            easing: "easeInOutQuad"
+          });
+          setTimeout(() => {
+            currentPlane.setAttribute("visible", "false");
+            currentPlane.removeAttribute("animation");
+            nextPlane.removeAttribute("animation");
+            planes.reverse();
+            isAnimating = false;
+          }, 1000);
+        }
+
+        document.querySelector("#right-arrow").addEventListener("click", () => {
+          if (!isAnimating) animateTransition(1);
+        });
+        document.querySelector("#left-arrow").addEventListener("click", () => {
+          if (!isAnimating) animateTransition(-1);
+        });
+      });
+    </script>
+
+    <!-- End script for photo gallery -->
+
+  </body>
+</html>

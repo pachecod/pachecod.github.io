@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Minimal Babylon.js Scene</title>
+    
+    <!-- Babylon.js Core - Using a specific version to ensure compatibility -->
+    <script src="https://cdn.jsdelivr.net/npm/babylonjs@5.0.0/babylon.min.js"></script>
+    
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            touch-action: none;
+        }
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+        #debugInfo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 100;
+        }
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            border-radius: 5px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="debugInfo">Loading...</div>
+    <div id="controls">
+        WASD: Move | Mouse: Look<br>
+        Mobile: Tap to move forward
+    </div>
+    <canvas id="renderCanvas"></canvas>
+
+    <script>
+        // Debug function
+        function debugLog(message) {
+            console.log(message);
+            const debugInfo = document.getElementById('debugInfo');
+            if (debugInfo) {
+                debugInfo.innerHTML += message + '<br>';
+            }
+        }
+
+        // Simple mobile detection
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Wait for DOM to load
+        window.addEventListener('DOMContentLoaded', function() {
+            debugLog("DOM loaded");
+            
+            // Get canvas
+            const canvas = document.getElementById("renderCanvas");
+            debugLog("Canvas loaded");
+            
+            // Create engine
+            const engine = new BABYLON.Engine(canvas, true);
+            debugLog("Engine created");
+            
+            // Create scene
+            const createScene = function() {
+                const scene = new BABYLON.Scene(engine);
+                scene.clearColor = new BABYLON.Color3(0.1, 0.1, 0.2);
+                debugLog("Scene created");
+                
+                // Add light
+                const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.7;
+                debugLog("Light created");
+                
+                // Add camera
+                const camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 1.7, -5), scene);
+                camera.attachControl(canvas, true);
+                
+                // Configure keyboard controls (WASD)
+                camera.keysUp = [87]; // W
+                camera.keysDown = [83]; // S
+                camera.keysLeft = [65]; // A
+                camera.keysRight = [68]; // D
+                
+                // Set camera parameters
+                camera.speed = 0.2;
+                camera.inertia = 0.7;
+                camera.angularSensibility = 1000;
+                
+                debugLog("Camera created");
+                
+                // Create ground
+                const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 50, height: 50}, scene);
+                const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+                groundMat.diffuseColor = new BABYLON.Color3(0.2, 0.5, 0.1);
+                ground.material = groundMat;
+                debugLog("Ground created");
+                
+                // Create visualization plane
+                const panel = BABYLON.MeshBuilder.CreatePlane("panel", {width: 4, height: 3}, scene);
+                panel.position = new BABYLON.Vector3(0, 2, 5);
+                
+                // Create material for the panel
+                const panelMat = new BABYLON.StandardMaterial("panelMat", scene);
+                
+                // Create a dynamic texture for the panel
+                const textTexture = new BABYLON.DynamicTexture("textTexture", {width: 1024, height: 768}, scene);
+                const textContext = textTexture.getContext();
+                
+                // Fill with white background
+                textContext.fillStyle = "white";
+                textContext.fillRect(0, 0, 1024, 768);
+                
+                // Add title text
+                textContext.fillStyle = "black";
+                textContext.font = "bold 40px Arial";
+                textContext.textAlign = "center";
+                textContext.fillText("US Carbon Emissions by Sector", 512, 80);
+                
+                // Add loading text
+                textContext.font = "24px Arial";
+                textContext.fillText("Data Visualization", 512, 384);
+                
+                // Add caption
+                textContext.font = "18px Arial";
+                textContext.fillText("This shows carbon emissions data by sector", 512, 700);
+                
+                // Update the texture
+                textTexture.update();
+                panelMat.diffuseTexture = textTexture;
+                panel.material = panelMat;
+                
+                debugLog("Visualization panel created");
+                
+                // Add some cubes as obstacles
+                for (let i = 0; i < 10; i++) {
+                    const cube = BABYLON.MeshBuilder.CreateBox("cube" + i, {size: 1}, scene);
+                    cube.position.x = Math.random() * 20 - 10;
+                    cube.position.z = Math.random() * 20 - 10;
+                    cube.position.y = 0.5;
+                    
+                    const cubeMat = new BABYLON.StandardMaterial("cubeMat" + i, scene);
+                    cubeMat.diffuseColor = new BABYLON.Color3(
+                        Math.random(),
+                        Math.random(),
+                        Math.random()
+                    );
+                    cube.material = cubeMat;
+                }
+                debugLog("Obstacles created");
+                
+                // Maintain camera at constant height
+                scene.registerBeforeRender(function() {
+                    // Keep camera at eye level
+                    camera.position.y = 1.7;
+                    
+                    // Simple boundary check
+                    const boundary = 24;
+                    if (Math.abs(camera.position.x) > boundary) {
+                        camera.position.x = Math.sign(camera.position.x) * boundary;
+                    }
+                    if (Math.abs(camera.position.z) > boundary) {
+                        camera.position.z = Math.sign(camera.position.z) * boundary;
+                    }
+                });
+                
+                // Add touch controls for mobile
+                if (isMobile()) {
+                    debugLog("Adding mobile controls");
+                    
+                    // Simple tap to move
+                    scene.onPointerDown = function() {
+                        // Get camera forward direction
+                        const forward = camera.getDirection(new BABYLON.Vector3(0, 0, 1));
+                        // Zero out vertical component for ground movement
+                        forward.y = 0;
+                        forward.normalize();
+                        // Move camera forward
+                        camera.position.addInPlace(forward.scale(0.5));
+                    };
+                } else {
+                    debugLog("Using desktop controls");
+                }
+                
+                debugLog("Scene setup complete");
+                return scene;
+            };
+            
+            // Create the scene
+            const scene = createScene();
+            
+            // Run the render loop
+            engine.runRenderLoop(function() {
+                scene.render();
+            });
+            debugLog("Render loop started");
+            
+            // Handle window resize
+            window.addEventListener("resize", function() {
+                engine.resize();
+            });
+            debugLog("Resize handler added");
+            
+            // Hide debug after 5 seconds
+            setTimeout(function() {
+                const debugInfo = document.getElementById("debugInfo");
+                if (debugInfo) {
+                    debugInfo.style.opacity = "0";
+                    debugInfo.style.transition = "opacity 1s";
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
