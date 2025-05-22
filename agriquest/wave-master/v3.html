@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3D Model Multi-Animation Demo</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+
+    <!-- GLTF model animation controller -->
+    <script>
+      AFRAME.registerComponent("animation-control", {
+        schema: {
+          defaultClip: { default: "" },
+          idleClip: { default: "" }, // Optional idle animation to return to
+          timeScale: { default: 1 },
+        },
+
+        init: function () {
+          this.model = null;
+          this.mixer = null;
+          this.actions = {};
+          this.currentAction = null;
+          this.idleAction = null;
+
+          // Wait for model to load
+          this.el.addEventListener("model-logged", () => {
+            console.log("model-logged event received");
+          });
+          
+          this.el.addEventListener("model-loaded", (e) => {
+            console.log("Model loaded!");
+            this.model = e.detail.model;
+            this.setupAnimation();
+            // Emit an event that other components can listen for
+            this.el.emit("animations-ready", { animationNames: Object.keys(this.actions) });
+          });
+        },
+
+        setupAnimation: function () {
+          if (!this.model) return;
+
+          console.log("Setting up animation...");
+          // Create animation mixer
+          this.mixer = new THREE.AnimationMixer(this.model);
+
+          // Get animation clips
+          if (this.model.animations && this.model.animations.length) {
+            console.log(
+              `Found ${this.model.animations.length} animations:`,
+              this.model.animations.map((a) => a.name)
+            );
+
+            // Create actions for each clip
+            this.model.animations.forEach((clip) => {
+              const action = this.mixer.clipAction(clip);
+              this.actions[clip.name] = action;
+              
+              // Store idle animation if specified
+              if (clip.name === this.data.idleClip) {
+                this.idleAction = action;
+              }
+
+              // If this is the default clip, play it
+              if (
+                clip.name === this.data.defaultClip ||
+                (this.data.defaultClip === "" && 
+                 this.data.idleClip === "" && 
+                 clip.name === "Static pose" || 
+                 clip.name === "Idle")
+              ) {
+                action.play();
+                this.currentAction = action;
+                console.log("Playing default animation:", clip.name);
+              }
+            });
+            
+            // If idle animation was specified and no default was played, play idle
+            if (this.data.idleClip && !this.currentAction && this.idleAction) {
+              this.idleAction.play();
+              this.currentAction = this.idleAction;
+              console.log("Playing idle animation:", this.data.idleClip);
+            }
+          } else {
+            console.warn("No animations found in model");
+          }
+        },
+
+        playAnimation: function (name, loop = THREE.LoopOnce, returnToIdle = true) {
+          console.log("Attempting to play animation:", name);
+          console.log("Available animations:", Object.keys(this.actions));
+
+          if (!this.actions || Object.keys(this.actions).length === 0) {
+            console.warn("No animations available");
+            return;
+          }
+
+          // If specific animation not found, use first available one
+          let targetAction = this.actions[name];
+          if (!targetAction) {
+            const availableAnim = Object.keys(this.actions)[0];
+            console.warn(
+              `Animation "${name}" not found. Using "${availableAnim}" instead.`
+            );
+            targetAction = this.actions[availableAnim];
+          }
+
+          // Stop current animation
+          if (this.currentAction) {
+            this.currentAction.fadeOut(0.5);
+          }
+
+          // Setup the animation
+          targetAction.loop = loop;
+          targetAction.clampWhenFinished = true;
+          targetAction.timeScale = this.data.timeScale;
+
+          // Play the animation
+          targetAction.reset().fadeIn(0.5).play();
+          this.currentAction = targetAction;
+
+          console.log("Playing animation:", name);
+          
+          // If we should return to idle after a non-looping animation
+          if (returnToIdle && loop === THREE.LoopOnce && this.idleAction) {
+            // Calculate animation duration and set timeout to return to idle
+            const duration = targetAction._clip.duration * 1000 / this.data.timeScale;
+            const fadeOutTime = 500; // 500ms fade out
+            
+            setTimeout(() => {
+              if (this.currentAction === targetAction) { // Only if the animation hasn't changed
+                console.log("Animation finished, returning to idle");
+                this.currentAction.fadeOut(0.5);
+                this.idleAction.reset().fadeIn(0.5).play();
+                this.currentAction = this.idleAction;
+              }
+            }, duration - fadeOutTime); // Slightly before end to allow for fade
+          }
+        },
+
+        tick: function (time, deltaTime) {
+          // Update the animation mixer
+          if (this.mixer) {
+            this.mixer.update(deltaTime / 1000);
+          }
+        },
+        
+        // Public method to get animation names
+        getAnimationNames: function() {
+          return Object.keys(this.actions);
+        }
+      });
+
+      // Add a component to handle mouse and touch events for non-VR
+      AFRAME.registerComponent("clickable", {
+        schema: {
+          animation: {type: 'string', default: ''},
+          loop: {type: 'boolean', default: false},
+          returnToIdle: {type: 'boolean', default: true}
+        },
+        
+        init: function () {
+          const el = this.el;
+          const data = this.data;
+          
+          // Mouse events
+          el.addEventListener("click", () => {
+            console.log("Mouse click detected on:", el.id);
+            this.playRequestedAnimation();
+          });
+          
+          // Touch events for mobile
+          el.addEventListener("touchend", () => {
+            console.log("Touch event detected on:", el.id);
+            this.playRequestedAnimation();
+          });
+          
+          // For A-Frame raycaster system
+          el.addEventListener("raycaster-intersected", () => {
+            // Highlight effect when looked at
+            el.setAttribute("material", "opacity", 0.8);
+          });
+          
+          el.addEventListener("raycaster-intersected-cleared", () => {
+            // Reset highlight
+            el.setAttribute("material", "opacity", 1);
+          });
+        },
+        
+        playRequestedAnimation: function() {
+          // Find the target character with animation-control component
+          const targetId = this.el.getAttribute("data-target") || "animated-character";
+          const character = document.querySelector("#" + targetId);
+          
+          if (!character) {
+            console.warn("Target character not found:", targetId);
+            return;
+          }
+          
+          const animCtrl = character.components["animation-control"];
+          if (animCtrl) {
+            const animName = this.data.animation;
+            console.log(`Playing animation: ${animName} (Loop: ${this.data.loop}, Return: ${this.data.returnToIdle})`);
+            animCtrl.playAnimation(
+              animName, 
+              this.data.loop ? THREE.LoopRepeat : THREE.LoopOnce,
+              this.data.returnToIdle
+            );
+          } else {
+            console.warn("Animation controller not found on target");
+          }
+        }
+      });
+      
+      // Add component to dynamically create buttons for available animations
+      AFRAME.registerComponent("animation-buttons", {
+        schema: {
+          character: {type: 'selector', default: '#animated-character'},
+          startPosition: {type: 'vec3', default: {x: 1, y: 1, z: -3}},
+          spacing: {type: 'number', default: 0.3},
+          columns: {type: 'number', default: 1}
+        },
+        
+        init: function() {
+          // Wait for character to load animations
+          const character = this.data.character;
+          
+          if (!character) {
+            console.warn("Character not specified for animation buttons");
+            return;
+          }
+          
+          character.addEventListener("animations-ready", (e) => {
+            console.log("Animations ready event received", e.detail.animationNames);
+            this.createButtons(e.detail.animationNames);
+          });
+        },
+        
+        createButtons: function(animationNames) {
+          if (!animationNames || animationNames.length === 0) {
+            console.warn("No animation names provided");
+            return;
+          }
+          
+          const buttonContainer = this.el;
+          const startPos = this.data.startPosition;
+          const spacing = this.data.spacing;
+          const columns = this.data.columns;
+          
+          animationNames.forEach((name, index) => {
+            // Calculate grid position
+            const col = index % columns;
+            const row = Math.floor(index / columns);
+            
+            const x = startPos.x + (col * spacing);
+            const y = startPos.y - (row * spacing);
+            const z = startPos.z;
+            
+            // Create button entity
+            const buttonId = `button-${name.replace(/\s+/g, '-')}`;
+            const buttonEl = document.createElement('a-entity');
+            buttonEl.setAttribute('id', buttonId);
+            buttonEl.setAttribute('position', `${x} ${y} ${z}`);
+            
+            // Create box for the button
+            const boxEl = document.createElement('a-box');
+            boxEl.setAttribute('id', `box-${buttonId}`);
+            boxEl.setAttribute('color', '#5555FF');
+            boxEl.setAttribute('scale', '0.2 0.2 0.05');
+            boxEl.setAttribute('class', 'clickable');
+            boxEl.setAttribute('clickable', `animation: ${name}; loop: ${name === 'Idle' || name === 'Static pose'}; returnToIdle: true`);
+            boxEl.setAttribute('data-target', this.data.character.id);
+            boxEl.setAttribute('event-set__mouseenter', 'material.color: #7777FF');
+            boxEl.setAttribute('event-set__mouseleave', 'material.color: #5555FF');
+            
+            // Create text label
+            const textEl = document.createElement('a-text');
+            const displayName = name.length > 10 ? name.substring(0, 10) + '...' : name;
+            textEl.setAttribute('value', displayName);
+            textEl.setAttribute('position', '0 0 0.03');
+            textEl.setAttribute('scale', '0.5 0.5 0.5');
+            textEl.setAttribute('color', 'white');
+            textEl.setAttribute('align', 'center');
+            
+            // Add elements to the scene
+            buttonEl.appendChild(boxEl);
+            buttonEl.appendChild(textEl);
+            buttonContainer.appendChild(buttonEl);
+            
+            console.log(`Created button for animation: ${name}`);
+          });
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <a-scene background="color: #87CEEB">
+      <!-- Asset Management System -->
+      <a-assets>
+        <img id="vignette" src="./vignette.png" />
+        <!-- Preload the 3D model -->
+        <a-asset-item
+          id="character-model"
+          src="./greeting_waving_110_frames_loop.glb"
+        ></a-asset-item>
+      </a-assets>
+
+      <!-- Ground -->
+      <a-plane
+        color="#7CFC00"
+        shader="flat"
+        rotation="-90 0 0"
+        scale="20 20 1"
+      ></a-plane>
+
+      <!-- 3D Model with Animation -->
+      <a-entity
+        id="animated-character"
+        gltf-model="#character-model"
+        position="0 0 -3"
+        scale="1 1 1"
+        rotation="0 0 0"
+        animation-control="timeScale: 1; idleClip: Idle"
+      >
+      </a-entity>
+
+      <!-- Animation Buttons Container - will be populated dynamically -->
+      <a-entity 
+        id="button-container" 
+        animation-buttons="character: #animated-character; startPosition: 1 1.5 -3; spacing: 0.3; columns: 2">
+      </a-entity>
+
+      <!-- Camera Rig -->
+      <a-entity
+        id="cam-rig"
+        movement-controls="controls: gamepad, keyboard; speed: 0.2;"
+      >
+        <!-- Camera -->
+        <a-entity id="camera" camera position="0 1.6 0" look-controls>
+          <a-cursor
+            id="cursor"
+            raycaster="objects: .clickable"
+            cursor="fuse: false"
+            material="color: red; shader: flat"
+          ></a-cursor>
+          <a-image
+            id="dyn-fov-red"
+            src="#vignette"
+            position="0 0 -0.15"
+            opacity="0"
+          ></a-image>
+        </a-entity>
+        <!-- VR Controllers -->
+        <a-entity
+          laser-controls="hand: right"
+          raycaster="objects: .clickable; lineColor: #FF0000"
+        ></a-entity>
+        <a-entity
+          laser-controls="hand: left"
+          raycaster="objects: .clickable; lineColor: #FF0000"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Wait for the scene to load completely
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get references to our elements
+        const camRig = document.querySelector("#cam-rig");
+        const dynFov = document.querySelector("#dyn-fov-red");
+        const animatedCharacter = document.querySelector("#animated-character");
+
+        let lastPosition = new THREE.Vector3();
+        let isMoving = false;
+        let movementTimeout;
+        
+        // Log when scene is loaded
+        document.querySelector('a-scene').addEventListener('loaded', function () {
+          console.log('Scene has loaded');
+        });
+
+        // Add debugging to see what animations are loaded
+        animatedCharacter.addEventListener("model-loaded", function () {
+          console.log("Model loaded event fired");
+          animatedCharacter.emit("model-logged");
+          
+          // Wait a moment for animations to be processed
+          setTimeout(() => {
+            const animCtrl = animatedCharacter.components["animation-control"];
+            if (animCtrl && animCtrl.actions) {
+              console.log(
+                "Available animations:",
+                Object.keys(animCtrl.actions)
+              );
+            } else {
+              console.warn("Animation controller not ready yet");
+            }
+          }, 1000);
+        });
+
+        // Store initial position once scene is loaded
+        AFRAME.registerComponent("track-movement", {
+          init: function () {
+            lastPosition = new THREE.Vector3().copy(this.el.object3D.position);
+          },
+
+          tick: function () {
+            const currentPosition = this.el.object3D.position;
+
+            // Check if position has changed significantly
+            const distance = lastPosition.distanceTo(currentPosition);
+
+            if (distance > 0.01) {
+              // Threshold to detect actual movement
+              // Movement detected
+              if (!isMoving) {
+                dynFov.setAttribute("animation", {
+                  property: "opacity",
+                  from: 0,
+                  to: 1,
+                  dur: 300,
+                  easing: "easeOutQuad",
+                });
+                isMoving = true;
+              }
+
+              // Update last position
+              lastPosition.copy(currentPosition);
+
+              // Reset timeout
+              clearTimeout(movementTimeout);
+              movementTimeout = setTimeout(() => {
+                dynFov.setAttribute("animation", {
+                  property: "opacity",
+                  from: 1,
+                  to: 0,
+                  dur: 300,
+                  easing: "easeOutQuad",
+                });
+                isMoving = false;
+              }, 100);
+            }
+          },
+        });
+
+        // Add the component to cam-rig
+        camRig.setAttribute("track-movement", "");
+      });
+    </script>
+  </body>
+</html>

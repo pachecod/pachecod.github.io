@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>On-rails dynamic FOV reduction</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+  </head>
+
+  <body>
+    <a-scene background="color: #FFFFFF">
+      <!-- Asset Management System -->
+      <a-assets>
+        <img id="footsteps" src="./footsteps.png" />
+        <img id="vignette" src="./vignette.png" />
+      </a-assets>
+
+      <!-- Ground -->
+      <a-plane color="#DDDDDD" shader="flat" rotation="-90 0 0" scale="10 40 1">
+      </a-plane>
+
+      <!-- Curved Image -->
+      <a-curvedimage
+        src="./curved-image.jpg"
+        position="-3 1.5 -16"
+        scale="3 3 3"
+        theta-length="90"
+        theta-start="135"
+        radius="0.707"
+        height="0.833"
+      >
+      </a-curvedimage>
+      <!-- Checkpoint UI -->
+      <a-image
+        src="#footsteps"
+        position="-3 3.5 -16"
+        checkpoint="offset: 0 -3.5 0"
+        look-at="#cam-rig"
+        class="clickable"
+      >
+      </a-image>
+
+      <!-- Green Box -->
+      <a-box color="#00AA00" position="3 0.5 -16"></a-box>
+      <!-- Checkpoint UI -->
+      <a-image
+        src="#footsteps"
+        position="3 2.5 -16"
+        checkpoint="offset: -1 -2.5 0"
+        look-at="#cam-rig"
+        class="clickable"
+      >
+      </a-image>
+
+      <!-- Yellow Box -->
+      <a-box color="#FFAA00" position="-3 0.5 -8"></a-box>
+      <!-- Checkpoint UI -->
+      <a-image
+        src="#footsteps"
+        position="-3 2.5 -8"
+        checkpoint="offset: 1 -2.5 0"
+        look-at="#cam-rig"
+        class="clickable"
+      >
+      </a-image>
+
+      <!-- Red Box -->
+      <a-box color="#AA0000" position="3 0.5 -8"></a-box>
+      <!-- Checkpoint UI -->
+      <a-image
+        src="#footsteps"
+        position="3 2.5 -8"
+        checkpoint="offset: -1 -2.5 0"
+        look-at="#cam-rig"
+        class="clickable"
+      >
+      </a-image>
+
+      <a-entity
+        id="cam-rig"
+        movement-controls="controls: gamepad, keyboard, checkpoint; speed: 0.2;"
+        checkpoint-controls="mode: animate"
+      >
+        <!-- Camera -->
+        <a-entity id="camera" camera position="0 1.6 0" look-controls>
+          <a-image
+            id="dyn-fov-red"
+            src="#vignette"
+            position="0 0 -0.15"
+            opacity="0"
+          >
+          </a-image>
+        </a-entity>
+        <!-- VR Controllers -->
+        <a-entity
+          laser-controls="hand: right"
+          raycaster="objects: .clickable; lineColor: #FF0000"
+        ></a-entity>
+        <a-entity
+          laser-controls="hand: left"
+          raycaster="objects: .clickable; lineColor: #FF0000"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Wait for the scene to load completely
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get references to our elements
+        const camRig = document.querySelector("#cam-rig");
+        const dynFov = document.querySelector("#dyn-fov-red");
+
+        let lastPosition = new THREE.Vector3();
+        let isMoving = false;
+        let movementTimeout;
+
+        // Store initial position once scene is loaded
+        AFRAME.registerComponent("track-movement", {
+          init: function () {
+            lastPosition = new THREE.Vector3().copy(this.el.object3D.position);
+          },
+
+          tick: function () {
+            const currentPosition = this.el.object3D.position;
+
+            // Check if position has changed significantly
+            const distance = lastPosition.distanceTo(currentPosition);
+
+            if (distance > 0.01) {
+              // Threshold to detect actual movement
+              // Movement detected
+              if (!isMoving) {
+                dynFov.setAttribute("animation", {
+                  property: "opacity",
+                  from: 0,
+                  to: 1,
+                  dur: 300,
+                  easing: "easeOutQuad",
+                });
+                isMoving = true;
+              }
+
+              // Update last position
+              lastPosition.copy(currentPosition);
+
+              // Reset timeout
+              clearTimeout(movementTimeout);
+              movementTimeout = setTimeout(() => {
+                dynFov.setAttribute("animation", {
+                  property: "opacity",
+                  from: 1,
+                  to: 0,
+                  dur: 300,
+                  easing: "easeOutQuad",
+                });
+                isMoving = false;
+              }, 100);
+            }
+          },
+        });
+
+        // Add the component to cam-rig
+        camRig.setAttribute("track-movement", "");
+
+        // Handle checkpoint navigation
+        camRig.addEventListener("navigation-start", () => {
+          dynFov.setAttribute("animation", {
+            property: "opacity",
+            from: 0,
+            to: 1,
+            dur: 300,
+            easing: "easeOutQuad",
+          });
+        });
+
+        camRig.addEventListener("navigation-end", () => {
+          dynFov.setAttribute("animation", {
+            property: "opacity",
+            from: 1,
+            to: 0,
+            dur: 300,
+            easing: "easeOutQuad",
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

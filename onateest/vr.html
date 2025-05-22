@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detroit Donuts VR Experience</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+  <style>
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #00796b;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 9999;
+      transition: opacity 1s ease-in-out;
+    }
+    .loading-overlay h1 {
+      font-family: Arial, sans-serif;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .loading-overlay p {
+      font-family: Arial, sans-serif;
+      margin-bottom: 30px;
+    }
+    .spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 5px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .instructions {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 121, 107, 0.8);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-family: Arial, sans-serif;
+      z-index: 100;
+      text-align: center;
+    }
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <h1>Detroit Donuts VR</h1>
+    <p>Loading your immersive experience...</p>
+  </div>
+
+  <div class="instructions" id="instructions">
+    Use WASD keys or arrow keys to move • Look around by dragging • Press ESC to release cursor
+  </div>
+
+  <a-scene loading-screen="enabled: false">
+    <!-- Assets Management System -->
+    <a-assets>
+      <!-- Textures -->
+      <img id="floor-texture" src="/api/placeholder/512/512" alt="Floor texture">
+      <img id="wall-texture" src="/api/placeholder/512/512" alt="Wall texture">
+      <img id="ceiling-texture" src="/api/placeholder/512/512" alt="Ceiling texture">
+      <img id="menu-texture" src="/api/placeholder/1024/768" alt="Menu texture">
+      <img id="logo-texture" src="/api/placeholder/512/512" alt="Logo texture">
+      <img id="donut1-texture" src="/api/placeholder/256/256" alt="Donut texture">
+      <img id="donut2-texture" src="/api/placeholder/256/256" alt="Donut texture">
+      <img id="donut3-texture" src="/api/placeholder/256/256" alt="Donut texture">
+    </a-assets>
+    
+    <!-- Camera and Controls -->
+    <a-entity id="rig" position="0 1.6 4">
+      <a-entity camera look-controls wasd-controls="acceleration: 15" position="0 0 0">
+        <a-entity cursor="fuse: false"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02"
+                  material="color: white; shader: flat"
+                  raycaster="far: 20; objects: .interactive"></a-entity>
+      </a-entity>
+    </a-entity>
+    
+    <!-- Environment -->
+    <a-sky color="#87CEEB"></a-sky>
+    
+    <!-- Donut Shop Building -->
+    <a-entity id="donut-shop">
+      <!-- Floor -->
+      <a-plane position="0 0 0" 
+               rotation="-90 0 0" 
+               width="20" 
+               height="20" 
+               material="src: #floor-texture; repeat: 10 10" 
+               shadow="receive: true"></a-plane>
+      
+      <!-- Ceiling -->
+      <a-plane position="0 4 0" 
+               rotation="90 0 0" 
+               width="20" 
+               height="20" 
+               material="src: #ceiling-texture; repeat: 10 10"></a-plane>
+      
+      <!-- Walls -->
+      <a-entity id="walls">
+        <!-- Back wall -->
+        <a-plane position="0 2 -10" 
+                 width="20" 
+                 height="4" 
+                 material="src: #wall-texture; repeat: 5 1"
+                 shadow="cast: true"></a-plane>
+        
+        <!-- Front wall (with door cutout) -->
+        <a-plane position="-6 2 10" 
+                 width="8" 
+                 height="4" 
+                 material="src: #wall-texture; repeat: 2 1"></a-plane>
+        
+        <a-plane position="6 2 10" 
+                 width="8" 
+                 height="4" 
+                 material="src: #wall-texture; repeat: 2 1"></a-plane>
+        
+        <a-plane position="0 3.5 10" 
+                 width="4" 
+                 height="1" 
+                 material="src: #wall-texture; repeat: 1 0.25"></a-plane>
+        
+        <!-- Left wall -->
+        <a-plane position="-10 2 0" 
+                 rotation="0 90 0" 
+                 width="20" 
+                 height="4" 
+                 material="src: #wall-texture; repeat: 5 1"></a-plane>
+        
+        <!-- Right wall -->
+        <a-plane position="10 2 0" 
+                 rotation="0 -90 0" 
+                 width="20" 
+                 height="4" 
+                 material="src: #wall-texture; repeat: 5 1"></a-plane>
+      </a-entity>
+      
+      <!-- Counter -->
+      <a-box position="0 1 -7"
+             width="12"
+             depth="2"
+             height="2"
+             color="#8D6E63"
+             shadow="cast: true"></a-box>
+      
+      <a-box position="0 0 -6"
+             width="12"
+             depth="4"
+             height="0.1"
+             color="#6D4C41"></a-box>
+      
+      <!-- Donut Display Case -->
+      <a-box position="0 1.5 -7"
+             width="10"
+             depth="1"
+             height="1"
+             color="#ECEFF1"
+             opacity="0.8"
+             shadow="cast: true"></a-box>
+      
+      <!-- Menu Board -->
+      <a-plane position="0 3 -9.9"
+               width="8"
+               height="2"
+               material="src: #menu-texture"></a-plane>
+      
+      <!-- Logo -->
+      <a-plane position="0 3 9.9"
+               rotation="0 180 0"
+               width="4"
+               height="1"
+               material="src: #logo-texture"
+               class="interactive"></a-plane>
+      
+      <!-- Windows -->
+      <a-plane position="-8 2 9.9"
+               rotation="0 180 0"
+               width="3"
+               height="2"
+               color="#64B5F6"
+               opacity="0.7"></a-plane>
+      
+      <a-plane position="8 2 9.9"
+               rotation="0 180 0"
+               width="3"
+               height="2"
+               color="#64B5F6"
+               opacity="0.7"></a-plane>
+      
+      <!-- Tables -->
+      <a-entity id="table1" position="-6 0 0">
+        <a-cylinder position="0 0.5 0"
+                   radius="1.2"
+                   height="0.1"
+                   color="#A1887F"></a-cylinder>
+        <a-cylinder position="0 0.25 0"
+                   radius="0.1"
+                   height="0.5"
+                   color="#8D6E63"></a-cylinder>
+        <a-cylinder position="0 0 0"
+                   radius="0.5"
+                   height="0.05"
+                   color="#8D6E63"></a-cylinder>
+      </a-entity>
+      
+      <a-entity id="table2" position="6 0 0">
+        <a-cylinder position="0 0.5 0"
+                   radius="1.2"
+                   height="0.1"
+                   color="#A1887F"></a-cylinder>
+        <a-cylinder position="0 0.25 0"
+                   radius="0.1"
+                   height="0.5"
+                   color="#8D6E63"></a-cylinder>
+        <a-cylinder position="0 0 0"
+                   radius="0.5"
+                   height="0.05"
+                   color="#8D6E63"></a-cylinder>
+      </a-entity>
+      
+      <a-entity id="table3" position="-6 0 -4">
+        <a-cylinder position="0 0.5 0"
+                   radius="1.2"
+                   height="0.1"
+                   color="#A1887F"></a-cylinder>
+        <a-cylinder position="0 0.25 0"
+                   radius="0.1"
+                   height="0.5"
+                   color="#8D6E63"></a-cylinder>
+        <a-cylinder position="0 0 0"
+                   radius="0.5"
+                   height="0.05"
+                   color="#8D6E63"></a-cylinder>
+      </a-entity>
+      
+      <a-entity id="table4" position="6 0 -4">
+        <a-cylinder position="0 0.5 0"
+                   radius="1.2"
+                   height="0.1"
+                   color="#A1887F"></a-cylinder>
+        <a-cylinder position="0 0.25 0"
+                   radius="0.1"
+                   height="0.5"
+                   color="#8D6E63"></a-cylinder>
+        <a-cylinder position="0 0 0"
+                   radius="0.5"
+                   height="0.05"
+                   color="#8D6E63"></a-cylinder>
+      </a-entity>
+      
+      <!-- Chairs -->
+      <a-entity class="chair-set" position="-6 0 0">
+        <a-cylinder position="1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="-1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 -1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+      </a-entity>
+      
+      <a-entity class="chair-set" position="6 0 0">
+        <a-cylinder position="1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="-1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 -1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+      </a-entity>
+      
+      <a-entity class="chair-set" position="-6 0 -4">
+        <a-cylinder position="1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="-1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 -1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+      </a-entity>
+      
+      <a-entity class="chair-set" position="6 0 -4">
+        <a-cylinder position="1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="-1.5 0.35 0" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+        <a-cylinder position="0 0.35 -1.5" radius="0.3" height="0.7" color="#5D4037"></a-cylinder>
+      </a-entity>
+      
+      <!-- Donut Models -->
+      <a-entity id="display-donuts">
+        <!-- Classic glazed -->
+        <a-torus position="-3 2 -7" 
+                radius="0.3" 
+                radius-tubular="0.1" 
+                color="#F8C471" 
+                material="src: #donut1-texture"
+                class="interactive"
+                rotation="90 0 0"
+                animation="property: rotation; to: 90 360 0; loop: true; dur: 10000; easing: linear;"></a-torus>
+        <a-text value="Classic Glazed - $2.25" 
+                position="-3 1.4 -7" 
+                align="center" 
+                color="#333333" 
+                width="3"></a-text>
+        
+        <!-- Chocolate frosted -->
+        <a-torus position="0 2 -7" 
+                radius="0.3" 
+                radius-tubular="0.1" 
+                color="#5D4037" 
+                material="src: #donut2-texture"
+                class="interactive"
+                rotation="90 0 0"
+                animation="property: rotation; to: 90 360 0; loop: true; dur: 12000; easing: linear;"></a-torus>
+        <a-text value="Double Chocolate - $2.75" 
+                position="0 1.4 -7" 
+                align="center" 
+                color="#333333" 
+                width="3"></a-text>
+        
+        <!-- Specialty donut -->
+        <a-torus position="3 2 -7" 
+                radius="0.3" 
+                radius-tubular="0.1" 
+                color="#D7BDE2" 
+                material="src: #donut3-texture"
+                class="interactive"
+                rotation="90 0 0"
+                animation="property: rotation; to: 90 360 0; loop: true; dur: 15000; easing: linear;"></a-torus>
+        <a-text value="Pistachio Matcha - $3.75" 
+                position="3 1.4 -7" 
+                align="center" 
+                color="#333333" 
+                width="3"></a-text>
+      </a-entity>
+      
+      <!-- Lights -->
+      <a-entity light="type: ambient; color: #BBB; intensity: 0.5"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.8; castShadow: true" position="0 4 0"></a-entity>
+      <a-entity light="type: point; color: #FFF; intensity: 0.8; distance: 15" position="0 3 0"></a-entity>
+      <a-entity light="type: spot; color: #FFF; intensity: 0.5; angle: 45" position="-3 3 -7" rotation="-90 0 0"></a-entity>
+      <a-entity light="type: spot; color: #FFF; intensity: 0.5; angle: 45" position="0 3 -7" rotation="-90 0 0"></a-entity>
+      <a-entity light="type: spot; color: #FFF; intensity: 0.5; angle: 45" position="3 3 -7" rotation="-90 0 0"></a-entity>
+      
+      <!-- Plants and decor -->
+      <a-entity id="plant1" position="-9 0 9">
+        <a-cylinder height="0.5" radius="0.5" color="#795548"></a-cylinder>
+        <a-sphere position="0 1 0" radius="0.8" color="#2E7D32"></a-sphere>
+      </a-entity>
+      
+      <a-entity id="plant2" position="9 0 9">
+        <a-cylinder height="0.5" radius="0.5" color="#795548"></a-cylinder>
+        <a-sphere position="0 1 0" radius="0.8" color="#2E7D32"></a-sphere>
+      </a-entity>
+      
+      <!-- Coffee machine -->
+      <a-box position="5 1 -7" width="2" height="2" depth="1" color="#424242"></a-box>
+      <a-box position="5 2.2 -7" width="1" height="0.4" depth="0.8" color="#E0E0E0"></a-box>
+      <a-cylinder position="5 2.6 -6.8" radius="0.1" height="0.2" color="#212121" rotation="90 0 0"></a-cylinder>
+      
+      <!-- Cash register -->
+      <a-box position="-5 1.5 -7" width="1.5" height="0.5" depth="1" color="#212121"></a-box>
+      <a-box position="-5 1.8 -6.5" width="1" height="0.3" depth="0.5" color="#E0E0E0"></a-box>
+    </a-entity>
+    
+    <!-- Teleport points for easier navigation -->
+    <a-entity id="teleport-points">
+      <a-cylinder position="0 0.05 7" radius="0.5" height="0.1" color="#00796B" class="interactive"
+                  event-set__enter="_event: mouseenter; material.opacity: 0.7"
+                  event-set__leave="_event: mouseleave; material.opacity: 1">
+      </a-cylinder>
+      <a-text value="Entrance" position="0 0.3 7" align="center" color="white"></a-text>
+      
+      <a-cylinder position="0 0.05 -3" radius="0.5" height="0.1" color="#00796B" class="interactive"
+                  event-set__enter="_event: mouseenter; material.opacity: 0.7"
+                  event-set__leave="_event: mouseleave; material.opacity: 1">
+      </a-cylinder>
+      <a-text value="Counter" position="0 0.3 -3" align="center" color="white"></a-text>
+      
+      <a-cylinder position="-6 0.05 -2" radius="0.5" height="0.1" color="#00796B" class="interactive"
+                  event-set__enter="_event: mouseenter; material.opacity: 0.7"
+                  event-set__leave="_event: mouseleave; material.opacity: 1">
+      </a-cylinder>
+      <a-text value="Seating Area 1" position="-6 0.3 -2" align="center" color="white"></a-text>
+      
+      <a-cylinder position="6 0.05 -2" radius="0.5" height="0.1" color="#00796B" class="interactive"
+                  event-set__enter="_event: mouseenter; material.opacity: 0.7"
+                  event-set__leave="_event: mouseleave; material.opacity: 1">
+      </a-cylinder>
+      <a-text value="Seating Area 2" position="6 0.3 -2" align="center" color="white"></a-text>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    // Hide loading screen after everything is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      const scene = document.querySelector('a-scene');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const instructions = document.getElementById('instructions');
+      
+      if (scene.hasLoaded) {
+        showExperience();
+      } else {
+        scene.addEventListener('loaded', showExperience);
+      }
+      
+      function showExperience() {
+        setTimeout(function() {
+          loadingOverlay.classList.add('hidden');
+          
+          // Hide instructions after 10 seconds
+          setTimeout(function() {
+            instructions.classList.add('hidden');
+          }, 10000);
+        }, 1500); // Add a small delay for smoother transition
+      }
+      
+      // Add click event listeners to teleport points
+      const teleportPoints = document.querySelectorAll('#teleport-points a-cylinder');
+      const rig = document.getElementById('rig');
+      
+      teleportPoints.forEach((point) => {
+        point.addEventListener('click', function() {
+          const position = this.getAttribute('position');
+          rig.setAttribute('position', {
+            x: position.x,
+            y: 1.6, // Maintain camera height
+            z: position.z
+          });
+        });
+      });
+      
+      // Add interactivity to donuts - show info when clicked
+      const donuts = document.querySelectorAll('#display-donuts a-torus');
+      const donutInfo = {
+        0: "Classic Glazed: Our signature donut with a sweet honey glaze. Made fresh daily.",
+        1: "Double Chocolate: Rich chocolate cake donut topped with chocolate ganache. A chocolate lover's dream!",
+        2: "Pistachio Matcha: Our specialty donut with matcha glaze and crushed pistachio topping. Limited availability!"
+      };
+      
+      donuts.forEach((donut, index) => {
+        donut.addEventListener('click', function() {
+          // Create floating text that displays info and fades away
+          const donutPos = this.getAttribute('position');
+          const infoText = document.createElement('a-text');
+          
+          infoText.setAttribute('position', {
+            x: donutPos.x,
+            y: donutPos.y + 0.5,
+            z: donutPos.z
+          });
+          infoText.setAttribute('value', donutInfo[index]);
+          infoText.setAttribute('align', 'center');
+          infoText.setAttribute('width', 2);
+          infoText.setAttribute('color', '#00796B');
+          infoText.setAttribute('animation', {
+            property: 'opacity',
+            from: 1,
+            to: 0,
+            dur: 3000,
+            easing: 'ease-in'
+          });
+          
+          document.querySelector('a-scene').appendChild(infoText);
+          
+          // Remove the element after animation completes
+          setTimeout(() => {
+            document.querySelector('a-scene').removeChild(infoText);
+          }, 3000);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
