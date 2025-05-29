@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animation for fade in effect */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animation for hotspot pulse */
+@keyframes hotspotPulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1.0; }
+  100% { opacity: 0.8; }
+}
+
+.hotspot-animation {
+  animation: hotspotPulse 2s infinite;
+}
+
+/* Additional styles for VR interface */
+a-scene {
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Make sure the canvas fills the entire viewport */
+canvas.a-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* Ensure A-Frame elements use the correct fonts */
+a-text {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+/* Global styles */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WebVR A-Frame Tour</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+      a-text { font-family: Arial; font-weight: bold; }
+      
+      /* Animation for gaze feedback */
+      @keyframes hotspotPulse {
+        0% { opacity: 0.8; }
+        50% { opacity: 1.0; }
+        100% { opacity: 0.8; }
+      }
+      
+      .hotspot-animation {
+        animation: hotspotPulse 2s infinite;
+      }
+    </style>
+  </head>
+
+  <body>
+    <a-scene background="color: #ECECEC">
+      <!-- Assets -->
+      <a-assets>
+
+        <!-- Panoramas -->
+        <img id="point1" src="./images/n3freedomofspeech.jpg" />
+        <img id="point2" src="./images/n1courtyard.jpg" />
+        <img id="point3" src="./images/n1inside.jpg" />
+        <img id="point4" src="./images/n3hallway.jpg" />
+
+        <!-- Hotspot icon -->
+        <img id="hotspot" src="./images/hotspot_yellow.png" />
+        
+        <!-- Narration tracks -->
+        <audio id="audio1" src="./audio/newhouse3freedomofspeech.mp3" preload="auto"></audio>
+        <audio id="audio2" src="./audio/newhouse1courtyard.mp3" preload="auto"></audio>
+        <audio id="audio3" src="./audio/insidenewhouse1.mp3" preload="auto"></audio>
+        
+        <!-- Play/Pause icons -->
+        <img id="play" src="./images/play.png" />
+        <img id="pause" src="./images/pause.png" />
+        
+        <!-- Cursor ring for gaze -->
+        <img id="ring" src="./images/ring.png" />
+      
+      </a-assets>
+
+      <!-- Hotspot groups -->
+      <a-entity id="spots">
+        <!-- Group 1: Front of Newhouse 3 → courtyard -->
+        <a-entity id="group-point1" visible="true">
+          <a-image
+            class="clickable"
+            src="#hotspot"
+            position="0 1.6 -2"
+            scale="0.6 0.6 0.6"
+            spot="linkto:#point2;
+                  spotgroup:#group-point2;
+                  audio:#audio1;
+                  popup:You are standing in front of Newhouse 3, completed in 2007, with the First Amendment emblazoned on its glass facade.;
+                  popupColor:#F0F0F0"
+          >
+            <!-- Controls for this hotspot -->
+            <a-entity position="0 -1 0">
+              <!-- Play/Pause buttons -->
+              <a-image
+                class="clickable"
+                src="#play"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
+                play-audio="panorama:group-point1"
+              ></a-image>
+              <a-image
+                class="clickable"
+                src="#pause"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
+                pause-audio="panorama:group-point1"
+              ></a-image>
+              
+              <!-- Read Description button -->
+              <!-- Moved this wrapper down to avoid overlap -->
+              <a-entity position="0 -0.6 0">
+                <a-plane
+                  color="#0088FF"
+                  width="1.5"
+                  height="0.5"
+                  opacity="0.8"
+                  class="clickable"
+                  show-description="panorama:group-point1;
+                                  text:You are standing in front of Newhouse 3, completed in 2007, with the First Amendment emblazoned on its glass facade."
+                ></a-plane>
+                <a-text
+                  value="Caption"
+                  align="center"
+                  color="white"
+                  width="4"
+                  position="0 0.35 0.7"
+                ></a-text>
+              </a-entity>
+            </a-entity>
+          </a-image>
+        </a-entity>
+        
+
+        <!-- Group 2: Courtyard → inside Newhouse 1 -->
+        <a-entity id="group-point2" visible="false">
+          <a-image
+            class="clickable"
+            src="#hotspot"
+            position="-1 1.6 -2"
+            scale="0.6 0.6 0.6"
+            spot="linkto:#point3;
+                  spotgroup:#group-point3;
+                  audio:#audio2;
+                  popup:The Newhouse Family Courtyard in front of Newhouse 1 honors the Newhouse legacy in journalism and communication.;
+                  popupColor:#F0F0F0"
+          >
+            <!-- Controls for this hotspot -->
+            <a-entity position="0 -1 0">
+              <!-- Play/Pause buttons -->
+              <a-image
+                class="clickable"
+                src="#play"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
+                play-audio="panorama:group-point2"
+              ></a-image>
+              <a-image
+                class="clickable"
+                src="#pause"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
+                pause-audio="panorama:group-point2"
+              ></a-image>
+              
+              <!-- Read Description button -->
+              <a-entity position="0 -0.6 0">
+                <a-plane
+                  color="#0088FF"
+                  width="1.5"
+                  height="0.5"
+                  opacity="0.8"
+                  class="clickable"
+                  show-description="panorama:group-point2;
+                                  text:The Newhouse Family Courtyard in front of Newhouse 1 honors the Newhouse legacy in journalism and communication."
+                ></a-plane>
+                <a-text
+                  value="Caption"
+                  align="center"
+                  color="white"
+                  width="4"
+                  position="0.2 0.35 0.7"
+                ></a-text>
+              </a-entity>
+            </a-entity>
+          </a-image>
+        </a-entity>
+
+        <!-- Group 3: Inside Newhouse 1 → back to Newhouse 3 -->
+        <a-entity id="group-point3" visible="false">
+          <a-image
+            class="clickable"
+            src="#hotspot"
+            position="1 1.6 -2"
+            scale="0.6 0.6 0.6"
+            spot="linkto:#point1;
+                  spotgroup:#group-point1;
+                  audio:#audio3;
+                  popup:Inside Newhouse 1, I.M. Pei's clean lines and light-filled interiors showcase mid-century modern design.;
+                  popupColor:#F0F0F0"
+          >
+            <!-- Controls for this hotspot -->
+            <a-entity position="0 -1 0">
+              <!-- Play/Pause buttons -->
+              <a-image
+                class="clickable"
+                src="#play"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
+                play-audio="panorama:group-point3"
+              ></a-image>
+              <a-image
+                class="clickable"
+                src="#pause"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
+                pause-audio="panorama:group-point3"
+              ></a-image>
+              
+              <!-- Read Description button -->
+              <a-entity position="0 -0.6 0">
+                <a-plane
+                  color="#0088FF"
+                  width="1.5"
+                  height="0.5"
+                  opacity="0.8"
+                  class="clickable"
+                  show-description="panorama:group-point3;
+                                  text:Inside Newhouse 1, I.M. Pei's clean lines and light-filled interiors showcase mid-century modern design."
+                ></a-plane>
+                <a-text
+                  value="Caption"
+                  align="center"
+                  color="white"
+                  width="4"
+                  position="-0.42 0.3 0.7"
+                ></a-text>
+              </a-entity>
+            </a-entity>
+          </a-image>
+        </a-entity>
+      </a-entity>
+
+      <!-- The sky (panorama) -->
+      <a-sky id="skybox" src="#point1"></a-sky>
+
+      <!-- Camera with both mouse and gaze-based cursors and raycaster -->
+      <a-entity id="cam" camera look-controls position="0 1.6 0">
+        <!-- Mouse-based cursor for non-VR mode -->
+        <a-entity 
+          cursor="rayOrigin: mouse; fuse: false"
+          raycaster="objects: .clickable"
+          id="mouse-cursor"
+          visible="true">
+        </a-entity>
+        
+        <!-- Gaze-based cursor for VR mode -->
+        <a-entity
+          cursor="fuse: true; fuseTimeout: 1500"
+          raycaster="objects: .clickable"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: white; shader: flat"
+          id="gaze-cursor"
+          animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+          animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+          visible="false">
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

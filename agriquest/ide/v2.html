@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Frame HTML IDE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            background: #1e1e1e;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .editor-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #333;
+        }
+
+        .preview-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            border-bottom: 1px solid #444;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .editor {
+            flex: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            background: #1e1e1e;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 15px;
+            tab-size: 2;
+        }
+
+        .editor:focus {
+            background: #252525;
+        }
+
+        .preview-frame {
+            flex: 1;
+            border: none;
+            background: white;
+            width: 100%;
+            height: 100%;
+        }
+
+        .toolbar {
+            background: #333;
+            padding: 8px 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #0052a3;
+        }
+
+        .btn:active {
+            background: #004080;
+        }
+
+        .btn.warning {
+            background: #ff9800;
+        }
+
+        .btn.warning:hover {
+            background: #f57c00;
+        }
+
+        .status {
+            margin-left: auto;
+            color: #aaa;
+            font-size: 11px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .editor-panel, .preview-panel {
+                width: 100%;
+                height: 50vh;
+            }
+            
+            .editor-panel {
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="editor-panel">
+            <div class="panel-header">
+                A-Frame HTML Editor
+            </div>
+            <div class="toolbar">
+                <button class="btn" id="clearBtn">Clear</button>
+                <button class="btn" id="basicBtn">Basic HTML</button>
+                <button class="btn" id="aframeBtn">A-Frame Scene</button>
+                <button class="btn warning" id="refreshBtn">Refresh Preview</button>
+                <span class="status">Live Preview →</span>
+            </div>
+            <textarea 
+                class="editor" 
+                id="htmlEditor"
+                placeholder="Start typing your HTML code here...
+
+For A-Frame scenes, try:
+<a-scene>
+  <a-box color='red' position='0 2 -5'></a-box>
+  <a-sphere color='blue' position='2 1 -3'></a-sphere>
+  <a-sky color='#ECECEC'></a-sky>
+</a-scene>"
+            ></textarea>
+        </div>
+        
+        <div class="preview-panel">
+            <div class="panel-header">
+                Live Preview
+            </div>
+            <iframe 
+                class="preview-frame" 
+                id="previewFrame"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
+            ></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const editor = document.getElementById('htmlEditor');
+        const previewFrame = document.getElementById('previewFrame');
+        const clearBtn = document.getElementById('clearBtn');
+        const basicBtn = document.getElementById('basicBtn');
+        const aframeBtn = document.getElementById('aframeBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        
+        let updateTimeout;
+
+        // Update preview function
+        function updatePreview() {
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(() => {
+                try {
+                    const content = editor.value;
+                    
+                    if (!content || content.trim() === '') {
+                        const emptyHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 40px; 
+            text-align: center; 
+            color: #666; 
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h3>Start typing HTML code to see the preview...</h3>
+    <p>Try clicking one of the template buttons above!</p>
+</body>
+</html>`;
+                        previewFrame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(emptyHTML);
+                        return;
+                    }
+
+                    let html = content;
+                    
+                    // Check if it's a complete HTML document
+                    const hasDoctype = content.toLowerCase().includes('<!doctype');
+                    const hasHtmlTag = content.toLowerCase().includes('<html');
+                    
+                    if (!hasDoctype && !hasHtmlTag) {
+                        // Check if it contains A-Frame
+                        if (content.toLowerCase().includes('<a-scene')) {
+                            html = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Frame Scene</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <style>body { margin: 0; font-family: Arial, sans-serif; }</style>
+</head>
+<body>
+${content}
+</body>
+</html>`;
+                        } else {
+                            // Regular HTML content
+                            html = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview</title>
+    <style>body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }</style>
+</head>
+<body>
+${content}
+</body>
+</html>`;
+                        }
+                    }
+                    
+                    // Use data URL to set iframe content
+                    previewFrame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+                    
+                } catch (error) {
+                    console.error('Preview update error:', error);
+                    const errorHTML = `<!DOCTYPE html>
+<html>
+<head><style>body{font-family:Arial;padding:20px;color:#d32f2f;}</style></head>
+<body><h3>Preview Error</h3><p>There was an error updating the preview. Check your HTML syntax.</p></body>
+</html>`;
+                    previewFrame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(errorHTML);
+                }
+            }, 500);
+        }
+
+        // Event listeners
+        editor.addEventListener('input', updatePreview);
+        editor.addEventListener('paste', () => setTimeout(updatePreview, 100));
+        
+        // Handle tab key
+        editor.addEventListener('keydown', function(event) {
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                const tab = '  ';
+                
+                editor.value = editor.value.substring(0, start) + tab + editor.value.substring(end);
+                editor.selectionStart = editor.selectionEnd = start + tab.length;
+                updatePreview();
+            }
+        });
+
+        // Button event listeners
+        clearBtn.addEventListener('click', function() {
+            editor.value = '';
+            updatePreview();
+            editor.focus();
+        });
+
+        basicBtn.addEventListener('click', function() {
+            editor.value = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Page</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        .feature-box {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Welcome to My Interactive Web Page!</h1>
+        <p>This is a modern HTML template with CSS styling and JavaScript functionality. Edit the code to see real-time changes!</p>
+        
+        <div class="feature-box">
+            <h2>✨ Features</h2>
+            <ul>
+                <li>Live preview updates as you type</li>
+                <li>Modern responsive design</li>
+                <li>Interactive JavaScript elements</li>
+                <li>Beautiful gradient backgrounds</li>
+            </ul>
+        </div>
+        
+        <button onclick="changeBackground()">🎨 Change Colors</button>
+        <button onclick="addMessage()">💬 Add Message</button>
+        <button onclick="showTime()">⏰ Show Time</button>
+        
+        <div id="messages" style="margin-top: 20px;"></div>
+    </div>
+    
+    <script>
+        console.log('JavaScript is working! 🎉');
+        
+        const colors = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+        ];
+        
+        function changeBackground() {
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.style.background = randomColor;
+        }
+        
+        function addMessage() {
+            const messages = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.innerHTML = \`
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; margin: 10px 0; border-radius: 8px; animation: fadeIn 0.5s;">
+                    ✨ Message added at \${new Date().toLocaleTimeString()}
+                </div>
+            \`;
+            messages.appendChild(div);
+        }
+        
+        function showTime() {
+            alert('Current time: ' + new Date().toLocaleString());
+        }
+        
+        // Add some CSS animation
+        const style = document.createElement('style');
+        style.textContent = \`
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        \`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>`;
+            updatePreview();
+            editor.focus();
+        });
+
+        aframeBtn.addEventListener('click', function() {
+            editor.value = `<a-scene background="color: #212121">
+  <!-- Camera with controls -->
+  <a-entity 
+    id="rig" 
+    movement-controls="fly: false; constrainToNavMesh: false"
+    position="0 1.6 3">
+    <a-camera 
+      look-controls="pointerLockEnabled: false"
+      wasd-controls="acceleration: 20">
+    </a-camera>
+  </a-entity>
+
+  <!-- Lighting -->
+  <a-entity light="type: ambient; color: #404040"></a-entity>
+  <a-entity light="type: directional; color: #ffffff" position="-1 2 1"></a-entity>
+
+  <!-- Animated rotating cube -->
+  <a-box 
+    position="-1 1 -4" 
+    rotation="0 45 0" 
+    color="#4CC3D9"
+    animation="property: rotation; to: 0 405 0; loop: true; dur: 10000">
+  </a-box>
+  
+  <!-- Bouncing sphere -->
+  <a-sphere 
+    position="0 1.5 -5" 
+    radius="1.25" 
+    color="#EF2D5E"
+    animation="property: position; to: 0 2.5 -5; dir: alternate; dur: 2000; loop: true">
+  </a-sphere>
+  
+  <!-- Spinning cylinder -->
+  <a-cylinder 
+    position="1 0.75 -3" 
+    radius="0.5" 
+    height="1.5" 
+    color="#FFC65D"
+    animation="property: rotation; to: 0 360 0; loop: true; dur: 5000">
+  </a-cylinder>
+  
+  <!-- Ground plane -->
+  <a-plane 
+    position="0 0 -4" 
+    rotation="-90 0 0" 
+    width="8" 
+    height="8" 
+    color="#7BC8A4">
+  </a-plane>
+  
+  <!-- 3D Text -->
+  <a-text 
+    value="Hello A-Frame!" 
+    position="0 2.5 -3" 
+    color="#000"
+    align="center">
+  </a-text>
+  
+  <!-- Sky -->
+  <a-sky color="#87CEEB"></a-sky>
+</a-scene>
+
+<script>
+  // Wait for A-Frame to load
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('A-Frame scene loaded!');
+    console.log('Use WASD keys to move, mouse to look around');
+  });
+</script>`;
+            updatePreview();
+            editor.focus();
+        });
+
+        refreshBtn.addEventListener('click', function() {
+            updatePreview();
+            refreshBtn.textContent = '✓ Refreshed!';
+            refreshBtn.style.background = '#4CAF50';
+            setTimeout(() => {
+                refreshBtn.textContent = 'Refresh Preview';
+                refreshBtn.style.background = '#ff9800';
+            }, 1500);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial content
+            editor.value = `<div style="text-align: center; padding: 40px; font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;">
+    <h1 style="margin: 0 0 20px 0;">🎨 A-Frame HTML IDE</h1>
+    <p style="font-size: 18px; margin-bottom: 20px;">Edit code on the left, see results here instantly!</p>
+    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <h3>🚀 Quick Start:</h3>
+        <p>📄 Basic HTML - Interactive webpage template</p>
+        <p>🥽 A-Frame Scene - 3D/VR experience</p>
+        <p>🔄 Refresh - Manual preview update</p>
+    </div>
+    <p style="font-size: 14px; opacity: 0.9;">The preview updates automatically as you type!</p>
+</div>`;
+            
+            // Initial preview update
+            setTimeout(updatePreview, 200);
+        });
+    </script>
+</body>
+</html>

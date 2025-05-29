@@ -27,10 +27,9 @@
       <a-assets>
 
         <!-- Panoramas -->
-        <img id="point1" src="./images/n3freedomofspeech.jpg" />
-        <img id="point2" src="./images/n1courtyard.jpg" />
-        <img id="point3" src="./images/n1inside.jpg" />
-        <img id="point4" src="./images/n3hallway.jpg" />
+        <img id="point1" src="./images/1.jpg" />
+        <img id="point2" src="./images/2.jpg" />
+        <img id="point3" src="./images/3.jpg" />
 
         <!-- Hotspot icon -->
         <img id="hotspot" src="./images/hotspot_yellow.png" />
@@ -51,7 +50,7 @@
 
       <!-- Hotspot groups -->
       <a-entity id="spots">
-        <!-- Group 1: Front of Newhouse 3 → courtyard -->
+        <!-- Group 1: In a Tree → front of mosque -->
         <a-entity id="group-point1" visible="true">
           <a-image
             class="clickable"
@@ -61,7 +60,7 @@
             spot="linkto:#point2;
                   spotgroup:#group-point2;
                   audio:#audio1;
-                  popup:You are standing in front of Newhouse 3, completed in 2007, with the First Amendment emblazoned on its glass facade.;
+                  popup:We seem to be in the middle of a tree!;
                   popupColor:#F0F0F0"
           >
             <!-- Controls for this hotspot -->
@@ -94,7 +93,7 @@
                   opacity="0.8"
                   class="clickable"
                   show-description="panorama:group-point1;
-                                  text:You are standing in front of Newhouse 3, completed in 2007, with the First Amendment emblazoned on its glass facade."
+                                  text:We seem to be in the middle of some trees."
                 ></a-plane>
                 <a-text
                   value="Caption"
@@ -109,17 +108,17 @@
         </a-entity>
         
 
-        <!-- Group 2: Courtyard → inside Newhouse 1 -->
+        <!-- Group 2: Front of mosque → Inside trees -->
         <a-entity id="group-point2" visible="false">
           <a-image
             class="clickable"
             src="#hotspot"
             position="-1 1.6 -2"
             scale="0.6 0.6 0.6"
-            spot="linkto:#point3;
-                  spotgroup:#group-point3;
+            spot="linkto:#point1;
+                  spotgroup:#group-point1;
                   audio:#audio2;
-                  popup:The Newhouse Family Courtyard in front of Newhouse 1 honors the Newhouse legacy in journalism and communication.;
+                  popup:This is the front of the mosque;
                   popupColor:#F0F0F0"
           >
             <!-- Controls for this hotspot -->
@@ -151,7 +150,7 @@
                   opacity="0.8"
                   class="clickable"
                   show-description="panorama:group-point2;
-                                  text:The Newhouse Family Courtyard in front of Newhouse 1 honors the Newhouse legacy in journalism and communication."
+                                  text:This is the front of the mosque"
                 ></a-plane>
                 <a-text
                   value="Caption"

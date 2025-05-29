@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML IDE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            background: #1e1e1e;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .editor-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #333;
+        }
+
+        .preview-panel {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            border-bottom: 1px solid #444;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .editor {
+            flex: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            background: #1e1e1e;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 15px;
+            tab-size: 2;
+        }
+
+        .editor:focus {
+            background: #252525;
+        }
+
+        .preview-content {
+            flex: 1;
+            background: white;
+            color: black;
+            padding: 0;
+            overflow: auto;
+        }
+
+        .toolbar {
+            background: #333;
+            padding: 8px 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn:hover {
+            background: #0052a3;
+        }
+
+        .btn:active {
+            background: #004080;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .editor-panel, .preview-panel {
+                width: 100%;
+                height: 50vh;
+            }
+            
+            .editor-panel {
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="editor-panel">
+            <div class="panel-header">
+                HTML Editor
+            </div>
+            <div class="toolbar">
+                <button class="btn" onclick="clearEditor()">Clear</button>
+                <button class="btn" onclick="insertBoilerplate()">HTML Template</button>
+                <span style="margin-left: auto; color: #aaa;">Live Preview →</span>
+            </div>
+            <textarea 
+                class="editor" 
+                id="htmlEditor"
+                placeholder="Start typing your HTML code here...
+
+Try this example:
+<h1>Hello World!</h1>
+<p>This is a <strong>live preview</strong> HTML editor.</p>"
+                oninput="updatePreview()"
+                onkeydown="handleTab(event)"
+            ></textarea>
+        </div>
+        
+        <div class="preview-panel">
+            <div class="panel-header">
+                Live Preview
+            </div>
+            <div class="preview-content" id="previewContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const editor = document.getElementById('htmlEditor');
+        const previewContent = document.getElementById('previewContent');
+
+        function updatePreview() {
+            const htmlContent = editor.value;
+            
+            if (htmlContent.trim() === '') {
+                previewContent.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">Start typing HTML code to see the preview...</div>';
+            } else {
+                previewContent.innerHTML = htmlContent;
+            }
+        }
+
+        function clearEditor() {
+            editor.value = '';
+            updatePreview();
+            editor.focus();
+        }
+
+        function insertBoilerplate() {
+            const boilerplate = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Page</h1>
+    <p>Start editing this HTML template!</p>
+</body>
+</html>`;
+            
+            editor.value = boilerplate;
+            updatePreview();
+            editor.focus();
+        }
+
+        function handleTab(event) {
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                
+                editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+                editor.selectionStart = editor.selectionEnd = start + 2;
+            }
+        }
+
+        // Initialize with example
+        document.addEventListener('DOMContentLoaded', function() {
+            const example = `<h1 style="color: #0066cc;">Welcome to HTML IDE!</h1>
+<p>Start coding in the left panel and see your changes here instantly.</p>
+<div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 10px 0;">
+    <h3>Features:</h3>
+    <ul>
+        <li>Live preview as you type</li>
+        <li>Tab support for indentation</li>
+        <li>Responsive split-pane design</li>
+        <li>HTML template button</li>
+    </ul>
+</div>
+<button onclick="alert('JavaScript works!')" style="background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Test Button</button>`;
+            
+            editor.value = example;
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
