@@ -1,0 +1,43 @@
+<!-- This code works in the preview for both PNGs and 3d models --> <html> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <title>A Digital Diorama</title> <meta aframe-injected="" name="mobile-web-app-capable" content="yes"> <meta aframe-injected="" name="theme-color" content="black"> <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script> <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script> <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script> <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script> </head> <body> <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00"> <a-assets> <a-asset-item id="library" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/3d/mushrooms-chjmsaj5o5w-1748451010131.glb"></a-asset-item> <img id="carrotImage" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/images/carrots-2r0yjs8umg4-1748450995896.png" crossorigin="anonymous"> </a-assets> <!-- Sky for better visibility -->
+    <a-sky color="#87CEEB"></a-sky>
+
+    <!-- Ground plane -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#228B22" shadow="receive: true"></a-plane>
+    
+    <!-- LITTLE FREE LIBRARY -->
+    <a-entity
+    id="libraryEntity"
+    gltf-model="#library"
+    position="0 1.5 0"
+    scale="2 2 2"
+    rotation="0 -116 0"
+    shadow="cast: true; receive: true"
+    
+    ></a-entity> <!-- CARROT IMAGE PLANE - positioned where camera can see it -->
+    <a-plane
+    id="carrotPlane"
+    position="-3 2 5"
+    rotation="0 45 0"
+    width="4"
+    height="3"
+    material="src: #carrotImage; transparent: true; side: double"
+    shadow="receive: true"
+    visible="true"
+    
+    ></a-plane> <!-- Fallback plane with solid color to test visibility -->
+    <a-plane
+    position="3 2 5"
+    rotation="0 -45 0"
+    width="2"
+    height="2"
+    color="red"
+    
+    ></a-plane> <!-- TEXT -->
+    <a-text font="kelsonsans" value="Computer: WASD + mouse to move" width="50" position="21 20 -29" rotation="0 0 0" color="#0d0c0c"></a-text>
+    <a-text font="kelsonsans" value="Mobile: tap, hold and point." width="50" position="21 11 -23" rotation="0 0 0" color="#0d0c0c"></a-text>
+    
+    <!-- Basic movement and teleportation --> <a-entity id="cameraRig" movement-controls="constrainToNavMesh: false;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 2 8" rotation="0 0 0"> <!-- camera --> <a-entity id="head" camera="active: true" position="0 1.6 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: false" ></a-entity> <!-- Left Controller --> <a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60" visible="true"></a-entity> <!-- Right Controller --> <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity> </a-entity> <!-- Lighting -->
+    <a-light type="ambient" color="#404040"></a-light>
+    <a-light type="directional" position="2 4 3" color="#ffffff" intensity="0.5" shadow="cast: true"></a-light>
+    
+    </a-scene> </body> </html> 
