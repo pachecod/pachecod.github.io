@@ -120,7 +120,7 @@ AFRAME.registerSystem('loading-manager', {
         color: "#FFFFFF",
         opacity: 0.6,
         transparent: true,
-        src: "https://cdn.glitch.global/a39b243d-0aab-4e21-bb36-77d8260788f9/hotspot.png?v=1746470775132",
+        src: "https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/agriquest/05292025/hotspot.png?v=1746470775132",
       });
       
       // Add pulse animation
@@ -313,7 +313,7 @@ AFRAME.registerSystem('loading-manager', {
           if (model && data.revealAnimation) {
             model.setAttribute("animation__reveal", {
               property: "position",
-              to: model.getAttribute("position").x + " " + (model.getAttribute("position").y) + " " + model.getAttribute("position").z,
+              to: model.getAttribute("position").x + " " + (model.getAttribute("position").y + 1) + " " + model.getAttribute("position").z,
               dur: 1000,
               easing: "easeOutElastic"
             });
@@ -553,17 +553,17 @@ AFRAME.registerSystem('loading-manager', {
     init: function() {
       this.sounds = {
         ambient: new Howl({
-          src: ['https://cdn.glitch.global/a39b243d-0aab-4e21-bb36-77d8260788f9/ambient_nature.mp3?v=1746470754684'],
+          src: ['https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/agriquest/05292025/ambient_nature.mp3?v=1746470754684'],
           loop: true,
           volume: 0.3,
           autoplay: false
         }),
         click: new Howl({
-          src: ['https://cdn.glitch.global/a39b243d-0aab-4e21-bb36-77d8260788f9/click.mp3?v=1746470754684'],
+          src: ['https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/agriquest/05292025/click.mp3?v=1746470754684'],
           volume: 0.5
         }),
         teleport: new Howl({
-          src: ['https://cdn.glitch.global/a39b243d-0aab-4e21-bb36-77d8260788f9/teleport.mp3?v=1746470754684'],
+          src: ['https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/agriquest/05292025/teleport.mp3?v=1746470754684'],
           volume: 0.7
         })
       };
@@ -589,8 +589,8 @@ AFRAME.registerSystem('loading-manager', {
     },
     init: function() {
       this.sky = document.querySelector('a-sky');
-      this.skyDay = 'https://cdn.glitch.global/a39b243d-0aab-4e21-bb36-77d8260788f9/day.jpg?v=1746470542948';
-      this.skyNight = 'https://cdn.glitch.global/a39b243d-0aab-4e21-bb36-77d8260788f9/night.jpg?v=1746470754684';
+      this.skyDay = 'https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/agriquest/05292025/day.jpg?v=1746470542948';
+      this.skyNight = 'https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/agriquest/05292025/night.jpg?v=1746470754684';
       this.cycleTime = 0;
       
       // Create a directional light for the sun

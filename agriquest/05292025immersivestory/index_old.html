@@ -249,9 +249,6 @@
       </a-entity>
 
       <!-- Carrot Exhibit -->
-
-
-      <!-- Carrot Exhibit -->
       <a-entity id="carrot-exhibit" position="-5 0 15">
         <!-- Carrot Model with simplified animations -->
         <a-entity
@@ -262,27 +259,6 @@
           rotation="63 96 110"
           shadow="cast: true; receive: true"
         ></a-entity>
-        
-        <!-- Exhibit Environment -->
-        <a-entity
-          geometry="primitive: cylinder; radius: 5; height: 0.1"
-          position="0 0 0"
-          material="color: #E6B570; roughness: 0.9"
-        ></a-entity>
-        
-        <!-- Information Hotspot -->
-        <a-entity
-  id="carrot-hotspot"
-  face-camera="preserveY: true"
-  class="clickable"
-  spot="label: A short one to two sentence caption goes here.; audio: #audiocarrots; vegetableModel: #carrot-model; revealAnimation: true"
-  position="3 1.5 0"
-></a-entity>
-      </a-entity>
-
-      
-
-      
         
         <!-- Exhibit Environment -->
         <a-entity
@@ -304,8 +280,6 @@
       <!-- Onion Exhibit -->
       <a-entity id="onion-exhibit" position="13.6 0 2">
         <!-- Onion Model with rotation removed -->
-
-
         <a-entity
           id="onion-model"
           gltf-model="#onion"
@@ -324,12 +298,12 @@
         
         <!-- Information Hotspot -->
         <a-entity
-  id="onion-hotspot"
-  face-camera="preserveY: true"
-  class="clickable"
-  spot="label: A short one to two sentence caption goes here.; audio: #audioonion; vegetableModel: #onion-model; revealAnimation: true"
-  position="3 1.5 0"
-></a-entity>
+          id="onion-hotspot"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: A short one to two sentence caption goes here.; vegetableModel: #onion-model; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
       </a-entity>
     </a-scene>
   </body>
