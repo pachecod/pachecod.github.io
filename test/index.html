@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Updated 5-29-2025 -->
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>Agriquest Vegetable Museum</title>
+    <!-- Prevent default mobile zoom behavior -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes" />
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <link rel="stylesheet" href="style.css"/>
+    
+  </head>
+
+  <body>
+    <a-scene 
+      loading-manager
+      cursor="rayOrigin: mouse" 
+      sound-effects
+      day-night-cycle="cycleLength: 180">
+      
+      <!-- UI Overlays -->
+      <div class="museum-info">Welcome to the Vegetable Museum</div>
+      
+      <!-- Camera Rig with Enhanced Controls -->
+      <a-entity
+        id="cameraRig"
+        enhanced-mobile-controls="speed: 3"
+        movement-controls="fly: false; constrainToNavMesh: false;"
+        navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
+        position="0 0 0"
+        rotation="0 0 0"
+      >
+        <a-entity
+          id="head"
+          camera="active: true"
+          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+          wasd-controls="fly: false"
+          position="0 1.6 0"
+        >
+          <a-cursor
+            fuse="true"
+            fuse-timeout="1500"
+            animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+            animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+            animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+            raycaster="objects: .clickable"
+          ></a-cursor>
+        </a-entity>
+
+        <!-- Controllers with improved teleportation -->
+        <a-entity
+          id="left-controller"
+          laser-controls="hand: left"
+          raycaster="objects: .clickable, .ground"
+          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
+          visible="true"
+        ></a-entity>
+        
+        <a-entity
+          id="right-controller"
+          laser-controls="hand: right"
+          raycaster="objects: .clickable, .ground"
+          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
+          visible="true"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Assets with improved organization -->
+      <a-assets timeout="10000">
+        <!-- Images -->
+        
+        <img id="image1" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/slide1-2-gw4yf3f66ye-1751025121547.png" />
+        
+        <img id="image2" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/carrots-r4wx3xyukx-1751025120575.png" />
+
+        <img id="image3" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/onions-2-ulzsfsmw27p-1751025119971.png" />
+        
+        <img id="arrowLeft" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/left-arrow-3u23ymwe844-1751025119761.png" />
+
+        <img id="arrowRight" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/right-arrow-3msjtd5sv0d-1751025119571.png" />
+
+        <img id="sky" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/day-f5wv4xoslsk-1751025118228.jpg />
+
+<img id="ground" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/ground-bts0y1ae4p-1751036492602.png" />
+
+    <img id="hotspot" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/hotspot-1i1znw388ro-1751025115812.png" />
+        
+        
+        <!-- 3D Models -->
+        
+        <a-asset-item id="carrot" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/3d/carrot-0xr1dgzs8cc-1751025115101.glb"></a-asset-item>
+        
+        <a-asset-item id="mushrooms" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/mushroom-model-qd7alkzrh4f-1751036805791.glb"></a-asset-item>
+        
+        <a-asset-item id="onion" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/3d/onion-c870m3tbmio-1751025460115.glb"></a-asset-item>
+        
+        
+        <!-- Audio -->
+        <audio id="audio1" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/mushroomsaudio-5xfurgmq9e-1751037150328.mp3" preload="auto"></audio>
+        <audio id="audiocarrots" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/audiocarrots-jdt3ha1n17-1751037075899.mp3" preload="auto"></audio>
+        <audio id="audioonion" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/audioonion-h1ldb0gggeb-1751037111630.mp3" preload="auto"></audio>
+      </a-assets>
+
+      <!-- Environment -->
+      <a-entity light="type: ambient; color: #BBB; intensity: 1"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 1; castShadow: true" position="-1 1 0"></a-entity>
+      
+      <a-plane
+        width="100"
+        height="100"
+        rotation="-90 0 0"
+        material="src: #ground; repeat:10 10; transparent: false; opacity: 1; normalTextureRepeat: 10 10; roughness: 0.8"
+        shadow="cast: false; receive: true"
+        class="ground clickable"
+      ></a-plane>
+
+      <a-sky src="#sky"></a-sky>
+      
+      <!-- Interactive Info Display -->
+      <a-entity id="info-display" position="0 0 -5">
+        <!-- Main Display Panel with billboard behavior -->
+        <a-entity 
+          id="image-panel-container"
+          face-camera
+          position="0 2.6 -4"
+        >
+          <a-plane
+            id="image-panel"
+            position="0 0 0"
+            width="4"
+            height="2.5"
+            material="src: #image1; side: double; shader: flat"
+            visible="true"
+            class="clickable"
+          ></a-plane>
+          
+          <!-- Navigation Arrows with Improved Styling -->
+          <a-entity 
+            id="nav-left" 
+            position="-2.3 0 0" 
+            class="clickable"
+          >
+            <a-image
+              src="#arrowLeft"
+              position="0 0 0.01"
+              scale="0.5 0.5 0.5"
+              class="clickable"
+              animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
+            ></a-image>
+            <a-plane
+              width="0.6"
+              height="0.6"
+              color="#333333"
+              opacity="0.7"
+              material="shader: flat"
+            ></a-plane>
+          </a-entity>
+          
+          <a-entity 
+            id="nav-right" 
+            position="2.3 0 0" 
+            class="clickable"
+          >
+            <a-image
+              src="#arrowRight"
+              position="0 0 0.01"
+              scale="0.5 0.5 0.5"
+              class="clickable"
+              animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
+            ></a-image>
+            <a-plane
+              width="0.6"
+              height="0.6"
+              color="#333333"
+              opacity="0.7"
+              material="shader: flat"
+            ></a-plane>
+          </a-entity>
+          
+          <!-- Information Display Text -->
+          <a-entity
+            id="info-text"
+            position="0 -1.6 0"
+            text="value: Welcome to the Agriquest Vegetable Museum! Explore the world of vegetables in this interactive 3D exhibit. Click on the hotspots to learn more about each vegetable.; width: 3; color: #FFFFFF; align: center"
+            geometry="primitive: plane; width: 4; height: 0.8"
+            material="color: #333333; opacity: 0.8; shader: flat"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- Create invisible floor collider to prevent falling through -->
+      <a-box
+        class="collision"
+        position="0 -0.1 0"
+        width="100"
+        height="0.2"
+        depth="100"
+        visible="false"
+        static-body
+      ></a-box>
+      
+      <!-- Create invisible ceiling to prevent flying -->
+      <a-box
+        class="collision"
+        position="0 4 0"
+        width="100"
+        height="0.2"
+        depth="100"
+        visible="false"
+        static-body
+      ></a-box>
+
+      <!-- Mushroom Exhibit -->
+      <a-entity id="mushroom-exhibit" position="-15 0 -17">
+        <!-- Mushroom Model with simplified animations -->
+        <a-entity
+          id="mushroom-model"
+          gltf-model="#mushrooms"
+          position="0 1.5 0"
+          scale="2 2 2"
+          rotation="0 -116 0"
+          shadow="cast: true; receive: true"
+        ></a-entity>
+        
+        <!-- Exhibit Environment -->
+        <a-entity
+          geometry="primitive: cylinder; radius: 5; height: 0.1"
+          position="0 0 0"
+          material="color: #2D5F34; roughness: 0.9"
+        ></a-entity>
+        
+        <!-- Information Hotspot -->
+        <a-entity
+          id="mushroom-hotspot"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: Learn About Mushrooms; audio: #audio1; labelBackground: #333333; info: Mushrooms are fungi that grow in dark, moist environments. They are rich in vitamin D and various minerals. Some mushrooms are edible while others are poisonous.; vegetableModel: #mushroom-model; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Carrot Exhibit -->
+      <a-entity id="carrot-exhibit" position="-5 0 15">
+        <!-- Carrot Model with simplified animations -->
+        <a-entity
+          id="carrot-model"
+          gltf-model="#carrot"
+          position="0 2 0"
+          scale="0.2 0.2 0.2"
+          rotation="63 96 110"
+          shadow="cast: true; receive: true"
+        ></a-entity>
+        
+        <!-- Exhibit Environment -->
+        <a-entity
+          geometry="primitive: cylinder; radius: 5; height: 0.1"
+          position="0 0 0"
+          material="color: #E6B570; roughness: 0.9"
+        ></a-entity>
+        
+        <!-- Information Hotspot -->
+        <a-entity
+          id="carrot-hotspot"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: Learn about Carrots; audio: #audiocarrots; info: Carrots are root vegetables rich in beta-carotene, which converts to vitamin A in the body. They help improve vision, boost immunity, and promote healthy skin.; vegetableModel: #carrot-model; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Onion Exhibit -->
+      <a-entity id="onion-exhibit" position="13.6 0 2">
+        <!-- Onion Model with rotation removed -->
+        <a-entity
+          id="onion-model"
+          gltf-model="#onion"
+          position="44 3.6 25"
+          scale="3 3 3"
+          rotation="0 53 0"
+          shadow="cast: true; receive: true"
+        ></a-entity>
+        
+        <!-- Exhibit Environment -->
+        <a-entity
+          geometry="primitive: cylinder; radius: 5; height: 0.1"
+          position="0 0 0"
+          material="color: #B39DDB; roughness: 0.9"
+        ></a-entity>
+        
+        <!-- Information Hotspot -->
+        <a-entity
+          id="onion-hotspot"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: Learn about Onions; audio: #audioonion; info: Onions are bulbous vegetables with layers of flesh covered by a papery skin. They contain compounds that may reduce inflammation and lower cholesterol levels.; vegetableModel: #onion-model; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
+      </a-entity>
+
+      <script>
+        // Document ready handler
+        document.addEventListener("DOMContentLoaded", () => {
+          // Image slideshow functionality
+          const images = ["#image1", "#image2", "#image3"];
+          let currentIndex = 0;
+          const imagePanel = document.querySelector("#image-panel");
+          
+          function updatePanelImage() {
+            imagePanel.setAttribute("material", "src", images[currentIndex]);
+            
+            // Update info text based on current image
+            const infoText = document.querySelector("#info-text");
+            switch(currentIndex) {
+              case 0:
+                infoText.setAttribute("text", "value", "Welcome to the Agriquest Vegetable Museum! Explore the world of vegetables in this interactive 3D exhibit. Click on the hotspots to learn more about each vegetable.");
+                break;
+              case 1:
+                infoText.setAttribute("text", "value", "Carrots are rich in beta-carotene which is good for eye health. They can be enjoyed raw or cooked in a variety of dishes.");
+                break;
+              case 2:
+                infoText.setAttribute("text", "value", "Onions add flavor to countless dishes worldwide. They contain compounds that may help reduce inflammation and promote heart health.");
+                break;
+            }
+          }
+          
+          document.querySelector("#nav-left").addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updatePanelImage();
+            // Play click sound if available
+            const soundEffects = document.querySelector('[sound-effects]');
+            if (soundEffects && soundEffects.components['sound-effects'].sounds.click) {
+              soundEffects.components['sound-effects'].sounds.click.play();
+            }
+          });
+          
+          document.querySelector("#nav-right").addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updatePanelImage();
+            // Play click sound if available
+            const soundEffects = document.querySelector('[sound-effects]');
+            if (soundEffects && soundEffects.components['sound-effects'].sounds.click) {
+              soundEffects.components['sound-effects'].sounds.click.play();
+            }
+          });
+          
+          // Update hotspots to use the preserveY option
+          document.querySelectorAll('[face-camera]').forEach(el => {
+            // Check if this is a hotspot element (not the image panel)
+            if (el.hasAttribute('spot')) {
+              el.setAttribute('face-camera', 'preserveY', true);
+            }
+          });
+          
+          // VR Mode toggle
+          const vrToggle = document.createElement('div');
+          vrToggle.className = 'vr-toggle';
+          vrToggle.textContent = 'Enter VR';
+          document.body.appendChild(vrToggle);
+          
+          vrToggle.addEventListener('click', () => {
+            const scene = document.querySelector('a-scene');
+            if (scene.is('vr-mode')) {
+              scene.exitVR();
+              vrToggle.textContent = 'Enter VR';
+            } else {
+              scene.enterVR();
+              vrToggle.textContent = 'Exit VR';
+            }
+          });
+          
+          // Detect device capabilities
+          setTimeout(() => {
+            if (AFRAME.utils.device.isMobile()) {
+              document.querySelector('.controls-guide').innerHTML = 'Touch screen to move:<br>• Top half - Move forward<br>• Bottom half - Move backward<br>• Left side - Turn left<br>• Right side - Turn right';
+            } else {
+              document.querySelector('.controls-guide').innerHTML = 'Desktop Controls:<br>• WASD/Arrow Keys - Move<br>• Mouse - Look around<br>• Click - Interact with hotspots';
+            }
+          }, 1000);
+        });
+      </script>
+    </a-scene>
+  </body>
+</html>
