@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Updated 5-29-2025 -->
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>Immersive Story Template</title>
+    <!-- Prevent default mobile zoom behavior -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+
+    <!-- These external scripts control basic XR experience -->
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <meta aframe-injected="" name="mobile-web-app-capable" content="yes" />
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+    
+    
+    <!-- This script controls the immersive museum functionality -->
+    <script src="script.js"></script>
+
+    <!-- CSS file for immersive museum styles -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+  <body>
+    <a-scene 
+      loading-manager
+      cursor="rayOrigin: mouse" 
+      sound-effects>
+      
+      <!-- UI Overlays -->
+      <div class="museum-info">Welcome to the Immersive Story</div>
+      
+      <!-- Camera Rig with Enhanced Controls -->
+      <a-entity
+        id="cameraRig"
+        enhanced-mobile-controls="speed: 3"
+        movement-controls="fly: false; constrainToNavMesh: false;"
+        navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
+        position="0 0 0"
+        rotation="0 0 0"
+      >
+        <a-entity
+          id="head"
+          camera="active: true"
+          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+          wasd-controls="fly: false"
+          position="0 1.6 0"
+        >
+          <a-cursor
+            fuse="true"
+            fuse-timeout="1500"
+            animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+            animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+            animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+            raycaster="objects: .clickable"
+          ></a-cursor>
+        </a-entity>
+
+        <!-- Controllers with improved teleportation -->
+        <a-entity
+          id="left-controller"
+          laser-controls="hand: left"
+          raycaster="objects: .clickable, .ground"
+          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
+          visible="true"
+        ></a-entity>
+        
+        <a-entity
+          id="right-controller"
+          laser-controls="hand: right"
+          raycaster="objects: .clickable, .ground"
+          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
+          visible="true"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Assets with improved organization -->
+      <a-assets timeout="10000">
+        <!-- Images - UPDATE THESE URLs TO YOUR CUSTOM IMAGES -->
+        <img id="image1" src="images/1.png" />
+        <img id="image2" src="images/2.png" />
+        <img id="image3" src="images/3.png" />
+        <img id="arrowLeft" src="images/left-arrow.png" />
+        <img id="arrowRight" src="images/right-arrow.png" />
+        <img id="grid" src="images/border.jpg" />
+        <img id="sky" src="images/day.jpg" />
+        <img id="ground" src="images/grass.jpg" />
+        <img id="hotspot" src="images/hotspot.png" />
+        
+        <!-- 3D Models - UPDATE THESE URLs TO YOUR CUSTOM MODELS -->
+        <a-asset-item id="model1" src="models/1.glb"></a-asset-item>
+        <a-asset-item id="model2" src="models/2.glb"></a-asset-item>
+        <a-asset-item id="model3" src="models/3.glb"></a-asset-item>
+        <a-asset-item id="bench" src="models/bench.glb"></a-asset-item>
+        
+        <!-- Audio - UPDATE THESE URLs TO YOUR CUSTOM AUDIO -->
+        <audio id="audio1" src="audio/1.mp3" preload="auto"></audio>
+        <audio id="audio2" src="audio/2.mp3" preload="auto"></audio>
+        <audio id="audio3" src="audio/3.mp3" preload="auto"></audio>
+      </a-assets>
+
+      <!-- Environment -->
+      <a-entity light="type: ambient; color: #BBB; intensity: 1"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 1; castShadow: true" position="-1 1 0"></a-entity>
+      
+      <a-plane
+        width="100"
+        height="100"
+        rotation="-90 0 0"
+        material="src: #ground; repeat:10 10; transparent: false; opacity: 1; normalTextureRepeat: 10 10; roughness: 0.8"
+        shadow="cast: false; receive: true"
+        class="ground clickable"
+      ></a-plane>
+
+      <a-sky src="#sky"></a-sky>
+      
+      <!-- Interactive Info Display -->
+      <a-entity id="info-display" position="0 0 -5">
+        <!-- Main Display Panel with billboard behavior -->
+        <a-entity 
+          id="image-panel-container"
+          face-camera
+          position="0 2.6 -4"
+        >
+          <a-plane
+            id="image-panel"
+            position="0 0 0"
+            width="4"
+            height="2.5"
+            material="src: #image1; side: double; shader: flat"
+            visible="true"
+            class="clickable"
+          ></a-plane>
+          
+          <!-- Navigation Arrows with Improved Styling -->
+          <a-entity 
+            id="nav-left" 
+            position="-2.3 0 0" 
+            class="clickable"
+          >
+            <a-image
+              src="#arrowLeft"
+              position="0 0 0.01"
+              scale="0.5 0.5 0.5"
+              class="clickable"
+              animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
+            ></a-image>
+            <a-plane
+              width="0.6"
+              height="0.6"
+              color="#333333"
+              opacity="0.7"
+              material="shader: flat"
+            ></a-plane>
+          </a-entity>
+          
+          <a-entity 
+            id="nav-right" 
+            position="2.3 0 0" 
+            class="clickable"
+          >
+            <a-image
+              src="#arrowRight"
+              position="0 0 0.01"
+              scale="0.5 0.5 0.5"
+              class="clickable"
+              animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
+            ></a-image>
+            <a-plane
+              width="0.6"
+              height="0.6"
+              color="#333333"
+              opacity="0.7"
+              material="shader: flat"
+            ></a-plane>
+          </a-entity>
+          
+          <!-- Information Display Text -->
+          <a-entity
+            id="info-text"
+            position="0 -1.6 0"
+            text="value: Welcome to the Immersive Story. Use WASD keys to move around. Click on the hotspots to learn more about each 3D model.; width: 3; color: #FFFFFF; align: center"
+            geometry="primitive: plane; width: 4; height: 0.8"
+            material="color: #333333; opacity: 0.8; shader: flat"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- Create invisible floor collider to prevent falling through -->
+      <a-box
+        class="collision"
+        position="0 -0.1 0"
+        width="100"
+        height="0.2"
+        depth="100"
+        visible="false"
+        static-body
+      ></a-box>
+      
+      <!-- Create invisible ceiling to prevent flying -->
+      <a-box
+        class="collision"
+        position="0 4 0"
+        width="100"
+        height="0.2"
+        depth="100"
+        visible="false"
+        static-body
+      ></a-box>
+
+      <!-- Exhibit 1 -->
+      <a-entity id="exhibit1" position="-15 0 -17">
+        <!-- Model 1 with simplified animations -->
+        <a-entity
+          id="model1-entity"
+          gltf-model="#model1"
+          position="-4.8 -0.2 0.4"
+          scale="0.2 0.2 0.2"
+          rotation="0 110 0"
+          shadow="cast: true; receive: true"
+        ></a-entity>
+        
+        <!-- Exhibit Environment -->
+        <a-entity
+          geometry="primitive: cylinder; radius: 5; height: 0.1"
+          position="0 0 0"
+          material="color: #2D5F34; roughness: 0.9"
+        ></a-entity>
+        
+        <!-- Number Label for Exhibit 1 -->
+        <a-entity position="0 1.1 0">
+          <a-plane width="2" height="2" color="#000" opacity="0.9" position="0 0 0" shader="flat"></a-plane>
+          <a-text value="1" color="#FFF" align="center" anchor="center" width="40" position="0 0.01 0.01" baseline="center"></a-text>
+        </a-entity>
+        
+        <!-- Information Hotspot -->
+        <a-entity
+          id="hotspot1"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: Caption 1; audio: #audio1; labelBackground: #333333; info: A short one to two sentence caption goes here.; vegetableModel: #model1-entity; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Exhibit 2 -->
+      <a-entity id="exhibit2" position="-5 0 15">
+        <!-- Model 2 with simplified animations -->
+        <a-entity
+          id="model2-entity"
+          gltf-model="#model2"
+          position="1.13 1.5 -3"
+          scale="0.7 0.7 0.7"
+          rotation="-6 134 0"
+          shadow="cast: true; receive: true"
+        ></a-entity>
+        
+        <!-- Exhibit Environment -->
+        <a-entity
+          geometry="primitive: cylinder; radius: 5; height: 0.1"
+          position="0 0 0"
+          material="color: #E6B570; roughness: 0.9"
+        ></a-entity>
+        
+        <!-- Number Label for Exhibit 2 -->
+        <a-entity position="0 1.1 0">
+          <a-plane width="2" height="2" color="#000" opacity="0.9" position="0 0 0" shader="flat"></a-plane>
+          <a-text value="2" color="#FFF" align="center" anchor="center" width="40" position="0 0.01 0.01" baseline="center"></a-text>
+        </a-entity>
+        
+        <!-- Information Hotspot -->
+        <a-entity
+          id="hotspot2"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: Caption 2; audio: #audio2; labelBackground: #333333; info: A short one to two sentence caption goes here.; vegetableModel: #model2-entity; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
+      </a-entity>
+
+      <!-- Exhibit 3 -->
+      <a-entity id="exhibit3" position="13.6 0 2">
+        <!-- Model 3 with rotation removed -->
+        <a-entity
+          id="model3-entity"
+          gltf-model="#model3"
+          position="4 -.4 2.7"
+          scale="1 1 1"
+          rotation="0 -200 0"
+          shadow="cast: true; receive: true"
+        ></a-entity>
+        
+        <!-- Exhibit Environment -->
+        <a-entity
+          geometry="primitive: cylinder; radius: 5; height: 0.1"
+          position="0 0 0"
+          material="color: #B39DDB; roughness: 0.9"
+        ></a-entity>
+        
+        <!-- Number Label for Exhibit 3 -->
+        <a-entity position="0 1.1 0">
+          <a-plane width="2" height="2" color="#000" opacity="0.9" position="0 0 0" shader="flat"></a-plane>
+          <a-text value="3" color="#FFF" align="center" anchor="center" width="40" position="0 0.01 0.01" baseline="center"></a-text>
+        </a-entity>
+        
+        <!-- Information Hotspot -->
+        <a-entity
+          id="hotspot3"
+          face-camera="preserveY: true"
+          class="clickable"
+          spot="label: Caption 3; audio: #audio3; labelBackground: #333333; info: A short one to two sentence caption goes here.; vegetableModel: #model3-entity; revealAnimation: true"
+          position="3 1.5 0"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

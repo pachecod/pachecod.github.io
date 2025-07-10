@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WebVR A-Frame Tour</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+      a-text { font-family: Arial; font-weight: bold; }
+      
+      /* Animation for gaze feedback */
+      @keyframes hotspotPulse {
+        0% { opacity: 0.8; }
+        50% { opacity: 1.0; }
+        100% { opacity: 0.8; }
+      }
+      
+      .hotspot-animation {
+        animation: hotspotPulse 2s infinite;
+      }
+      
+      /* Start overlay styles */
+      #start-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        font-family: Arial, sans-serif;
+      }
+      
+      #start-button {
+        background: #0088FF;
+        color: white;
+        border: none;
+        padding: 20px 40px;
+        font-size: 24px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      
+      #start-button:hover {
+        background: #0066CC;
+      }
+      
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Start overlay -->
+    <div id="start-overlay">
+      <button id="start-button">Start VR Tour</button>
+    </div>
+
+    <a-scene background="color: #ECECEC">
+      <!-- Assets -->
+      <a-assets>
+
+        <!-- Panoramas -->
+        <img id="point1" src="./images/1.jpg" />
+        <img id="point2" src="./images/2.jpg" />
+        <img id="point3" src="./images/3.jpg" />
+
+        <!-- Hotspot icon -->
+        <img id="hotspot" src="./images/hotspot_yellow.png" />
+        
+        <!-- Narration tracks -->
+        <audio id="audio1" src="./audio/cars.mp3" preload="auto"></audio>
+        <audio id="audio2" src="./audio/hi.mp3" preload="auto"></audio>
+        <audio id="audio3" src="./audio/hi.mp3" preload="auto"></audio>
+        
+        <!-- Play/Pause icons -->
+        <img id="play" src="./images/play.png" />
+        <img id="pause" src="./images/pause.png" />
+        
+        <!-- Cursor ring for gaze -->
+        <img id="ring" src="./images/ring.png" />
+      
+      </a-assets>
+
+      <!-- Hotspot groups -->
+      <a-entity id="spots">
+        <!-- Group 1: Outside Newshouse 3 -->
+        <a-entity id="group-point1" visible="true">
+          <a-image
+            id="hotspot-group1"
+            class="clickable"
+            src="#hotspot"
+            position="0 1.6 -2"
+            scale="0.6 0.6 0.6"
+            spot="linkto:#point2;
+                  spotgroup:#group-point2;
+                  audio:#audio1;
+                  popup:We seem to be in the middle of a tree!;
+                  popupColor:#F0F0F0"
+          >
+            <!-- Controls for this hotspot -->
+            <a-entity position="0 -1 0">
+              <!-- Play/Pause buttons -->
+              <a-image
+                class="clickable"
+                src="#play"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
+                play-audio="panorama:group-point1"
+              ></a-image>
+              <a-image
+                class="clickable"
+                src="#pause"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
+                pause-audio="panorama:group-point1"
+              ></a-image>
+              
+              <!-- Read Description button -->
+              <a-entity position="0 -0.6 0">
+                <a-plane
+                  color="#0088FF"
+                  width="1.5"
+                  height="0.5"
+                  opacity="0.8"
+                  class="clickable"
+                  show-description="panorama:group-point1;
+                                  text:We seem to be in the middle of some trees."
+                ></a-plane>
+                <a-text
+                  value="Caption"
+                  align="center"
+                  color="white"
+                  width="4"
+                  position="0 0.35 0.7"
+                ></a-text>
+              </a-entity>
+            </a-entity>
+          </a-image>
+        </a-entity>
+        
+
+        <!-- Group 2: Outside Newhouse 1 -->
+        <a-entity id="group-point2" visible="false">
+          <a-image
+            id="hotspot-group2"
+            class="clickable"
+            src="#hotspot"
+            position="-1 1.6 -2"
+            scale="0.6 0.6 0.6"
+            spot="linkto:#point3;
+                  spotgroup:#group-point3;
+                  audio:#audio2;
+                  popup:Go to Inside Newhouse 1;
+                  popupColor:#F0F0F0"
+          >
+            <!-- Controls for this hotspot -->
+            <a-entity position="0 -1 0">
+              <!-- Play/Pause buttons -->
+              <a-image
+                class="clickable"
+                src="#play"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
+                play-audio="panorama:group-point2"
+              ></a-image>
+              <a-image
+                class="clickable"
+                src="#pause"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
+                pause-audio="panorama:group-point2"
+              ></a-image>
+              
+              <!-- Read Description button -->
+              <a-entity position="0 -0.6 0">
+                <a-plane
+                  color="#0088FF"
+                  width="1.5"
+                  height="0.5"
+                  opacity="0.8"
+                  class="clickable"
+                  show-description="panorama:group-point2;
+                                  text:This is the front of the mosque"
+                ></a-plane>
+                <a-text
+                  value="Caption"
+                  align="center"
+                  color="white"
+                  width="4"
+                  position="0 0.35 0.7"
+                ></a-text>
+              </a-entity>
+            </a-entity>
+          </a-image>
+        </a-entity>
+
+        <!-- Group 3: Inside Newhouse 1 -->
+        <a-entity id="group-point3" visible="false">
+          <a-image
+            id="hotspot-group3"
+            class="clickable"
+            src="#hotspot"
+            position="1 1.6 -2"
+            scale="0.6 0.6 0.6"
+            spot="linkto:#point1;
+                  spotgroup:#group-point1;
+                  audio:#audio3;
+                  popup:Go back to Outside Newshouse 3;
+                  popupColor:#F0F0F0"
+          >
+            <!-- Controls for this hotspot -->
+            <a-entity position="0 -1 0">
+              <!-- Play/Pause buttons -->
+              <a-image
+                class="clickable"
+                src="#play"
+                position="-0.5 0 0"
+                width="0.5"
+                height="0.5"
+                play-audio="panorama:group-point3"
+              ></a-image>
+              <a-image
+                class="clickable"
+                src="#pause"
+                position="0.5 0 0"
+                width="0.5"
+                height="0.5"
+                pause-audio="panorama:group-point3"
+              ></a-image>
+              
+              <!-- Read Description button -->
+              <a-entity position="0 -0.6 0">
+                <a-plane
+                  color="#0088FF"
+                  width="1.5"
+                  height="0.5"
+                  opacity="0.8"
+                  class="clickable"
+                  show-description="panorama:group-point3;
+                                  text:Inside Newhouse 1 information goes here."
+                ></a-plane>
+                <a-text
+                  value="Caption"
+                  align="center"
+                  color="white"
+                  width="4"
+                  position="0 0.35 0.7"
+                ></a-text>
+              </a-entity>
+            </a-entity>
+          </a-image>
+        </a-entity>
+      </a-entity>
+
+      <!-- The sky (panorama) -->
+      <a-sky id="skybox" src="#point1"></a-sky>
+
+      <!-- Camera with both mouse and gaze-based cursors and raycaster -->
+      <a-entity id="cam" camera look-controls position="0 1.6 0">
+        <!-- Mouse-based cursor for non-VR mode -->
+        <a-entity 
+          cursor="rayOrigin: mouse; fuse: false"
+          raycaster="objects: .clickable; far: 10"
+          id="mouse-cursor"
+          visible="true">
+        </a-entity>
+        
+        <!-- Gaze-based cursor for VR mode - DISABLED to prevent accidental triggering -->
+        <a-entity
+          cursor="fuse: false"
+          raycaster="objects: .clickable; far: 10"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: white; shader: flat"
+          id="gaze-cursor"
+          visible="false">
+        </a-entity>
+      </a-entity>
+    </a-scene>
+    
+    <script>
+      let audioEnabled = false;
+      let currentAudio = null;
+
+      document.addEventListener('DOMContentLoaded', function() {
+        
+        // Handle start button click
+        const startButton = document.getElementById('start-button');
+        const startOverlay = document.getElementById('start-overlay');
+        
+        startButton.addEventListener('click', function() {
+          // Enable audio context with user interaction
+          enableAudio().then(() => {
+            audioEnabled = true;
+            startOverlay.classList.add('hidden');
+            
+            // Start the first audio after a brief delay to ensure everything is ready
+            setTimeout(() => {
+              playAudioForPanorama('audio1');
+            }, 500);
+          });
+        });
+        
+        // Function to enable audio context and preload audio
+        function enableAudio() {
+          return new Promise((resolve) => {
+            const audioElements = document.querySelectorAll('audio');
+            let loadedCount = 0;
+            
+            function checkAllLoaded() {
+              loadedCount++;
+              if (loadedCount === audioElements.length) {
+                console.log('All audio files ready');
+                resolve();
+              }
+            }
+            
+            audioElements.forEach(audio => {
+              // Ensure audio is loaded
+              if (audio.readyState >= 2) {
+                checkAllLoaded();
+              } else {
+                audio.addEventListener('canplay', checkAllLoaded, { once: true });
+                audio.load(); // Force load
+              }
+            });
+            
+            // Fallback in case some audio doesn't load
+            setTimeout(() => {
+              console.log('Audio loading timeout - proceeding anyway');
+              resolve();
+            }, 3000);
+          });
+        }
+        
+        // Improved function to play audio for a specific panorama
+        function playAudioForPanorama(panoramaId) {
+          if (!audioEnabled) {
+            console.log('Audio not enabled yet');
+            return Promise.resolve(false);
+          }
+          
+          return new Promise((resolve) => {
+            // Stop current audio if playing
+            if (currentAudio) {
+              currentAudio.pause();
+              currentAudio.currentTime = 0;
+            }
+            
+            // Get the new audio element
+            const audioElement = document.getElementById(panoramaId);
+            if (audioElement) {
+              // Wait a moment for any previous audio to fully stop
+              setTimeout(() => {
+                audioElement.play()
+                  .then(() => {
+                    currentAudio = audioElement;
+                    console.log('Successfully playing:', panoramaId);
+                    resolve(true);
+                  })
+                  .catch(e => {
+                    console.log('Audio play failed for', panoramaId, ':', e);
+                    resolve(false);
+                  });
+              }, 100);
+            } else {
+              console.log('Audio element not found:', panoramaId);
+              resolve(false);
+            }
+          });
+        }
+        
+        // Function to properly switch between hotspot groups
+        function switchToGroup(targetGroupId) {
+          // Hide all groups first
+          document.querySelectorAll('[id^="group-point"]').forEach(group => {
+            group.setAttribute('visible', 'false');
+          });
+          
+          // Show the target group after a brief delay
+          setTimeout(() => {
+            const targetGroup = document.getElementById(targetGroupId);
+            if (targetGroup) {
+              targetGroup.setAttribute('visible', 'true');
+              
+              // Play corresponding audio only if audio is enabled
+              if (audioEnabled) {
+                if (targetGroupId === 'group-point1') {
+                  playAudioForPanorama('audio1');
+                } else if (targetGroupId === 'group-point2') {
+                  playAudioForPanorama('audio2');
+                } else if (targetGroupId === 'group-point3') {
+                  playAudioForPanorama('audio3');
+                }
+              }
+            }
+          }, 50);
+        }
+        
+        // Listen for panorama changes and play corresponding audio
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'visible') {
+              const target = mutation.target;
+              if (target.getAttribute('visible') === 'true' && audioEnabled) {
+                console.log('Group became visible:', target.id);
+                
+                // Play audio for the visible group
+                if (target.id === 'group-point1') {
+                  playAudioForPanorama('audio1');
+                } else if (target.id === 'group-point2') {
+                  playAudioForPanorama('audio2');
+                } else if (target.id === 'group-point3') {
+                  playAudioForPanorama('audio3');
+                }
+              }
+            }
+          });
+        });
+        
+        // Observe visibility changes on hotspot groups
+        document.querySelectorAll('[id^="group-point"]').forEach(group => {
+          observer.observe(group, { attributes: true, attributeFilter: ['visible'] });
+        });
+        
+        // Also listen for skybox changes as a backup
+        const skybox = document.getElementById('skybox');
+        if (skybox) {
+          const skyboxObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'src' && audioEnabled) {
+                const newSrc = skybox.getAttribute('src');
+                if (newSrc === '#point1') {
+                  playAudioForPanorama('audio1');
+                } else if (newSrc === '#point2') {
+                  playAudioForPanorama('audio2');
+                } else if (newSrc === '#point3') {
+                  playAudioForPanorama('audio3');
+                }
+              }
+            });
+          });
+          skyboxObserver.observe(skybox, { attributes: true, attributeFilter: ['src'] });
+        }
+        
+        // Make functions available globally for custom components
+        window.playAudioForPanorama = playAudioForPanorama;
+        window.switchToGroup = switchToGroup;
+      });
+    </script>
+  </body>
+</html>
