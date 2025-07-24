@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Farm Scans</title>
+
+    <!-- Load A-Frame and plugins -->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+  </head>
+  <body>
+    <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
+      <a-assets>
+      
+       
+        <a-asset-item id="crate" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/15-crate_1753369971056.glb"></a-asset-item>
+        
+        <a-asset-item id="wall" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pacheco-containerwall_1753369965700.glb"></a-asset-item>
+
+        <a-asset-item id="wall2" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pacheco-containerwall_1753369965700.glb"></a-asset-item>
+        
+        <a-asset-item id="wheelbarrow" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pacheco-wheelbarrow_1753369967649.glb"></a-asset-item>
+
+        
+      
+      </a-assets>
+
+      <!-- Model placement -->
+
+        <!-- Wheelbarrow -->
+
+        <a-entity gltf-model="#wheelbarrow" position="13.6859 -1.56966 16.58064" scale="9.4326 9.4326 9.4326"></a-entity>
+
+        <!-- Wall -->
+
+        <a-entity gltf-model="#wall" position="0 0 -22" scale="20 20 20"></a-entity>
+
+        <a-entity gltf-model="#wall2" position="-25.49 0.17 -38.59" scale="20 20 20" rotation="0 -86.77 0"></a-entity>
+
+        <!-- Crate -->
+
+        <a-entity gltf-model="#crate" position="0 -2 -2" scale="7 7 7"></a-entity>
+
+      <!-- End Model Placement-->
+
+
+      <!-- Grass Plane -->
+      <a-plane src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/grass_1752114153277.jpg"
+               position="0 0 -4" rotation="-90 0 0"
+               width="100" height="100" color="#7BC8A4"
+               scale="5 5 1">
+      </a-plane>
+
+
+      <!-- Ambient Light -->
+      <a-entity light="angle: 61.59; color: #fefffa; groundColor: #e89696; intensity: 1.5; type: ambient; shadowBias: 0.08"></a-entity>
+
+      <!-- Fog / Particles -->
+      <a-entity position="0 2.25 -15" particle-system="color: #EF0000,#44CC00"></a-entity>
+
+      <!-- Text Instructions -->
+      <a-text font="kelsonsans"
+              value="Computer: WASD + mouse to move"
+              width="50"
+              position="-5.5 20 -18.65"
+              rotation="0 19.8 0"
+              color="#0d0c0c">
+      </a-text>
+
+      <a-text font="kelsonsans"
+              value="Mobile: tap, hold and point."
+              width="50"
+              position="-3.5 27 -13.5"
+              rotation="-3.3 32 2.4"
+              color="#0d0c0c">
+      </a-text>
+
+      <!-- Sky -->
+
+      <a-sky src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/sky_1753371229794_preview.jpg" rotation="0 -130 0"></a-sky>
+
+
+      
+
+     
+      <!-- Movement Rig with Controllers -->
+      <a-entity id="cameraRig"
+                movement-controls="constrainToNavMesh: false;"
+                navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
+                position="5 5 10" rotation="0 0 0">
+
+        <!-- Camera -->
+        <a-entity id="head"
+                  camera="active: true"
+                  position="8 5 41"
+                  look-controls="pointerLockEnabled: true; reverseMouseDrag: false">
+        </a-entity>
+
+        <!-- Left Controller -->
+        <a-entity id="leftHand"
+                  hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF"
+                  teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60"
+                  visible="true">
+        </a-entity>
+
+        <!-- Right Controller -->
+        <a-entity id="rightHand"
+                  hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF"
+                  laser-controls
+                  raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;"
+                  line="color: #7cfc00; opacity: 0.5"
+                  visible="true">
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
