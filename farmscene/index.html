@@ -16,38 +16,32 @@
   <body>
     <a-scene loading-screen="dotsColor: #DF5532; backgroundColor: #ffffff00">
       <a-assets>
-      
-       
+        <a-asset-item id="pot" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pot_1753401223400.glb"></a-asset-item>
         <a-asset-item id="crate" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/15-crate_1753369971056.glb"></a-asset-item>
-        
         <a-asset-item id="wall" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pacheco-containerwall_1753369965700.glb"></a-asset-item>
-
         <a-asset-item id="wall2" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pacheco-containerwall_1753369965700.glb"></a-asset-item>
-        
         <a-asset-item id="wheelbarrow" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/pacheco-wheelbarrow_1753369967649.glb"></a-asset-item>
-
-        
-      
+        <a-asset-item id="soccerball" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/7-soccerball_1753413655105.glb"></a-asset-item>
       </a-assets>
 
       <!-- Model placement -->
 
-        <!-- Wheelbarrow -->
+      <!-- Soccer Ball -->
+      <!-- Adjust position as needed to place it just above the grass -->
+      <a-entity gltf-model="#soccerball" position="0 -1.7 16" scale="10 10 10"></a-entity>
 
-        <a-entity gltf-model="#wheelbarrow" position="13.6859 -1.56966 16.58064" scale="9.4326 9.4326 9.4326"></a-entity>
+      <!-- Pot -->
+      <a-entity gltf-model="#pot" position="-0.7 1.8 0" scale="9.4326 9.4326 9.4326"></a-entity>
 
-        <!-- Wall -->
+      <!-- Wheelbarrow -->
+      <a-entity gltf-model="#wheelbarrow" position="13.6859 -1.56966 16.58064" scale="9.4326 9.4326 9.4326"></a-entity>
 
-        <a-entity gltf-model="#wall" position="0 0 -22" scale="20 20 20"></a-entity>
+      <!-- Wall -->
+      <a-entity gltf-model="#wall" position="0 0 -22" scale="20 20 20"></a-entity>
+      <a-entity gltf-model="#wall2" position="-25.49 0.17 -38.59" scale="20 20 20" rotation="0 -86.77 0"></a-entity>
 
-        <a-entity gltf-model="#wall2" position="-25.49 0.17 -38.59" scale="20 20 20" rotation="0 -86.77 0"></a-entity>
-
-        <!-- Crate -->
-
-        <a-entity gltf-model="#crate" position="0 -2 -2" scale="7 7 7"></a-entity>
-
-      <!-- End Model Placement-->
-
+      <!-- Crate -->
+      <a-entity gltf-model="#crate" position="0 -2 -2" scale="7 7 7"></a-entity>
 
       <!-- Grass Plane -->
       <a-plane src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/grass_1752114153277.jpg"
@@ -55,7 +49,6 @@
                width="100" height="100" color="#7BC8A4"
                scale="5 5 1">
       </a-plane>
-
 
       <!-- Ambient Light -->
       <a-entity light="angle: 61.59; color: #fefffa; groundColor: #e89696; intensity: 1.5; type: ambient; shadowBias: 0.08"></a-entity>
@@ -81,13 +74,8 @@
       </a-text>
 
       <!-- Sky -->
-
       <a-sky src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/sky_1753371229794_preview.jpg" rotation="0 -130 0"></a-sky>
 
-
-      
-
-     
       <!-- Movement Rig with Controllers -->
       <a-entity id="cameraRig"
                 movement-controls="constrainToNavMesh: false;"
