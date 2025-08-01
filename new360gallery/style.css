@@ -1,0 +1,16 @@
+/* Add your CSS styles here */
+
+h1 {
+  font-family: helvetica;
+  color: blue;
+  }
+
+h2 {
+  font-family: georgia;
+  font-size: 16px;
+  }
+
+body {
+  font-family: georgia;
+  font-size: 16px;
+}
