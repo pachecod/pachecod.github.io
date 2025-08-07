@@ -1,0 +1,35 @@
+Assets in This Package:
+
+File Name: aframe-inspector.min.js
+URL: https://aframe.io/releases/1.7.0/aframe-inspector.min.js
+
+File Name: aframe.min.js
+URL: https://aframe.io/releases/1.7.0/aframe.min.js
+
+File Name: cucumbers-interview_1753114682479.mp3
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/cucumbers-interview_1753114682479.mp3
+
+File Name: natsound-walking_1753114698223.mp3
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/natsound-walking_1753114698223.mp3
+
+File Name: saltcityfarm_1753114699111.mp3
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/saltcityfarm_1753114699111.mp3
+
+File Name: hotspot-yellow_1752094482422.png
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/hotspot-yellow_1752094482422.png
+
+File Name: pause-w55ev10c73j-1751296461027.png
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/admin/images/pause-w55ev10c73j-1751296461027.png
+
+File Name: play-flu7be3uruh-1751296461261.png
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/admin/images/play-flu7be3uruh-1751296461261.png
+
+File Name: field1_1754585695015_preview.jpg
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/field1_1754585695015_preview.jpg
+
+File Name: field3-outsidetent_1754585699988.jpg
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/field3-outsidetent_1754585699988.jpg
+
+File Name: field4-insidetent_1754585704714.jpg
+URL: https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/field4-insidetent_1754585704714.jpg
+
