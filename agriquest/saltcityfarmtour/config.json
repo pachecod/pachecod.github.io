@@ -1,0 +1,95 @@
+{
+  "name": "360farmtest",
+  "created": "2025-08-07T17:49:04.118Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "./images/room1.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "text",
+          "position": "-6.91 1.64 2.91",
+          "label": "Welcome to the Salt City Harvest Farm",
+          "text": "You are at the Salt City Harvest Farm.",
+          "audio": null,
+          "scene": "room1",
+          "navigationTarget": null
+        },
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "-7.23 1.81 -2.00",
+          "label": "Walk down path",
+          "text": "",
+          "audio": null,
+          "scene": "room1",
+          "navigationTarget": "scene_1754588613615"
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754588613615": {
+      "name": "Room 2",
+      "image": "./images/scene_1754588613615.jpg",
+      "hotspots": [
+        {
+          "id": 3,
+          "type": "text",
+          "position": "7.25 1.10 1.87",
+          "label": "Squash Fields",
+          "text": "These are fields of squash that were planted by members of the farm.",
+          "audio": null,
+          "scene": "scene_1754588613615",
+          "navigationTarget": null
+        },
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "-7.12 2.70 2.09",
+          "label": "Go to the tomato tent",
+          "text": "",
+          "audio": null,
+          "scene": "scene_1754588613615",
+          "navigationTarget": "scene_1754588772104"
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754588772104": {
+      "name": "Room 3",
+      "image": "./images/scene_1754588772104.jpg",
+      "hotspots": [
+        {
+          "id": 5,
+          "type": "navigation",
+          "position": "3.28 2.33 -6.71",
+          "label": "Enter the tomato tent",
+          "text": "",
+          "audio": null,
+          "scene": "scene_1754588772104",
+          "navigationTarget": "scene_1754588786501"
+        },
+        {
+          "id": 6,
+          "type": "navigation",
+          "position": "1.44 1.40 7.36",
+          "label": "Return to beginning",
+          "text": "",
+          "audio": null,
+          "scene": "scene_1754588772104",
+          "navigationTarget": "room1"
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754588786501": {
+      "name": "Room 4",
+      "image": "./images/scene_1754588786501.jpg",
+      "hotspots": [],
+      "startingPoint": null
+    }
+  },
+  "currentScene": "scene_1754588772104",
+  "version": "1.0"
+}

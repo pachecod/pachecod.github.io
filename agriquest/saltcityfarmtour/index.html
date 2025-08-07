@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>360farmtest - VR Hotspot Experience</title>
+    <meta name="description" content="Interactive VR Hotspot Experience" />
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  
+  <body>
+    <div id="project-info">
+      <h1>360farmtest</h1>
+      <p>Interactive VR Experience • Click on hotspots to explore</p>
+    </div>
+
+    <a-scene background="color: #ECECEC" id="main-scene">
+      <a-entity
+        laser-controls="hand: right"
+        raycaster="objects: .clickable, .audio-control"
+      ></a-entity>
+      <a-entity
+        laser-controls="hand: left"
+        raycaster="objects: .clickable, .audio-control"
+      ></a-entity>
+
+      <a-assets>
+        <img id="main-panorama" src="./images/room1.jpg" />
+        <img id="hotspot" src="./images/up-arrow.png" />
+        <audio id="default-audio" src="./audio/music.mp3"></audio>
+        <img id="close" src="./images/close.png" />
+        <img id="play" src="./images/play.png" />
+        <img id="pause" src="./images/pause.png" />
+      </a-assets>
+
+      <a-entity id="hotspot-container"></a-entity>
+      <a-sky id="skybox" src="#main-panorama"></a-sky>
+
+      <a-entity id="cam" camera position="0 1.6 0" look-controls>
+        <a-entity
+          id="cursor"
+          cursor="rayOrigin: mouse; fuse: false"
+          raycaster="objects: .clickable, .audio-control"
+          position="0 0 -1.8"
+          material="shader: flat; color: #ff0000; opacity: 0.8"
+          geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.01"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
