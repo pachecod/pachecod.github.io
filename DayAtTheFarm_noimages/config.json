@@ -1,0 +1,214 @@
+{
+  "name": "DayAtTheFarm",
+  "created": "2025-08-11T14:15:32.708Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/room1_1754922166488.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "navigation",
+          "position": "7.46 0.98 0.53",
+          "label": "Go to Fields",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1754921139472",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -5.844169510334399,
+          "y": 246.60103502430607,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921139472": {
+      "name": "Room 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921139472_1754922168625.jpg",
+      "hotspots": [
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "-7.48 1.71 0.52",
+          "label": "Tomato Tent",
+          "text": "",
+          "scene": "scene_1754921139472",
+          "navigationTarget": "scene_1754921150605",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -4.1252961249419275,
+          "y": 109.43493886998728,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921150605": {
+      "name": "Room 3",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921150605_1754922170868.jpg",
+      "hotspots": [
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "3.38 1.16 -6.68",
+          "label": "Enter the Ten",
+          "text": "",
+          "scene": "scene_1754921150605",
+          "navigationTarget": "scene_1754921160501",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -15.469860468532241,
+          "y": -13.980170201192067,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921160501": {
+      "name": "Room 4",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921160501_1754922173126.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "-7.42 2.33 0.83",
+          "label": "Leave the Tent",
+          "text": "",
+          "scene": "scene_1754921160501",
+          "navigationTarget": "scene_1754921170021",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -16.61577605879388,
+          "y": -258.97692339913164,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921170021": {
+      "name": "Room 5",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921170021_1754922175209.jpg",
+      "hotspots": [],
+      "startingPoint": {
+        "rotation": {
+          "x": -22.80372024620678,
+          "y": -135.79099744600455,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921181273": {
+      "name": "Room 6",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921181273_1754922177688.jpg",
+      "hotspots": [
+        {
+          "id": 5,
+          "type": "navigation",
+          "position": "-3.27 1.43 6.75",
+          "label": "Go to Field",
+          "text": "",
+          "scene": "scene_1754921181273",
+          "navigationTarget": "scene_1754921190906",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -5.614986392282069,
+          "y": -94.30885307853262,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921190906": {
+      "name": "Room 7",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921190906_1754922180211.jpg",
+      "hotspots": [
+        {
+          "id": 6,
+          "type": "navigation",
+          "position": "6.63 1.41 3.51",
+          "label": "Walk Down the Orchard",
+          "text": "",
+          "scene": "scene_1754921190906",
+          "navigationTarget": "scene_1754921200790",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -2.2918311805232956,
+          "y": -128.57172922735583,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921200790": {
+      "name": "Room 8",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921200790_1754922183051.jpg",
+      "hotspots": [
+        {
+          "id": 7,
+          "type": "navigation",
+          "position": "-5.87 1.12 -4.65",
+          "label": "Harvest the Plants",
+          "text": "",
+          "scene": "scene_1754921200790",
+          "navigationTarget": "scene_1754921210718",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -11.573747461642636,
+          "y": -324.75247828014955,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754921210718": {
+      "name": "Room 9",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921210718_1754922185484.jpg",
+      "hotspots": [
+        {
+          "id": 8,
+          "type": "navigation",
+          "position": "3.99 1.79 6.35",
+          "label": "Return to the Farm",
+          "text": "",
+          "scene": "scene_1754921210718",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 9,
+          "type": "text",
+          "position": "-3.75 2.31 -6.46",
+          "label": "Volleyball!",
+          "text": "When we're done with farm work, we're allowed to play volleyball.",
+          "scene": "scene_1754921210718",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -17.761691649055535,
+          "y": -288.1977709508028,
+          "z": 0
+        }
+      }
+    }
+  },
+  "currentScene": "scene_1754921210718",
+  "version": "1.0"
+}
