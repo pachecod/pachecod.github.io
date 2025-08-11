@@ -19,23 +19,15 @@
     <script>
       // Function to update caption content based on current scene
       function updateCaptionForScene(sceneId) {
-        console.log('=== UPDATING CAPTION CONTENT (NOT VISIBILITY) ===');
-        console.log('Scene ID:', sceneId);
-        
         fetch('./config.json')
           .then(response => response.json())
           .then(config => {
             if (config.scenes && config.scenes[sceneId]) {
               const scene = config.scenes[sceneId];
-              console.log('Scene data:', scene);
               
               // Look for text-audio hotspots first, then text hotspots, then use scene name
               let textAudioHotspots = scene.hotspots.filter(h => h.type === 'text-audio');
               let textHotspots = scene.hotspots.filter(h => h.type === 'text');
-              
-              console.log('Text-audio hotspots found:', textAudioHotspots.length);
-              console.log('Text hotspots found:', textHotspots.length);
-              console.log('All hotspots in scene:', scene.hotspots);
               
               let hotspot = null;
               let hotspotType = '';
@@ -44,15 +36,12 @@
                 // Use the first text-audio hotspot for the caption
                 hotspot = textAudioHotspots[0];
                 hotspotType = 'text-audio';
-                console.log('Using text-audio hotspot:', hotspot);
               } else if (textHotspots.length > 0) {
                 // Use the first text hotspot for the caption
                 hotspot = textHotspots[0];
                 hotspotType = 'text';
-                console.log('Using text hotspot:', hotspot);
               } else {
                 // No text hotspots, use scene name
-                console.log('No text hotspots found, using scene name');
               }
               
               if (hotspot) {
@@ -60,7 +49,6 @@
                 const captionLabel = document.getElementById('caption-label');
                 if (captionLabel) {
                   captionLabel.setAttribute('value', hotspot.label);
-                  console.log('✅ Updated label to:', hotspot.label);
                 } else {
                   console.error('❌ Caption label element not found');
                 }
@@ -69,7 +57,6 @@
                 const captionText = document.getElementById('caption-text');
                 if (captionText) {
                   captionText.setAttribute('value', hotspot.text);
-                  console.log('✅ Updated text to:', hotspot.text);
                 } else {
                   console.error('❌ Caption text element not found');
                 }
@@ -80,7 +67,6 @@
                   if (captionAudio) {
                     // Set the audio source on the a-sound element
                     captionAudio.setAttribute('src', hotspot.audio);
-                    console.log('✅ Updated audio source to:', hotspot.audio);
                   } else {
                     console.error('❌ Caption audio element not found');
                   }
@@ -104,7 +90,6 @@
                   const captionAudio = document.getElementById('caption-audio');
                   if (captionAudio) {
                     captionAudio.setAttribute('src', '');
-                    console.log('✅ Cleared audio source (text-only hotspot)');
                   }
                   
                   // Hide audio button and text
@@ -118,20 +103,17 @@
                 const captionLabel = document.getElementById('caption-label');
                 if (captionLabel) {
                   captionLabel.setAttribute('value', scene.name);
-                  console.log('✅ Updated label to scene name:', scene.name);
                 }
                 
                 const captionText = document.getElementById('caption-text');
                 if (captionText) {
                   captionText.setAttribute('value', 'Explore this area to discover more about the farm.');
-                  console.log('✅ Updated text to default description');
                 }
                 
                 // Clear audio source and hide audio button
                 const captionAudio = document.getElementById('caption-audio');
                 if (captionAudio) {
                   captionAudio.setAttribute('src', '');
-                  console.log('✅ Cleared audio source (no audio available)');
                 }
                 
                 // Hide audio button and text
@@ -140,9 +122,6 @@
                 if (audioBtn) audioBtn.setAttribute('visible', false);
                 if (audioText) audioText.setAttribute('visible', false);
               }
-              
-              // IMPORTANT: DO NOT change caption visibility here - let the buttons control that
-              console.log('✅ Caption content updated (visibility unchanged)');
             } else {
               console.error('❌ Scene not found in config:', sceneId);
             }
@@ -154,18 +133,14 @@
       
       // Listen for scene changes by monitoring the hotspot container
       document.addEventListener('DOMContentLoaded', function() {
-        console.log('=== DOM LOADED ===');
         
         // Create a mutation observer to detect when hotspots are created
         const hotspotContainer = document.getElementById('hotspot-container');
         if (hotspotContainer) {
-          console.log('✅ Hotspot container found');
           
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                console.log('=== HOTSPOTS CHANGED ===');
-                console.log('Added nodes:', mutation.addedNodes.length);
                 
                 // Get the current scene from the config
                 fetch('./config.json')
@@ -175,7 +150,6 @@
                     const skybox = document.getElementById('skybox');
                     if (skybox) {
                       const skyboxSrc = skybox.getAttribute('src');
-                      console.log('Current skybox src:', skyboxSrc);
                       
                       // Get the actual image source from the assets
                       let actualImageSrc = '';
@@ -185,7 +159,6 @@
                         const panoramaAsset = document.getElementById(panoramaId);
                         if (panoramaAsset) {
                           actualImageSrc = panoramaAsset.getAttribute('src');
-                          console.log('Actual image src from asset:', actualImageSrc);
                         }
                       } else {
                         actualImageSrc = skyboxSrc;
@@ -194,19 +167,11 @@
                       if (actualImageSrc) {
                         // Find the scene that matches this image
                         for (const [sceneId, scene] of Object.entries(config.scenes)) {
-                          console.log('Checking scene:', sceneId);
-                          console.log('Scene image:', scene.image);
-                          
                           // Extract filename from both URLs for comparison
                           const skyboxFilename = actualImageSrc.split('/').pop().split('?')[0];
                           const sceneFilename = scene.image.split('/').pop();
                           
-                          console.log('Skybox filename:', skyboxFilename);
-                          console.log('Scene filename:', sceneFilename);
-                          console.log('Match?', skyboxFilename === sceneFilename);
-                          
                           if (skyboxFilename === sceneFilename) {
-                            console.log('🎯 FOUND MATCHING SCENE:', sceneId);
                             updateCaptionForScene(sceneId);
                             break;
                           }
@@ -226,13 +191,11 @@
           });
           
           observer.observe(hotspotContainer, { childList: true });
-          console.log('✅ Observer attached to hotspot container');
         } else {
           console.error('❌ Hotspot container not found');
         }
         
         // Initial caption update for the first scene
-        console.log('=== INITIAL CAPTION UPDATE ===');
         updateCaptionForScene('room1');
         
         // Add audio functionality to the play button using existing logic from script.js
@@ -256,7 +219,6 @@
               window.captionAudioState.isPlaying = !window.captionAudioState.isPlaying;
             }
           });
-          console.log('✅ Audio button functionality added');
         } else {
           console.error('❌ Audio elements not found');
         }
@@ -273,7 +235,6 @@
             // Hide the entire info button entity completely
             infoButton.setAttribute('visible', false);
             infoButton.style.display = 'none';
-            console.log('✅ Caption box opened, info button hidden');
           });
           
           // Close button click - close caption box and show info button again
@@ -282,56 +243,43 @@
             // Show the entire info button entity again
             infoButton.setAttribute('visible', true);
             infoButton.style.display = 'block';
-            console.log('✅ Caption box closed, info button shown');
           });
           
-          console.log('✅ Info button functionality added');
         } else {
           console.error('❌ Info button elements not found');
         }
         
-        // Function to remove old caption elements
-        function removeOldCaptionElements() {
-          console.log('🔍 Checking for old caption elements...');
-          
-          // Remove green "click for info" elements - more specific targeting
-          const allEntities = document.querySelectorAll('a-entity');
-          let removedCount = 0;
-          
-          allEntities.forEach(el => {
-            // Check for green info elements
-            const greenPlane = el.querySelector('a-plane[material*="color: #00FF00"]');
-            const infoText = el.querySelector('a-text[value*="click for info"]');
+          // Function to remove old caption elements
+          function removeOldCaptionElements() {
+            // Remove green "click for info" elements - more specific targeting
+            const allEntities = document.querySelectorAll('a-entity');
+            let removedCount = 0;
             
-            if (greenPlane || infoText) {
-              console.log('🗑️ Found green info element:', el);
-              el.remove();
-              removedCount++;
-            }
-            
-            // Check for dark gray label elements
-            const darkPlane = el.querySelector('a-plane[material*="color: #333333"]');
-            if (darkPlane && el.querySelector('a-text')) {
-              console.log('🗑️ Found dark gray label element:', el);
-              el.remove();
-              removedCount++;
-            }
-            
-            // Check for old audio buttons
-            const oldAudioBtn = el.querySelector('a-image[src*="play"], a-image[src*="pause"]');
-            if (oldAudioBtn && el.getAttribute('position') && el.getAttribute('position').includes('-1 0.02')) {
-              console.log('🗑️ Found old audio button:', el);
-              el.remove();
-              removedCount++;
-            }
-          });
-          
-          if (removedCount > 0) {
-            console.log(`✅ Removed ${removedCount} old caption elements`);
-          } else {
-            console.log('✅ No old caption elements found');
+            allEntities.forEach(el => {
+              // Check for green info elements
+              const greenPlane = el.querySelector('a-plane[material*="color: #00FF00"]');
+              const infoText = el.querySelector('a-text[value*="click for info"]');
+              
+              if (greenPlane || infoText) {
+                el.remove();
+                removedCount++;
+              }
+              
+              // Check for dark gray label elements
+              const darkPlane = el.querySelector('a-plane[material*="color: #333333"]');
+              if (darkPlane && el.querySelector('a-text')) {
+                el.remove();
+                removedCount++;
+              }
+              
+              // Check for old audio buttons
+              const oldAudioBtn = el.querySelector('a-image[src*="play"], a-image[src*="pause"]');
+              if (oldAudioBtn && el.getAttribute('position') && el.getAttribute('position').includes('-1 0.02')) {
+                el.remove();
+                removedCount++;
+              }
+            });
           }
-        }
         
         // Run removal function immediately and then very frequently
         removeOldCaptionElements();
