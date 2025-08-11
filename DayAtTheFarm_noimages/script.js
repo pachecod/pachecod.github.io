@@ -62,6 +62,8 @@ AFRAME.registerComponent("hotspot", {
   },
 
   createPopup: function(data) {
+    // DISABLED - Using new integrated caption system instead
+    /*
     const el = this.el;
 
     const infoIcon = document.createElement("a-entity");
@@ -115,18 +117,21 @@ AFRAME.registerComponent("hotspot", {
     });
 
     el.appendChild(popup);
+    */
   },
 
   createLabel: function(data) {
+    // DISABLED - Using new integrated caption system instead
+    /*
     const el = this.el;
     const labelContainer = document.createElement("a-entity");
     labelContainer.setAttribute("position", "0 -0.6 0");
 
     const bg = document.createElement("a-plane");
     bg.setAttribute("color", "#333333");
-    bg.setAttribute("opacity", 0.8);
+    bg.setAttribute("opacity", "0.8");
     bg.setAttribute("width", data.label.length * 0.15 + 0.4);
-    bg.setAttribute("height", 0.3);
+    bg.setAttribute("height", "0.3");
 
     const textEl = document.createElement("a-text");
     textEl.setAttribute("value", data.label);
@@ -136,9 +141,12 @@ AFRAME.registerComponent("hotspot", {
     labelContainer.appendChild(bg);
     labelContainer.appendChild(textEl);
     el.appendChild(labelContainer);
+    */
   },
 
   createAudio: function(data) {
+    // DISABLED - Using new integrated caption system instead
+    /*
     const el = this.el;
     const audioEl = document.createElement("a-sound");
     audioEl.setAttribute("src", data.audio);
@@ -169,6 +177,7 @@ AFRAME.registerComponent("hotspot", {
         isPlaying = !isPlaying;
       }
     });
+    */
   }
 });
 
