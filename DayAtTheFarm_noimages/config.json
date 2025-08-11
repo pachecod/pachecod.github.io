@@ -1,6 +1,6 @@
 {
-  "name": "DayAtTheFarmWithCaptions",
-  "created": "2025-08-11T15:07:05.956Z",
+  "name": "DayAtTheFarmWithCaptions_Audio",
+  "created": "2025-08-11T15:45:13.312Z",
   "scenes": {
     "room1": {
       "name": "Room 1",
@@ -17,14 +17,14 @@
           "audio": null
         },
         {
-          "id": 11,
-          "type": "text",
-          "position": "5.22 2.56 -5.30",
+          "id": 20,
+          "type": "text-audio",
+          "position": "6.02 3.36 -4.12",
           "label": "Welcome to the Salt City Harvest Farm",
-          "text": "The Salt City Harvest Farm grows food, culture, and community alongside the New American Community through the cross-cultural exchange of food traditions with access to farmland, education, and economic opportunities.",
+          "text": "Salt City Harvest Farm grows food, culture, and community alongside the New American Community through the cross-cultural exchange of food traditions with access to farmland, education, and economic opportunities.",
           "scene": "room1",
           "navigationTarget": null,
-          "audio": null
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/outsideambience_1754926585422.mp3"
         }
       ],
       "startingPoint": {
@@ -50,14 +50,14 @@
           "audio": null
         },
         {
-          "id": 12,
-          "type": "text",
-          "position": "-5.23 2.64 5.28",
+          "id": 21,
+          "type": "text-audio",
+          "position": "-5.96 3.25 -4.24",
           "label": "About the Farm",
-          "text": "At Salt City Harvest Farm we strive to grow more than only food. We are committed to growing culture and community as well! The Community at SCHF includes a rich cultural diversity of people from all over the world. We strive to connect people of all ages to new foods, cultures, and plants. None of our work would be possible without the support from volunteers and partners.  We welcome you to come visit, learn, and grow with us at the farm! Visit the pages below to learn more about opportunities to be involved!",
+          "text": "At Salt City Harvest Farm we strive to grow more than only food. We are committed to growing culture and community as well! The Community at SCHF includes a rich cultural diversity of people from all over the world. We strive to connect people of all ages to new foods, cultures, and plants. ",
           "scene": "scene_1754923906835",
           "navigationTarget": null,
-          "audio": null
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3"
         }
       ],
       "startingPoint": {
@@ -292,6 +292,6 @@
       "startingPoint": null
     }
   },
-  "currentScene": "scene_1754924076004",
+  "currentScene": "room1",
   "version": "1.0"
 }
