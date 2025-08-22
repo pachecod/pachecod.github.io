@@ -1,0 +1,194 @@
+{
+  "name": "SaltCityHarvestFarm",
+  "created": "2025-08-22T12:44:11.023Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/entrance_1755865673726.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "text",
+          "position": "5.61 2.27 -4.93",
+          "label": "Welcome",
+          "text": "Welcome to the Salt City Harvest Farm. ",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "7.43 2.22 0.80",
+          "label": "Explore the Farm",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1755865832596",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -1.718873385392467,
+          "y": -89.03764136333,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/cucumbers-interview_1753114682479.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1755865832596": {
+      "name": "Field",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/field_1755865675533.jpg",
+      "hotspots": [
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "-0.96 1.68 -7.44",
+          "label": "Enter the Rows",
+          "text": "",
+          "scene": "scene_1755865832596",
+          "navigationTarget": "scene_1755865875148",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 1.7188733853924691,
+          "y": -271.3528117739576,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/natsound-walking_1753114698223.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1755865848399": {
+      "name": "Horizon",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/horizon_1755865671550.jpg",
+      "hotspots": [],
+      "startingPoint": {
+        "rotation": {
+          "x": 0.802140913183149,
+          "y": -260.9249799025768,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1755865860816": {
+      "name": "Pond",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/pond_1755865664619.jpg",
+      "hotspots": [],
+      "startingPoint": {
+        "rotation": {
+          "x": -0.91673247220932,
+          "y": -467.41896926772534,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1755865875148": {
+      "name": "Rows",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/rows_1755865677400.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "0.22 2.04 7.48",
+          "label": "Harvest Plants",
+          "text": "",
+          "scene": "scene_1755865875148",
+          "navigationTarget": "scene_1755865888184",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -21.199438419840458,
+          "y": -465.12713808720224,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield_1754926585990.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1755865888184": {
+      "name": "Tallplants",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/tallplants_1755865669532.jpg",
+      "hotspots": [
+        {
+          "id": 5,
+          "type": "navigation",
+          "position": "-6.31 2.39 -3.98",
+          "label": "Return to Entrance",
+          "text": "",
+          "scene": "scene_1755865888184",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 6,
+          "type": "navigation",
+          "position": "5.87 2.47 4.58",
+          "label": "Play some Volleyball",
+          "text": "",
+          "scene": "scene_1755865888184",
+          "navigationTarget": "scene_1755865902718",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 2.9793805346802866,
+          "y": -499.6191973540777,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1755865902718": {
+      "name": "Volleyball",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/volleyball_1755865667527.jpg",
+      "hotspots": [
+        {
+          "id": 7,
+          "type": "navigation",
+          "position": "0.39 1.67 7.49",
+          "label": "Return to Entrance",
+          "text": "",
+          "scene": "scene_1755865902718",
+          "navigationTarget": "room1",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 4.354479242994261,
+          "y": -634.0350960917682,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/natsound-walking_1753114698223.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}
