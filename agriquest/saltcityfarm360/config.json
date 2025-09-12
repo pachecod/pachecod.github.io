@@ -1,0 +1,311 @@
+{
+  "name": "SaltCityFarm",
+  "created": "2025-09-12T12:31:04.123Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/entrance_1755865673726.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "text-audio",
+          "position": "6.35 2.67 -3.84",
+          "text": "Welcome to the Salt City Farm. Click hotspots to move around.",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/cucumbers-interview_1753114682479.mp3"
+        },
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "3.91 2.43 -6.34",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1757678943125",
+          "audio": null
+        },
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "2.67 2.19 6.98",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1757678802256",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 3.437746770784942,
+          "y": -88.46468356819913,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield_1754926585990.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1757678802256": {
+      "name": "Room 2 - Field",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/field_1755865675533.jpg",
+      "hotspots": [
+        {
+          "id": 7,
+          "type": "navigation",
+          "position": "2.53 2.01 -7.05",
+          "text": "",
+          "scene": "scene_1757678802256",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 8,
+          "type": "navigation",
+          "position": "-3.82 1.97 -6.44",
+          "text": "",
+          "scene": "scene_1757678802256",
+          "navigationTarget": "scene_1757678899045",
+          "audio": null
+        },
+        {
+          "id": 15,
+          "type": "text",
+          "position": "-3.65 3.51 -6.27",
+          "text": "Explore the fields to find crops we planted.",
+          "scene": "scene_1757678802256",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 16,
+          "type": "text",
+          "position": "1.13 2.29 -7.38",
+          "text": "The farm entrance is this way.",
+          "scene": "scene_1757678802256",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1757678826117": {
+      "name": "Room 3 - Horizon",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/horizon_1755865671550.jpg",
+      "hotspots": [
+        {
+          "id": 12,
+          "type": "navigation",
+          "position": "-6.50 2.08 3.71",
+          "text": "",
+          "scene": "scene_1757678826117",
+          "navigationTarget": "scene_1757678943125",
+          "audio": null
+        },
+        {
+          "id": 13,
+          "type": "navigation",
+          "position": "-7.27 2.01 -1.80",
+          "text": "",
+          "scene": "scene_1757678826117",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 14,
+          "type": "navigation",
+          "position": "6.83 2.19 3.04",
+          "text": "",
+          "scene": "scene_1757678826117",
+          "navigationTarget": "scene_1757678872268",
+          "audio": null
+        },
+        {
+          "id": 17,
+          "type": "text",
+          "position": "6.49 2.46 3.66",
+          "text": "There's a pond somewhere over here.",
+          "scene": "scene_1757678826117",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/natsound-walking_1753114698223.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1757678872268": {
+      "name": "Room 4 - Pond",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/pond_1755865664619.jpg",
+      "hotspots": [
+        {
+          "id": 5,
+          "type": "navigation",
+          "position": "-7.41 2.09 -1.06",
+          "text": "",
+          "scene": "scene_1757678872268",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 11,
+          "type": "navigation",
+          "position": "-5.25 2.45 5.29",
+          "text": "",
+          "scene": "scene_1757678872268",
+          "navigationTarget": "scene_1757678826117",
+          "audio": null
+        },
+        {
+          "id": 18,
+          "type": "text",
+          "position": "-7.44 2.29 0.61",
+          "text": "We like to play volleyball and soccer over this way.",
+          "scene": "scene_1757678872268",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 19,
+          "type": "text",
+          "position": "-3.98 2.38 6.31",
+          "text": "There are some crops over this way.",
+          "scene": "scene_1757678872268",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 1.4896902673401302,
+          "y": -465.35632120525423,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield_1754926585990.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1757678899045": {
+      "name": "Room 5 - Rows",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/rows_1755865677400.jpg",
+      "hotspots": [
+        {
+          "id": 9,
+          "type": "navigation",
+          "position": "1.37 1.69 7.37",
+          "text": "",
+          "scene": "scene_1757678899045",
+          "navigationTarget": "scene_1757678922155",
+          "audio": null
+        },
+        {
+          "id": 10,
+          "type": "navigation",
+          "position": "-7.49 1.94 -0.06",
+          "text": "",
+          "scene": "scene_1757678899045",
+          "navigationTarget": "scene_1757678802256",
+          "audio": null
+        },
+        {
+          "id": 20,
+          "type": "text",
+          "position": "2.84 2.33 6.91",
+          "text": "The  Native American \"three sisters\" of corn, beans and squash are over this way.",
+          "scene": "scene_1757678899045",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/natsound-walking_1753114698223.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1757678922155": {
+      "name": "Room 6 - Tall Plants",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/tallplants_1755865669532.jpg",
+      "hotspots": [
+        {
+          "id": 21,
+          "type": "navigation",
+          "position": "-5.22 1.56 -5.39",
+          "text": "",
+          "scene": "scene_1757678922155",
+          "navigationTarget": "scene_1757678802256",
+          "audio": null
+        },
+        {
+          "id": 22,
+          "type": "navigation",
+          "position": "5.46 2.56 5.05",
+          "text": "",
+          "scene": "scene_1757678922155",
+          "navigationTarget": "scene_1757678826117",
+          "audio": null
+        },
+        {
+          "id": 23,
+          "type": "text",
+          "position": "-6.66 2.55 3.32",
+          "text": "Examine the climbing squash plants.",
+          "scene": "scene_1757678922155",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield_1754926585990.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1757678943125": {
+      "name": "Room 7 - Volleyball",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/volleyball_1755865667527.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "-3.65 2.20 -6.53",
+          "text": "",
+          "scene": "scene_1757678943125",
+          "navigationTarget": "scene_1757678872268",
+          "audio": null
+        },
+        {
+          "id": 6,
+          "type": "navigation",
+          "position": "-0.23 2.17 7.47",
+          "text": "",
+          "scene": "scene_1757678943125",
+          "navigationTarget": "room1",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}
