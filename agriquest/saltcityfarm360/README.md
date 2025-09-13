@@ -1,4 +1,4 @@
-# VR Hotspot Project: Bob_VR_Project
+# VR Hotspot Project: SaltCityHarvestFarm_2
 
 ## How to Use
 1. Open index.html in a web browser

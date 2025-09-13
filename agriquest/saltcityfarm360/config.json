@@ -1,6 +1,6 @@
 {
-  "name": "Bob_VR_Project",
-  "created": "2025-09-13T01:19:49.449Z",
+  "name": "SaltCityHarvestFarm_2",
+  "created": "2025-09-13T01:35:16.399Z",
   "scenes": {
     "room1": {
       "name": "Room 1",
@@ -9,7 +9,7 @@
         {
           "id": 1,
           "type": "text-audio",
-          "position": "6.35 2.67 -3.84",
+          "position": "7.48 1.27 0.36",
           "text": "Welcome to the Salt City Farm. Click hotspots to move around.",
           "scene": "room1",
           "navigationTarget": null,
@@ -22,15 +22,6 @@
           "text": "",
           "scene": "room1",
           "navigationTarget": "scene_1757678943125",
-          "audio": null
-        },
-        {
-          "id": 3,
-          "type": "navigation",
-          "position": "2.67 2.19 6.98",
-          "text": "",
-          "scene": "room1",
-          "navigationTarget": "scene_1757678802256",
           "audio": null
         }
       ],
@@ -52,39 +43,21 @@
       "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/common-assets/images/field_1755865675533.jpg",
       "hotspots": [
         {
-          "id": 7,
+          "id": 1,
           "type": "navigation",
-          "position": "2.53 2.01 -7.05",
+          "position": "1.86 2.04 -7.25",
           "text": "",
           "scene": "scene_1757678802256",
           "navigationTarget": "room1",
           "audio": null
         },
         {
-          "id": 8,
+          "id": 2,
           "type": "navigation",
-          "position": "-3.82 1.97 -6.44",
+          "position": "-5.05 1.65 -5.54",
           "text": "",
           "scene": "scene_1757678802256",
           "navigationTarget": "scene_1757678899045",
-          "audio": null
-        },
-        {
-          "id": 15,
-          "type": "text",
-          "position": "-3.65 3.51 -6.27",
-          "text": "Explore the fields to find crops we planted.",
-          "scene": "scene_1757678802256",
-          "navigationTarget": null,
-          "audio": null
-        },
-        {
-          "id": 16,
-          "type": "text",
-          "position": "1.13 2.29 -7.38",
-          "text": "The farm entrance is this way.",
-          "scene": "scene_1757678802256",
-          "navigationTarget": null,
           "audio": null
         }
       ],

@@ -5,21 +5,23 @@
 const CUSTOM_STYLES = {
   "hotspot": {
     "infoButton": {
-      "backgroundColor": "#4A90E2",
-      "textColor": "#FFFFFF",
+      "backgroundColor": "#4a90e2",
+      "textColor": "#ffffff",
       "fontSize": 12,
       "opacity": 0.9,
       "size": 0.4
     },
     "popup": {
-      "backgroundColor": "#333333",
-      "textColor": "#FFFFFF",
+      "backgroundColor": "#000000",
+      "textColor": "#ffaa00",
       "borderColor": "#555555",
       "borderWidth": 0,
       "borderRadius": 0,
-      "opacity": 0.95,
+      "opacity": 0.4,
       "fontSize": 1,
-      "padding": 0.2
+      "padding": 0.2,
+      "width": 5,
+      "height": 2.75
     },
     "closeButton": {
       "size": 0.4,
