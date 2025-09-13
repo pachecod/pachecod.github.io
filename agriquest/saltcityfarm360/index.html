@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>SaltCityFarm - VR Hotspot Experience</title>
+    <title>Bob_VR_Project - VR Hotspot Experience</title>
     <meta name="description" content="Interactive VR Hotspot Experience" />
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
@@ -12,7 +12,7 @@
   
   <body>
     <div id="project-info">
-      <h1>SaltCityFarm</h1>
+      <h1>Bob_VR_Project</h1>
       <p>Interactive VR Experience • Click on hotspots to explore</p>
     </div>
 
@@ -84,15 +84,14 @@
                  animation="property: rotation; to: 180 -360 180; dur: 10000; easing: linear; loop: true">
         </a-entity>
         
-        <!-- Central loading text -->
+   <!-- Central loading text -->
         <a-text id="loading-text" 
                value="Loading VR Experience..." 
                position="0 0 -3" 
                align="center" 
                color="#000"
-               font="dejavu"
-               geometry="primitive: plane; width: auto; height: auto"
-               material="color: transparent"
+     font="dejavu"
+     material="transparent: true; opacity: 0"
                animation="property: rotation; to: 0 5 0; dur: 3000; easing: easeInOutSine; loop: true; dir: alternate">
         </a-text>
         

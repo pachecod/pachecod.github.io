@@ -262,12 +262,14 @@ class HotspotProject {
   setupScenes() {
     // Setup global sound control first
     this.setupGlobalSoundControl();
-    
-    // Show the loading environment for at least 1.5 seconds to display the animation
-    // Load the current scene with a delay to ensure DOM is ready and show loading animation
-    setTimeout(() => {
-      this.loadScene(this.currentScene);
-    }, 1500);
+
+    // Show loading UI and preload all scene images so nav previews/skyboxes are instant
+    this.showLoadingIndicator();
+    this.preloadAllSceneImages({ updateUI: true, timeoutMs: 20000 })
+      .catch(() => {})
+      .finally(() => {
+        this.loadScene(this.currentScene);
+      });
   }
 
   loadScene(sceneId) {
@@ -284,9 +286,53 @@ class HotspotProject {
     // Show a loading indicator
     this.showLoadingIndicator();
     
-    // Update scene image
+    // Prefer preloaded asset if available for instant swap
+    const preloadedId = 'asset-panorama-' + sceneId;
+    const preImg = document.getElementById(preloadedId);
+    
+    // Update scene image (fallback path)
     const imagePath = this.getSceneImagePath(scene.image, sceneId);
-    console.log(`Setting panorama src to: ${imagePath}`);
+  console.log('Setting panorama src to: ' + (preImg ? ('#' + preloadedId) : imagePath));
+    
+    if (preImg) {
+      // Use the preloaded asset without network load
+      skybox.setAttribute('visible', 'false');
+      setTimeout(() => {
+        skybox.setAttribute('src', '#' + preloadedId);
+        const loadingEnvironment = document.getElementById('loading-environment');
+        if (loadingEnvironment) {
+          loadingEnvironment.setAttribute('visible', 'false');
+        }
+        skybox.setAttribute('visible', 'true');
+        
+        console.log('Skybox texture updated from preloaded asset:', preloadedId);
+        
+        // Create hotspots after skybox is updated
+        const container = document.getElementById('hotspot-container');
+        container.innerHTML = '';
+        this.createHotspots(scene.hotspots);
+        console.log('Hotspots created');
+        
+        // Apply starting point if available
+        setTimeout(() => {
+          this.applyStartingPoint(scene);
+          
+          // Play global sound for this scene
+          setTimeout(() => {
+            this.playCurrentGlobalSound();
+          }, 500);
+        }, 100);
+        
+        // Notify listeners that the scene finished loading (for transitions)
+        try { const ev = new CustomEvent('vrhotspots:scene-loaded'); window.dispatchEvent(ev); } catch(e) {}
+
+        // Hide the loading indicator
+        this.hideLoadingIndicator();
+      }, 100);
+      
+      this.currentScene = sceneId;
+      return;
+    }
     
     // Use a timestamp as a cache buster
     const cacheBuster = Date.now();
@@ -301,7 +347,6 @@ class HotspotProject {
     
     // Set up loading handlers before setting src
     preloadImage.onload = () => {
-      console.log('=== IMAGE LOAD SUCCESS ===');
       console.log('New panorama loaded successfully');
       
       // Now we know the image is loaded, create the actual element for A-Frame
@@ -328,20 +373,14 @@ class HotspotProject {
         const loadingEnvironment = document.getElementById('loading-environment');
         if (loadingEnvironment) {
           loadingEnvironment.setAttribute('visible', 'false');
-          console.log('Loading environment hidden');
-        } else {
-          console.log('Loading environment not found!');
         }
         skybox.setAttribute('visible', 'true');
-        console.log('Skybox made visible');
         
         console.log('Skybox texture updated with ID:', uniqueId);
         
         // Create hotspots after skybox is updated
         const container = document.getElementById('hotspot-container');
         container.innerHTML = '';
-        console.log('About to create hotspots for scene:', sceneId);
-        console.log('Scene hotspots:', scene.hotspots);
         this.createHotspots(scene.hotspots);
         console.log('Hotspots created');
         
@@ -365,7 +404,6 @@ class HotspotProject {
     
     // Handle load errors
     preloadImage.onerror = () => {
-      console.log('=== IMAGE LOAD ERROR ===');
       console.error(`Failed to load panorama: ${imagePath}`);
       this.showErrorMessage(`Failed to load scene image for "${scene.name}". Please check if the image exists at ${imagePath}`);
       
@@ -378,24 +416,6 @@ class HotspotProject {
       // Fallback to default image
       skybox.setAttribute('src', '#main-panorama');
       skybox.setAttribute('visible', 'true');
-      
-      // Create hotspots even with fallback image
-      const container = document.getElementById('hotspot-container');
-      container.innerHTML = '';
-      console.log('Creating hotspots in error path for scene:', sceneId);
-      console.log('Scene hotspots:', scene.hotspots);
-      this.createHotspots(scene.hotspots);
-      
-      // Apply starting point if available
-      setTimeout(() => {
-        this.applyStartingPoint(scene);
-        
-        // Play global sound for this scene
-        setTimeout(() => {
-          this.playCurrentGlobalSound();
-        }, 500);
-      }, 100);
-      
       this.hideLoadingIndicator();
     };
     
@@ -428,13 +448,9 @@ class HotspotProject {
 
   createHotspots(hotspots) {
     const container = document.getElementById('hotspot-container');
-    console.log('=== CREATING HOTSPOTS ===');
-    console.log('Container found:', !!container);
-    console.log('Hotspots to create:', hotspots.length);
-    console.log('Hotspots data:', hotspots);
+    
 
-    hotspots.forEach((hotspot, index) => {
-      console.log(`Creating hotspot ${index + 1}:`, hotspot);
+    hotspots.forEach(hotspot => {
       let hotspotEl;
       if (hotspot.type === 'navigation') {
         hotspotEl = document.createElement('a-entity');
@@ -452,6 +468,7 @@ class HotspotProject {
   ring.setAttribute('geometry', 'primitive: ring; radiusInner: 0.595; radiusOuter: 0.6');
   ring.setAttribute('material', 'color: rgb(0, 85, 0); opacity: 1; transparent: true; shader: flat');
   ring.setAttribute('position', '0 0 0.002');
+  ring.classList.add('nav-ring');
   hotspotEl.appendChild(ring);
 
   // Inline preview circle (hidden by default), shows destination scene image inside the ring
@@ -463,17 +480,6 @@ class HotspotProject {
   preview.setAttribute('scale', '0.01 0.01 0.01');
   preview.classList.add('nav-preview-circle');
   hotspotEl.appendChild(preview);
-        
-        // Optional: subtle pulsing ring effect
-        ring.setAttribute('animation__pulse', {
-          property: 'scale',
-          from: '1 1 1',
-          to: '1.03 1.03 1',
-          dur: 1200,
-          dir: 'alternate',
-          loop: true,
-          easing: 'easeInOutSine'
-        });
       } else {
         hotspotEl = document.createElement('a-entity');
         hotspotEl.setAttribute('geometry', 'primitive: plane; width: 0.7; height: 0.7');
@@ -527,15 +533,23 @@ class HotspotProject {
             setTimeout(() => { previewEl.setAttribute('visible', 'false'); }, 130);
           }
         });
+        
+        // Optional: subtle pulsing ring effect (guard if ring exists)
+        const ringEl = hotspotEl.querySelector('.nav-ring');
+        if (ringEl) ringEl.setAttribute('animation__pulse', {
+          property: 'scale',
+          from: '1 1 1',
+          to: '1.03 1.03 1',
+          dur: 1200,
+          dir: 'alternate',
+          loop: true,
+          easing: 'easeInOutSine'
+        });
       }
       
       hotspotEl.setAttribute('hotspot', config);
       container.appendChild(hotspotEl);
-      console.log(`Hotspot ${index + 1} added to container. Position: ${hotspot.position}, Type: ${hotspot.type}`);
     });
-    console.log('=== HOTSPOTS CREATION COMPLETE ===');
-    console.log('Container children count:', container.children.length);
-    console.log('Container HTML:', container.innerHTML);
   }
   
   navigateToScene(sceneId) {
@@ -703,7 +717,8 @@ class HotspotProject {
     `;
     
     // Subtitle text
-    const subtitle = document.createElement('div');
+  const subtitle = document.createElement('div');
+  subtitle.id = 'scene-loading-subtitle';
     subtitle.textContent = 'Loading immersive experience';
     subtitle.style.cssText = `
       font-size: 14px;
@@ -722,6 +737,45 @@ class HotspotProject {
     if (loadingEl && loadingEl.parentNode) {
       loadingEl.parentNode.removeChild(loadingEl);
     }
+  }
+
+  // Preload all scenes' images into <a-assets> so skybox changes and portal previews are instant
+  preloadAllSceneImages(options = {}) {
+    const { updateUI = false, timeoutMs = 15000 } = options;
+    const assets = document.querySelector('a-assets');
+    if (!assets) return Promise.resolve();
+
+    const ids = Object.keys(this.scenes || {});
+    const total = ids.length;
+    if (total === 0) return Promise.resolve();
+
+    const updateSubtitle = (done) => {
+      if (!updateUI) return;
+      const subEl = document.getElementById('scene-loading-subtitle');
+      if (subEl) subEl.textContent = 'Preparing scenes (' + done + '/' + total + ')';
+    };
+
+    let done = 0;
+    updateSubtitle(0);
+
+    const loaders = ids.map((id) => {
+      const sc = this.scenes[id];
+      const src = this.getSceneImagePath(sc.image, id);
+      const assetId = 'asset-panorama-' + id;
+      if (document.getElementById(assetId)) { done++; updateSubtitle(done); return Promise.resolve(); }
+      return new Promise((resolve) => {
+        const img = document.createElement('img');
+        img.id = assetId;
+        img.crossOrigin = 'anonymous';
+        img.addEventListener('load', () => { done++; updateSubtitle(done); resolve(); });
+        img.addEventListener('error', () => { done++; updateSubtitle(done); resolve(); });
+        img.src = src; // allow browser cache
+        assets.appendChild(img);
+      });
+    });
+
+    const timeout = new Promise((resolve) => setTimeout(resolve, timeoutMs));
+    return Promise.race([Promise.allSettled(loaders), timeout]);
   }
 
   // ===== Navigation Preview (Export viewer) =====
@@ -752,6 +806,10 @@ class HotspotProject {
   }
 
   _getExportPreviewSrc(sceneId){
+    // Prefer preloaded <a-assets> image if available
+    const preId = 'asset-panorama-' + sceneId;
+    const preEl = document.getElementById(preId);
+    if (preEl) return '#' + preId;
     const sc = this.scenes[sceneId]; if (!sc) return null; const img = sc.image||'';
     if (img.startsWith('http://')||img.startsWith('https://')) return img;
     if (img.startsWith('./images/')) return img;
