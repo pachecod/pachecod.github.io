@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--
+Immersive Museum Maker - Template Selection Page
+
+Copyright (C) 2025  Dan Pacheco
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License in the LICENSE file of this repository for more details.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immersive Museum Maker - Choose Template</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .template-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .template-card h3 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .template-card p {
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .template-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .template-card .cta {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+
+        .template-card .cta:hover {
+            background: #5a67d8;
+        }
+
+        .footer {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 30px;
+            color: #718096;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .templates-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Immersive Museum Maker</h1>
+            <p>Choose a template to start creating your immersive VR experience. Each template opens in a new tab for easy switching between projects.</p>
+        </div>
+
+        <div class="templates-grid" id="templates-grid">
+            <!-- Templates will be loaded dynamically -->
+        </div>
+
+        <div class="footer">
+            <p>Built and maintained by Dan Pacheco. Find code and contribute through <a href="https://github.com/pachecod/immersive-museum-maker/" target="_blank">this Github repository</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        // Load templates from registry
+        async function loadTemplates() {
+            try {
+                const response = await fetch('/templates/registry.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load template registry');
+                }
+                
+                const registry = await response.json();
+                const grid = document.getElementById('templates-grid');
+                
+                // Clear loading state
+                grid.innerHTML = '';
+                
+                registry.templates.forEach(template => {
+                    const card = document.createElement('a');
+                    card.href = `/${template.id}`;
+                    card.target = '_blank';
+                    card.className = 'template-card';
+                    
+                    card.innerHTML = `
+                        <h3>${template.name}</h3>
+                        <p>${template.description}</p>
+                        <div class="tags">
+                            ${template.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="cta">Open Editor</div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+                
+            } catch (error) {
+                console.error('Error loading templates:', error);
+                document.getElementById('templates-grid').innerHTML = `
+                    <div class="template-card">
+                        <h3>Error Loading Templates</h3>
+                        <p>Unable to load template registry. Please check the server connection.</p>
+                        <div class="cta" onclick="location.reload()">Retry</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load templates when page loads
+        document.addEventListener('DOMContentLoaded', loadTemplates);
+    </script>
+</body>
+</html>
