@@ -1,231 +1,942 @@
 <!DOCTYPE html>
-<!--
-Immersive Museum Maker - Template Selection Page
-
-Copyright (C) 2025  Dan Pacheco
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License in the LICENSE file of this repository for more details.
--->
-<html lang="en">
+<html lang="en" class="a-fullscreen">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Immersive Museum Maker - Choose Template</title>
+    <title>Outdoor Exploration Museum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+    
+    <!-- Mobile Console for Debugging - Removed to fix 404 error -->
+    
+    <!-- Error handling for THREE.js compatibility -->
+    <script>
+        // Handle THREE.js compatibility issues
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('THREE.Geometry') || e.message.includes('THREE.Math')) {
+                console.warn('THREE.js compatibility issue suppressed:', e.message);
+                e.preventDefault();
+                return true;
+            }
+        });
+    </script>
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #scene { width: 100vw; height: 100vh; }
+        .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; }
+        .museum-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            max-width: 300px;
+            z-index: 100;
+            display: none;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .header {
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            color: #2d3748;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header p {
-            color: #718096;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .templates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .template-card {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 30px;
-            transition: all 0.3s ease;
+        .vr-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
             cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            border-color: #667eea;
-        }
-
-        .template-card h3 {
-            color: #2d3748;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .template-card p {
-            color: #718096;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .template-card .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .tag {
-            background: #667eea;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .template-card .cta {
-            background: #667eea;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: background 0.3s ease;
-        }
-
-        .template-card .cta:hover {
-            background: #5a67d8;
-        }
-
-        .footer {
-            border-top: 1px solid #e2e8f0;
-            padding-top: 30px;
-            color: #718096;
-        }
-
-        .footer p {
-            margin-bottom: 10px;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .templates-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+            z-index: 100;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎨 Immersive Museum Maker</h1>
-            <p>Choose a template to start creating your immersive VR experience. Each template opens in a new tab for easy switching between projects.</p>
-        </div>
 
-        <div class="templates-grid" id="templates-grid">
-            <!-- Templates will be loaded dynamically -->
-        </div>
-
-        <div class="footer">
-            <p>Built and maintained by Dan Pacheco. Find code and contribute through <a href="https://github.com/pachecod/immersive-museum-maker/" target="_blank">this Github repository</a>.</p>
-        </div>
-    </div>
-
+    <!-- Custom Components -->
     <script>
-        // Load templates from registry
-        async function loadTemplates() {
-            try {
-                const response = await fetch('/templates/registry.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load template registry');
+        // Face-camera component to keep elements facing the camera
+        AFRAME.registerComponent("face-camera", {
+            schema: {
+                preserveY: { type: "boolean", default: false }
+            },
+            tick: function () {
+                var camera = document.querySelector("[camera]");
+                if (!camera) return;
+                
+                if (this.data.preserveY) {
+                    var cameraPosition = camera.object3D.position.clone();
+                    var objPosition = this.el.object3D.position.clone();
+                    cameraPosition.y = objPosition.y;
+                    this.el.object3D.lookAt(cameraPosition);
+                } else {
+                    this.el.object3D.lookAt(camera.object3D.position);
                 }
+            }
+        });
+
+        // Enhanced mobile movement with better controls
+        AFRAME.registerComponent("enhanced-mobile-controls", {
+            schema: {
+                speed: { type: "number", default: 2 }
+            },
+            init: function () {
+                var self = this;
+                this.numFingers = 0;
+                this.verticalMovementLocked = true;
                 
-                const registry = await response.json();
-                const grid = document.getElementById('templates-grid');
+                this.updateTouches = function (event) {
+                    // Prevent default to stop scrolling and other touch behaviors
+                    event.preventDefault();
+                    self.numFingers = event.touches.length;
+                };
                 
-                // Clear loading state
-                grid.innerHTML = '';
+                this.clearTouches = function (event) {
+                    // Prevent default to stop scrolling and other touch behaviors
+                    event.preventDefault();
+                    self.numFingers = (event.touches && event.touches.length) || 0;
+                };
                 
-                registry.templates.forEach(template => {
-                    const card = document.createElement('a');
-                    card.href = `/${template.id}`;
-                    card.target = '_blank';
-                    card.className = 'template-card';
-                    
-                    card.innerHTML = `
-                        <h3>${template.name}</h3>
-                        <p>${template.description}</p>
-                        <div class="tags">
-                            ${template.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-                        <div class="cta">Open Editor</div>
-                    `;
-                    
-                    grid.appendChild(card);
+                this.el.sceneEl.addEventListener("renderstart", function () {
+                    var canvas = self.el.sceneEl.canvas;
+                    // Use passive: false for movement controls to work properly
+                    canvas.addEventListener("touchstart", self.updateTouches, { passive: false });
+                    canvas.addEventListener("touchmove", self.updateTouches, { passive: false });
+                    canvas.addEventListener("touchend", self.clearTouches, { passive: false });
+                    canvas.addEventListener("touchcancel", self.clearTouches, { passive: false });
                 });
                 
-            } catch (error) {
-                console.error('Error loading templates:', error);
-                document.getElementById('templates-grid').innerHTML = `
-                    <div class="template-card">
-                        <h3>Error Loading Templates</h3>
-                        <p>Unable to load template registry. Please check the server connection.</p>
-                        <div class="cta" onclick="location.reload()">Retry</div>
-                    </div>
-                `;
+                // Initialize mobile controls safely
+                try {
+                    if (AFRAME.utils.device.isMobile()) {
+                        var leftCtrl = document.querySelector("#left-controller");
+                        var rightCtrl = document.querySelector("#right-controller");
+                        if (leftCtrl) {
+                            leftCtrl.removeAttribute("blink-controls");
+                        }
+                        if (rightCtrl) {
+                            rightCtrl.removeAttribute("blink-controls");
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Error initializing mobile controls:', error);
+                }
+                
+                const controlsGuide = document.createElement('div');
+                controlsGuide.className = 'controls-guide';
+                controlsGuide.innerHTML = 'Touch screen to move:<br>• One thumb down - Move forward<br>• Two thumbs down - Move backward<br>• Look around to change direction';
+                document.body.appendChild(controlsGuide);
+                
+                setTimeout(() => {
+                    controlsGuide.style.opacity = '0';
+                    controlsGuide.style.transition = 'opacity 1s ease';
+                    setTimeout(() => {
+                        controlsGuide.style.display = 'none';
+                    }, 1000);
+                }, 5000);
+            },
+            tick: function (time, deltaTime) {
+                if (this.numFingers === 0) {
+                    return;
+                }
+                
+                var distance = this.data.speed * (deltaTime / 1000);
+                var moveMultiplier = this.numFingers === 1 ? -1 : 1; // One thumb forward, two thumbs backward
+                
+                var cameraEl = this.el.querySelector("[camera]");
+                if (cameraEl) {
+                    var direction = new THREE.Vector3();
+                    cameraEl.object3D.getWorldDirection(direction);
+                    
+                    if (this.verticalMovementLocked) {
+                        direction.y = 0;
+                        direction.normalize();
+                    }
+                    
+                    direction.multiplyScalar(distance * moveMultiplier);
+                    this.el.object3D.position.add(direction);
+                    this.el.object3D.position.y = 0;
+                }
+            },
+            remove: function () {
+                var canvas = this.el.sceneEl.canvas;
+                canvas.removeEventListener("touchstart", this.updateTouches);
+                canvas.removeEventListener("touchmove", this.updateTouches);
+                canvas.removeEventListener("touchend", this.clearTouches);
+                canvas.removeEventListener("touchcancel", this.clearTouches);
             }
-        }
+        });
 
-        // Load templates when page loads
-        document.addEventListener('DOMContentLoaded', loadTemplates);
+        // Spot component for hotspot behavior with enhanced functionality
+        AFRAME.registerComponent("spot", {
+            schema: {
+                linkto: { type: "string", default: "" },
+                spotgroup: { type: "string", default: "" },
+                label: { type: "string", default: "" },
+                audio: { type: "selector", default: null },
+                labelBackground: { type: "string", default: "#000000" },
+                info: { type: "string", default: "" },
+                vegetableModel: { type: "string", default: "" },
+                revealAnimation: { type: "boolean", default: false }
+            },
+            init: function () {
+                var data = this.data;
+                var el = this.el;
+                
+                // Create hotspot visual
+                el.setAttribute("geometry", { primitive: "circle", radius: 0.5 });
+                el.setAttribute("material", {
+                    color: "#FFFFFF",
+                    opacity: 0.6,
+                    transparent: true,
+                    src: "",
+                });
+                
+                // Add pulse animation
+                el.setAttribute("animation__pulse", {
+                    property: "scale",
+                    dir: "alternate",
+                    dur: 1000,
+                    easing: "easeInOutSine",
+                    loop: true,
+                    to: "1.1 1.1 1.1"
+                });
+                
+                // Set up audio controls
+                this.isPlaying = false;
+                this.gazeTimeout = null;
+                this.gazeThreshold = 1500; // 1.5 seconds gaze to activate
+                
+                // Create audio control buttons (always create them)
+                // Container for audio controls
+                this.audioControls = document.createElement("a-entity");
+                this.audioControls.setAttribute("position", "0 -0.8 0");
+                
+                // Play button
+                this.playButton = document.createElement("a-entity");
+                this.playButton.setAttribute("geometry", "primitive: circle; radius: 0.25");
+                this.playButton.setAttribute("material", "color: #4CAF50; opacity: 0.9");
+                this.playButton.setAttribute("position", "-0.3 0 0");
+                this.playButton.setAttribute("class", "clickable");
+                
+                // Play icon (triangle)
+                const playIcon = document.createElement("a-entity");
+                playIcon.setAttribute("geometry", "primitive: triangle; vertexA: 0.15 0 0; vertexB: -0.05 0.1 0; vertexC: -0.05 -0.1 0");
+                playIcon.setAttribute("material", "color: white; shader: flat");
+                playIcon.setAttribute("position", "-0.05 0 0.01");
+                this.playButton.appendChild(playIcon);
+                
+                // Pause button
+                this.pauseButton = document.createElement("a-entity");
+                this.pauseButton.setAttribute("geometry", "primitive: circle; radius: 0.25");
+                this.pauseButton.setAttribute("material", "color: #F44336; opacity: 0.9");
+                this.pauseButton.setAttribute("position", "0.3 0 0");
+                this.pauseButton.setAttribute("class", "clickable");
+                
+                // Pause icon (two rectangles)
+                const pauseBarLeft = document.createElement("a-entity");
+                pauseBarLeft.setAttribute("geometry", "primitive: box; width: 0.06; height: 0.15; depth: 0.01");
+                pauseBarLeft.setAttribute("material", "color: white; shader: flat");
+                pauseBarLeft.setAttribute("position", "-0.04 0 0.01");
+                this.pauseButton.appendChild(pauseBarLeft);
+                
+                const pauseBarRight = document.createElement("a-entity");
+                pauseBarRight.setAttribute("geometry", "primitive: box; width: 0.06; height: 0.15; depth: 0.01");
+                pauseBarRight.setAttribute("material", "color: white; shader: flat");
+                pauseBarRight.setAttribute("position", "0.04 0 0.01");
+                this.pauseButton.appendChild(pauseBarRight);
+                
+                // Add all controls to container
+                this.audioControls.appendChild(this.playButton);
+                this.audioControls.appendChild(this.pauseButton);
+                el.appendChild(this.audioControls);
+                
+                // Initially hide controls
+                this.audioControls.setAttribute("visible", false);
+                
+                // Set up event listeners for audio buttons
+                this.playButton.addEventListener("click", () => {
+                    console.log('Play button clicked, audio data:', data.audio);
+                    if (data.audio) {
+                        this.playAudio();
+                    }
+                });
+                
+                this.pauseButton.addEventListener("click", () => {
+                    console.log('Pause button clicked, audio data:', data.audio);
+                    if (data.audio) {
+                        this.pauseAudio();
+                    }
+                });
+                
+                // Setup gaze tracking for controls (moved outside audio check)
+                el.addEventListener("mouseenter", () => {
+                    // Show controls on mouse enter
+                    if (this.audioControls) {
+                        this.audioControls.setAttribute("visible", true);
+                        
+                        // Set gaze timeout for audio if available
+                        if (data.audio) {
+                            this.gazeTimeout = setTimeout(() => {
+                                // Toggle audio play/pause after threshold
+                                if (this.isPlaying) {
+                                    this.pauseAudio();
+                                } else {
+                                    this.playAudio();
+                                }
+                            }, this.gazeThreshold);
+                        }
+                    }
+                });
+                
+                el.addEventListener("mouseleave", () => {
+                    // Hide controls on mouse leave after delay
+                    setTimeout(() => {
+                        if (!this.isPlaying && this.audioControls) {
+                            this.audioControls.setAttribute("visible", false);
+                        }
+                    }, 1000);
+                    
+                    // Clear gaze timeout
+                    if (this.gazeTimeout) {
+                        clearTimeout(this.gazeTimeout);
+                        this.gazeTimeout = null;
+                    }
+                });
+                
+                // Create label if provided
+                if (data.label) {
+                    var textEntity = document.createElement("a-text");
+                    textEntity.setAttribute("value", data.label);
+                    textEntity.setAttribute("align", "center");
+                    textEntity.setAttribute("position", "0 0.6 0");
+                    textEntity.setAttribute("scale", "0.5 0.5 0.5");
+                    textEntity.setAttribute("color", "#FFFFFF");
+                    
+                    var bgEntity = document.createElement("a-plane");
+                    bgEntity.setAttribute("color", data.labelBackground);
+                    bgEntity.setAttribute("position", "0 0.6 -0.01");
+                    bgEntity.setAttribute("width", data.label.length * 0.15 + 0.2);
+                    bgEntity.setAttribute("height", "0.3");
+                    bgEntity.setAttribute("opacity", "0.8");
+                    
+                    el.appendChild(bgEntity);
+                    el.appendChild(textEntity);
+                }
+                
+                // Set up click event
+                el.addEventListener("click", () => {
+                    // Handle group visibility if specified
+                    if (data.spotgroup) {
+                        var allGroups = document.querySelectorAll('[id^="group-"]');
+                        allGroups.forEach(function (group) {
+                            group.setAttribute("visible", false);
+                        });
+                        var targetGroup = document.querySelector("#" + data.spotgroup);
+                        if (targetGroup) {
+                            targetGroup.setAttribute("visible", true);
+                        }
+                    }
+                    
+                    // Show info panel if specified
+                    if (data.info) {
+                        const infoPanel = document.querySelector('.museum-info');
+                        if (infoPanel) {
+                            infoPanel.textContent = data.info;
+                            infoPanel.style.display = 'block';
+                            
+                            // Hide after 10 seconds
+                            setTimeout(() => {
+                                infoPanel.style.display = 'none';
+                            }, 10000);
+                        }
+                    }
+                    
+                    // Handle 3D model animation if specified
+                    if (data.vegetableModel) {
+                        const model = document.querySelector(data.vegetableModel);
+                        if (model && data.revealAnimation) {
+                            // Check if already animating to prevent stacking
+                            if (model.getAttribute("data-animating") === "true") {
+                                return; // Already animating, don't start another
+                            }
+                            
+                            // Mark as animating
+                            model.setAttribute("data-animating", "true");
+                            
+                            // Remove any existing animations first
+                            model.removeAttribute("animation__spin");
+                            
+                            // Create spin animation only
+                            model.setAttribute("animation__spin", {
+                                property: "rotation",
+                                to: "0 360 0",
+                                loop: 1,
+                                dur: 2000,
+                                easing: "easeOutQuad"
+                            });
+                            
+                            // Reset animation state after spin completes
+                            setTimeout(() => {
+                                model.removeAttribute("animation__spin");
+                                model.removeAttribute("data-animating");
+                            }, 2000); // Wait for spin animation to complete
+                        }
+                    }
+
+                    // Teleport if linkto is specified
+                    if (data.linkto && data.linkto !== "") {
+                        var targetPoint = document.querySelector(data.linkto);
+                        if (targetPoint) {
+                            // Add a flash effect before teleport
+                            document.querySelector('a-scene').setAttribute('animation__flash', {
+                                property: 'background.color',
+                                from: '#000',
+                                to: '#fff',
+                                dur: 100,
+                                dir: 'alternate',
+                                loop: 2
+                            });
+                            
+                            setTimeout(() => {
+                                var cameraRig = document.querySelector("#cameraRig");
+                                cameraRig.setAttribute("position", targetPoint.getAttribute("position"));
+                            }, 200);
+                        }
+                    }
+                });
+            },
+            
+                playAudio: function() {
+                    console.log('playAudio called, audio data:', this.data.audio);
+                    if (this.data.audio) {
+                        // In A-Frame, data.audio should be the actual element when using selector syntax
+                        const audioElement = this.data.audio;
+                        console.log('Audio element:', audioElement);
+                        if (audioElement) {
+                            // Check if audio is ready to play
+                            if (audioElement.readyState >= 2) { // HAVE_CURRENT_DATA
+                                // Stop any other playing audio
+                                document.querySelectorAll('audio').forEach(audio => {
+                                    if (audio !== audioElement) {
+                                        audio.pause();
+                                        audio.currentTime = 0;
+                                        
+                                        // Reset other hotspots' play state
+                                        document.querySelectorAll('[spot]').forEach(spot => {
+                                            if (spot !== this.el && spot.components.spot) {
+                                                spot.components.spot.isPlaying = false;
+                                            }
+                                        });
+                                    }
+                                });
+                                
+                                // Play this audio
+                                console.log('Attempting to play audio...');
+                                audioElement.play().then(() => {
+                                    console.log('Audio started playing successfully');
+                                    this.isPlaying = true;
+                                    
+                                    // Visual feedback for playing state
+                                    this.playButton.setAttribute("material", "opacity", 0.4);
+                                    this.pauseButton.setAttribute("material", "opacity", 0.9);
+                                }).catch(error => {
+                                    console.error('Error playing audio:', error);
+                                });
+                            } else {
+                                console.log('Audio not ready, waiting for load...');
+                                audioElement.addEventListener('canplay', () => {
+                                    console.log('Audio loaded, retrying play...');
+                                    this.playAudio();
+                                }, { once: true });
+                            }
+                        } else {
+                            console.error('Audio element not found for:', this.data.audio);
+                        }
+                    } else {
+                        console.log('No audio data available');
+                    }
+                },
+                
+                pauseAudio: function() {
+                    if (this.data.audio) {
+                        const audioElement = this.data.audio;
+                        if (audioElement) {
+                            audioElement.pause();
+                            this.isPlaying = false;
+                            
+                            // Visual feedback for paused state
+                            this.playButton.setAttribute("material", "opacity", 0.9);
+                            this.pauseButton.setAttribute("material", "opacity", 0.4);
+                        }
+                    }
+                }
+        });
+
+        // Sound effect component
+        AFRAME.registerComponent('sound-effects', {
+            init: function() {
+                const config = {"name":"Outdoor Exploration Museum","created":"2025-01-27T00:00:00.000Z","version":"1.0","description":"Open-air farm/field with exhibits and hotspots. Current default experience.","template":{"id":"outdoor-exploration","name":"Outdoor Exploration"},"assets":{"images":{"image1":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/1_1759346073610.png","image2":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/2_1759346072359.png","image3":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/3_1759346070860.png","arrowLeft":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/left_1758485303552.png","arrowRight":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/right_1758485302607.png","grid":"images/border.jpg","sky":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg","ground":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/leaves_1758475586342.png","hotspot":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/hotspot_1758485223541.png"},"models":{"tomato":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/tomato-plate_1758376233930.glb","eggplant":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/eggplant_1758376225454.glb","onion":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/onions_1758376229101.glb","diana":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/diana_1759343915602.glb","sacco":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb"},"audio":{"audio1":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/kissingbench_1759344632806.mp3","audiocarrots":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/sacco_1759345349951.mp3","audioonion":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/diana_1759344860784.mp3","ambient":"https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3","click":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/admin/audio/click_1758493161872.mp3","teleport":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/teleport_1758484984809.mp3"}},"environment":{"sky":{"day":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg","night":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg"},"ground":{"texture":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/leaves_1758475586342.png","repeat":"10 10","size":"100 100"},"lighting":{"ambient":{"color":"#BBB","intensity":1},"directional":{"color":"#FFF","intensity":1,"position":"-1 1 0","castShadow":true}},"physics":{"floor":{"position":"0 -0.1 0","size":"100 0.2 100","visible":false},"ceiling":{"position":"0 4 0","size":"100 0.2 100","visible":false}}},"infoDisplay":{"position":"0 0 -5","panel":{"position":"0 2.6 -4","size":"4 2.5","images":["#image1","#image2","#image3"]},"navigation":{"left":{"position":"-2.3 0 0","size":"0.6 0.6"},"right":{"position":"2.3 0 0","size":"0.6 0.6"}},"text":{"position":"0 -1.6 0","size":"4 0.8","content":{"slide1":"Public Art at Syracuse University","slide2":"The Kissing Bench, and Diana the Huntress","slide3":"The Passion of Sacco and Vinzetti"}},"rotation":"0 0 0"},"exhibits":[{"id":"tomato-exhibit","name":"Diana","position":"-15 0 -17","model":{"id":"diana","src":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/kissing-bench_1759343907805.glb","position":"-1.1 -0.8 0","scale":"0.2 0.2 0.2","rotation":"0 360 0","castShadow":true},"environment":{"geometry":"primitive: cylinder; radius: 5; height: 0.1","position":"0 0 0","material":"color: #2D5F34; roughness: 0.9"},"hotspot":{"id":"tomato-hotspot","position":"3 1.5 0","label":"The Kissing Bench","audio":"#audio1","info":"The Kissing Bench at Syracuse University was gifted by the Class of 1912, and while the exact origin of its legendary status is unknown, it has become a beloved campus tradition where a kiss on the bench is believed to ensure a couple will marry and live happily ever after. Sitting on the bench alone, however, is said to bring a lifetime of singleness.  ","vegetableModel":"tomato-model","revealAnimation":true}},{"id":"eggplant-exhibit","name":"Sacco and Vanzetti","position":"-5 0 15","model":{"id":"sacco","src":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb","position":"0 1 0","scale":"2 2 2","rotation":"0 360 0","castShadow":true},"environment":{"geometry":"primitive: cylinder; radius: 5; height: 0.1","position":"0 0 0","material":"color: #E6B570; roughness: 0.9"},"hotspot":{"id":"eggplant-hotspot","position":"3 1.5 0","label":"Eggplant Display","audio":"#audiocarrots","info":"This mural, which is situated next to Syracuse University's iSchool, is about the Sacco and Vanzetti case -- the controversial trial and execution of two Italian-born anarchists, Nicola Sacco and Bartolomeo Vanzetti, in the 1920s, for the 1920 murders of two payroll guards during a Braintree, Massachusetts robbery. Convicted in 1921, many believed the verdict was influenced by their radical political beliefs and immigrant status during the post-WWI Red Scare, leading to seven years of protests and legal appeals before their 1927 execution. The case highlighted societal anxieties about foreign influences, anarchism, and a flawed judicial system. ","vegetableModel":"eggplant-model","revealAnimation":true}},{"id":"onion-exhibit","name":"Diana Statue","position":"13.6 0 2","model":{"id":"diana","src":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/diana_1759343915602.glb","position":"0 1.5 -3","scale":"2.8 2.8 2.8","rotation":"0 360 0","castShadow":true},"environment":{"geometry":"primitive: cylinder; radius: 5; height: 0.1","position":"0 0 0","material":"color: #B39DDB; roughness: 0.9"},"hotspot":{"id":"onion-hotspot","position":"3 1.5 0","label":"Onion Exhibit","audio":"#audioonion","info":"The statue at Syracuse University is Diana the Huntress, a 12-foot bronze sculpture by Anna Hyatt Huntington, depicting the Greek goddess of the hunt. Donated in 1932 or 1934, it was historically a beloved tradition for students to rub the dog's paw on the statue for good luck on exams. The statue is now located in front of Carnegie Library and is a cherished part of campus culture, connecting generations of students.  ","vegetableModel":"onion-model","revealAnimation":true}}],"camera":{"position":"0 1.6 0","lookControls":{"pointerLockEnabled":true,"reverseMouseDrag":false},"wasdControls":{"fly":false}},"mobileControls":{"speed":3,"verticalMovementLocked":true},"dayNightCycle":{"enabled":false},"soundEffects":{"enabled":true,"ambientDelay":2000,"ambientAudioEnabled":false},"loading":{"enabled":true,"timeout":10000}};
+                this.sounds = {
+                    ambient: new Howl({
+                        src: [config.assets?.audio?.ambient || ''],
+                        loop: true,
+                        volume: 0.3,
+                        autoplay: false
+                    }),
+                    click: new Howl({
+                        src: [config.assets?.audio?.click || ''],
+                        volume: 0.5
+                    }),
+                    teleport: new Howl({
+                        src: [config.assets?.audio?.teleport || ''],
+                        volume: 0.7
+                    })
+                };
+                
+                // Only play ambient audio if enabled
+                if (config.soundEffects?.ambientAudioEnabled) {
+                    setTimeout(() => {
+                        this.sounds.ambient.play();
+                    }, config.soundEffects?.ambientDelay || 2000);
+                }
+                
+                // Add click sound to all clickable elements, but prevent duplicates
+                document.querySelectorAll('.clickable').forEach(el => {
+                    // Check if this element already has a click sound listener
+                    if (!el.hasAttribute('data-click-sound-added')) {
+                        el.addEventListener('click', () => {
+                            this.sounds.click.play();
+                        });
+                        el.setAttribute('data-click-sound-added', 'true');
+                    }
+                });
+            }
+        });
+        
+        // Static skybox component - always shows the configured skybox
+        AFRAME.registerComponent('static-skybox', {
+            init: function() {
+                this.sky = document.querySelector('a-sky');
+                const config = {"name":"Outdoor Exploration Museum","created":"2025-01-27T00:00:00.000Z","version":"1.0","description":"Open-air farm/field with exhibits and hotspots. Current default experience.","template":{"id":"outdoor-exploration","name":"Outdoor Exploration"},"assets":{"images":{"image1":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/1_1759346073610.png","image2":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/2_1759346072359.png","image3":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/3_1759346070860.png","arrowLeft":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/left_1758485303552.png","arrowRight":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/right_1758485302607.png","grid":"images/border.jpg","sky":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg","ground":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/leaves_1758475586342.png","hotspot":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/hotspot_1758485223541.png"},"models":{"tomato":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/tomato-plate_1758376233930.glb","eggplant":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/eggplant_1758376225454.glb","onion":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/onions_1758376229101.glb","diana":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/diana_1759343915602.glb","sacco":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb"},"audio":{"audio1":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/kissingbench_1759344632806.mp3","audiocarrots":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/sacco_1759345349951.mp3","audioonion":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/diana_1759344860784.mp3","ambient":"https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3","click":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/admin/audio/click_1758493161872.mp3","teleport":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/teleport_1758484984809.mp3"}},"environment":{"sky":{"day":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg","night":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg"},"ground":{"texture":"https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/leaves_1758475586342.png","repeat":"10 10","size":"100 100"},"lighting":{"ambient":{"color":"#BBB","intensity":1},"directional":{"color":"#FFF","intensity":1,"position":"-1 1 0","castShadow":true}},"physics":{"floor":{"position":"0 -0.1 0","size":"100 0.2 100","visible":false},"ceiling":{"position":"0 4 0","size":"100 0.2 100","visible":false}}},"infoDisplay":{"position":"0 0 -5","panel":{"position":"0 2.6 -4","size":"4 2.5","images":["#image1","#image2","#image3"]},"navigation":{"left":{"position":"-2.3 0 0","size":"0.6 0.6"},"right":{"position":"2.3 0 0","size":"0.6 0.6"}},"text":{"position":"0 -1.6 0","size":"4 0.8","content":{"slide1":"Public Art at Syracuse University","slide2":"The Kissing Bench, and Diana the Huntress","slide3":"The Passion of Sacco and Vinzetti"}},"rotation":"0 0 0"},"exhibits":[{"id":"tomato-exhibit","name":"Diana","position":"-15 0 -17","model":{"id":"diana","src":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/kissing-bench_1759343907805.glb","position":"-1.1 -0.8 0","scale":"0.2 0.2 0.2","rotation":"0 360 0","castShadow":true},"environment":{"geometry":"primitive: cylinder; radius: 5; height: 0.1","position":"0 0 0","material":"color: #2D5F34; roughness: 0.9"},"hotspot":{"id":"tomato-hotspot","position":"3 1.5 0","label":"The Kissing Bench","audio":"#audio1","info":"The Kissing Bench at Syracuse University was gifted by the Class of 1912, and while the exact origin of its legendary status is unknown, it has become a beloved campus tradition where a kiss on the bench is believed to ensure a couple will marry and live happily ever after. Sitting on the bench alone, however, is said to bring a lifetime of singleness.  ","vegetableModel":"tomato-model","revealAnimation":true}},{"id":"eggplant-exhibit","name":"Sacco and Vanzetti","position":"-5 0 15","model":{"id":"sacco","src":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb","position":"0 1 0","scale":"2 2 2","rotation":"0 360 0","castShadow":true},"environment":{"geometry":"primitive: cylinder; radius: 5; height: 0.1","position":"0 0 0","material":"color: #E6B570; roughness: 0.9"},"hotspot":{"id":"eggplant-hotspot","position":"3 1.5 0","label":"Eggplant Display","audio":"#audiocarrots","info":"This mural, which is situated next to Syracuse University's iSchool, is about the Sacco and Vanzetti case -- the controversial trial and execution of two Italian-born anarchists, Nicola Sacco and Bartolomeo Vanzetti, in the 1920s, for the 1920 murders of two payroll guards during a Braintree, Massachusetts robbery. Convicted in 1921, many believed the verdict was influenced by their radical political beliefs and immigrant status during the post-WWI Red Scare, leading to seven years of protests and legal appeals before their 1927 execution. The case highlighted societal anxieties about foreign influences, anarchism, and a flawed judicial system. ","vegetableModel":"eggplant-model","revealAnimation":true}},{"id":"onion-exhibit","name":"Diana Statue","position":"13.6 0 2","model":{"id":"diana","src":"https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/diana_1759343915602.glb","position":"0 1.5 -3","scale":"2.8 2.8 2.8","rotation":"0 360 0","castShadow":true},"environment":{"geometry":"primitive: cylinder; radius: 5; height: 0.1","position":"0 0 0","material":"color: #B39DDB; roughness: 0.9"},"hotspot":{"id":"onion-hotspot","position":"3 1.5 0","label":"Onion Exhibit","audio":"#audioonion","info":"The statue at Syracuse University is Diana the Huntress, a 12-foot bronze sculpture by Anna Hyatt Huntington, depicting the Greek goddess of the hunt. Donated in 1932 or 1934, it was historically a beloved tradition for students to rub the dog's paw on the statue for good luck on exams. The statue is now located in front of Carnegie Library and is a cherished part of campus culture, connecting generations of students.  ","vegetableModel":"onion-model","revealAnimation":true}}],"camera":{"position":"0 1.6 0","lookControls":{"pointerLockEnabled":true,"reverseMouseDrag":false},"wasdControls":{"fly":false}},"mobileControls":{"speed":3,"verticalMovementLocked":true},"dayNightCycle":{"enabled":false},"soundEffects":{"enabled":true,"ambientDelay":2000,"ambientAudioEnabled":false},"loading":{"enabled":true,"timeout":10000}};
+                
+                // Set the skybox to the configured sky image and keep it static
+                const skyImage = config.environment?.sky?.day || config.assets?.images?.sky || '';
+                
+                if (this.sky) {
+                    this.sky.setAttribute('material', {
+                        src: skyImage,
+                        opacity: 1.0
+                    });
+                    console.log('Static skybox set to:', skyImage);
+                }
+                
+                // Create ambient light - use config values
+                this.ambientLight = document.createElement('a-entity');
+                this.ambientLight.setAttribute('light', {
+                    type: 'ambient',
+                    color: config?.environment?.lighting?.ambient?.color || '#BBB',
+                    intensity: config?.environment?.lighting?.ambient?.intensity || 1
+                });
+                this.el.sceneEl.appendChild(this.ambientLight);
+                
+                // Create a static directional light (no movement) - use config values
+                this.sunLight = document.createElement('a-entity');
+                this.sunLight.setAttribute('light', {
+                    type: 'directional',
+                    color: config?.environment?.lighting?.directional?.color || '#FFF',
+                    intensity: config?.environment?.lighting?.directional?.intensity || 0.8,
+                    castShadow: config?.environment?.lighting?.directional?.castShadow || true
+                });
+                this.sunLight.setAttribute('position', config?.environment?.lighting?.directional?.position || '0 10 0');
+                this.el.sceneEl.appendChild(this.sunLight);
+            }
+        });
     </script>
+</head>
+
+<body>
+    <a-scene 
+        cursor="rayOrigin: mouse; objects: .clickable" 
+        sound-effects
+        static-skybox>
+        <!-- Lighting handled by static-skybox component -->
+        
+        <!-- UI Overlays -->
+        <div class="museum-info">Welcome to the Outdoor Exploration Museum</div>
+        
+        <!-- Camera Rig with Enhanced Controls -->
+        <a-entity
+            id="cameraRig"
+            enhanced-mobile-controls="speed: 3"
+            movement-controls="fly: false; constrainToNavMesh: false;"
+            navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
+            position="0 0 0"
+            rotation="0 0 0"
+        >
+            <a-entity
+                id="head"
+                camera="active: true"
+                look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+                wasd-controls="fly: false"
+                position="0 1.6 0"
+            >
+                <a-cursor
+                    fuse="true"
+                    fuse-timeout="1500"
+                    animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+                    animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+                    raycaster="objects: .clickable"
+                    visible="true"
+                ></a-cursor>
+            </a-entity>
+
+            <!-- Controllers with improved teleportation -->
+            <a-entity
+                id="left-controller"
+                laser-controls="hand: left"
+                raycaster="objects: .clickable, .ground"
+                blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
+                visible="true"
+            ></a-entity>
+            
+            <a-entity
+                id="right-controller"
+                laser-controls="hand: right"
+                raycaster="objects: .clickable, .ground"
+                blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
+                visible="true"
+            ></a-entity>
+        </a-entity>
+
+        <!-- Assets -->
+        <a-assets>
+            <!-- Sky and Ground -->
+            <img id="sky" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/IMG-20250915-163707-860-1757969504972_1759344221873.jpg" />
+            <img id="ground" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/leaves_1758475586342.png" />
+            
+            <!-- Slideshow Images -->
+            <img id="image1" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/1_1759346073610.png" />
+            <img id="image2" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/2_1759346072359.png" />
+            <img id="image3" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/3_1759346070860.png" />
+            <img id="arrowLeft" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/left_1758485303552.png" />
+            <img id="arrowRight" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/right_1758485302607.png" />
+            
+            <!-- 3D Models -->
+                        <a-asset-item id="tomato" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/tomato-plate_1758376233930.glb" type="gltf"></a-asset-item>
+            <a-asset-item id="eggplant" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/eggplant_1758376225454.glb" type="gltf"></a-asset-item>
+            <a-asset-item id="onion" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/3d/onions_1758376229101.glb" type="gltf"></a-asset-item>
+            <a-asset-item id="diana" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/diana_1759343915602.glb" type="gltf"></a-asset-item>
+            <a-asset-item id="sacco" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb" type="gltf"></a-asset-item>
+            <a-asset-item id="diana-model" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/kissing-bench_1759343907805.glb" type="gltf"></a-asset-item>
+            <a-asset-item id="sacco-model" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb" type="gltf"></a-asset-item>
+            <audio id="audio1" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/kissingbench_1759344632806.mp3" preload="auto"></audio>
+            <audio id="audiocarrots" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/sacco_1759345349951.mp3" preload="auto"></audio>
+            <audio id="audioonion" src="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/audio/diana_1759344860784.mp3" preload="auto"></audio>
+            <audio id="ambient" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3" preload="auto"></audio>
+            <audio id="click" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/admin/audio/click_1758493161872.mp3" preload="auto"></audio>
+            <audio id="teleport" src="https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/teleport_1758484984809.mp3" preload="auto"></audio>
+
+        </a-assets>
+
+        <!-- Environment -->
+        
+        <a-plane
+            width="100"
+            height="100"
+            rotation="-90 0 0"
+            material="src: #ground; repeat:10 10; transparent: false; opacity: 1; normalTextureRepeat: 10 10; roughness: 0.8"
+            shadow="cast: false; receive: true"
+            class="ground clickable"
+        ></a-plane>
+
+        <a-sky src="#sky"></a-sky>
+        
+        <!-- Interactive Info Display -->
+        <a-entity id="info-display" position="0 0 -5">
+            <!-- Main Display Panel with billboard behavior -->
+            <a-entity 
+                id="image-panel-container"
+                face-camera
+                position="0 2.6 -4"
+            >
+                <a-plane
+                    id="image-panel"
+                    position="0 0 0"
+                    width="4"
+                    height="2.5"
+                    material="src: #image1; side: double; shader: flat"
+                    visible="true"
+                    class="clickable"
+                ></a-plane>
+                
+                <!-- Navigation Arrows with Improved Styling -->
+                <a-entity 
+                    id="nav-left" 
+                    position="-2.3 0 0" 
+                    class="clickable"
+                >
+                    <a-image
+                        src="#arrowLeft"
+                        position="0 0 0.01"
+                        scale="0.5 0.5 0.5"
+                        class="clickable"
+                        animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
+                    ></a-image>
+                    <a-plane
+                        width="0.6"
+                        height="0.6"
+                        color="#333333"
+                        opacity="0.7"
+                        material="shader: flat"
+                    ></a-plane>
+                </a-entity>
+                
+                <a-entity 
+                    id="nav-right" 
+                    position="2.3 0 0" 
+                    class="clickable"
+                >
+                    <a-image
+                        src="#arrowRight"
+                        position="0 0 0.01"
+                        scale="0.5 0.5 0.5"
+                        class="clickable"
+                        animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
+                    ></a-image>
+                    <a-plane
+                        width="0.6"
+                        height="0.6"
+                        color="#333333"
+                        opacity="0.7"
+                        material="shader: flat"
+                    ></a-plane>
+                </a-entity>
+                
+                <!-- Information Display Text -->
+                <a-entity
+                    id="info-text"
+                    position="0 -1.6 0"
+                    text="value: Welcome to the Outdoor Exploration Museum! Explore the world of exhibits in this interactive 3D experience. Click on the hotspots to learn more about each exhibit.; width: 3; color: #FFFFFF; align: center"
+                    geometry="primitive: plane; width: 4; height: 0.8"
+                    material="color: #333333; opacity: 0.8; shader: flat"
+                ></a-entity>
+            </a-entity>
+        </a-entity>
+        
+        <!-- Create invisible floor collider -->
+        <a-box
+            class="collision"
+            position="0 -0.1 0"
+            width="100"
+            height="0.2"
+            depth="100"
+            visible="false"
+            static-body
+        ></a-box>
+        
+        <!-- Walls and Ceilings -->
+        
+        
+        <!-- Exhibits -->
+        
+        <!-- Diana -->
+        <a-entity id="tomato-exhibit" position="-15 0 -17">
+            <!-- 3D Model -->
+            <a-entity id="diana-model-model" 
+                      gltf-model="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/kissing-bench_1759343907805.glb" 
+                      position="-1.1 -0.8 0" 
+                      scale="0.2 0.2 0.2" 
+                      rotation="0 360 0"
+                      shadow="cast: true; receive: true">
+            </a-entity>
+            
+            <!-- Additional Models -->
+            
+            
+            <!-- Model Label -->
+            <a-entity id="diana-model-label-container" position="0 3 0" visible="false">
+                <a-text value="Diana" 
+                        align="center" 
+                        color="white" 
+                        position="0 0 0"
+                        scale="2 2 2">
+                </a-text>
+            </a-entity>
+            
+            <!-- Hotspot -->
+            <a-entity id="tomato-exhibit-hotspot" 
+                      position="3 1.5 0"
+                      face-camera="preserveY: true"
+                      class="clickable"
+                      spot="label: The Kissing Bench; info: The Kissing Bench at Syracuse University was gifted by the Class of 1912, and while the exact origin of its legendary status is unknown, it has become a beloved campus tradition where a kiss on the bench is believed to ensure a couple will marry and live happily ever after. Sitting on the bench alone, however, is said to bring a lifetime of singleness.  ; audio: #audio1; vegetableModel: #diana-model-model; revealAnimation: true">
+            </a-entity>
+        </a-entity>
+
+        <!-- Sacco and Vanzetti -->
+        <a-entity id="eggplant-exhibit" position="-5 0 15">
+            <!-- 3D Model -->
+            <a-entity id="sacco-model-model" 
+                      gltf-model="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/saccomural_1759343908862.glb" 
+                      position="0 1 0" 
+                      scale="2 2 2" 
+                      rotation="0 360 0"
+                      shadow="cast: true; receive: true">
+            </a-entity>
+            
+            <!-- Additional Models -->
+            
+            
+            <!-- Model Label -->
+            <a-entity id="sacco-model-label-container" position="0 3 0" visible="false">
+                <a-text value="Sacco and Vanzetti" 
+                        align="center" 
+                        color="white" 
+                        position="0 0 0"
+                        scale="2 2 2">
+                </a-text>
+            </a-entity>
+            
+            <!-- Hotspot -->
+            <a-entity id="eggplant-exhibit-hotspot" 
+                      position="3 1.5 0"
+                      face-camera="preserveY: true"
+                      class="clickable"
+                      spot="label: Eggplant Display; info: This mural, which is situated next to Syracuse University's iSchool, is about the Sacco and Vanzetti case -- the controversial trial and execution of two Italian-born anarchists, Nicola Sacco and Bartolomeo Vanzetti, in the 1920s, for the 1920 murders of two payroll guards during a Braintree, Massachusetts robbery. Convicted in 1921, many believed the verdict was influenced by their radical political beliefs and immigrant status during the post-WWI Red Scare, leading to seven years of protests and legal appeals before their 1927 execution. The case highlighted societal anxieties about foreign influences, anarchism, and a flawed judicial system. ; audio: #audiocarrots; vegetableModel: #sacco-model-model; revealAnimation: true">
+            </a-entity>
+        </a-entity>
+
+        <!-- Diana Statue -->
+        <a-entity id="onion-exhibit" position="13.6 0 2">
+            <!-- 3D Model -->
+            <a-entity id="diana-model-model" 
+                      gltf-model="https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/diana_1759343915602.glb" 
+                      position="0 1.5 -3" 
+                      scale="2.8 2.8 2.8" 
+                      rotation="0 360 0"
+                      shadow="cast: true; receive: true">
+            </a-entity>
+            
+            <!-- Additional Models -->
+            
+            
+            <!-- Model Label -->
+            <a-entity id="diana-model-label-container" position="0 3 0" visible="false">
+                <a-text value="Diana Statue" 
+                        align="center" 
+                        color="white" 
+                        position="0 0 0"
+                        scale="2 2 2">
+                </a-text>
+            </a-entity>
+            
+            <!-- Hotspot -->
+            <a-entity id="onion-exhibit-hotspot" 
+                      position="3 1.5 0"
+                      face-camera="preserveY: true"
+                      class="clickable"
+                      spot="label: Onion Exhibit; info: The statue at Syracuse University is Diana the Huntress, a 12-foot bronze sculpture by Anna Hyatt Huntington, depicting the Greek goddess of the hunt. Donated in 1932 or 1934, it was historically a beloved tradition for students to rub the dog's paw on the statue for good luck on exams. The statue is now located in front of Carnegie Library and is a cherished part of campus culture, connecting generations of students.  ; audio: #audioonion; vegetableModel: #diana-model-model; revealAnimation: true">
+            </a-entity>
+        </a-entity>
+
+        
+        <script>
+           // Document ready handler
+           document.addEventListener("DOMContentLoaded", () => {
+               // Debug: Log all audio elements
+               console.log('All audio elements in DOM:');
+               document.querySelectorAll('audio').forEach((audio, index) => {
+                   console.log(`Audio ${index}:`, audio.id, audio.src);
+               });
+               
+               // Image slideshow functionality
+                const images = ["#image1","#image2","#image3"];
+                let currentIndex = 0;
+                const imagePanel = document.querySelector("#image-panel");
+                
+                function updatePanelImage() {
+                    imagePanel.setAttribute("material", "src", images[currentIndex]);
+                    
+                    // Update info text based on current image
+                    const infoText = document.querySelector("#info-text");
+                    const content = {"slide1":"Public Art at Syracuse University","slide2":"The Kissing Bench, and Diana the Huntress","slide3":"The Passion of Sacco and Vinzetti"};
+                    let textContent = content.default || "Welcome to the Outdoor Exploration Museum!";
+                    
+                    switch(currentIndex) {
+                        case 0:
+                            textContent = content.slide1 || "Slide 1";
+                            break;
+                        case 1:
+                            textContent = content.slide2 || "Slide 2";
+                            break;
+                        case 2:
+                            textContent = content.slide3 || "Slide 3";
+                            break;
+                    }
+                    
+                    infoText.setAttribute("text", "value", textContent);
+                }
+                
+                document.querySelector("#nav-left").addEventListener("click", () => {
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    updatePanelImage();
+                    // Play click sound if available
+                    const soundEffects = document.querySelector('[sound-effects]');
+                    if (soundEffects && soundEffects.components['sound-effects'].sounds.click) {
+                        soundEffects.components['sound-effects'].sounds.click.play();
+                    }
+                });
+                
+                document.querySelector("#nav-right").addEventListener("click", () => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    updatePanelImage();
+                    // Play click sound if available
+                    const soundEffects = document.querySelector('[sound-effects]');
+                    if (soundEffects && soundEffects.components['sound-effects'].sounds.click) {
+                        soundEffects.components['sound-effects'].sounds.click.play();
+                    }
+                });
+                
+                // Update hotspots to use the preserveY option
+                document.querySelectorAll('[face-camera]').forEach(el => {
+                    // Check if this is a hotspot element (not the image panel)
+                    if (el.hasAttribute('spot')) {
+                        el.setAttribute('face-camera', 'preserveY', true);
+                    }
+                });
+                
+                // VR Mode toggle
+                const vrToggle = document.createElement('div');
+                vrToggle.className = 'vr-toggle';
+                vrToggle.textContent = 'Enter VR';
+                document.body.appendChild(vrToggle);
+                
+                vrToggle.addEventListener('click', () => {
+                    const scene = document.querySelector('a-scene');
+                    if (scene.is('vr-mode')) {
+                        scene.exitVR();
+                        vrToggle.textContent = 'Enter VR';
+                    } else {
+                        scene.enterVR();
+                        vrToggle.textContent = 'Exit VR';
+                    }
+                });
+                
+                // Detect device capabilities
+                setTimeout(() => {
+                    if (AFRAME.utils.device.isMobile()) {
+                        // Mobile controls guide would go here
+                    } else {
+                        // Desktop controls guide would go here
+                    }
+                }, 1000);
+            });
+        </script>
+    </a-scene>
 </body>
 </html>
