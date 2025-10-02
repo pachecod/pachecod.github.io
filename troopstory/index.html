@@ -3,51 +3,209 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <title>U.S. Troop Deployment Worldwide Since 1950</title>
+    
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-
-    <title>U.S. Troop Deployment Worldwide Since 1950</title>
-
-    <link
-      rel="canonical"
-      href="https://getbootstrap.com/docs/5.0/examples/starter-template/"
-    />
-
-    <link
-      href="http://pachecod.github.io/bootstrap/assets/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="main.css" />
-
+    
     <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
+      :root {
+        --primary-blue: #2c5aa0;
+        --secondary-blue: #4a7bc8;
+        --light-gray: #f8f9fa;
+        --dark-gray: #212529;
+        --border-color: #dee2e6;
       }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+      
+      * {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        padding-top: 56px;
+        background-color: var(--light-gray);
+      }
+      
+      /* Navigation */
+      .navbar {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+      }
+      
+      .navbar-brand {
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+      
+      /* Hero Section */
+      .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0 3rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+      
+      .hero-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      
+      .hero-section p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      
+      /* Region Navigation */
+      .region-nav {
+        position: sticky;
+        top: 56px;
+        background: white;
+        padding: 1.5rem 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+      }
+      
+      .region-nav .btn {
+        margin: 0.5rem 0.25rem;
+        border-radius: 25px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-width: 2px;
+      }
+      
+      .region-nav .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      }
+      
+      /* Main Content */
+      .main-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+      
+      /* Section Styling */
+      .region-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-left: 4px solid var(--primary-blue);
+      }
+      
+      .region-section h2 {
+        color: var(--primary-blue);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--border-color);
+      }
+      
+      .region-section p {
+        color: #495057;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+      }
+      
+      /* Chart Container */
+      .chart-container {
+        background: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border: 1px solid var(--border-color);
+      }
+      
+      .chart-container iframe {
+        border-radius: 8px;
+      }
+      
+      /* Return to Top Button */
+      .return-top {
+        display: inline-block;
+        margin-top: 2rem;
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--primary-blue);
+        border-radius: 25px;
+        transition: all 0.3s ease;
+      }
+      
+      .return-top:hover {
+        background: var(--primary-blue);
+        color: white;
+        transform: translateY(-2px);
+      }
+      
+      /* Footer */
+      .footer {
+        background: var(--dark-gray);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+        margin-top: 3rem;
+      }
+      
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-section h1 {
+          font-size: 1.75rem;
+        }
+        
+        .region-nav {
+          padding: 1rem 0;
+        }
+        
+        .region-nav .btn {
+          font-size: 0.85rem;
+          padding: 0.4rem 1rem;
+        }
+        
+        .region-section {
+          padding: 1.5rem;
         }
       }
+      
+      /* Smooth fade-in animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .region-section {
+        animation: fadeIn 0.5s ease-out;
+      }
     </style>
-
-    <link href="starter-template.css" rel="stylesheet" />
   </head>
+  
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="https://pachecod.github.io">HOME</a>
-
+        
         <button
           class="navbar-toggler"
           type="button"
@@ -59,166 +217,234 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-
+        
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <!-- ... -->
-            <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="http://link">
-                Spring 2025 Class Exercise
-              </a>
+          <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="#top">Spring 2025 Class Exercise</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <main class="container">
-      <div class="starter-template text-left py-5 px-3">
-        <!-- Top anchor for "Return to Top" links -->
-        <a id="top"></a>
-
-        <br/>
-
+    <div class="hero-section" id="top">
+      <div class="container text-center">
+        <h1>U.S. Troop Deployment Worldwide Since 1950</h1>
         <p>
-          <!-- PLACE MAIN CHART HERE -->
-        </p>
-
-        Intro paragraph here.</p>
-
-        
-
-        <div>
-          <a href="#antarctica">
-            <button type="button" class="btn btn-outline-primary">
-              Antarctica
-            </button>
-          </a>
-          <a href="#eastasia">
-            <button type="button" class="btn btn-outline-primary">
-              East Asia
-            </button>
-          </a>
-          <a href="#europe">
-            <button type="button" class="btn btn-outline-secondary">
-              Europe
-            </button>
-          </a>
-          <a href="#latinamerica">
-            <button type="button" class="btn btn-outline-success">
-              Latin America
-            </button>
-          </a>
-          <a href="#middleeast">
-            <button type="button" class="btn btn-outline-danger">
-              Middle East
-            </button>
-          </a>
-          <a href="#southasia">
-            <button type="button" class="btn btn-outline-warning">
-              South Asia
-            </button>
-          </a>
-          <a href="#subsahara">
-            <button type="button" class="btn btn-outline-warning">
-              Africa
-            </button>
-          </a>
-        </div>
-
-        <hr class="my-5" />
-
-        <h2 id="antarctica">Antarctica</h2>
-
-        <p>
-          Paragraph here.
-        </p>
-
-        <p>
-          <!-- PLACE ANTARCTICA CONTENT HERE -->
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="eastasia">East Asia & Pacific</h2>
-
-
-        <p>Paragraph here.</p>
-
-
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="europe">Europe & Central Asia</h2>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="latinamerica">Latin America & Caribbean</h2>
-        
-        <p>
-          Paragraph here.
-        </p>
-        
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="middleeast">Middle East & North Africa</h2>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="southasia">South Asia</h2>
-
-        <p>Paragraph here.</p>
-          <p>Paragraph here.</p>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="subsahara">Sub-Saharan Africa</h2>
-
-
-        <p>
-          <iframe title="[ Sub Saharan Africa Troop Deployment ]" aria-label="Line chart" id="datawrapper-chart-3fUFN" src="https://datawrapper.dwcdn.net/3fUFN/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="394" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();
-</script>
-
-        </p>
-        <p>Paragraph here.</p>
-          <p>Paragraph here.</p>
-          <p>Paragraph here.</p>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-          
-          <a href="#top">Return to Top</a>
+          An interactive exploration of American military presence across global regions 
+          over the past seven decades. Navigate through different regions to discover 
+          deployment patterns and historical trends.
         </p>
       </div>
+    </div>
+
+    <div class="region-nav">
+      <div class="container text-center">
+        <a href="#antarctica">
+          <button type="button" class="btn btn-outline-primary">
+            Antarctica
+          </button>
+        </a>
+        <a href="#eastasia">
+          <button type="button" class="btn btn-outline-info">
+            East Asia
+          </button>
+        </a>
+        <a href="#europe">
+          <button type="button" class="btn btn-outline-secondary">
+            Europe
+          </button>
+        </a>
+        <a href="#latinamerica">
+          <button type="button" class="btn btn-outline-success">
+            Latin America
+          </button>
+        </a>
+        <a href="#middleeast">
+          <button type="button" class="btn btn-outline-danger">
+            Middle East
+          </button>
+        </a>
+        <a href="#southasia">
+          <button type="button" class="btn btn-outline-warning">
+            South Asia
+          </button>
+        </a>
+        <a href="#subsahara">
+          <button type="button" class="btn btn-outline-dark">
+            Africa
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <main class="container">
+      <div class="main-content">
+        <h2>Overview</h2>
+        <p>
+          This visualization presents a comprehensive analysis of U.S. military troop 
+          deployments across different regions of the world from 1950 to the present. 
+          The data reflects significant geopolitical shifts, military interventions, 
+          and strategic priorities throughout the Cold War, post-Cold War era, and 
+          contemporary period.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE MAIN CHART HERE -->
+          <p class="text-center text-muted">Main overview chart will be displayed here</p>
+        </div>
+      </div>
+
+      <section class="region-section" id="antarctica">
+        <h2>Antarctica</h2>
+        <p>
+          Antarctica maintains a unique status in international relations, governed by 
+          the Antarctic Treaty System which dedicates the continent to peaceful purposes 
+          and scientific research. U.S. military presence in this region is minimal and 
+          primarily focused on logistical support for scientific missions.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE ANTARCTICA CONTENT HERE -->
+          <p class="text-center text-muted">Antarctica deployment data will be displayed here</p>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="eastasia">
+        <h2>East Asia & Pacific</h2>
+        <p>
+          The East Asia and Pacific region has been a cornerstone of U.S. military 
+          strategy since World War II. Major deployments in Japan, South Korea, and 
+          other Pacific islands reflect ongoing security commitments and strategic 
+          partnerships in this vital region.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE COUNTRY CONTENT HERE -->
+          <p class="text-center text-muted">East Asia deployment data will be displayed here</p>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="europe">
+        <h2>Europe & Central Asia</h2>
+        <p>
+          Europe has hosted the largest sustained U.S. military presence since the 
+          post-World War II era. NATO commitments and Cold War legacy continue to 
+          shape deployment patterns, with significant forces in Germany, Italy, and 
+          the United Kingdom.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE COUNTRY CONTENT HERE -->
+          <p class="text-center text-muted">Europe deployment data will be displayed here</p>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="latinamerica">
+        <h2>Latin America & Caribbean</h2>
+        <p>
+          U.S. military engagement in Latin America and the Caribbean has varied 
+          significantly over the decades, influenced by Cold War dynamics, drug 
+          interdiction efforts, and humanitarian missions. The region reflects 
+          changing priorities in U.S. foreign policy.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE COUNTRY CONTENT HERE -->
+          <p class="text-center text-muted">Latin America deployment data will be displayed here</p>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="middleeast">
+        <h2>Middle East & North Africa</h2>
+        <p>
+          Military deployments to the Middle East have fluctuated dramatically, 
+          particularly following the Gulf War, Iraq War, and ongoing operations 
+          against terrorism. This region has become increasingly significant in 
+          U.S. military strategy since the 1990s.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE COUNTRY CONTENT HERE -->
+          <p class="text-center text-muted">Middle East deployment data will be displayed here</p>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="southasia">
+        <h2>South Asia</h2>
+        <p>
+          South Asian deployments increased substantially following the September 11 
+          attacks, with Afghanistan becoming a major focus of U.S. military operations. 
+          The region represents complex challenges in counterterrorism and stabilization 
+          efforts.
+        </p>
+        
+        <div class="chart-container">
+          <!-- PLACE COUNTRY CONTENT HERE -->
+          <p class="text-center text-muted">South Asia deployment data will be displayed here</p>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="subsahara">
+        <h2>Sub-Saharan Africa</h2>
+        
+        <div class="chart-container">
+          <iframe 
+            title="Sub Saharan Africa Troop Deployment" 
+            aria-label="Line chart" 
+            id="datawrapper-chart-3fUFN" 
+            src="https://datawrapper.dwcdn.net/3fUFN/1/" 
+            scrolling="no" 
+            frameborder="0" 
+            style="width: 0; min-width: 100% !important; border: none;" 
+            height="394" 
+            data-external="1">
+          </iframe>
+          <script type="text/javascript">
+            !function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();
+          </script>
+        </div>
+        
+        <p>
+          U.S. military presence in Sub-Saharan Africa has evolved from minimal Cold War 
+          engagement to more substantial involvement in counterterrorism, peacekeeping, 
+          and capacity-building missions in the 21st century.
+        </p>
+        
+        <p>
+          The establishment of U.S. Africa Command (AFRICOM) in 2008 marked a significant 
+          shift in U.S. military engagement with the continent, coordinating operations 
+          across 53 African countries.
+        </p>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
     </main>
 
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 Spring Class Exercise | U.S. Troop Deployment Analysis</p>
+        <p class="small">Data visualization created for educational purposes</p>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
