@@ -11,194 +11,10 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+
+    <link rel="stylesheet" href="style.css"/>
     
-    <style>
-      :root {
-        --primary-blue: #2c5aa0;
-        --secondary-blue: #4a7bc8;
-        --light-gray: #f8f9fa;
-        --dark-gray: #212529;
-        --border-color: #dee2e6;
-      }
-      
-      * {
-        scroll-behavior: smooth;
-      }
-      
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        padding-top: 56px;
-        background-color: var(--light-gray);
-      }
-      
-      /* Navigation */
-      .navbar {
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-      }
-      
-      .navbar-brand {
-        font-weight: 600;
-        font-size: 1.25rem;
-      }
-      
-      /* Hero Section */
-      .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 4rem 0 3rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      }
-      
-      .hero-section h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-      }
-      
-      .hero-section p {
-        font-size: 1.1rem;
-        opacity: 0.95;
-        max-width: 800px;
-        margin: 0 auto;
-      }
-      
-      /* Region Navigation */
-      .region-nav {
-        position: sticky;
-        top: 56px;
-        background: white;
-        padding: 1.5rem 0;
-        z-index: 1000;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        margin-bottom: 2rem;
-      }
-      
-      .region-nav .btn {
-        margin: 0.5rem 0.25rem;
-        border-radius: 25px;
-        padding: 0.5rem 1.25rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        border-width: 2px;
-      }
-      
-      .region-nav .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      }
-      
-      /* Main Content */
-      .main-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      }
-      
-      /* Section Styling */
-      .region-section {
-        background: white;
-        border-radius: 12px;
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        border-left: 4px solid var(--primary-blue);
-      }
-      
-      .region-section h2 {
-        color: var(--primary-blue);
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid var(--border-color);
-      }
-      
-      .region-section p {
-        color: #495057;
-        line-height: 1.8;
-        margin-bottom: 1.5rem;
-      }
-      
-      /* Chart Container */
-      .chart-container {
-        background: var(--light-gray);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin: 2rem 0;
-        border: 1px solid var(--border-color);
-      }
-      
-      .chart-container iframe {
-        border-radius: 8px;
-      }
-      
-      /* Return to Top Button */
-      .return-top {
-        display: inline-block;
-        margin-top: 2rem;
-        color: var(--primary-blue);
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.5rem 1rem;
-        border: 2px solid var(--primary-blue);
-        border-radius: 25px;
-        transition: all 0.3s ease;
-      }
-      
-      .return-top:hover {
-        background: var(--primary-blue);
-        color: white;
-        transform: translateY(-2px);
-      }
-      
-      /* Footer */
-      .footer {
-        background: var(--dark-gray);
-        color: white;
-        padding: 2rem 0;
-        text-align: center;
-        margin-top: 3rem;
-      }
-      
-      /* Responsive Design */
-      @media (max-width: 768px) {
-        .hero-section h1 {
-          font-size: 1.75rem;
-        }
-        
-        .region-nav {
-          padding: 1rem 0;
-        }
-        
-        .region-nav .btn {
-          font-size: 0.85rem;
-          padding: 0.4rem 1rem;
-        }
-        
-        .region-section {
-          padding: 1.5rem;
-        }
-      }
-      
-      /* Smooth fade-in animation */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      
-      .region-section {
-        animation: fadeIn 0.5s ease-out;
-      }
-    </style>
+    
   </head>
   
   <body>
@@ -285,6 +101,30 @@
         
         <div class="chart-container">
           <!-- PLACE MAIN CHART HERE -->
+
+          <p>
+            Since the end of World War II, the United States has maintained an unprecedented global military presence, with troops deployed across every inhabited continent. At its peak during the Cold War, hundreds of thousands of American service members were stationed abroad, while today that number has stabilized at approximately 160,000 personnel in dozens of countries worldwide.</p>
+
+          <iframe src="globe.html" 
+        width="100%" 
+        height="600" 
+        frameborder="0" 
+        style="border:none;"
+        title="U.S. Troop Deployment Globe">
+</iframe>
+
+  <p>This deployment pattern reflects major geopolitical shifts over the past seven decades—from Cold War containment strategies and the Korean and Vietnam Wars, to post-9/11 operations in the Middle East, and ongoing commitments to allies in Europe and the Indo-Pacific. The data reveals not just where American troops have been sent, but why: to deter adversaries, support allies, maintain regional stability, and respond to humanitarian crises. By examining troop levels across different regions over time, we can trace the evolving nature of American military engagement and the strategic priorities that have shaped U.S. foreign policy for three generations.
+          </p>
+          
+             <iframe title="U.S. Troops Overseas and At Home" aria-label="Area Chart" id="datawrapper-chart-qw3Y6" src="https://datawrapper.dwcdn.net/qw3Y6/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="423" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+        
+            
+          
+
+
+
+         
+
         </div>
       </div>
 
@@ -296,6 +136,8 @@
           and scientific research. U.S. military presence in this region is minimal and 
           primarily focused on logistical support for scientific missions.
         </p>
+
+        
         
         <div class="chart-container">
           <!-- PLACE ANTARCTICA CONTENT HERE -->
@@ -304,6 +146,12 @@
             <iframe title="Troop Deployments in Antarctica" aria-label="Line chart" id="datawrapper-chart-81j8Z" src="https://datawrapper.dwcdn.net/81j8Z/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="396" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();</script>
 
           </p>
+
+          <p>
+          High troop levels in Antarctica from 1956 to 1970 were driven by several overlapping factors. First, 1957 was declared an International Geophysical Year. This massive global scientific initiative involved extensive Antarctic exploration and research, requiring substantial military logistics support to establish and supply research stations in one of the world's most hostile environments.
+        </p>
+
+        <p>In addition, the Cold War had an influence in Antarctica as well as around the world. The U.S. and Soviet Union competed to establish Antarctic presence. Military personnel were deployed to construct and maintain bases, transport supplies, and support scientific operations.</p>
 
         </div>
         
@@ -314,7 +162,10 @@
         <h2>East Asia & Pacific</h2>
         
         <div class="chart-container">
+
           <!-- PLACE COUNTRY CONTENT HERE -->
+
+          <p>The data from 2024 to 2024 shows that U.S. troop deployments have remained relatively stable over the past decade, with only minor fluctuations. From 2014 through 2021, troop numbers consistently hovered around 72, indicating a steady moderate level of overseas military presence. Starting in 2022, there was a slight increase to 74, followed by 76 in 2019 and peking at 78 in 2024- the highest within this range. Therefore, while there has been a small upward trend toward the end of the decade, the data suggests that the U.S. troop employment levels have largely stabilized compared to the larger swings seen in previous decades, reflecting a more consistent and measured approach to global military engagement. </p>
 
           <iframe title="Troops Deployed in the Last Decade - East Asia/ Pacific" aria-label="Line chart" id="datawrapper-chart-Fvznn" src="https://datawrapper.dwcdn.net/Fvznn/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="397" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
 
@@ -329,6 +180,14 @@
         
         <div class="chart-container">
           <!-- PLACE COUNTRY CONTENT HERE -->
+
+          <p>After creating a pivot table we focused on the deployment of troops in Germany and we found and saw the gradual increase throughout history and then the spike in the early 2000’s. As well as seeing the democratic German republic  that was also known as west germany. Interesting to see the US was also deploying troops there as well. </p>
+
+          <iframe title="American Troops Deployed In Germany" aria-label="Stacked column chart" id="datawrapper-chart-gjdpb" src="https://datawrapper.dwcdn.net/gjdpb/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="392" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+
+         
+          
         </div>
         
         <a href="#top" class="return-top">↑ Return to Top</a>
@@ -339,6 +198,9 @@
         
         <div class="chart-container">
           <!-- PLACE COUNTRY CONTENT HERE -->
+
+          <iframe title="Troops Deployed Since 1950: Latin America" aria-label="Line chart" id="datawrapper-chart-JHCuC" src="https://datawrapper.dwcdn.net/JHCuC/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="369" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
         </div>
         
         <a href="#top" class="return-top">↑ Return to Top</a>
@@ -350,16 +212,20 @@
         <div class="chart-container">
           <!-- PLACE COUNTRY CONTENT HERE -->
 
+        <p>Troop deployment in the Middle East and North Africa peaked in 2007 at 223,300 troops after 189,000 in 2006. The data was steady up until 2010, when it dropped to 100,000 troops, and it's been under 100,000 to this day. The biggest spike was from 2002 to 2003, when troop deployment shot up from 3,000 to 140,000 due to the Iraq War.</p>
+
         <iframe title="Overall Troop Deployment In The Middle East and North Africa" aria-label="Column Chart" id="datawrapper-chart-8UWw2" src="https://datawrapper.dwcdn.net/8UWw2/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="437" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
 
-          <br/>
-
+        <p>Another noticiable spike came in 1989 to 1990 when troop deployment rose from 2,000 to 33,000 due to Iraq’s invasion of Kuwait in August of 1990. Saddam Hussein ordered the invasion of Kuwait to acquire the nation’s largest oil reserves and expand his power in the region.</p>
 
         <iframe title="U.S. Troop Deployment In Iraq During the Iraq war" aria-label="Line chart" id="datawrapper-chart-Lx3i9" src="https://datawrapper.dwcdn.net/Lx3i9/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="396" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
 
-          <br/>
+
+        <p>The war between Iran and Iraq went from September 22, 1980 – August 20, 1988. During the beginning and middle of the war, U.S. troop deployment stayed relatively steady and increased/decreased incrementally. However, troop deployment went from 2,079 in 1987 to 33,017 in 1988. This was primarily due to Operation Earnest Will and Operation Prime Chance run by the U.S. in the Persian Gulf. These operations aimed to protect Kuwaiti-owned oil tankers against Iranian attacks during the Iran-Iraq War, and to stop Iranian forces from attacking Persian Gulf shipping using mines and small boats, respectively. </p>
 
         <iframe title="U.S. Troop Deployment in The Middle East and North Africa as the Iran-Iraq War Ends" aria-label="Line chart" id="datawrapper-chart-aNfku" src="https://datawrapper.dwcdn.net/aNfku/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="422" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+
   
           
 
@@ -383,21 +249,23 @@
         <h2>Sub-Saharan Africa</h2>
         
         <div class="chart-container">
-          <iframe 
-            title="Sub Saharan Africa Troop Deployment" 
-            aria-label="Line chart" 
-            id="datawrapper-chart-3fUFN" 
-            src="https://datawrapper.dwcdn.net/3fUFN/1/" 
-            scrolling="no" 
-            frameborder="0" 
-            style="width: 0; min-width: 100% !important; border: none;" 
-            height="394" 
-            data-external="1">
-          </iframe>
-          <script type="text/javascript">
-            !function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();
-          </script>
+
           <!-- PLACE COUNTRY CONTENT HERE -->
+
+          <iframe title="[ Sub Saharan Africa Troop Deployment ]" aria-label="Line chart" id="datawrapper-chart-3fUFN" src="https://datawrapper.dwcdn.net/3fUFN/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="394" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();
+</script>
+
+          <p>Troop deployment in sub-saharan Africa peaked in 1993 at 6,649 troops, after a sharp increase from 306 troops in 1992. 6,345 of these troops were in Somalia. The number of troops subsequently decreased just as sharply by 1996, dropping back down to 242 and 0 in Somalia. This sudden increase is explained by Operation Restore Hope, an effort to deliver humanitarian aid to Somalia after violence between warlords impeded previous United Nations efforts to address famine, according to an article by the Office of the Historian. A turning point in this deployment came in 1993 when a Somali warlord’s forces shot down two Black Hawk helicopters, turning public opinion in the United States of the aid efforts negative. U.S. troops officially withdrew from combat four days later, and most troops had left by 1994.</p>
+
+          <iframe title="[ Insert title here ]" aria-label="Line chart" id="datawrapper-chart-Gnq07" src="https://datawrapper.dwcdn.net/Gnq07/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="394" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+          <p>In Sub-Saharan Africa, troop deployment followed a steady increase starting in 1956, followed by a steady decrease beginning in 1970 until 1975 where troop deployment flatlined. This created a gentle rise in troops deployed in the data from 1956-1975. This subtle increase to decrease in the data demonstrates the decolonization and independence of Sub-Saharan Africa during this time period. In 1956 Sudan became independent from Britain and Egypt, this shift caused a slight peak in troop deployment in years following. 1960 was known as the “Year of Africa” where 17 African countries gained independence. In 1975 the last major colonies Angola and Mozambique gained independence from Portugal. This demonstrates how troop deployment spiked during the beginning of the decolonization transition and steadily increased as it was progressing where countries were managing independence movements, followed by the steady decline in troop deployment once independence was gained.</p> 
+
+
+
+
+
+
         </div>
         
         <a href="#top" class="return-top">↑ Return to Top</a>
