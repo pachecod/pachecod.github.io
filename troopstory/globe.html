@@ -357,11 +357,14 @@
                                             .style("top", (event.pageY - 15) + "px");
                                     });
                                 
-                                // Simpler intuitive dragging
+                                // Optimized dragging with requestAnimationFrame
                                 let lastRotate;
+                                let isDragging = false;
+                                let needsUpdate = false;
                                 
                                 function dragstarted(event) {
                                     lastRotate = projection.rotate();
+                                    isDragging = true;
                                 }
                                 
                                 function dragged(event) {
@@ -369,12 +372,28 @@
                                     const k = 75 / projection.scale();
                                     projection.rotate([rotate[0] + event.dx * k, rotate[1] - event.dy * k]);
                                     lastRotate = projection.rotate();
-                                    countries.attr("d", path);
+                                    
+                                    if (!needsUpdate) {
+                                        needsUpdate = true;
+                                        requestAnimationFrame(updatePaths);
+                                    }
+                                }
+                                
+                                function dragended(event) {
+                                    isDragging = false;
+                                }
+                                
+                                function updatePaths() {
+                                    if (isDragging || needsUpdate) {
+                                        countries.attr("d", path);
+                                        needsUpdate = false;
+                                    }
                                 }
                                 
                                 const drag = d3.drag()
                                     .on("start", dragstarted)
-                                    .on("drag", dragged);
+                                    .on("drag", dragged)
+                                    .on("end", dragended);
                                 
                                 svg.call(drag);
                                 
