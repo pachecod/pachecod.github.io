@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U.S. Troop Deployment World Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #map {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .info {
+            padding: 8px 10px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            max-width: 200px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #333;
+            font-size: 14px;
+        }
+        .legend {
+            line-height: 18px;
+            color: #555;
+            background: white;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            font-size: 12px;
+        }
+        .legend i {
+            width: 16px;
+            height: 16px;
+            float: left;
+            margin-right: 6px;
+            opacity: 0.7;
+        }
+        .legend .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .country-tooltip {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .leaflet-tooltip-left.country-tooltip::before,
+        .leaflet-tooltip-right.country-tooltip::before {
+            border-left-color: rgba(0, 0, 0, 0.8);
+            border-right-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .info {
+                font-size: 12px;
+                padding: 6px 8px;
+                max-width: 150px;
+            }
+            .info h4 {
+                font-size: 12px;
+                margin: 0 0 3px;
+            }
+            .legend {
+                font-size: 10px;
+                padding: 6px 8px;
+                line-height: 16px;
+            }
+            .legend i {
+                width: 14px;
+                height: 14px;
+                margin-right: 4px;
+            }
+            .legend .title {
+                font-size: 11px;
+                margin-bottom: 3px;
+            }
+            .country-tooltip {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .info {
+                font-size: 11px;
+                padding: 5px 7px;
+                max-width: 130px;
+            }
+            .info h4 {
+                font-size: 11px;
+            }
+            .legend {
+                font-size: 9px;
+                padding: 5px 7px;
+                line-height: 14px;
+            }
+            .legend i {
+                width: 12px;
+                height: 12px;
+                margin-right: 3px;
+            }
+            .legend .title {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <script>
+        // Function to initialize everything
+        function initMap() {
+            // Initialize map
+            const map = L.map('map', {
+                center: [20, 0],
+                zoom: 2,
+                minZoom: 2,
+                maxZoom: 10,
+                worldCopyJump: false,
+                maxBounds: [[-90, -180], [90, 180]],
+                maxBoundsViscosity: 1.0
+            });
+            
+            // Add tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 18,
+            }).addTo(map);
+            
+            // Info control
+            const info = L.control();
+            
+            info.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            
+            info.update = function (props) {
+                this._div.innerHTML = '<h4>U.S. Troop Deployments</h4>' +  
+                    (props ? '<b>' + props.name + '</b><br />' + props.troops.toLocaleString() + ' troops deployed'
+                    : 'Hover over a country');
+            };
+            
+            info.addTo(map);
+            
+            // Color scale function
+            function getColor(troops) {
+                return troops > 50000 ? '#cc0000' :      // Red
+                       troops > 20000 ? '#e69138' :      // Dark orange
+                       troops > 10000 ? '#0b5394' :      // Dark blue
+                       troops > 5000  ? '#3d85c6' :      // Blue
+                       troops > 1000  ? '#6fa8dc' :      // Medium blue
+                       troops > 500   ? '#9fc5e8' :      // Light blue
+                       troops > 100   ? '#cfe2f3' :      // Very light blue
+                       troops > 0     ? '#c0c0c0' :      // Light gray
+                                        '#e8e8e8';       // Very light gray
+            }
+            
+            // Legend
+            const legend = L.control({position: 'bottomright'});
+            
+            legend.onAdd = function (map) {
+                const div = L.DomUtil.create('div', 'info legend');
+                const grades = [0, 1, 100, 500, 1000, 5000, 10000, 20000, 50000];
+                const labels = ['<div class="title">Troops Deployed</div>'];
+                
+                for (let i = 0; i < grades.length; i++) {
+                    labels.push(
+                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                        grades[i].toLocaleString() + (grades[i + 1] ? '&ndash;' + grades[i + 1].toLocaleString() : '+'));
+                }
+                
+                div.innerHTML = labels.join('<br>');
+                return div;
+            };
+            
+            legend.addTo(map);
+            
+            // Load and process data
+            let troopsData = {};
+            let geojsonLayer;
+            
+            // Country name mapping for common variations
+            const countryNameMap = {
+                'United States of America': 'United States',
+                'Republic of Korea': 'South Korea',
+                'Democratic Republic of the Congo': 'Congo (Kinshasa)',
+                'Republic of the Congo': 'Congo (Brazzaville)',
+                'Czech Republic': 'Czechia',
+                'The Bahamas': 'Bahamas',
+                'Ivory Coast': "Cote d'Ivoire"
+            };
+            
+            // Read CSV data from local file
+            fetch('troops.csv')
+                .then(response => response.text())
+                .then(csvText => {
+                    Papa.parse(csvText, {
+                        header: true,
+                        dynamicTyping: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            // Create lookup object
+                            results.data.forEach(row => {
+                                const country = row.Country;
+                                const troops = row['Troops Deployed'] || 0;
+                                troopsData[country] = troops;
+                            });
+                            
+                            // Load GeoJSON
+                            fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+                                .then(response => response.json())
+                                .then(geojson => {
+                                    geojsonLayer = L.geoJSON(geojson, {
+                                        style: function(feature) {
+                                            let countryName = feature.properties.ADMIN || feature.properties.name;
+                                            
+                                            // Try to map country name
+                                            if (countryNameMap[countryName]) {
+                                                countryName = countryNameMap[countryName];
+                                            }
+                                            
+                                            const troops = troopsData[countryName] || 0;
+                                            
+                                            return {
+                                                fillColor: getColor(troops),
+                                                weight: 1,
+                                                opacity: 1,
+                                                color: 'white',
+                                                fillOpacity: 0.7
+                                            };
+                                        },
+                                        onEachFeature: function(feature, layer) {
+                                            // Get country name and troop count
+                                            let countryName = feature.properties.ADMIN || feature.properties.name;
+                                            let dataCountryName = countryName;
+                                            if (countryNameMap[countryName]) {
+                                                dataCountryName = countryNameMap[countryName];
+                                            }
+                                            const troops = troopsData[dataCountryName] || 0;
+                                            
+                                            // Bind tooltip
+                                            layer.bindTooltip(
+                                                '<strong>' + countryName + '</strong><br>' + 
+                                                troops.toLocaleString() + ' troops',
+                                                {
+                                                    sticky: true,
+                                                    className: 'country-tooltip'
+                                                }
+                                            );
+                                            
+                                            layer.on({
+                                                mouseover: function(e) {
+                                                    const layer = e.target;
+                                                    layer.setStyle({
+                                                        weight: 3,
+                                                        color: '#666',
+                                                        fillOpacity: 0.9
+                                                    });
+                                                    layer.bringToFront();
+                                                    
+                                                    info.update({name: countryName, troops: troops});
+                                                },
+                                                mouseout: function(e) {
+                                                    geojsonLayer.resetStyle(e.target);
+                                                    info.update();
+                                                }
+                                            });
+                                        }
+                                    }).addTo(map);
+                                })
+                                .catch(error => console.error('Error loading GeoJSON:', error));
+                        }
+                    });
+                })
+                .catch(error => console.error('Error reading CSV:', error));
+        }
+        
+        // Check if Leaflet is loaded, if not wait
+        if (typeof L !== 'undefined') {
+            initMap();
+        } else {
+            window.addEventListener('load', initMap);
+        }
+    </script>
+</body>
+</html>
