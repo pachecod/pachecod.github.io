@@ -299,6 +299,17 @@
             .attr("width", width)
             .attr("height", height);
         
+        // Add stars to background
+        const numStars = 200;
+        for (let i = 0; i < numStars; i++) {
+            svg.append("circle")
+                .attr("cx", Math.random() * width)
+                .attr("cy", Math.random() * height)
+                .attr("r", Math.random() * 1.5 + 0.3)
+                .attr("fill", "#ffffff")
+                .attr("opacity", Math.random() * 0.7 + 0.3);
+        }
+        
         const g = svg.append("g")
             .attr("transform", `translate(${width / 2},${height / 2})`);
         
@@ -311,11 +322,47 @@
         
         const path = d3.geoPath().projection(projection);
         
+        // Add water texture pattern
+        const defs = svg.append("defs");
+        
+        // Create subtle wave pattern
+        const waterPattern = defs.append("pattern")
+            .attr("id", "water-texture")
+            .attr("patternUnits", "userSpaceOnUse")
+            .attr("width", 30)
+            .attr("height", 30);
+        
+        // Base water color
+        waterPattern.append("rect")
+            .attr("width", 30)
+            .attr("height", 30)
+            .attr("fill", "#5ba3d0");
+        
+        // Add subtle curved wave lines
+        for (let i = 0; i < 6; i++) {
+            waterPattern.append("path")
+                .attr("d", `M -5 ${5 + i * 5} Q 2.5 ${3 + i * 5}, 7.5 ${5 + i * 5} T 22.5 ${5 + i * 5} T 37.5 ${5 + i * 5}`)
+                .attr("stroke", "#4a8ab8")
+                .attr("stroke-width", 1)
+                .attr("fill", "none")
+                .attr("opacity", 0.38);
+        }
+        
+        // Add lighter accent waves
+        for (let i = 0; i < 3; i++) {
+            waterPattern.append("path")
+                .attr("d", `M -5 ${7.5 + i * 10} Q 2.5 ${6 + i * 10}, 7.5 ${7.5 + i * 10} T 22.5 ${7.5 + i * 10} T 37.5 ${7.5 + i * 10}`)
+                .attr("stroke", "#6bb5e0")
+                .attr("stroke-width", 0.8)
+                .attr("fill", "none")
+                .attr("opacity", 0.25);
+        }
+        
         // Add ocean
         const globe = g.append("circle")
             .attr("r", radius)
-            .attr("fill", "#4a90e2")
-            .attr("stroke", "#333")
+            .attr("fill", "url(#water-texture)")
+            .attr("stroke", "#3d7ba8")
             .attr("stroke-width", 2);
         
         // Create latitude lines
