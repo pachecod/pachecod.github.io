@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U.S. Troop Deployment Globe</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+        #globe-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg {
+            cursor: grab;
+        }
+        svg:active {
+            cursor: grabbing;
+        }
+        .country {
+            stroke: #fff;
+            stroke-width: 0.5px;
+            transition: stroke-width 0.2s;
+        }
+        .country:hover {
+            stroke: #333;
+            stroke-width: 1.5px;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 5px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        .tooltip.visible {
+            opacity: 1;
+        }
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            max-width: 250px;
+            z-index: 100;
+        }
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .info-panel p {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #666;
+        }
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 11px;
+            z-index: 100;
+            min-width: 140px;
+        }
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .legend-toggle {
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .legend-content {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+            max-height: 300px;
+        }
+        .legend-content.collapsed {
+            max-height: 0 !important;
+            opacity: 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 4px 0;
+        }
+        .legend-color {
+            width: 20px;
+            height: 14px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .zoom-btn {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .zoom-btn:hover {
+            background: white;
+            transform: scale(1.1);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+        }
+        
+        .zoom-btn:active {
+            transform: scale(0.95);
+        }
+        
+        @media (max-width: 768px) {
+            .info-panel, .legend {
+                font-size: 10px;
+                padding: 10px;
+            }
+            .info-panel {
+                max-width: 180px;
+            }
+            .info-panel h3 {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="globe-container"></div>
+    
+    <div class="tooltip"></div>
+    
+    <div class="info-panel">
+        <h3>U.S. Troop Deployments</h3>
+        <p><strong>Drag to rotate</strong></p>
+        <p id="hover-info">Hover over a country</p>
+    </div>
+    
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoom-in" title="Zoom In">🔍+</button>
+        <button class="zoom-btn" id="zoom-out" title="Zoom Out">🔍−</button>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-title" id="legend-toggle">
+            <span>Troops Deployed</span>
+            <span class="legend-toggle">−</span>
+        </div>
+        <div class="legend-content" id="legend-content">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e8e8e8"></div>
+                <span>0</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #c0c0c0"></div>
+                <span>1-100</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #cfe2f3"></div>
+                <span>100-500</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9fc5e8"></div>
+                <span>500-1,000</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #6fa8dc"></div>
+                <span>1,000-5,000</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3d85c6"></div>
+                <span>5,000-10,000</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #0b5394"></div>
+                <span>10,000-20,000</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e69138"></div>
+                <span>20,000-50,000</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #cc0000"></div>
+                <span>50,000+</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/versor"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <script>
+        // Color scale function
+        function getColor(troops) {
+            return troops > 50000 ? '#cc0000' :
+                   troops > 20000 ? '#e69138' :
+                   troops > 10000 ? '#0b5394' :
+                   troops > 5000  ? '#3d85c6' :
+                   troops > 1000  ? '#6fa8dc' :
+                   troops > 500   ? '#9fc5e8' :
+                   troops > 100   ? '#cfe2f3' :
+                   troops > 0     ? '#c0c0c0' :
+                                    '#e8e8e8';
+        }
+        
+        // Country name mapping
+        const countryNameMap = {
+            'United States of America': 'United States',
+            'Republic of Korea': 'South Korea',
+            'Democratic Republic of the Congo': 'Congo (Kinshasa)',
+            'Republic of the Congo': 'Congo (Brazzaville)',
+            'Czech Republic': 'Czechia',
+            'The Bahamas': 'Bahamas',
+            'Ivory Coast': "Cote d'Ivoire"
+        };
+        
+        // Set up dimensions
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const radius = Math.min(width, height) / 2.2;
+        
+        // Create SVG
+        const svg = d3.select("#globe-container")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+        
+        const g = svg.append("g")
+            .attr("transform", `translate(${width / 2},${height / 2})`);
+        
+        // Create projection
+        const projection = d3.geoOrthographic()
+            .scale(radius)
+            .translate([0, 0])
+            .rotate([-10, -50, 0])  // Center on Europe
+            .clipAngle(90);
+        
+        const path = d3.geoPath().projection(projection);
+        
+        // Add ocean
+        const globe = g.append("circle")
+            .attr("r", radius)
+            .attr("fill", "#4a90e2")
+            .attr("stroke", "#333")
+            .attr("stroke-width", 2);
+        
+        // Tooltip
+        const tooltip = d3.select(".tooltip");
+        const hoverInfo = d3.select("#hover-info");
+        
+        // Load data
+        let troopsData = {};
+        
+        fetch('troops.csv')
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: true,
+                    dynamicTyping: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        // Create lookup object
+                        results.data.forEach(row => {
+                            const country = row.Country;
+                            const troops = row['Troops Deployed'] || 0;
+                            troopsData[country] = troops;
+                        });
+                        
+                        // Load GeoJSON
+                        fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+                            .then(response => response.json())
+                            .then(world => {
+                                // Add countries
+                                const countries = g.selectAll(".country")
+                                    .data(world.features)
+                                    .enter().append("path")
+                                    .attr("class", "country")
+                                    .attr("d", path)
+                                    .attr("fill", d => {
+                                        let countryName = d.properties.ADMIN || d.properties.name;
+                                        if (countryNameMap[countryName]) {
+                                            countryName = countryNameMap[countryName];
+                                        }
+                                        const troops = troopsData[countryName] || 0;
+                                        return getColor(troops);
+                                    })
+                                    .on("mouseover", function(event, d) {
+                                        let countryName = d.properties.ADMIN || d.properties.name;
+                                        let displayName = countryName;
+                                        if (countryNameMap[countryName]) {
+                                            countryName = countryNameMap[countryName];
+                                        }
+                                        const troops = troopsData[countryName] || 0;
+                                        
+                                        tooltip
+                                            .html(`<strong>${displayName}</strong><br>${troops.toLocaleString()} troops`)
+                                            .style("left", (event.pageX + 15) + "px")
+                                            .style("top", (event.pageY - 15) + "px")
+                                            .classed("visible", true);
+                                        
+                                        hoverInfo.html(`<strong>${displayName}</strong><br>${troops.toLocaleString()} troops deployed`);
+                                    })
+                                    .on("mouseout", function() {
+                                        tooltip.classed("visible", false);
+                                        hoverInfo.html("Hover over a country");
+                                    })
+                                    .on("mousemove", function(event) {
+                                        tooltip
+                                            .style("left", (event.pageX + 15) + "px")
+                                            .style("top", (event.pageY - 15) + "px");
+                                    });
+                                
+                                // Simpler intuitive dragging
+                                let lastRotate;
+                                
+                                function dragstarted(event) {
+                                    lastRotate = projection.rotate();
+                                }
+                                
+                                function dragged(event) {
+                                    const rotate = lastRotate;
+                                    const k = 75 / projection.scale();
+                                    projection.rotate([rotate[0] + event.dx * k, rotate[1] - event.dy * k]);
+                                    lastRotate = projection.rotate();
+                                    countries.attr("d", path);
+                                }
+                                
+                                const drag = d3.drag()
+                                    .on("start", dragstarted)
+                                    .on("drag", dragged);
+                                
+                                svg.call(drag);
+                                
+                                // Zoom control with buttons
+                                let currentScale = 1;
+                                
+                                function updateZoom(newScale) {
+                                    currentScale = Math.max(0.5, Math.min(5, newScale));
+                                    const scale = radius * currentScale;
+                                    projection.scale(scale);
+                                    globe.attr("r", scale);
+                                    countries.attr("d", path);
+                                }
+                                
+                                // Zoom button handlers
+                                document.getElementById('zoom-in').addEventListener('click', function() {
+                                    updateZoom(currentScale * 1.3);
+                                });
+                                
+                                document.getElementById('zoom-out').addEventListener('click', function() {
+                                    updateZoom(currentScale / 1.3);
+                                });
+                                
+                                // Legend toggle
+                                const legendToggle = document.getElementById('legend-toggle');
+                                const legendContent = document.getElementById('legend-content');
+                                const legendToggleIcon = legendToggle.querySelector('.legend-toggle');
+                                
+                                legendToggle.addEventListener('click', function() {
+                                    legendContent.classList.toggle('collapsed');
+                                    legendToggleIcon.textContent = legendContent.classList.contains('collapsed') ? '+' : '−';
+                                });
+                            })
+                            .catch(error => console.error('Error loading GeoJSON:', error));
+                    }
+                });
+            })
+            .catch(error => console.error('Error reading CSV:', error));
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
