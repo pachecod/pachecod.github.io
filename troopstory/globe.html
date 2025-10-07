@@ -74,6 +74,30 @@
             font-size: 12px;
             color: #666;
         }
+        .city-label {
+            font-size: 11px;
+            font-weight: 900;
+            fill: #000;
+            stroke: #fff;
+            stroke-width: 3px;
+            paint-order: stroke;
+            pointer-events: none;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+        }
+        .checkbox-container input {
+            cursor: pointer;
+        }
+        .checkbox-container label {
+            cursor: pointer;
+            font-size: 11px;
+        }
         .legend {
             position: absolute;
             bottom: 20px;
@@ -180,6 +204,10 @@
         <h3>U.S. Troop Deployments</h3>
         <p><strong>Drag to rotate</strong></p>
         <p id="hover-info">Hover over a country</p>
+        <div class="checkbox-container">
+            <input type="checkbox" id="show-cities" checked>
+            <label for="show-cities">Show cities</label>
+        </div>
     </div>
     
     <div class="zoom-controls">
@@ -233,7 +261,6 @@
     </div>
     
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/versor"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <script>
@@ -279,7 +306,7 @@
         const projection = d3.geoOrthographic()
             .scale(radius)
             .translate([0, 0])
-            .rotate([-10, -50, 0])  // Center on Europe
+            .rotate([-10, -50, 0])
             .clipAngle(90);
         
         const path = d3.geoPath().projection(projection);
@@ -290,6 +317,39 @@
             .attr("fill", "#4a90e2")
             .attr("stroke", "#333")
             .attr("stroke-width", 2);
+        
+        // Create latitude lines
+        const latitudes = [
+            { lat: 0, color: "#ff6b6b", dash: "5,5", name: "equator", label: "Equator" },           
+            { lat: 23.5, color: "#ffa500", dash: "3,3", name: "tropic-cancer", label: "Tropic of Cancer" },  
+            { lat: -23.5, color: "#ffa500", dash: "3,3", name: "tropic-capricorn", label: "Tropic of Capricorn" }, 
+            { lat: 66.5, color: "#87ceeb", dash: "3,3", name: "arctic", label: "Arctic Circle" },         
+            { lat: -66.5, color: "#87ceeb", dash: "3,3", name: "antarctic", label: "Antarctic Circle" }      
+        ];
+        
+        // Major cities
+        const cities = [
+            { name: "Tokyo", coords: [139.6917, 35.6895] },
+            { name: "New York", coords: [-74.0060, 40.7128] },
+            { name: "London", coords: [-0.1276, 51.5074] },
+            { name: "Paris", coords: [2.3522, 48.8566] },
+            { name: "Beijing", coords: [116.4074, 39.9042] },
+            { name: "Moscow", coords: [37.6173, 55.7558] },
+            { name: "Sydney", coords: [151.2093, -33.8688] },
+            { name: "Cairo", coords: [31.2357, 30.0444] },
+            { name: "Mumbai", coords: [72.8777, 19.0760] },
+            { name: "São Paulo", coords: [-46.6333, -23.5505] },
+            { name: "Los Angeles", coords: [-118.2437, 34.0522] },
+            { name: "Mexico City", coords: [-99.1332, 19.4326] },
+            { name: "Seoul", coords: [126.9780, 37.5665] },
+            { name: "Berlin", coords: [13.4050, 52.5200] },
+            { name: "Singapore", coords: [103.8198, 1.3521] },
+            { name: "Buenos Aires", coords: [-58.3816, -34.6037] },
+            { name: "Cape Town", coords: [18.4241, -33.9249] },
+            { name: "Bangkok", coords: [100.5018, 13.7563] },
+            { name: "Dubai", coords: [55.2708, 25.2048] },
+            { name: "Hong Kong", coords: [114.1694, 22.3193] }
+        ];
         
         // Tooltip
         const tooltip = d3.select(".tooltip");
@@ -357,21 +417,174 @@
                                             .style("top", (event.pageY - 15) + "px");
                                     });
                                 
-                                // Optimized dragging with requestAnimationFrame
+                                // Add latitude lines
+                                const latitudePaths = latitudes.map(l => {
+                                    const line = {
+                                        type: "LineString",
+                                        coordinates: d3.range(-180, 181, 1).map(lon => [lon, l.lat])
+                                    };
+                                    
+                                    // Create invisible thick line for easier hovering
+                                    const hoverPath = g.append("path")
+                                        .datum(line)
+                                        .attr("class", `latitude-hover ${l.name}`)
+                                        .attr("d", path)
+                                        .attr("fill", "none")
+                                        .attr("stroke", "transparent")
+                                        .attr("stroke-width", 10)
+                                        .style("cursor", "pointer");
+                                    
+                                    // Create visible line
+                                    const visiblePath = g.append("path")
+                                        .datum(line)
+                                        .attr("class", `latitude-line ${l.name}`)
+                                        .attr("d", path)
+                                        .attr("fill", "none")
+                                        .attr("stroke", l.color)
+                                        .attr("stroke-width", l.lat === 0 ? 2 : 1.5)
+                                        .attr("stroke-dasharray", l.dash)
+                                        .attr("opacity", 0.6)
+                                        .style("pointer-events", "none");
+                                    
+                                    hoverPath
+                                        .on("mouseover", function(event) {
+                                            visiblePath.attr("opacity", 0.9).attr("stroke-width", l.lat === 0 ? 3 : 2.5);
+                                            tooltip
+                                                .html(`<strong>${l.label}</strong>`)
+                                                .style("left", (event.pageX + 15) + "px")
+                                                .style("top", (event.pageY - 15) + "px")
+                                                .classed("visible", true);
+                                        })
+                                        .on("mouseout", function() {
+                                            visiblePath.attr("opacity", 0.6).attr("stroke-width", l.lat === 0 ? 2 : 1.5);
+                                            tooltip.classed("visible", false);
+                                        })
+                                        .on("mousemove", function(event) {
+                                            tooltip
+                                                .style("left", (event.pageX + 15) + "px")
+                                                .style("top", (event.pageY - 15) + "px");
+                                        });
+                                    
+                                    return { hover: hoverPath, visible: visiblePath };
+                                });
+                                
+                                // Add city dots - store city data with each dot
+                                const cityDots = cities.map(city => {
+                                    const dot = g.append("circle")
+                                        .attr("class", "city-dot")
+                                        .attr("r", 8)
+                                        .attr("fill", "#000")
+                                        .attr("stroke", "#fff")
+                                        .attr("stroke-width", 1.5)
+                                        .style("cursor", "pointer")
+                                        .on("mouseover", function(event) {
+                                            d3.select(this).attr("r", 10).attr("stroke-width", 2);
+                                            tooltip
+                                                .html(`<strong>${city.name}</strong>`)
+                                                .style("left", (event.pageX + 15) + "px")
+                                                .style("top", (event.pageY - 15) + "px")
+                                                .classed("visible", true);
+                                        })
+                                        .on("mouseout", function() {
+                                            d3.select(this).attr("r", 8).attr("stroke-width", 1.5);
+                                            tooltip.classed("visible", false);
+                                        })
+                                        .on("mousemove", function(event) {
+                                            tooltip
+                                                .style("left", (event.pageX + 15) + "px")
+                                                .style("top", (event.pageY - 15) + "px");
+                                        });
+                                    
+                                    // Add city label
+                                    const label = g.append("text")
+                                        .attr("class", "city-label")
+                                        .text(city.name);
+                                    
+                                    return { dot: dot, label: label, coords: city.coords };
+                                });
+                                
+                                // Update city positions - FIXED VERSION
+                                function updateCityPositions() {
+                                    const showCities = document.getElementById('show-cities')?.checked ?? true;
+                                    
+                                    cityDots.forEach(item => {
+                                        const projected = projection(item.coords);
+                                        if (projected) {
+                                            const [x, y] = projected;
+                                            
+                                            // Get the center point of the visible hemisphere
+                                            const centerPoint = projection.invert([0, 0]);
+                                            
+                                            // Calculate angular distance from center
+                                            const angle = d3.geoDistance(item.coords, centerPoint);
+                                            
+                                            // Check if on visible hemisphere (< 90 degrees = π/2 radians)
+                                            const isVisible = angle < Math.PI / 2;
+                                            
+                                            // Show both dot and label only if cities are enabled AND on visible side
+                                            const shouldShow = isVisible && showCities;
+                                            
+                                            item.dot
+                                                .attr("cx", x)
+                                                .attr("cy", y)
+                                                .style("display", shouldShow ? "block" : "none");
+                                            
+                                            item.label
+                                                .attr("x", x + 12)
+                                                .attr("y", y + 4)
+                                                .style("display", shouldShow ? "block" : "none");
+                                        }
+                                    });
+                                }
+                                
+                                // Initial positioning
+                                updateCityPositions();
+                                
+                                // Dragging with momentum
                                 let lastRotate;
                                 let isDragging = false;
                                 let needsUpdate = false;
+                                let velocity = [0, 0];
+                                let lastDragTime = 0;
+                                let momentumAnimation = null;
+                                const maxVelocity = 3;
+                                
+                                function clampVelocity(vel) {
+                                    const speed = Math.sqrt(vel[0] * vel[0] + vel[1] * vel[1]);
+                                    if (speed > maxVelocity) {
+                                        const scale = maxVelocity / speed;
+                                        return [vel[0] * scale, vel[1] * scale];
+                                    }
+                                    return vel;
+                                }
                                 
                                 function dragstarted(event) {
                                     lastRotate = projection.rotate();
                                     isDragging = true;
+                                    velocity = [0, 0];
+                                    lastDragTime = Date.now();
+                                    
+                                    if (momentumAnimation) {
+                                        cancelAnimationFrame(momentumAnimation);
+                                        momentumAnimation = null;
+                                    }
                                 }
                                 
                                 function dragged(event) {
                                     const rotate = lastRotate;
                                     const k = 75 / projection.scale();
-                                    projection.rotate([rotate[0] + event.dx * k, rotate[1] - event.dy * k]);
+                                    const dx = event.dx * k;
+                                    const dy = event.dy * k;
+                                    
+                                    projection.rotate([rotate[0] + dx, rotate[1] - dy]);
                                     lastRotate = projection.rotate();
+                                    
+                                    const now = Date.now();
+                                    const dt = now - lastDragTime;
+                                    if (dt > 0) {
+                                        velocity = clampVelocity([dx / dt * 16, dy / dt * 16]);
+                                    }
+                                    lastDragTime = now;
                                     
                                     if (!needsUpdate) {
                                         needsUpdate = true;
@@ -381,14 +594,60 @@
                                 
                                 function dragended(event) {
                                     isDragging = false;
+                                    
+                                    if (Math.abs(velocity[0]) > 0.1 || Math.abs(velocity[1]) > 0.1) {
+                                        startMomentum();
+                                    }
+                                }
+                                
+                                function startMomentum() {
+                                    const friction = 0.92;
+                                    const minVelocity = 0.05;
+                                    
+                                    function animate() {
+                                        velocity[0] *= friction;
+                                        velocity[1] *= friction;
+                                        
+                                        if (Math.abs(velocity[0]) < minVelocity && Math.abs(velocity[1]) < minVelocity) {
+                                            velocity = [0, 0];
+                                            momentumAnimation = null;
+                                            return;
+                                        }
+                                        
+                                        const rotate = projection.rotate();
+                                        projection.rotate([rotate[0] + velocity[0], rotate[1] - velocity[1]]);
+                                        countries.attr("d", path);
+                                        latitudePaths.forEach(p => {
+                                            p.hover.attr("d", path);
+                                            p.visible.attr("d", path);
+                                        });
+                                        updateCityPositions();
+                                        
+                                        momentumAnimation = requestAnimationFrame(animate);
+                                    }
+                                    
+                                    momentumAnimation = requestAnimationFrame(animate);
                                 }
                                 
                                 function updatePaths() {
                                     if (isDragging || needsUpdate) {
                                         countries.attr("d", path);
+                                        latitudePaths.forEach(p => {
+                                            p.hover.attr("d", path);
+                                            p.visible.attr("d", path);
+                                        });
+                                        updateCityPositions();
                                         needsUpdate = false;
                                     }
                                 }
+                                
+                                svg.on("click", function() {
+                                    if (momentumAnimation) {
+                                        cancelAnimationFrame(momentumAnimation);
+                                        momentumAnimation = null;
+                                        velocity = [0, 0];
+                                    }
+                                });
                                 
                                 const drag = d3.drag()
                                     .on("start", dragstarted)
@@ -397,7 +656,7 @@
                                 
                                 svg.call(drag);
                                 
-                                // Zoom control with buttons
+                                // Zoom controls
                                 let currentScale = 1;
                                 
                                 function updateZoom(newScale) {
@@ -406,9 +665,13 @@
                                     projection.scale(scale);
                                     globe.attr("r", scale);
                                     countries.attr("d", path);
+                                    latitudePaths.forEach(p => {
+                                        p.hover.attr("d", path);
+                                        p.visible.attr("d", path);
+                                    });
+                                    updateCityPositions();
                                 }
                                 
-                                // Zoom button handlers
                                 document.getElementById('zoom-in').addEventListener('click', function() {
                                     updateZoom(currentScale * 1.3);
                                 });
@@ -425,6 +688,12 @@
                                 legendToggle.addEventListener('click', function() {
                                     legendContent.classList.toggle('collapsed');
                                     legendToggleIcon.textContent = legendContent.classList.contains('collapsed') ? '+' : '−';
+                                });
+                                
+                                // City names toggle
+                                const showCitiesCheckbox = document.getElementById('show-cities');
+                                showCitiesCheckbox.addEventListener('change', function() {
+                                    updateCityPositions();
                                 });
                             })
                             .catch(error => console.error('Error loading GeoJSON:', error));
