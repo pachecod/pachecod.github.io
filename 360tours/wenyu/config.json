@@ -1,0 +1,222 @@
+{
+  "name": "Wenyu__Xavier__Song_VR_Project",
+  "created": "2025-10-08T20:28:26.272Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/1-20250915_1757969509532.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "6.88 -0.18 -2.40",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1758141193392",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758141193392": {
+      "name": "Waverly Ave",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/1-20250915_1757969509532.jpg",
+      "hotspots": [
+        {
+          "id": 7,
+          "type": "navigation",
+          "position": "7.36 1.53 -1.42",
+          "text": "",
+          "scene": "scene_1758141193392",
+          "navigationTarget": "scene_1758141820907",
+          "audio": null
+        },
+        {
+          "id": 11,
+          "type": "text-audio",
+          "position": "6.24 1.48 -4.17",
+          "text": "Listen to Syracuse University's busiest afternoon intersection",
+          "scene": "scene_1758141193392",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Madelyn%20Woodson/audio/Inside-Audio_1757968037498.mp3"
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 1.8334649444186495,
+          "y": -99.80924791178904,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1758141820907": {
+      "name": "Syracuse University Logo",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/2-20250915_1757969514872.jpg",
+      "hotspots": [
+        {
+          "id": 8,
+          "type": "navigation",
+          "position": "1.59 1.41 7.33",
+          "text": "",
+          "scene": "scene_1758141820907",
+          "navigationTarget": "scene_1758142084180",
+          "audio": null
+        },
+        {
+          "id": 12,
+          "type": "text",
+          "position": "2.16 2.88 7.06",
+          "text": "This is Newhouse 2",
+          "scene": "scene_1758141820907",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 13,
+          "type": "text",
+          "position": "7.45 1.50 0.82",
+          "text": "Located at the intersection of University Avenue and Waverly Avenue, this entrance sign welcomes visitors to Syracuse University before they reach the iconic Main Gate Arch. The sleek stone wall with the university’s orange “S” logo marks the official start of campus and serves as a favorite photo spot for students and alumni. It represents the gateway to academic life, where the city meets the university.",
+          "scene": "scene_1758141820907",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 5.5,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 27,
+          "type": "navigation",
+          "position": "-6.85 1.13 3.02",
+          "text": "",
+          "scene": "scene_1758141820907",
+          "navigationTarget": "scene_1758141193392",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758142084180": {
+      "name": "Newhouse 2 East Gate",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/3-20250915_1757969520729.jpg",
+      "hotspots": [
+        {
+          "id": 19,
+          "type": "text",
+          "position": "6.35 2.58 3.87",
+          "text": "Newhouse 2 is the second building of the S.I. Newhouse School of Public Communications at Syracuse University. Designed by world-famous architect I.M. Pei and opened in 1974, the building features a modern style of concrete and glass that reflects the school’s spirit of innovation. It houses classrooms, broadcast studios, and editing labs where students learn journalism, advertising, and public relations. Connected to Newhouse 1 and Newhouse 3, it forms the center of Syracuse’s media education community.",
+          "scene": "scene_1758142084180",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 6,
+          "popupHeight": 3
+        },
+        {
+          "id": 20,
+          "type": "navigation",
+          "position": "7.42 1.73 1.08",
+          "text": "",
+          "scene": "scene_1758142084180",
+          "navigationTarget": "scene_1758142345201",
+          "audio": null
+        },
+        {
+          "id": 26,
+          "type": "navigation",
+          "position": "-3.59 1.63 -6.59",
+          "text": "",
+          "scene": "scene_1758142084180",
+          "navigationTarget": "scene_1758141820907",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758142345201": {
+      "name": "Enter Newhouse 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/4-20250915_1757969528100.jpg",
+      "hotspots": [
+        {
+          "id": 14,
+          "type": "navigation",
+          "position": "7.25 1.63 -1.92",
+          "text": "",
+          "scene": "scene_1758142345201",
+          "navigationTarget": "scene_1758142756026",
+          "audio": null
+        },
+        {
+          "id": 21,
+          "type": "text",
+          "position": "5.65 2.97 -4.74",
+          "text": "The Dick Clark Studios at Syracuse University are part of the Newhouse School of Public Communications and serve as a professional-grade media production space for students. Opened in 2014 and named after legendary broadcaster and Syracuse alumnus Dick Clark, the studios are equipped with state-of-the-art technology for television, film, and digital media production. Students use the space to produce news broadcasts, talk shows, and creative video projects, gaining real-world experience in a setting that mirrors the professional media industry.",
+          "scene": "scene_1758142345201",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 6,
+          "popupHeight": 3
+        },
+        {
+          "id": 25,
+          "type": "navigation",
+          "position": "-7.42 1.57 -1.09",
+          "text": "",
+          "scene": "scene_1758142345201",
+          "navigationTarget": "scene_1758142084180",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758142756026": {
+      "name": "Walk up the most beautiful staircase in Newhouse 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/5-20250915_1757969534627.jpg",
+      "hotspots": [
+        {
+          "id": 16,
+          "type": "navigation",
+          "position": "6.88 3.33 -2.45",
+          "text": "",
+          "scene": "scene_1758142756026",
+          "navigationTarget": "scene_1758145557246",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758145557246": {
+      "name": "2nd of Newhouse 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/6-20250915_1757969544464.jpg",
+      "hotspots": [
+        {
+          "id": 15,
+          "type": "text",
+          "position": "7.24 1.00 -1.86",
+          "text": "This way to the Innovation Lab",
+          "scene": "scene_1758145557246",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 22,
+          "type": "text",
+          "position": "1.77 1.59 -7.29",
+          "text": "The Alan Gerry Center for Media Innovation is located within Newhouse 2 at Syracuse University. Established through a gift from cable television pioneer Alan Gerry, the center serves as a hub for exploring the future of digital media, journalism, and communication technology. It brings together students, faculty, and industry professionals to experiment with new storytelling formats, interactive media, and emerging communication tools. The center embodies Newhouse’s commitment to innovation and leadership in the evolving media landscape.",
+          "scene": "scene_1758145557246",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 6,
+          "popupHeight": 4
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}

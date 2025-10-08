@@ -1,0 +1,346 @@
+{
+  "name": "CalistaBuckley_VR_Project_VR_Project",
+  "created": "2025-10-08T20:52:02.588Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "./images/room1.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "navigation",
+          "position": "-7.28 0.56 -1.46",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1758140683722",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758140461382": {
+      "name": "Newhouse 2 Entrance",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163810-622_1757969700663.jpg",
+      "hotspots": [
+        {
+          "id": 5,
+          "type": "text",
+          "position": "5.55 -3.35 0.99",
+          "text": "Welcome to Newhouse 2 where alot of classrooms and admin offices would be found. ",
+          "scene": "scene_1758140461382",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "-7.37 0.78 1.14",
+          "text": "",
+          "scene": "scene_1758140461382",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        },
+        {
+          "id": 15,
+          "type": "navigation",
+          "position": "-5.06 0.51 -5.43",
+          "text": "",
+          "scene": "scene_1758140461382",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758140613707": {
+      "name": "Outside Deck of Newhouse",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163830-803_1757969703554.jpg",
+      "hotspots": [
+        {
+          "id": 6,
+          "type": "text",
+          "position": "2.13 -0.54 6.86",
+          "text": "Here you can decide which direction to take to get into any of the 3 Newhouse Buidlings",
+          "scene": "scene_1758140613707",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 16,
+          "type": "navigation",
+          "position": "0.61 1.38 -7.47",
+          "text": "",
+          "scene": "scene_1758140613707",
+          "navigationTarget": "scene_1758140461382",
+          "audio": null
+        },
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "5.39 1.56 5.21",
+          "text": "",
+          "scene": "scene_1758140613707",
+          "navigationTarget": "scene_1758140631810",
+          "audio": null
+        },
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "-1.17 1.62 7.41",
+          "text": "",
+          "scene": "scene_1758140613707",
+          "navigationTarget": "scene_1758140646563",
+          "audio": null
+        },
+        {
+          "id": 36,
+          "type": "navigation",
+          "position": "2.31 1.93 7.13",
+          "text": "",
+          "scene": "scene_1758140613707",
+          "navigationTarget": "scene_1758140667402",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -12.261296815799627,
+          "y": -15.355268909506025,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1758140631810": {
+      "name": "Newhouse 1 ",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163846-514_1757969705584.jpg",
+      "hotspots": [
+        {
+          "id": 17,
+          "type": "text",
+          "position": "-4.72 -0.58 -5.41",
+          "text": "Newhouse 1 is the oldest Newhouse buildings. Fun Fact President Lyndon B. Johnson's \"Address to the Nation on the War in Vietnam\" was made on these steps in 1964. ",
+          "scene": "scene_1758140631810",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 18,
+          "type": "navigation",
+          "position": "2.93 0.99 6.88",
+          "text": "",
+          "scene": "scene_1758140631810",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        },
+        {
+          "id": 7,
+          "type": "navigation",
+          "position": "6.85 0.92 2.97",
+          "text": "",
+          "scene": "scene_1758140631810",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758140646563": {
+      "name": "Newhouse 3 ",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163853-585_1757969693724.jpg",
+      "hotspots": [
+        {
+          "id": 19,
+          "type": "text",
+          "position": "4.75 0.03 -5.59",
+          "text": "Welcome to Newhouse 3, our more recent buildings which house Sports TV and Dick Clark Studios.",
+          "scene": "scene_1758140646563",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 8,
+          "type": "navigation",
+          "position": "-5.01 0.59 5.49",
+          "text": "",
+          "scene": "scene_1758140646563",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        },
+        {
+          "id": 9,
+          "type": "navigation",
+          "position": "-0.28 0.66 7.44",
+          "text": "",
+          "scene": "scene_1758140646563",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758140667402": {
+      "name": "Newhouse Promenade",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163901-054_1757969696208.jpg",
+      "hotspots": [
+        {
+          "id": 20,
+          "type": "text",
+          "position": "-4.49 -0.67 5.56",
+          "text": "Up these stairs will lead you to the deck where you enter any of the 3 Newhouse buildings",
+          "scene": "scene_1758140667402",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 10,
+          "type": "navigation",
+          "position": "-6.28 -0.33 3.62",
+          "text": "",
+          "scene": "scene_1758140667402",
+          "navigationTarget": "scene_1758140613707",
+          "audio": null
+        },
+        {
+          "id": 11,
+          "type": "navigation",
+          "position": "4.71 1.37 -5.83",
+          "text": "",
+          "scene": "scene_1758140667402",
+          "navigationTarget": "scene_1758140683722",
+          "audio": null
+        },
+        {
+          "id": 33,
+          "type": "weblink",
+          "position": "-3.44 1.55 -6.67",
+          "text": "",
+          "scene": "scene_1758140667402",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://immersive-museum-maker.onrender.com/classroom",
+          "weblinkTitle": "Outdoor Classrom"
+        },
+        {
+          "id": 37,
+          "type": "text",
+          "position": "-4.23 2.43 -6.14",
+          "text": "Want to go off campus? Here is an outdoor classroom where they have a few studies about tomatoes, rocks, and onions. ",
+          "scene": "scene_1758140667402",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758140683722": {
+      "name": "Walkway to Newhouse",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163905-793_1757969698220.jpg",
+      "hotspots": [
+        {
+          "id": 21,
+          "type": "text",
+          "position": "-0.38 -0.79 7.10",
+          "text": "After walking down this hill, you will end up by the S.I. Newhouse School of Publications at Syracuse University",
+          "scene": "scene_1758140683722",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 12,
+          "type": "navigation",
+          "position": "0.94 0.59 7.37",
+          "text": "",
+          "scene": "scene_1758140683722",
+          "navigationTarget": "scene_1758140667402",
+          "audio": null
+        },
+        {
+          "id": 14,
+          "type": "audio",
+          "position": "-1.26 -0.02 7.21",
+          "text": "",
+          "scene": "scene_1758140683722",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/audio/Syracuse-University_1757970151250.mp3"
+        },
+        {
+          "id": 25,
+          "type": "navigation",
+          "position": "-2.88 2.27 -6.89",
+          "text": "",
+          "scene": "scene_1758140683722",
+          "navigationTarget": "scene_1759951553369",
+          "audio": null
+        },
+        {
+          "id": 26,
+          "type": "weblink",
+          "position": "-6.48 1.35 3.76",
+          "text": "",
+          "scene": "scene_1758140683722",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://immersive-museum-maker.onrender.com/classroom",
+          "weblinkTitle": "Outdoor Classrom"
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759951553369": {
+      "name": "Campus Icons ",
+      "image": "https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/images/2_1759346072359.png",
+      "hotspots": [
+        {
+          "id": 32,
+          "type": "navigation",
+          "position": "7.34 0.68 1.21",
+          "text": "",
+          "scene": "scene_1759951553369",
+          "navigationTarget": "scene_1758140683722",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759954044744": {
+      "name": "Dick Clark Studio",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/5-20250915_1757969534627.jpg",
+      "hotspots": [
+        {
+          "id": 34,
+          "type": "text",
+          "position": "-7.42 0.58 -0.30",
+          "text": "Here is Dick Clark studio which is one the newest edition to the Newhouse buildings. ",
+          "scene": "scene_1759954044744",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 35,
+          "type": "navigation",
+          "position": "7.03 3.25 -2.03",
+          "text": "",
+          "scene": "scene_1759954044744",
+          "navigationTarget": "scene_1758140646563",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}
