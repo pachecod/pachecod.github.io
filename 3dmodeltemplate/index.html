@@ -25,6 +25,7 @@
         .model-viewer {
             width: 100%; height: 600px; background: #f5f5f5;
             border-radius: 8px; position: relative; overflow: hidden;
+            touch-action: none;
         }
         .model-viewer canvas { display: block; width: 100%; height: 100%; }
         .loading {
@@ -89,7 +90,7 @@
                 </div>
             </div>
             <p class="caption">Fig. 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p class="instructions">Click and drag to rotate • Use WASD keys to move camera • Use zoom buttons or scroll wheel</p>
+            <p class="instructions">Tap and drag to rotate • Use zoom buttons or pinch to zoom</p>
         </div>
 
         <p>
@@ -143,6 +144,8 @@
             dirLight2.position.set(-5, 5, -5);
             scene.add(dirLight2);
             let isDragging = false, previousMouse = { x: 0, y: 0 }, rotation = { x: 0, y: 0 }, model = null, keys = {};
+            
+            // Mouse events
             renderer.domElement.addEventListener('mousedown', (e) => {
                 isDragging = true; previousMouse = { x: e.clientX, y: e.clientY };
             });
@@ -155,6 +158,31 @@
             });
             document.addEventListener('mouseup', () => isDragging = false);
             renderer.domElement.addEventListener('mouseleave', () => isDragging = false);
+            
+            // Touch events for mobile
+            renderer.domElement.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isDragging = true;
+                const touch = e.touches[0];
+                previousMouse = { x: touch.clientX, y: touch.clientY };
+            });
+            renderer.domElement.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (isDragging && model && e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - previousMouse.x;
+                    const deltaY = touch.clientY - previousMouse.y;
+                    rotation.y += deltaX * 0.01;
+                    rotation.x += deltaY * 0.01;
+                    previousMouse = { x: touch.clientX, y: touch.clientY };
+                }
+            });
+            renderer.domElement.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                isDragging = false;
+            });
+            renderer.domElement.addEventListener('touchcancel', () => isDragging = false);
+            
             document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
             document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
             const zoomSpeed = 0.5, minZoom = 1, maxZoom = 15;
