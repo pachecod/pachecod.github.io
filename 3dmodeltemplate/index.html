@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Article Template</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        article {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+        
+        header {
+            margin-bottom: 48px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 16px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.875rem;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #111;
+            margin-top: 40px;
+            margin-bottom: 16px;
+        }
+        
+        p {
+            color: #444;
+            margin-bottom: 24px;
+            font-size: 1.125rem;
+        }
+        
+        p.lead {
+            font-size: 1.25rem;
+            color: #555;
+        }
+        
+        .model-container {
+            margin: 48px 0;
+        }
+        
+        .model-viewer {
+            width: 100%;
+            height: 600px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .model-viewer canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .caption {
+            margin-top: 8px;
+            font-size: 0.875rem;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        .instructions {
+            margin-top: 4px;
+            font-size: 0.75rem;
+            color: #999;
+            text-align: center;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .zoom-btn {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #333;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .zoom-btn:hover {
+            background: #f8f8f8;
+            border-color: #999;
+            transform: scale(1.05);
+        }
+        
+        .zoom-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #e5e5e5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            margin: 32px 0;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <header>
+            <h1>Exploring Geological Formations Through 3D Modeling</h1>
+            <div class="meta">
+                <span>By Jane Researcher</span>
+                <span> • </span>
+                <span>October 13, 2025</span>
+            </div>
+        </header>
+
+        <p class="lead">
+            The study of rock formations has been revolutionized by 3D scanning technology, 
+            allowing researchers and students to examine geological specimens in unprecedented detail 
+            without physically handling fragile samples.
+        </p>
+
+        <h2>Interactive Rock Analysis</h2>
+
+        <p>
+            Below is a detailed 3D scan of a rock formation. This technology enables us to 
+            preserve and share specimens digitally, making them accessible to students and 
+            researchers worldwide. The model captures the texture, weathering patterns, and 
+            structural features that are crucial for geological analysis.
+        </p>
+
+        <!-- 3D Model Viewer -->
+        <div class="model-container">
+            <div class="model-viewer" id="model1">
+                <div class="loading">Loading 3D model...</div>
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoom-in" title="Zoom In">🔍+</button>
+                    <button class="zoom-btn" id="zoom-out" title="Zoom Out">🔍−</button>
+                </div>
+            </div>
+            <p class="caption">Fig. 1: High-resolution 3D scan of sedimentary rock formation showing distinct layering and erosion patterns</p>
+            <p class="instructions">Click and drag to rotate • Use WASD keys to move camera • Use zoom buttons or scroll wheel</p>
+        </div>
+
+        <p>
+            By examining this specimen from multiple angles, we can observe the distinctive 
+            stratification that occurred over millions of years. The surface texture reveals 
+            information about the environmental conditions during formation, while the overall 
+            structure provides clues about tectonic activity in the region.
+        </p>
+
+        <h2>Educational Applications</h2>
+
+        <p>
+            Interactive 3D models serve as powerful educational tools, allowing students to 
+            engage with specimens in ways that traditional photographs cannot provide. Students 
+            can rotate the model, zoom in to examine fine details, and explore the specimen 
+            from perspectives that would be impossible with a physical sample under glass.
+        </p>
+
+        <!-- Regular Image Placeholder -->
+        <div class="image-placeholder">
+            Regular image placeholder
+        </div>
+        <p class="caption">Fig. 2: Traditional photograph of the same specimen for comparison</p>
+
+        <h2>Future Implications</h2>
+
+        <p>
+            As 3D scanning technology becomes more accessible and affordable, we anticipate 
+            a growing library of digital geological specimens. This democratization of scientific 
+            resources ensures that institutions worldwide, regardless of their physical collections, 
+            can provide students with hands-on learning experiences.
+        </p>
+
+        <p>
+            The integration of 3D models into academic articles and educational materials 
+            represents a significant step forward in how we share and preserve scientific knowledge. 
+            By combining traditional text and images with interactive 3D elements, we create 
+            richer, more engaging learning experiences that better prepare students for modern 
+            research methodologies.
+        </p>
+    </article>
+
+    <script>
+        // Initialize 3D viewer
+        function init3DViewer(containerId, modelUrl) {
+            const container = document.getElementById(containerId);
+            const loading = container.querySelector('.loading');
+            
+            // Scene setup
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf5f5f5);
+            
+            const camera = new THREE.PerspectiveCamera(
+                50,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(0, 2, 5);
+            
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+            
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight1.position.set(5, 10, 5);
+            scene.add(dirLight1);
+            
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
+            dirLight2.position.set(-5, 5, -5);
+            scene.add(dirLight2);
+            
+            // Interaction variables
+            let isDragging = false;
+            let previousMouse = { x: 0, y: 0 };
+            let rotation = { x: 0, y: 0 };
+            let model = null;
+            const keys = {};
+            
+            // Mouse controls
+            renderer.domElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMouse = { x: e.clientX, y: e.clientY };
+            });
+            
+            renderer.domElement.addEventListener('mousemove', (e) => {
+                if (isDragging && model) {
+                    const deltaX = e.clientX - previousMouse.x;
+                    const deltaY = e.clientY - previousMouse.y;
+                    rotation.y += deltaX * 0.01;
+                    rotation.x += deltaY * 0.01;
+                    previousMouse = { x: e.clientX, y: e.clientY };
+                }
+            });
+            
+            document.addEventListener('mouseup', () => isDragging = false);
+            renderer.domElement.addEventListener('mouseleave', () => isDragging = false);
+            
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
+            document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+            
+            // Zoom controls
+            const zoomSpeed = 0.5;
+            const minZoom = 1;
+            const maxZoom = 15;
+            
+            function zoom(delta) {
+                camera.position.z += delta;
+                camera.position.z = Math.max(minZoom, Math.min(maxZoom, camera.position.z));
+            }
+            
+            // Zoom buttons
+            const zoomInBtn = document.getElementById('zoom-in');
+            const zoomOutBtn = document.getElementById('zoom-out');
+            
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => zoom(-zoomSpeed));
+            }
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => zoom(zoomSpeed));
+            }
+            
+            // Mouse wheel zoom
+            renderer.domElement.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? zoomSpeed : -zoomSpeed;
+                zoom(delta);
+            });
+            
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+            
+            // Load model using GLTFLoader
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                modelUrl,
+                (gltf) => {
+                    model = gltf.scene;
+                    
+                    // Center and scale
+                    const box = new THREE.Box3().setFromObject(model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 2 / maxDim;
+                    
+                    model.scale.multiplyScalar(scale);
+                    model.position.sub(center.multiplyScalar(scale));
+                    
+                    scene.add(model);
+                    loading.style.display = 'none';
+                },
+                (progress) => {
+                    // Optional: show loading progress
+                    console.log('Loading:', (progress.loaded / progress.total * 100) + '%');
+                },
+                (err) => {
+                    console.error('Error loading model:', err);
+                    loading.textContent = 'Failed to load model. Try running a local server.';
+                    loading.style.color = '#c00';
+                }
+            );
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                if (model) {
+                    model.rotation.x = rotation.x;
+                    model.rotation.y = rotation.y;
+                }
+                
+                // WASD camera movement
+                if (keys['w']) camera.position.z -= 0.1;
+                if (keys['s']) camera.position.z += 0.1;
+                if (keys['a']) camera.position.x -= 0.1;
+                if (keys['d']) camera.position.x += 0.1;
+                
+                camera.lookAt(scene.position);
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+        }
+
+        // Initialize viewers when page loads
+        window.addEventListener('load', () => {
+            init3DViewer('model1', 'https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/admin/3d/rocks_1758665910940.glb');
+            
+            // To add more models, just call init3DViewer with different IDs and URLs:
+            // init3DViewer('model2', 'path/to/your/model.glb');
+        });
+    </script>
+</body>
+</html>
