@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Image Viewer</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 30px;
+            border-radius: 8px;
+            z-index: 1000;
+            text-align: center;
+        }
+        
+        #info.fade-out {
+            animation: fadeOut 1s ease-in-out 3s forwards;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="info" class="fade-out">
+        Drag to look around • WASD to move
+    </div>
+    
+    <a-scene>
+        <!-- Camera with look controls enabled -->
+        <a-entity 
+            camera 
+            look-controls 
+            wasd-controls="acceleration:50"
+            position="0 1.6 0">
+        </a-entity>
+        
+        <!-- 360 image sphere -->
+        <a-sky 
+            id="image360"
+            src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg"
+            rotation="0 -130 0">
+        </a-sky>
+    </a-scene>
+    
+    <script>
+        // Optional: Load your own 360 image
+        // Replace the src URL above with your own equirectangular 360 image
+        
+        // Example of dynamically changing the image:
+        /*
+        document.querySelector('#image360').setAttribute('src', 'path/to/your/360-image.jpg');
+        */
+    </script>
+</body>
+</html>
