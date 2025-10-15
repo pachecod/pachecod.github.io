@@ -264,8 +264,8 @@
             
             let model = null;
             let targetZ = 8;
-            const minZ = 2;
-            const maxZ = 15;
+            const minZ = 2;   // Limits for scroll/zoom buttons only
+            const maxZ = 15;  // Limits for scroll/zoom buttons only
             
             // ========== CONFIGURATION: Change these values ==========
             // Initial rotation of the model in DEGREES (0-360)
@@ -565,10 +565,24 @@
                 loading.style.display = 'none';
             });
             
+            let animationId = null;
+            
             function animate() {
-                requestAnimationFrame(animate);
+                animationId = requestAnimationFrame(animate);
                 
                 if (model) {
+                    // WASD keyboard movement - unlimited range
+                    if (keys['w']) targetZ -= moveSpeed;
+                    if (keys['s']) targetZ += moveSpeed;
+                    if (keys['a']) camera.position.x -= moveSpeed;
+                    if (keys['d']) camera.position.x += moveSpeed;
+                    
+                    // Button movement (when held down) - unlimited range
+                    if (buttonMovement.forward) targetZ -= moveSpeed;
+                    if (buttonMovement.backward) targetZ += moveSpeed;
+                    if (buttonMovement.left) camera.position.x -= moveSpeed;
+                    if (buttonMovement.right) camera.position.x += moveSpeed;
+                    
                     // Smooth camera movement
                     camera.position.z += (targetZ - camera.position.z) * 0.1;
                     
@@ -576,24 +590,57 @@
                     model.rotation.x += (targetRotation.x - model.rotation.x) * 0.1;
                     model.rotation.y += (targetRotation.y - model.rotation.y) * 0.1;
                     model.rotation.z += (targetRotation.z - model.rotation.z) * 0.1;
-                    
-                    // WASD keyboard movement
-                    if (keys['w']) camera.position.z -= moveSpeed;
-                    if (keys['s']) camera.position.z += moveSpeed;
-                    if (keys['a']) camera.position.x -= moveSpeed;
-                    if (keys['d']) camera.position.x += moveSpeed;
-                    
-                    // Button movement (when held down)
-                    if (buttonMovement.forward) camera.position.z -= moveSpeed;
-                    if (buttonMovement.backward) camera.position.z += moveSpeed;
-                    if (buttonMovement.left) camera.position.x -= moveSpeed;
-                    if (buttonMovement.right) camera.position.x += moveSpeed;
                 }
                 
                 camera.lookAt(scene.position);
                 renderer.render(scene, camera);
             }
+            
             animate();
+            
+            // Return an object with dispose method to clean up resources
+            return {
+                dispose: function() {
+                    // Cancel animation
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                    
+                    // Dispose of model
+                    if (model) {
+                        model.traverse((child) => {
+                            if (child.geometry) {
+                                child.geometry.dispose();
+                            }
+                            if (child.material) {
+                                if (Array.isArray(child.material)) {
+                                    child.material.forEach(material => {
+                                        if (material.map) material.map.dispose();
+                                        material.dispose();
+                                    });
+                                } else {
+                                    if (child.material.map) child.material.map.dispose();
+                                    child.material.dispose();
+                                }
+                            }
+                        });
+                        scene.remove(model);
+                    }
+                    
+                    // Dispose of renderer
+                    if (renderer) {
+                        renderer.dispose();
+                        if (renderer.domElement && renderer.domElement.parentNode) {
+                            renderer.domElement.parentNode.removeChild(renderer.domElement);
+                        }
+                    }
+                    
+                    // Clear scene
+                    scene.clear();
+                    
+                    console.log(`Disposed viewer: ${containerId}`);
+                }
+            };
         }
         
         window.addEventListener('load', () => {
@@ -617,10 +664,68 @@
             // TESTING MODE: Set to true to show AR button on all devices (for testing layout/styling)
             const TESTING_MODE = true; // Change to false when testing on actual iPhone
             
-            // Initialize all three model viewers
-            init3DViewer('model1', 'ar-button', 'zoom-in', 'zoom-out', 'move-forward', 'move-backward', 'move-left', 'move-right', model1.glb, model1.usdz, TESTING_MODE);
-            init3DViewer('model2', 'ar-button2', 'zoom-in2', 'zoom-out2', 'move-forward2', 'move-backward2', 'move-left2', 'move-right2', model2.glb, model2.usdz, TESTING_MODE);
-            init3DViewer('model3', 'ar-button3', 'zoom-in3', 'zoom-out3', 'move-forward3', 'move-backward3', 'move-left3', 'move-right3', model3.glb, model3.usdz, TESTING_MODE);
+            // Store viewer instances to dispose of them later
+            const viewerInstances = new Map();
+            
+            // Configuration for each model viewer
+            const modelConfigs = [
+                { containerId: 'model1', arButtonId: 'ar-button', zoomInId: 'zoom-in', zoomOutId: 'zoom-out', 
+                  moveForwardId: 'move-forward', moveBackwardId: 'move-backward', moveLeftId: 'move-left', moveRightId: 'move-right',
+                  glb: model1.glb, usdz: model1.usdz },
+                { containerId: 'model2', arButtonId: 'ar-button2', zoomInId: 'zoom-in2', zoomOutId: 'zoom-out2',
+                  moveForwardId: 'move-forward2', moveBackwardId: 'move-backward2', moveLeftId: 'move-left2', moveRightId: 'move-right2',
+                  glb: model2.glb, usdz: model2.usdz },
+                { containerId: 'model3', arButtonId: 'ar-button3', zoomInId: 'zoom-in3', zoomOutId: 'zoom-out3',
+                  moveForwardId: 'move-forward3', moveBackwardId: 'move-backward3', moveLeftId: 'move-left3', moveRightId: 'move-right3',
+                  glb: model3.glb, usdz: model3.usdz }
+            ];
+            
+            // Create Intersection Observer to lazy load models
+            const observerOptions = {
+                root: null,
+                rootMargin: '100px', // Start loading 100px before entering viewport
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const containerId = entry.target.id;
+                    
+                    if (entry.isIntersecting) {
+                        // Model is visible - load it if not already loaded
+                        if (!viewerInstances.has(containerId)) {
+                            console.log(`Loading model: ${containerId}`);
+                            const config = modelConfigs.find(c => c.containerId === containerId);
+                            if (config) {
+                                const viewer = init3DViewer(
+                                    config.containerId, config.arButtonId, config.zoomInId, config.zoomOutId,
+                                    config.moveForwardId, config.moveBackwardId, config.moveLeftId, config.moveRightId,
+                                    config.glb, config.usdz, TESTING_MODE
+                                );
+                                viewerInstances.set(containerId, viewer);
+                            }
+                        }
+                    } else {
+                        // Model is not visible - dispose of it to free memory
+                        if (viewerInstances.has(containerId)) {
+                            console.log(`Unloading model: ${containerId}`);
+                            const viewer = viewerInstances.get(containerId);
+                            if (viewer && viewer.dispose) {
+                                viewer.dispose();
+                            }
+                            viewerInstances.delete(containerId);
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all model containers
+            modelConfigs.forEach(config => {
+                const container = document.getElementById(config.containerId);
+                if (container) {
+                    observer.observe(container);
+                }
+            });
         });
     </script>
 </body>
