@@ -572,10 +572,22 @@
                     // Smooth camera movement
                     camera.position.z += (targetZ - camera.position.z) * 0.1;
                     
-                    // Smooth rotation controlled by scroll
+                    // Smooth rotation controlled by dragging
                     model.rotation.x += (targetRotation.x - model.rotation.x) * 0.1;
                     model.rotation.y += (targetRotation.y - model.rotation.y) * 0.1;
                     model.rotation.z += (targetRotation.z - model.rotation.z) * 0.1;
+                    
+                    // WASD keyboard movement
+                    if (keys['w']) camera.position.z -= moveSpeed;
+                    if (keys['s']) camera.position.z += moveSpeed;
+                    if (keys['a']) camera.position.x -= moveSpeed;
+                    if (keys['d']) camera.position.x += moveSpeed;
+                    
+                    // Button movement (when held down)
+                    if (buttonMovement.forward) camera.position.z -= moveSpeed;
+                    if (buttonMovement.backward) camera.position.z += moveSpeed;
+                    if (buttonMovement.left) camera.position.x -= moveSpeed;
+                    if (buttonMovement.right) camera.position.x += moveSpeed;
                 }
                 
                 camera.lookAt(scene.position);
