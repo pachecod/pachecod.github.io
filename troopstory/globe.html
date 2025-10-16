@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>U.S. Troop Deployment Globe</title>
+    <title>U.S. Military Presence Worldwide</title>
     <style>
         * {
             box-sizing: border-box;
@@ -201,7 +201,7 @@
     <div class="tooltip"></div>
     
     <div class="info-panel">
-        <h3>U.S. Troop Deployments</h3>
+        <h3>U.S. Military Presence</h3>
         <p><strong>Drag to rotate</strong></p>
         <p id="hover-info">Hover over a country</p>
         <div class="checkbox-container">
@@ -217,7 +217,7 @@
     
     <div class="legend">
         <div class="legend-title" id="legend-toggle">
-            <span>Troops Deployed</span>
+            <span>Number of Troops</span>
             <span class="legend-toggle">−</span>
         </div>
         <div class="legend-content" id="legend-content">
@@ -452,7 +452,7 @@
                                             .style("top", (event.pageY - 15) + "px")
                                             .classed("visible", true);
                                         
-                                        hoverInfo.html(`<strong>${displayName}</strong><br>${troops.toLocaleString()} troops deployed`);
+                                        hoverInfo.html(`<strong>${displayName}</strong><br>${troops.toLocaleString()} troops`);
                                     })
                                     .on("mouseout", function() {
                                         tooltip.classed("visible", false);
