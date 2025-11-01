@@ -7,8 +7,8 @@ September 12, 2025
 
 **Download the full paper:** [PDF version](https://github.com/pachecod/pachecod.github.io/blob/master/ist659final/Superfan_paper_v7_anonymized.pdf)
 
-**Download the SQL to execute in MS SQL Server:** [SQL Code]
-(https://github.com/pachecod/pachecod.github.io/blob/master/ist659final/superfan_final.sql)
+**Download the SQL to execute in MS SQL Server:** 
+[SQL Code](https://github.com/pachecod/pachecod.github.io/blob/master/ist659final/superfan_final.sql)
 
 **Sections:** [Introduction](#introduction) | [Database Design](#database-design) | [Key Tables](#key-tables) | [Functions & Views](#functions-and-views) | [Use Cases](#use-cases) | [Sample UI](#sample-ui) | [Lessons Learned](#lessons-learned)
 
