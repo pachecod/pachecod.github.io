@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum 3D Article - Scroll View</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        article { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+        header { margin-bottom: 48px; }
+        h1 { font-size: 2.5rem; font-weight: bold; color: #111; margin-bottom: 16px; }
+        .meta { color: #666; font-size: 0.875rem; }
+        h2 { font-size: 1.75rem; font-weight: bold; color: #111; margin-top: 40px; margin-bottom: 16px; }
+        p { color: #444; margin-bottom: 24px; font-size: 1.125rem; }
+        p.lead { font-size: 1.25rem; color: #555; }
+        .model-container { margin: 48px 0; }
+        .model-viewer {
+            width: 100%; height: 600px; background: #f5f5f5;
+            border-radius: 8px; position: relative; overflow: hidden;
+            touch-action: none; cursor: grab;
+        }
+        .model-viewer:active { cursor: grabbing; }
+        .model-viewer canvas { display: block; width: 100%; height: 100%; }
+        .loading {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); color: #666; font-size: 1rem;
+        }
+        .caption {
+            margin-top: 8px; font-size: 0.875rem; color: #666;
+            font-style: italic; text-align: center;
+        }
+        .instructions { 
+            margin-top: 4px; font-size: 0.75rem; color: #999; 
+            text-align: center; 
+        }
+        .scroll-hint {
+            position: absolute; bottom: 80px; left: 50%;
+            transform: translateX(-50%);
+            color: #666; font-size: 0.875rem;
+            padding: 8px 16px; background: rgba(255,255,255,0.9);
+            border-radius: 20px; pointer-events: none;
+            opacity: 0.8; animation: fadeInOut 3s ease-in-out infinite;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .zoom-controls {
+            position: absolute; bottom: 20px; right: 20px;
+            display: flex; flex-direction: column; gap: 10px; z-index: 10;
+        }
+        .zoom-btn {
+            width: 44px; height: 44px; background: white;
+            border: 2px solid #ddd; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; color: #333; transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .zoom-btn:hover { background: #f8f8f8; border-color: #999; transform: scale(1.05); }
+        .zoom-btn:active { transform: scale(0.95); }
+        .movement-controls {
+            position: absolute; bottom: 20px; right: 80px;
+            display: grid; grid-template-columns: repeat(3, 44px);
+            grid-template-rows: repeat(3, 44px); gap: 4px; z-index: 10;
+        }
+        .move-btn {
+            width: 44px; height: 44px; background: white;
+            border: 2px solid #ddd; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; color: #333; transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .move-btn:hover { background: #f8f8f8; border-color: #999; transform: scale(1.05); }
+        .move-btn:active { transform: scale(0.95); }
+        .move-up { grid-column: 2; grid-row: 1; }
+        .move-left { grid-column: 1; grid-row: 2; }
+        .move-right { grid-column: 3; grid-row: 2; }
+        .move-down { grid-column: 2; grid-row: 3; }
+        .ar-button {
+            position: absolute; bottom: 20px; left: 20px;
+            background: white; border: 2px solid #ddd;
+            border-radius: 8px; padding: 12px 20px;
+            font-size: 0.9rem; font-weight: 600;
+            color: #333; cursor: pointer;
+            display: none; align-items: center; gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s; z-index: 10;
+            text-decoration: none;
+        }
+        .ar-button.visible { display: flex; }
+        .ar-button:hover { background: #f8f8f8; border-color: #999; transform: scale(1.05); }
+        .ar-button:active { transform: scale(0.95); }
+        .ar-icon {
+            width: 20px; height: 20px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M12 2v20M2 12h20"/></svg>') center no-repeat;
+            background-size: contain;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <header>
+            <h1>Lorem Ipsum Dolor Sit Amet Consectetur</h1>
+            <div class="meta">
+                <span>By Lorem Author</span>
+                <span> • </span>
+                <span>October 13, 2025</span>
+            </div>
+        </header>
+
+        <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus nec dui vitae justo dignissim tristique. 
+            Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+        </p>
+
+        <h2>Vestibulum Ante Ipsum</h2>
+
+        <p>
+            Curabitur tincidunt, risus nec placerat commodo, risus lorem convallis est, 
+            vel varius libero erat sed lacus. Phasellus porta lorem ut libero tincidunt cursus.
+            Nulla facilisi. Suspendisse potenti.
+        </p>
+
+        <div class="model-container">
+            <div class="model-viewer" id="model1">
+                <div class="loading">Loading 3D model...</div>
+                <div class="scroll-hint">Drag to rotate • WASD to move</div>
+                <a href="#" rel="ar" class="ar-button" id="ar-button">
+                    <div class="ar-icon"></div>
+                    <span>View in AR</span>
+                </a>
+                <div class="movement-controls">
+                    <button class="move-btn move-up" id="move-forward" title="Move Forward (W)">↑</button>
+                    <button class="move-btn move-left" id="move-left" title="Move Left (A)">←</button>
+                    <button class="move-btn move-right" id="move-right" title="Move Right (D)">→</button>
+                    <button class="move-btn move-down" id="move-backward" title="Move Backward (S)">↓</button>
+                </div>
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoom-in" title="Zoom In">🔍+</button>
+                    <button class="zoom-btn" id="zoom-out" title="Zoom Out">🔍−</button>
+                </div>
+            </div>
+            <p class="caption">Fig. 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p class="instructions">Drag to rotate • Scroll or use buttons to zoom • Use WASD or arrow buttons to move • Tap "View in AR" on iPhone to see in your space</p>
+        </div>
+
+        <p>
+            Morbi ac nibh sit amet mi pharetra tincidunt. Aenean euismod, sapien a cursus placerat, 
+            eros augue malesuada orci, non fermentum justo velit ut velit. Sed id tincidunt orci.
+        </p>
+
+        <h2>Ut Enim Ad Minim Veniam</h2>
+
+        <p>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <div class="model-container">
+            <div class="model-viewer" id="model2">
+                <div class="loading">Loading 3D model...</div>
+                <div class="scroll-hint">Drag to rotate • Scroll to zoom</div>
+                <a href="#" rel="ar" class="ar-button" id="ar-button2">
+                    <div class="ar-icon"></div>
+                    <span>View in AR</span>
+                </a>
+                <div class="movement-controls">
+                    <button class="move-btn move-up" id="move-forward2" title="Move Forward (W)">↑</button>
+                    <button class="move-btn move-left" id="move-left2" title="Move Left (A)">←</button>
+                    <button class="move-btn move-right" id="move-right2" title="Move Right (D)">→</button>
+                    <button class="move-btn move-down" id="move-backward2" title="Move Backward (S)">↓</button>
+                </div>
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoom-in2" title="Zoom In">🔍+</button>
+                    <button class="zoom-btn" id="zoom-out2" title="Zoom Out">🔍−</button>
+                </div>
+            </div>
+            <p class="caption">Fig. 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p class="instructions">Drag to rotate • Scroll or use buttons to zoom • Use WASD or arrow buttons to move • Tap "View in AR" on iPhone to see in your space</p>
+        </div>
+
+        <p>
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
+            totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+        </p>
+
+        <h2>Excepteur Sint Occaecat</h2>
+
+        <p>
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
+            totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+        </p>
+
+        <div class="model-container">
+            <div class="model-viewer" id="model3">
+                <div class="loading">Loading 3D model...</div>
+                <div class="scroll-hint">Drag to rotate • Scroll to zoom</div>
+                <a href="#" rel="ar" class="ar-button" id="ar-button3">
+                    <div class="ar-icon"></div>
+                    <span>View in AR</span>
+                </a>
+                <div class="movement-controls">
+                    <button class="move-btn move-up" id="move-forward3" title="Move Forward (W)">↑</button>
+                    <button class="move-btn move-left" id="move-left3" title="Move Left (A)">←</button>
+                    <button class="move-btn move-right" id="move-right3" title="Move Right (D)">→</button>
+                    <button class="move-btn move-down" id="move-backward3" title="Move Backward (S)">↓</button>
+                </div>
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoom-in3" title="Zoom In">🔍+</button>
+                    <button class="zoom-btn" id="zoom-out3" title="Zoom Out">🔍−</button>
+                </div>
+            </div>
+            <p class="caption">Fig. 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p class="instructions">Drag to rotate • Scroll or use buttons to zoom • Use WASD or arrow buttons to move • Tap "View in AR" on iPhone to see in your space</p>
+        </div>
+
+        <p>
+            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos 
+            qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
+        </p>
+    </article>
+
+    <script>
+        function init3DViewer(containerId, arButtonId, zoomInId, zoomOutId, moveForwardId, moveBackwardId, moveLeftId, moveRightId, modelUrl, usdzUrl, testingMode) {
+            const container = document.getElementById(containerId);
+            const loading = container.querySelector('.loading');
+            const arButton = document.getElementById(arButtonId);
+            const scrollHint = container.querySelector('.scroll-hint');
+            
+            // Check for AR support (iOS Quick Look)
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Show AR button if iOS and USDZ provided, or if in testing mode
+            if ((isIOS || testingMode) && usdzUrl && arButton) {
+                arButton.href = usdzUrl;
+                arButton.classList.add('visible');
+            }
+            
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf5f5f5);
+            const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 2, 8);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+            
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight1.position.set(5, 10, 5);
+            scene.add(dirLight1);
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
+            dirLight2.position.set(-5, 5, -5);
+            scene.add(dirLight2);
+            
+            let model = null;
+            let targetZ = 8;
+            const minZ = 2;   // Limits for scroll/zoom buttons only
+            const maxZ = 15;  // Limits for scroll/zoom buttons only
+            
+            // ========== CONFIGURATION: Change these values ==========
+            // Initial rotation of the model in DEGREES (0-360)
+            const initialRotationDegrees = {
+                x: 0,    // X-axis tilt in degrees
+                y: 45,   // Y-axis spin in degrees
+                z: 0     // Z-axis roll in degrees
+            };
+            // =======================================================
+            
+            // Convert degrees to radians for Three.js
+            const initialRotation = {
+                x: initialRotationDegrees.x * (Math.PI / 180),
+                y: initialRotationDegrees.y * (Math.PI / 180),
+                z: initialRotationDegrees.z * (Math.PI / 180)
+            };
+            
+            // Rotation controlled by dragging
+            let targetRotation = { x: 0, y: 0, z: 0 };
+            
+            // Drag interaction variables
+            let isDragging = false;
+            let previousMouse = { x: 0, y: 0 };
+            
+            // Keyboard controls
+            let keys = {};
+            let buttonMovement = { forward: false, backward: false, left: false, right: false };
+            const moveSpeed = 0.1;
+            
+            document.addEventListener('keydown', (e) => {
+                keys[e.key.toLowerCase()] = true;
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                keys[e.key.toLowerCase()] = false;
+            });
+            
+            // Scroll control
+            let scrollPosition = 0;
+            const scrollSensitivity = 0.02;
+            
+            function handleScroll(e) {
+                if (!model) return;
+                
+                const delta = e.deltaY;
+                
+                // Update camera position (negative delta so scroll down = move closer)
+                targetZ -= delta * scrollSensitivity;
+                targetZ = Math.max(minZ, Math.min(maxZ, targetZ));
+                
+                // Hide scroll hint after first interaction
+                if (scrollHint) {
+                    scrollHint.style.display = 'none';
+                }
+            }
+            
+            // Mouse wheel for desktop - listen on window for global scroll
+            window.addEventListener('wheel', handleScroll, { passive: true });
+            
+            // Touch events for mobile
+            let touchStartY = 0;
+            window.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            window.addEventListener('touchmove', (e) => {
+                if (!model) return;
+                
+                const touchY = e.touches[0].clientY;
+                const delta = touchStartY - touchY;
+                
+                // Update camera position (positive delta so swipe up = move closer)
+                targetZ += delta * 0.01;
+                targetZ = Math.max(minZ, Math.min(maxZ, targetZ));
+                
+                touchStartY = touchY;
+                
+                // Hide scroll hint after first interaction
+                if (scrollHint) {
+                    scrollHint.style.display = 'none';
+                }
+            }, { passive: true });
+            
+            // Mouse drag controls for rotation
+            renderer.domElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMouse = { x: e.clientX, y: e.clientY };
+            });
+            
+            renderer.domElement.addEventListener('mousemove', (e) => {
+                if (isDragging && model) {
+                    const deltaX = e.clientX - previousMouse.x;
+                    const deltaY = e.clientY - previousMouse.y;
+                    targetRotation.y += deltaX * 0.01;
+                    targetRotation.x += deltaY * 0.01;
+                    previousMouse = { x: e.clientX, y: e.clientY };
+                    
+                    // Hide scroll hint after first interaction
+                    if (scrollHint) {
+                        scrollHint.style.display = 'none';
+                    }
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            renderer.domElement.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
+            
+            // Touch drag controls for rotation
+            let touchDragStart = { x: 0, y: 0 };
+            let isTouchDragging = false;
+            
+            renderer.domElement.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isTouchDragging = true;
+                    const touch = e.touches[0];
+                    touchDragStart = { x: touch.clientX, y: touch.clientY };
+                }
+            }, { passive: true });
+            
+            renderer.domElement.addEventListener('touchmove', (e) => {
+                if (isTouchDragging && model && e.touches.length === 1) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - touchDragStart.x;
+                    const deltaY = touch.clientY - touchDragStart.y;
+                    targetRotation.y += deltaX * 0.01;
+                    targetRotation.x += deltaY * 0.01;
+                    touchDragStart = { x: touch.clientX, y: touch.clientY };
+                    
+                    // Hide scroll hint after first interaction
+                    if (scrollHint) {
+                        scrollHint.style.display = 'none';
+                    }
+                }
+            }, { passive: false });
+            
+            renderer.domElement.addEventListener('touchend', () => {
+                isTouchDragging = false;
+            });
+            
+            // Zoom button controls
+            const zoomSpeed = 0.5;
+            const zoomInBtn = document.getElementById(zoomInId);
+            const zoomOutBtn = document.getElementById(zoomOutId);
+            
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => {
+                    targetZ -= zoomSpeed;
+                    targetZ = Math.max(minZ, Math.min(maxZ, targetZ));
+                });
+            }
+            
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => {
+                    targetZ += zoomSpeed;
+                    targetZ = Math.max(minZ, Math.min(maxZ, targetZ));
+                });
+            }
+            
+            // Movement button controls - hold to move continuously
+            const moveForwardBtn = document.getElementById(moveForwardId);
+            const moveBackwardBtn = document.getElementById(moveBackwardId);
+            const moveLeftBtn = document.getElementById(moveLeftId);
+            const moveRightBtn = document.getElementById(moveRightId);
+            
+            if (moveForwardBtn) {
+                moveForwardBtn.addEventListener('mousedown', () => {
+                    buttonMovement.forward = true;
+                });
+                moveForwardBtn.addEventListener('mouseup', () => {
+                    buttonMovement.forward = false;
+                });
+                moveForwardBtn.addEventListener('mouseleave', () => {
+                    buttonMovement.forward = false;
+                });
+                // Touch support
+                moveForwardBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    buttonMovement.forward = true;
+                });
+                moveForwardBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    buttonMovement.forward = false;
+                });
+            }
+            
+            if (moveBackwardBtn) {
+                moveBackwardBtn.addEventListener('mousedown', () => {
+                    buttonMovement.backward = true;
+                });
+                moveBackwardBtn.addEventListener('mouseup', () => {
+                    buttonMovement.backward = false;
+                });
+                moveBackwardBtn.addEventListener('mouseleave', () => {
+                    buttonMovement.backward = false;
+                });
+                // Touch support
+                moveBackwardBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    buttonMovement.backward = true;
+                });
+                moveBackwardBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    buttonMovement.backward = false;
+                });
+            }
+            
+            if (moveLeftBtn) {
+                moveLeftBtn.addEventListener('mousedown', () => {
+                    buttonMovement.left = true;
+                });
+                moveLeftBtn.addEventListener('mouseup', () => {
+                    buttonMovement.left = false;
+                });
+                moveLeftBtn.addEventListener('mouseleave', () => {
+                    buttonMovement.left = false;
+                });
+                // Touch support
+                moveLeftBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    buttonMovement.left = true;
+                });
+                moveLeftBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    buttonMovement.left = false;
+                });
+            }
+            
+            if (moveRightBtn) {
+                moveRightBtn.addEventListener('mousedown', () => {
+                    buttonMovement.right = true;
+                });
+                moveRightBtn.addEventListener('mouseup', () => {
+                    buttonMovement.right = false;
+                });
+                moveRightBtn.addEventListener('mouseleave', () => {
+                    buttonMovement.right = false;
+                });
+                // Touch support
+                moveRightBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    buttonMovement.right = true;
+                });
+                moveRightBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    buttonMovement.right = false;
+                });
+            }
+            
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+            
+            const loader = new THREE.GLTFLoader();
+            loader.load(modelUrl, (gltf) => {
+                // Create a container group for proper centering
+                const modelGroup = new THREE.Group();
+                const loadedModel = gltf.scene;
+                
+                // Get bounding box and center
+                const box = new THREE.Box3().setFromObject(loadedModel);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 2 / maxDim;
+                
+                // Center the model at origin first
+                loadedModel.position.x = -center.x;
+                loadedModel.position.y = -center.y;
+                loadedModel.position.z = -center.z;
+                
+                // Apply scale
+                loadedModel.scale.multiplyScalar(scale);
+                
+                // Add to group and then to scene
+                modelGroup.add(loadedModel);
+                scene.add(modelGroup);
+                
+                // Set initial rotation from configuration
+                modelGroup.rotation.x = initialRotation.x;
+                modelGroup.rotation.y = initialRotation.y;
+                modelGroup.rotation.z = initialRotation.z;
+                targetRotation.x = initialRotation.x;
+                targetRotation.y = initialRotation.y;
+                targetRotation.z = initialRotation.z;
+                
+                // Store the group
+                model = modelGroup;
+                
+                loading.style.display = 'none';
+            });
+            
+            let animationId = null;
+            
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                if (model) {
+                    // WASD keyboard movement - unlimited range
+                    if (keys['w']) targetZ -= moveSpeed;
+                    if (keys['s']) targetZ += moveSpeed;
+                    if (keys['a']) camera.position.x -= moveSpeed;
+                    if (keys['d']) camera.position.x += moveSpeed;
+                    
+                    // Button movement (when held down) - unlimited range
+                    if (buttonMovement.forward) targetZ -= moveSpeed;
+                    if (buttonMovement.backward) targetZ += moveSpeed;
+                    if (buttonMovement.left) camera.position.x -= moveSpeed;
+                    if (buttonMovement.right) camera.position.x += moveSpeed;
+                    
+                    // Smooth camera movement
+                    camera.position.z += (targetZ - camera.position.z) * 0.1;
+                    
+                    // Smooth rotation controlled by dragging
+                    model.rotation.x += (targetRotation.x - model.rotation.x) * 0.1;
+                    model.rotation.y += (targetRotation.y - model.rotation.y) * 0.1;
+                    model.rotation.z += (targetRotation.z - model.rotation.z) * 0.1;
+                }
+                
+                camera.lookAt(scene.position);
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Return an object with dispose method to clean up resources
+            return {
+                dispose: function() {
+                    // Cancel animation
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                    
+                    // Dispose of model
+                    if (model) {
+                        model.traverse((child) => {
+                            if (child.geometry) {
+                                child.geometry.dispose();
+                            }
+                            if (child.material) {
+                                if (Array.isArray(child.material)) {
+                                    child.material.forEach(material => {
+                                        if (material.map) material.map.dispose();
+                                        material.dispose();
+                                    });
+                                } else {
+                                    if (child.material.map) child.material.map.dispose();
+                                    child.material.dispose();
+                                }
+                            }
+                        });
+                        scene.remove(model);
+                    }
+                    
+                    // Dispose of renderer
+                    if (renderer) {
+                        renderer.dispose();
+                        if (renderer.domElement && renderer.domElement.parentNode) {
+                            renderer.domElement.parentNode.removeChild(renderer.domElement);
+                        }
+                    }
+                    
+                    // Clear scene
+                    scene.clear();
+                    
+                    console.log(`Disposed viewer: ${containerId}`);
+                }
+            };
+        }
+        
+        window.addEventListener('load', () => {
+            // ========== MODEL URLS: Change these for each model ==========
+            const model1 = {
+                glb: 'https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/mask_1760542047426.glb',
+                usdz: 'https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/other/mask_1760542049433.usdz'
+            };
+            
+            const model2 = {
+                glb: 'https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/wheelbarrow-1758376227276_1760549681437.glb',
+                usdz: 'https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/other/wheelbarrow-1758376227276_1760549679325.usdz'
+            };
+            
+            const model3 = {
+                glb: 'https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/3d/rocks_1760549957313.glb',
+                usdz: 'https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/common-assets/other/rocks_1760549837283.usdz'
+            };
+            // =============================================================
+            
+            // TESTING MODE: Set to true to show AR button on all devices (for testing layout/styling)
+            const TESTING_MODE = true; // Change to false when testing on actual iPhone
+            
+            // Store viewer instances to dispose of them later
+            const viewerInstances = new Map();
+            
+            // Configuration for each model viewer
+            const modelConfigs = [
+                { containerId: 'model1', arButtonId: 'ar-button', zoomInId: 'zoom-in', zoomOutId: 'zoom-out', 
+                  moveForwardId: 'move-forward', moveBackwardId: 'move-backward', moveLeftId: 'move-left', moveRightId: 'move-right',
+                  glb: model1.glb, usdz: model1.usdz },
+                { containerId: 'model2', arButtonId: 'ar-button2', zoomInId: 'zoom-in2', zoomOutId: 'zoom-out2',
+                  moveForwardId: 'move-forward2', moveBackwardId: 'move-backward2', moveLeftId: 'move-left2', moveRightId: 'move-right2',
+                  glb: model2.glb, usdz: model2.usdz },
+                { containerId: 'model3', arButtonId: 'ar-button3', zoomInId: 'zoom-in3', zoomOutId: 'zoom-out3',
+                  moveForwardId: 'move-forward3', moveBackwardId: 'move-backward3', moveLeftId: 'move-left3', moveRightId: 'move-right3',
+                  glb: model3.glb, usdz: model3.usdz }
+            ];
+            
+            // Create Intersection Observer to lazy load models
+            const observerOptions = {
+                root: null,
+                rootMargin: '100px', // Start loading 100px before entering viewport
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const containerId = entry.target.id;
+                    
+                    if (entry.isIntersecting) {
+                        // Model is visible - load it if not already loaded
+                        if (!viewerInstances.has(containerId)) {
+                            console.log(`Loading model: ${containerId}`);
+                            const config = modelConfigs.find(c => c.containerId === containerId);
+                            if (config) {
+                                const viewer = init3DViewer(
+                                    config.containerId, config.arButtonId, config.zoomInId, config.zoomOutId,
+                                    config.moveForwardId, config.moveBackwardId, config.moveLeftId, config.moveRightId,
+                                    config.glb, config.usdz, TESTING_MODE
+                                );
+                                viewerInstances.set(containerId, viewer);
+                            }
+                        }
+                    } else {
+                        // Model is not visible - dispose of it to free memory
+                        if (viewerInstances.has(containerId)) {
+                            console.log(`Unloading model: ${containerId}`);
+                            const viewer = viewerInstances.get(containerId);
+                            if (viewer && viewer.dispose) {
+                                viewer.dispose();
+                            }
+                            viewerInstances.delete(containerId);
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all model containers
+            modelConfigs.forEach(config => {
+                const container = document.getElementById(config.containerId);
+                if (container) {
+                    observer.observe(container);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
