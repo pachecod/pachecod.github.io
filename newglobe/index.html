@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exported Globe Visualization</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(to bottom, #0a1128, #1e3a5f); overflow: hidden; }
+    #canvas-container { width: 100vw; height: 100vh; }
+    #info-panel { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.95); color: #1a1a1a; padding: 20px; border-radius: 10px; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(10px); z-index: 1000; border: 1px solid rgba(255,255,255,0.3); }
+    h1 { margin: 0 0 15px 0; font-size: 24px; color: #0066cc; font-weight: bold; }
+    .stats { font-size: 14px; line-height: 1.8; color: #2c3e50; }
+    .legend { margin-top: 15px; padding-top: 15px; border-top: 2px solid #e0e0e0; font-size: 12px; }
+    .legend-item { display: flex; align-items: center; margin: 6px 0; color: #2c3e50; }
+    .legend-color { width: 15px; height: 15px; border-radius: 50%; margin-right: 10px; border: 1px solid rgba(0,0,0,0.1); }
+    #tooltip { position: absolute; background: rgba(30,30,30,0.95); color: #ffffff; padding: 12px 16px; border-radius: 6px; pointer-events: none; font-size: 14px; display: none; z-index: 2000; box-shadow: 0 4px 8px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); }
+    #tooltip strong { color: #ffffff; font-weight: bold; }
+    .instructions { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.9); color: #1a1a1a; padding: 12px 24px; border-radius: 6px; font-size: 13px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3); }
+  </style>
+</head>
+<body>
+  <div id="info-panel">
+    <h1 id="export-title-heading">Visualization</h1>
+    <div class="legend">
+      <strong>Value Scale:</strong>
+      <div class="legend-item"><div class="legend-color" style="background: #ff4444;"></div><span id="legend-low">Low</span></div>
+      <div class="legend-item"><div class="legend-color" style="background: #ffaa00;"></div><span id="legend-mid">Medium</span></div>
+      <div class="legend-item"><div class="legend-color" style="background: #44ff44;"></div><span id="legend-high">High</span></div>
+      <div class="legend-item"><div class="legend-color" style="background: #4444ff;"></div><span id="legend-very-high">Very High</span></div>
+    </div>
+  </div>
+  <div class="instructions">Drag to rotate • Scroll to zoom • Hover points for details</div>
+  <div id="canvas-container"></div>
+  <div id="tooltip"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    const deployments = [{"name":"Afghanistan","value":1,"lat":33,"lng":65},{"name":"Albania","value":1,"lat":41,"lng":20},{"name":"Algeria","value":1,"lat":28,"lng":3},{"name":"American Samoa","value":1,"lat":-14.33333333,"lng":-170},{"name":"Andorra","value":1,"lat":42.5,"lng":1.5},{"name":"Angola","value":1,"lat":-12.5,"lng":18.5},{"name":"Antigua & Barbuda","value":1,"lat":17.05,"lng":-61.8},{"name":"Argentina","value":1,"lat":-34,"lng":-64},{"name":"Armenia","value":1,"lat":40,"lng":45},{"name":"Australia","value":1,"lat":-27,"lng":133},{"name":"Austria","value":1,"lat":47.33333333,"lng":13.33333333},{"name":"Azerbaijan","value":1,"lat":40.5,"lng":47.5},{"name":"Bahamas","value":1,"lat":24.25,"lng":-76},{"name":"Bahrain","value":1,"lat":26,"lng":50.55},{"name":"Bangladesh","value":1,"lat":24,"lng":90},{"name":"Barbados","value":1,"lat":13.16666666,"lng":-59.53333333},{"name":"Belarus","value":1,"lat":53,"lng":28},{"name":"Belgium","value":1,"lat":50.83333333,"lng":4},{"name":"Belize","value":1,"lat":17.25,"lng":-88.75},{"name":"Benin","value":1,"lat":9.5,"lng":2.25},{"name":"Bhutan","value":1,"lat":27.5,"lng":90.5},{"name":"Bolivia","value":1,"lat":-17,"lng":-65},{"name":"Bosnia & Herzegovina","value":1,"lat":44,"lng":18},{"name":"Bosnia and Herzegovina","value":1,"lat":44,"lng":18},{"name":"Botswana","value":1,"lat":-22,"lng":24},{"name":"Brazil","value":1,"lat":-10,"lng":-55},{"name":"Brunei","value":1,"lat":4.5,"lng":114.66666666},{"name":"Bulgaria","value":1,"lat":43,"lng":25},{"name":"Burkina Faso","value":1,"lat":13,"lng":-2},{"name":"Burundi","value":1,"lat":-3.5,"lng":30},{"name":"Cambodia","value":1,"lat":13,"lng":105},{"name":"Cameroon","value":1,"lat":6,"lng":12},{"name":"Canada","value":1,"lat":60,"lng":-95},{"name":"Cape Verde","value":1,"lat":16,"lng":-24},{"name":"Central African Republic","value":1,"lat":7,"lng":21},{"name":"Chad","value":1,"lat":15,"lng":19},{"name":"Chile","value":1,"lat":-30,"lng":-71},{"name":"China","value":1,"lat":35,"lng":105},{"name":"Colombia","value":1,"lat":4,"lng":-72},{"name":"Comoros","value":1,"lat":-12.16666666,"lng":44.25},{"name":"Congo","value":1,"lat":-1,"lng":15},{"name":"Congo - Brazzaville","value":1,"lat":-1,"lng":15},{"name":"Congo - Kinshasa","value":1,"lat":0,"lng":25},{"name":"Costa Rica","value":1,"lat":10,"lng":-84},{"name":"Côte D’ivoire","value":1,"lat":8,"lng":-5},{"name":"Croatia","value":1,"lat":45.16666666,"lng":15.5},{"name":"Cuba","value":1,"lat":21.5,"lng":-80},{"name":"Cyprus","value":1,"lat":35,"lng":33},{"name":"Czech Republic","value":1,"lat":49.75,"lng":15.5},{"name":"Czechia","value":1,"lat":49.75,"lng":15.5},{"name":"Democratic Republic of the Congo","value":1,"lat":0,"lng":25},{"name":"Denmark","value":1,"lat":56,"lng":10},{"name":"Djibouti","value":1,"lat":11.5,"lng":43},{"name":"Dominica","value":1,"lat":15.41666666,"lng":-61.33333333},{"name":"Dominican Republic","value":1,"lat":19,"lng":-70.66666666},{"name":"East Timor","value":1,"lat":-8.83333333,"lng":125.91666666},{"name":"Ecuador","value":1,"lat":-2,"lng":-77.5},{"name":"Egypt","value":1,"lat":27,"lng":30},{"name":"El Salvador","value":1,"lat":13.83333333,"lng":-88.91666666},{"name":"Equatorial Guinea","value":1,"lat":2,"lng":10},{"name":"Eritrea","value":1,"lat":15,"lng":39},{"name":"Estonia","value":1,"lat":59,"lng":26},{"name":"Eswatini","value":1,"lat":-26.5,"lng":31.5},{"name":"Ethiopia","value":1,"lat":8,"lng":38},{"name":"Federated States of Micronesia","value":1,"lat":6.91666666,"lng":158.25},{"name":"Fiji","value":1,"lat":-18,"lng":175},{"name":"Finland","value":1,"lat":64,"lng":26},{"name":"France","value":1,"lat":46,"lng":2},{"name":"Gabon","value":1,"lat":-1,"lng":11.75},{"name":"Gambia","value":1,"lat":13.46666666,"lng":-16.56666666},{"name":"Georgia","value":1,"lat":42,"lng":43.5},{"name":"Germany","value":1,"lat":51,"lng":9},{"name":"Ghana","value":1,"lat":8,"lng":-2},{"name":"Gibraltar","value":1,"lat":36.13333333,"lng":-5.35},{"name":"Greece","value":1,"lat":39,"lng":22},{"name":"Greenland","value":1,"lat":72,"lng":-40},{"name":"Grenada","value":1,"lat":12.11666666,"lng":-61.66666666},{"name":"Guam","value":1,"lat":13.46666666,"lng":144.78333333},{"name":"Guatemala","value":1,"lat":15.5,"lng":-90.25},{"name":"Guinea","value":1,"lat":11,"lng":-10},{"name":"Guinea-Bissau","value":1,"lat":12,"lng":-15},{"name":"Guyana","value":1,"lat":5,"lng":-59},{"name":"Haiti","value":1,"lat":19,"lng":-72.41666666},{"name":"Honduras","value":1,"lat":15,"lng":-86.5},{"name":"Hong Kong","value":1,"lat":22.267,"lng":114.188},{"name":"Hungary","value":1,"lat":47,"lng":20},{"name":"Iceland","value":1,"lat":65,"lng":-18},{"name":"India","value":1,"lat":20,"lng":77},{"name":"Indonesia","value":1,"lat":-5,"lng":120},{"name":"Iran","value":1,"lat":32,"lng":53},{"name":"Iraq","value":1,"lat":33,"lng":44},{"name":"Ireland","value":1,"lat":53,"lng":-8},{"name":"Israel","value":1,"lat":31.47,"lng":35.13},{"name":"Italy","value":1,"lat":42.83333333,"lng":12.83333333},{"name":"Ivory Coast","value":1,"lat":8,"lng":-5},{"name":"Jamaica","value":1,"lat":18.25,"lng":-77.5},{"name":"Japan","value":1,"lat":36,"lng":138},{"name":"Jordan","value":1,"lat":31,"lng":36},{"name":"Kazakhstan","value":1,"lat":48,"lng":68},{"name":"Kenya","value":1,"lat":1,"lng":38},{"name":"Kiribati","value":1,"lat":1.41666666,"lng":173},{"name":"Kosovo","value":1,"lat":42.666667,"lng":21.166667},{"name":"Kuwait","value":1,"lat":29.5,"lng":45.75},{"name":"Kyrgyzstan","value":1,"lat":41,"lng":75},{"name":"Laos","value":1,"lat":18,"lng":105},{"name":"Latvia","value":1,"lat":57,"lng":25},{"name":"Lebanon","value":1,"lat":33.83333333,"lng":35.83333333},{"name":"Lesotho","value":1,"lat":-29.5,"lng":28.5},{"name":"Liberia","value":1,"lat":6.5,"lng":-9.5},{"name":"Libya","value":1,"lat":25,"lng":17},{"name":"Liechtenstein","value":1,"lat":47.26666666,"lng":9.53333333},{"name":"Lithuania","value":1,"lat":56,"lng":24},{"name":"Luxembourg","value":1,"lat":49.75,"lng":6.16666666},{"name":"Macedonia","value":1,"lat":41.83333333,"lng":22},{"name":"Madagascar","value":1,"lat":-20,"lng":47},{"name":"Malawi","value":1,"lat":-13.5,"lng":34},{"name":"Malaysia","value":1,"lat":2.5,"lng":112.5},{"name":"Maldives","value":1,"lat":3.25,"lng":73},{"name":"Mali","value":1,"lat":17,"lng":-4},{"name":"Malta","value":1,"lat":35.83333333,"lng":14.58333333},{"name":"Marshall Islands","value":1,"lat":9,"lng":168},{"name":"Mauritania","value":1,"lat":20,"lng":-12},{"name":"Mauritius","value":1,"lat":-20.28333333,"lng":57.55},{"name":"Mexico","value":1,"lat":23,"lng":-102},{"name":"Micronesia (Federated States Of)","value":1,"lat":6.91666666,"lng":158.25},{"name":"Moldova","value":1,"lat":47,"lng":29},{"name":"Monaco","value":1,"lat":43.73333333,"lng":7.4},{"name":"Mongolia","value":1,"lat":46,"lng":105},{"name":"Montenegro","value":1,"lat":42.5,"lng":19.3},{"name":"Morocco","value":1,"lat":32,"lng":-5},{"name":"Mozambique","value":1,"lat":-18.25,"lng":35},{"name":"Myanmar","value":1,"lat":22,"lng":98},{"name":"Myanmar (Burma)","value":1,"lat":17.1750495,"lng":95.9999652},{"name":"Namibia","value":1,"lat":-22,"lng":17},{"name":"Nauru","value":1,"lat":-0.53333333,"lng":166.91666666},{"name":"Nepal","value":1,"lat":28,"lng":84},{"name":"Netherlands","value":1,"lat":52.5,"lng":5.75},{"name":"Netherlands Antilles","value":1,"lat":12.1845,"lng":-68.6607923},{"name":"New Zealand","value":1,"lat":-41,"lng":174},{"name":"Nicaragua","value":1,"lat":13,"lng":-85},{"name":"Niger","value":1,"lat":16,"lng":8},{"name":"Nigeria","value":1,"lat":10,"lng":8},{"name":"North Korea","value":1,"lat":40,"lng":127},{"name":"North Macedonia","value":1,"lat":41.83333333,"lng":22},{"name":"Norway","value":1,"lat":62,"lng":10},{"name":"Oman","value":1,"lat":21,"lng":57},{"name":"Pakistan","value":1,"lat":30,"lng":70},{"name":"Palau","value":1,"lat":7.5,"lng":134.5},{"name":"Panama","value":1,"lat":9,"lng":-80},{"name":"Papua New Guinea","value":1,"lat":-6,"lng":147},{"name":"Paraguay","value":1,"lat":-23,"lng":-58},{"name":"Peru","value":1,"lat":-10,"lng":-76},{"name":"Philippines","value":1,"lat":13,"lng":122},{"name":"Poland","value":1,"lat":52,"lng":20},{"name":"Portugal","value":1,"lat":39.5,"lng":-8},{"name":"Puerto Rico","value":1,"lat":18.25,"lng":-66.5},{"name":"Qatar","value":1,"lat":25.5,"lng":51.25},{"name":"Romania","value":1,"lat":46,"lng":25},{"name":"Russia","value":1,"lat":60,"lng":100},{"name":"Rwanda","value":1,"lat":-2,"lng":30},{"name":"Samoa","value":1,"lat":-13.58333333,"lng":-172.33333333},{"name":"San Marino","value":1,"lat":43.76666666,"lng":12.41666666},{"name":"Sao Tome and Principe","value":1,"lat":1,"lng":7},{"name":"Saudi Arabia","value":1,"lat":25,"lng":45},{"name":"Senegal","value":1,"lat":14,"lng":-14},{"name":"Seychelles","value":1,"lat":-4.58333333,"lng":55.66666666},{"name":"Sierra Leone","value":1,"lat":8.5,"lng":-11.5},{"name":"Singapore","value":1,"lat":1.36666666,"lng":103.8},{"name":"Slovakia","value":1,"lat":48.66666666,"lng":19.5},{"name":"Slovenia","value":1,"lat":46.11666666,"lng":14.81666666},{"name":"Solomon Islands","value":1,"lat":-8,"lng":159},{"name":"Somalia","value":1,"lat":10,"lng":49},{"name":"South Africa","value":1,"lat":-29,"lng":24},{"name":"South Korea","value":1,"lat":37,"lng":127.5},{"name":"South Sudan","value":1,"lat":7,"lng":30},{"name":"Spain","value":1,"lat":40,"lng":-4},{"name":"Sri Lanka","value":1,"lat":7,"lng":81},{"name":"St. Kitts and Nevis","value":1,"lat":17.250512,"lng":-62.6725973},{"name":"St. Lucia","value":1,"lat":13.8250489,"lng":-60.975036},{"name":"St. Vincent and the Grenadines","value":1,"lat":12.90447,"lng":-61.2765569},{"name":"Sudan","value":1,"lat":15,"lng":30},{"name":"Suriname","value":1,"lat":4,"lng":-56},{"name":"Swaziland","value":1,"lat":-26.5,"lng":31.5},{"name":"Sweden","value":1,"lat":62,"lng":15},{"name":"Switzerland","value":1,"lat":47,"lng":8},{"name":"Syria","value":1,"lat":35,"lng":38},{"name":"Taiwan","value":1,"lat":23.5,"lng":121},{"name":"Tajikistan","value":1,"lat":39,"lng":71},{"name":"Tanzania","value":1,"lat":-6,"lng":35},{"name":"Thailand","value":1,"lat":15,"lng":100},{"name":"Timor-Leste","value":1,"lat":-8.83333333,"lng":125.91666666},{"name":"Togo","value":1,"lat":8,"lng":1.16666666},{"name":"Tonga","value":1,"lat":-20,"lng":-175},{"name":"Trinidad & Tobago","value":1,"lat":11,"lng":-61},{"name":"Trinidad and Tobago","value":1,"lat":11,"lng":-61},{"name":"Tunisia","value":1,"lat":34,"lng":9},{"name":"Turkey","value":1,"lat":38.9637,"lng":35.2433},{"name":"Turkmenistan","value":1,"lat":40,"lng":60},{"name":"Tuvalu","value":1,"lat":-8,"lng":178},{"name":"Uganda","value":1,"lat":1,"lng":32},{"name":"Ukraine","value":1,"lat":49,"lng":32},{"name":"United Arab Emirates","value":1,"lat":24,"lng":54},{"name":"United Kingdom","value":1,"lat":54,"lng":-2},{"name":"United States","value":1,"lat":38,"lng":-97},{"name":"Uruguay","value":1,"lat":-33,"lng":-56},{"name":"US Virgin Islands","value":1,"lat":18.3358,"lng":-64.8963},{"name":"Uzbekistan","value":1,"lat":41,"lng":64},{"name":"Vanuatu","value":1,"lat":-16,"lng":167},{"name":"Venezuela","value":1,"lat":8,"lng":-66},{"name":"Vietnam","value":1,"lat":16.16666666,"lng":107.83333333},{"name":"Wake Island","value":1,"lat":19.2960859,"lng":166.6269779},{"name":"Yemen","value":1,"lat":15,"lng":48},{"name":"Yugoslavia","value":1,"lat":-16.1479939,"lng":-68.241578},{"name":"Zambia","value":1,"lat":-15,"lng":30},{"name":"Zimbabwe","value":1,"lat":-20,"lng":30}];
+    const settings = {"colors":{"low":"#ff4444","mid":"#ffaa00","high":"#44ff44","veryHigh":"#4444ff"},"sizeScale":0.4,"showBoundaries":true,"boundaryColor":"#b13e3e","boundaryWidth":2.5,"exportTitle":"U.S. Troops Around the World"};
+    const title = settings.exportTitle && settings.exportTitle.length ? settings.exportTitle : "Visualization";
+    document.getElementById("export-title-heading").textContent = title;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.getElementById("canvas-container").appendChild(renderer.domElement);
+    const geometry = new THREE.SphereGeometry(5, 64, 64);
+    const textureLoader = new THREE.TextureLoader();
+    const earthTexture = textureLoader.load("https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg");
+    const material = new THREE.MeshPhongMaterial({ map: earthTexture, bumpScale: 0.05, specular: new THREE.Color("grey"), shininess: 5 });
+    const earth = new THREE.Mesh(geometry, material);
+    scene.add(earth);
+    const atmosphereGeometry = new THREE.SphereGeometry(5.2, 64, 64);
+    const atmosphereMaterial = new THREE.MeshBasicMaterial({ color: 0x4fc3f7, transparent: true, opacity: 0.1, side: THREE.BackSide });
+    const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+    scene.add(atmosphere);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 3, 5);
+    scene.add(directionalLight);
+
+    function latLngToVector3(lat, lng, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lng + 180) * (Math.PI / 180);
+      const x = -(radius * Math.sin(phi) * Math.cos(theta));
+      const z = (radius * Math.sin(phi) * Math.sin(theta));
+      const y = (radius * Math.cos(phi));
+      return new THREE.Vector3(x, y, z);
+    }
+
+    function computeScale(data) {
+      const values = data.map(item => item.value).filter(value => Number.isFinite(value));
+      const maxValue = Math.max(1, ...values);
+      return { maxValue, thresholds: [maxValue * 0.1, maxValue * 0.3, maxValue * 0.6] };
+    }
+
+    function hexToColor(hex) {
+      return parseInt(hex.replace("#", ""), 16);
+    }
+
+    function getColor(value, scale) {
+      if (value <= scale.thresholds[0]) return hexToColor(settings.colors.low);
+      if (value <= scale.thresholds[1]) return hexToColor(settings.colors.mid);
+      if (value <= scale.thresholds[2]) return hexToColor(settings.colors.high);
+      return hexToColor(settings.colors.veryHigh);
+    }
+
+    function getSize(value, scale) {
+      const minSize = 0.06 * settings.sizeScale;
+      const maxSize = 0.25 * settings.sizeScale;
+      const safeValue = Math.max(0, value);
+      const scaled = Math.log(safeValue + 1) / Math.log(scale.maxValue + 1);
+      return minSize + (maxSize - minSize) * scaled;
+    }
+
+    function updateLegend(scale) {
+      const formatValue = (value) => value.toLocaleString();
+      document.getElementById("legend-low").textContent = "<= " + formatValue(scale.thresholds[0]);
+      document.getElementById("legend-mid").textContent = "<= " + formatValue(scale.thresholds[1]);
+      document.getElementById("legend-high").textContent = "<= " + formatValue(scale.thresholds[2]);
+      document.getElementById("legend-very-high").textContent = "> " + formatValue(scale.thresholds[2]);
+      const legendColors = document.querySelectorAll(".legend-color");
+      if (legendColors.length >= 4) {
+        legendColors[0].style.background = settings.colors.low;
+        legendColors[1].style.background = settings.colors.mid;
+        legendColors[2].style.background = settings.colors.high;
+        legendColors[3].style.background = settings.colors.veryHigh;
+      }
+    }
+
+    function updateStats(data) {
+      const totalLocations = data.length;
+      const totalValue = data.reduce((sum, item) => sum + (Number.isFinite(item.value) ? item.value : 0), 0);
+      const largest = data.reduce((max, item) => (item.value > max.value ? item : max), { name: "-", value: -Infinity });
+      const totalLocationsEl = document.getElementById("total-countries");
+      const totalValueEl = document.getElementById("total-troops");
+      const largestEl = document.getElementById("largest-deployment");
+      if (totalLocationsEl) totalLocationsEl.textContent = totalLocations.toLocaleString();
+      if (totalValueEl) totalValueEl.textContent = totalValue.toLocaleString();
+      if (largestEl) largestEl.textContent = largest.name || "-";
+    }
+
+    function renderMarkers(data) {
+      const scale = computeScale(data);
+      updateLegend(scale);
+      updateStats(data);
+      data.forEach(item => {
+        const size = getSize(item.value, scale);
+        const markerGeometry = new THREE.SphereGeometry(size, 16, 16);
+        const markerMaterial = new THREE.MeshBasicMaterial({ color: getColor(item.value, scale), transparent: true, opacity: 0.85 });
+        const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+        const position = latLngToVector3(item.lat, item.lng, 5.1);
+        marker.position.copy(position);
+        marker.userData = item;
+        earth.add(marker);
+      });
+    }
+
+    function hexToColor(hex) {
+      return parseInt(hex.replace("#", ""), 16);
+    }
+
+    function buildBoundaryLines(geojson) {
+      const positions = [];
+      const radius = 5.02;
+      const addRing = (ring) => {
+        for (let i = 0; i < ring.length - 1; i += 1) {
+          const lng1 = ring[i][0];
+          const lat1 = ring[i][1];
+          const lng2 = ring[i + 1][0];
+          const lat2 = ring[i + 1][1];
+          const v1 = latLngToVector3(lat1, lng1, radius);
+          const v2 = latLngToVector3(lat2, lng2, radius);
+          positions.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+        }
+      };
+
+      geojson.features.forEach(feature => {
+        const geometry = feature.geometry;
+        if (!geometry) return;
+        if (geometry.type === "Polygon") {
+          geometry.coordinates.forEach(addRing);
+        } else if (geometry.type === "MultiPolygon") {
+          geometry.coordinates.forEach(polygon => polygon.forEach(addRing));
+        }
+      });
+
+      const lineGeometry = new THREE.BufferGeometry();
+      lineGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      const lineMaterial = new THREE.LineBasicMaterial({ color: hexToColor(settings.boundaryColor), transparent: true, opacity: 0.55, linewidth: settings.boundaryWidth });
+      return new THREE.LineSegments(lineGeometry, lineMaterial);
+    }
+
+    function showBoundaries() {
+      const url = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson";
+      fetch(url).then(response => response.json()).then(geojson => {
+        const boundariesLine = buildBoundaryLines(geojson);
+        earth.add(boundariesLine);
+      }).catch(() => {});
+    }
+
+    renderMarkers(deployments);
+    if (settings.showBoundaries) {
+      showBoundaries();
+    }
+    camera.position.z = 15;
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let rotation = { x: 0, y: 0 };
+
+    renderer.domElement.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    });
+
+    renderer.domElement.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+        rotation.y += deltaX * 0.005;
+        rotation.x += deltaY * 0.005;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      }
+
+      const mouse = new THREE.Vector2(
+        (e.clientX / window.innerWidth) * 2 - 1,
+        -(e.clientY / window.innerHeight) * 2 + 1
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(earth.children);
+      const tooltip = document.getElementById("tooltip");
+      if (intersects.length > 0 && intersects[0].object.userData) {
+        const data = intersects[0].object.userData;
+        tooltip.style.display = "block";
+        tooltip.style.left = (e.clientX + 15) + "px";
+        tooltip.style.top = (e.clientY + 15) + "px";
+        const displayValue = Number.isFinite(data.value) ? data.value.toLocaleString() : "N/A";
+        tooltip.innerHTML = "<strong>" + data.name + "</strong><br/>Value: " + displayValue;
+        renderer.domElement.style.cursor = "pointer";
+      } else {
+        tooltip.style.display = "none";
+        renderer.domElement.style.cursor = "default";
+      }
+    });
+
+    renderer.domElement.addEventListener("mouseup", () => { isDragging = false; });
+    renderer.domElement.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      camera.position.z += e.deltaY * 0.01;
+      camera.position.z = Math.max(8, Math.min(30, camera.position.z));
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!isDragging) {
+        rotation.y += 0.001;
+      }
+      earth.rotation.x = rotation.x;
+      earth.rotation.y = rotation.y;
+      atmosphere.rotation.x = rotation.x;
+      atmosphere.rotation.y = rotation.y;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
