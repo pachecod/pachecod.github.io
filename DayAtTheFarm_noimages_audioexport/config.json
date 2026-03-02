@@ -1,0 +1,297 @@
+{
+  "name": "DayAtTheFarmWithCaptions_Audio",
+  "created": "2025-08-11T15:45:13.312Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/room1_1754922166488.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "navigation",
+          "position": "7.46 1.11 0.59",
+          "label": "Go to the Fields",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1754923906835",
+          "audio": null
+        },
+        {
+          "id": 20,
+          "type": "text-audio",
+          "position": "6.02 3.36 -4.12",
+          "label": "Welcome to the Salt City Harvest Farm",
+          "text": "Salt City Harvest Farm grows food, culture, and community alongside the New American Community through the cross-cultural exchange of food traditions with access to farmland, education, and economic opportunities.",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/outsideambience_1754926585422.mp3"
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -2.5210142985756274,
+          "y": -86.05826082864968,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754923906835": {
+      "name": "Room 2_Field",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921139472_1754922168625.jpg",
+      "hotspots": [
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "-7.42 2.13 0.93",
+          "label": "What's That Tent?",
+          "text": "",
+          "scene": "scene_1754923906835",
+          "navigationTarget": "scene_1754923931647",
+          "audio": null
+        },
+        {
+          "id": 21,
+          "type": "text-audio",
+          "position": "-5.96 3.25 -4.24",
+          "label": "About the Farm",
+          "text": "At Salt City Harvest Farm we strive to grow more than only food. We are committed to growing culture and community as well! The Community at SCHF includes a rich cultural diversity of people from all over the world. We strive to connect people of all ages to new foods, cultures, and plants. ",
+          "scene": "scene_1754923906835",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/meadowfield2_1754926586672.mp3"
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 3.093972093706445,
+          "y": -264.7065013504391,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754923931647": {
+      "name": "Room 3_OutsideTent",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921150605_1754922170868.jpg",
+      "hotspots": [
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "2.77 2.08 -6.95",
+          "label": "Enter the Tent",
+          "text": "",
+          "scene": "scene_1754923931647",
+          "navigationTarget": "scene_1754923955689",
+          "audio": null
+        },
+        {
+          "id": 13,
+          "type": "text",
+          "position": "-7.46 2.25 -0.35",
+          "label": "Many Types of Food",
+          "text": "There are a lot of different types of crops that members plant and harvest.",
+          "scene": "scene_1754923931647",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -0.22918311805232672,
+          "y": -373.1101161891905,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754923955689": {
+      "name": "Room 4_inside_tent",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921160501_1754922173126.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "7.42 0.73 -0.64",
+          "label": "Go Back Outside",
+          "text": "",
+          "scene": "scene_1754923955689",
+          "navigationTarget": "scene_1754923931647",
+          "audio": null
+        },
+        {
+          "id": 5,
+          "type": "navigation",
+          "position": "-7.44 2.01 0.81",
+          "label": "Exit the Other Way",
+          "text": "",
+          "scene": "scene_1754923955689",
+          "navigationTarget": "scene_1754923974651",
+          "audio": null
+        },
+        {
+          "id": 14,
+          "type": "text",
+          "position": "-6.02 3.23 -4.16",
+          "label": "Tomato Time!",
+          "text": "Can you smell the tomato plants? Mmmmm! They should be ready to pick soon.",
+          "scene": "scene_1754923955689",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -7.333859777674542,
+          "y": -492.28533757640184,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754923974651": {
+      "name": "Room5_low_plants",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921170021_1754922175209.jpg",
+      "hotspots": [
+        {
+          "id": 6,
+          "type": "navigation",
+          "position": "7.49 1.75 -0.28",
+          "label": "Sit By the Pond",
+          "text": "",
+          "scene": "scene_1754923974651",
+          "navigationTarget": "scene_1754923993490",
+          "audio": null
+        },
+        {
+          "id": 15,
+          "type": "text",
+          "position": "2.73 2.00 -6.97",
+          "label": "Lots of Work to Be Done",
+          "text": "From planting to picking to harvesting and even to later cooking and selling, there's no end of work to be done here.",
+          "scene": "scene_1754923974651",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -25.553917662834728,
+          "y": -581.6667536168105,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754923993490": {
+      "name": "Room 6_pond",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921181273_1754922177688.jpg",
+      "hotspots": [
+        {
+          "id": 7,
+          "type": "navigation",
+          "position": "0.24 1.81 7.49",
+          "label": "Go to the Orchards",
+          "text": "",
+          "scene": "scene_1754923993490",
+          "navigationTarget": "scene_1754924019579",
+          "audio": null
+        },
+        {
+          "id": 16,
+          "type": "text",
+          "position": "1.04 3.03 -7.29",
+          "label": "Don't Forget to Relax",
+          "text": "There are a few places where you can relax after a long day's work, like under this tree next to a pond.",
+          "scene": "scene_1754923993490",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 0.2291831180523302,
+          "y": -805.5786599539357,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754924019579": {
+      "name": "Room 7_orchard",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921190906_1754922180211.jpg",
+      "hotspots": [
+        {
+          "id": 8,
+          "type": "navigation",
+          "position": "6.05 2.21 4.39",
+          "label": "Time to Harvest Crops",
+          "text": "",
+          "scene": "scene_1754924019579",
+          "navigationTarget": "scene_1754924057210",
+          "audio": null
+        },
+        {
+          "id": 17,
+          "type": "text",
+          "position": "-7.06 1.98 -2.51",
+          "label": "Back to Work!",
+          "text": "That was a nice rest, but we have some more work to do.",
+          "scene": "scene_1754924019579",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754924057210": {
+      "name": "Room 8_harvest",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921200790_1754922183051.jpg",
+      "hotspots": [
+        {
+          "id": 9,
+          "type": "navigation",
+          "position": "5.49 2.18 5.08",
+          "label": "Play Volleyball",
+          "text": "",
+          "scene": "scene_1754924057210",
+          "navigationTarget": "scene_1754924076004",
+          "audio": null
+        },
+        {
+          "id": 18,
+          "type": "text",
+          "position": "-6.04 2.42 -4.37",
+          "label": "Just Keep Weeding",
+          "text": "Just keep weeding. Just keep planting. Just keep picking.",
+          "scene": "scene_1754924057210",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754924076004": {
+      "name": "Room 9_volleyball",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/scene-1754921210718_1754922185484.jpg",
+      "hotspots": [
+        {
+          "id": 10,
+          "type": "navigation",
+          "position": "1.98 1.77 7.23",
+          "label": "Go to the Farm",
+          "text": "",
+          "scene": "scene_1754924076004",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 19,
+          "type": "text",
+          "position": "-3.99 2.22 -6.32",
+          "label": "Time to Play!",
+          "text": "After a long day's work, we can finally play volleyball.",
+          "scene": "scene_1754924076004",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}

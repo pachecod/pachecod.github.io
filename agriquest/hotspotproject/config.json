@@ -1,0 +1,72 @@
+{
+  "name": "hotspot-project-1754680136914",
+  "created": "2025-08-08T19:09:21.345Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "./images/room1.jpg",
+      "hotspots": [],
+      "startingPoint": null
+    },
+    "scene_1754679431529": {
+      "name": "Farm Scene 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/field3-outsidetent_1754585699988.jpg",
+      "hotspots": [],
+      "startingPoint": null
+    },
+    "scene_1754679490988": {
+      "name": "Farm Scene 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/field1_1754585695015.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "text-audio",
+          "position": "-7.43 2.08 0.91",
+          "label": "Take a walk down the path",
+          "text": "Take a wallk down the path to the tomato shelter.",
+          "scene": "scene_1754679490988",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/audio/takeawalk_1754679727528.mp3"
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -10.198648753328659,
+          "y": 80.44327443636766,
+          "z": 0
+        }
+      }
+    },
+    "scene_1754679524548": {
+      "name": "Farm Scene 3 - Inside Tomato",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/field4-insidetent_1754585704714.jpg",
+      "hotspots": [],
+      "startingPoint": null
+    },
+    "scene_1754680044710": {
+      "name": "Farm 4",
+      "image": "./images/scene_1754680044710.jpg",
+      "hotspots": [
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "-6.15 1.06 4.25",
+          "label": "Go here",
+          "text": "",
+          "scene": "scene_1754680044710",
+          "navigationTarget": "scene_1754679524548",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -9.167324722093166,
+          "y": 114.24778434908613,
+          "z": 0
+        }
+      }
+    }
+  },
+  "currentScene": "scene_1754680044710",
+  "version": "1.0"
+}

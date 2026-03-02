@@ -1,0 +1,62 @@
+/* VR Hotspot Project Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #000;
+}
+
+#project-info {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 999;
+  max-width: 300px;
+}
+
+#project-info h1 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  color: #4CAF50;
+}
+
+#project-info p {
+  margin: 0;
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* Hotspot animations */
+.clickable {
+  cursor: pointer;
+}
+
+/* Animation for gaze feedback */
+@keyframes hotspotPulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1.0; }
+  100% { opacity: 0.8; }
+}
+
+.hotspot-animation {
+  animation: hotspotPulse 2s infinite;
+}
+
+/* Navigation feedback animation */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #project-info {
+    position: static;
+    margin: 10px;
+  }
+}

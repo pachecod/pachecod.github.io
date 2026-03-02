@@ -1,0 +1,106 @@
+{
+  "name": "test360",
+  "created": "2025-08-09T13:28:01.256Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "./images/room1.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "navigation",
+          "position": "-7.35 2.90 0.74",
+          "label": "Go to Room 2",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1754745693539",
+          "audio": null
+        },
+        {
+          "id": 5,
+          "type": "audio",
+          "position": "-2.76 3.44 -6.72",
+          "label": "Audio caption",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/3_1752094730832.mp3"
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754745693539": {
+      "name": "Room 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/1_1753114668355.jpg",
+      "hotspots": [
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "-7.21 1.12 -2.02",
+          "label": "Go to room 3",
+          "text": "",
+          "scene": "scene_1754745693539",
+          "navigationTarget": "scene_1754745723053",
+          "audio": null
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754745723053": {
+      "name": "Room 3",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/2_1752094431500.jpg",
+      "hotspots": [
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "-4.23 1.85 6.19",
+          "label": "Go to room r",
+          "text": "",
+          "scene": "scene_1754745723053",
+          "navigationTarget": "scene_1754745762240",
+          "audio": null
+        },
+        {
+          "id": 6,
+          "type": "text-audio",
+          "position": "-7.39 1.85 -1.28",
+          "label": "Some text here",
+          "text": "This is some text that appears when you click.",
+          "scene": "scene_1754745723053",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/saltcityfarm_1753114699111.mp3"
+        },
+        {
+          "id": 7,
+          "type": "text",
+          "position": "-5.68 5.15 3.37",
+          "label": "A Text Annotation",
+          "text": "This is a text annotation with a lot of text.",
+          "scene": "scene_1754745723053",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null
+    },
+    "scene_1754745762240": {
+      "name": "Room 4",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/day-e2my8z27cb-1751041979881.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "-6.78 2.51 -3.08",
+          "label": "Go to room 1",
+          "text": "",
+          "scene": "scene_1754745762240",
+          "navigationTarget": "room1",
+          "audio": null
+        }
+      ],
+      "startingPoint": null
+    }
+  },
+  "currentScene": "scene_1754745723053",
+  "version": "1.0"
+}

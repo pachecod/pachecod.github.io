@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>DayAtTheFarmWithCaptions_Audio - VR Hotspot Experience</title>
+    <meta name="description" content="Interactive VR Hotspot Experience" />
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  
+  <body>
+    <div id="project-info">
+      <h1>DayAtTheFarmWithCaptions_Audio</h1>
+      <p>Interactive VR Experience • Click on hotspots to explore</p>
+    </div>
+
+    <a-scene background="color: #ECECEC" id="main-scene">
+      <a-entity
+        laser-controls="hand: right"
+        raycaster="objects: .clickable, .audio-control"
+      ></a-entity>
+      <a-entity
+        laser-controls="hand: left"
+        raycaster="objects: .clickable, .audio-control"
+      ></a-entity>
+
+      <a-assets>
+        <img id="main-panorama" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/room1_1754922166488.jpg" />
+        <img id="hotspot" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/up-arrow_1754922188081.png" />
+        <audio id="default-audio" src="./audio/music.mp3"></audio>
+        <img id="close" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/close_1754922163932.png" />
+        <img id="play" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/play_1754922165740.png" />
+        <img id="pause" src="https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/newtest/images/pause_1754922165021.png" />
+      </a-assets>
+
+      <a-entity id="hotspot-container"></a-entity>
+      <a-sky id="skybox" src="#main-panorama"></a-sky>
+
+      <a-entity id="cam" camera position="0 1.6 0" look-controls>
+        <!-- Mouse-based cursor for non-VR mode -->
+        <a-entity 
+          cursor="rayOrigin: mouse; fuse: false"
+          raycaster="objects: .clickable, .audio-control"
+          id="mouse-cursor"
+          visible="true">
+        </a-entity>
+        
+        <!-- Gaze-based cursor for VR mode -->
+        <a-entity
+          cursor="fuse: true; fuseTimeout: 1500"
+          raycaster="objects: .clickable, .audio-control"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.01"
+          material="color: white; shader: flat; opacity: 0.8"
+          id="gaze-cursor"
+          visible="true"
+          animation__mouseenter="property: geometry.radiusOuter; to: 0.015; startEvents: mouseenter; dur: 1500; easing: easeInQuad"
+          animation__mouseleave="property: geometry.radiusOuter; to: 0.01; startEvents: mouseleave; dur: 300; easing: easeOutQuad"
+          animation__click="property: scale; to: 1.2 1.2 1.2; startEvents: click; dur: 150; easing: easeInOutQuad"
+          animation__fusing="property: scale; to: 1.2 1.2 1.2; startEvents: fusing; dur: 1500; easing: easeInQuad"
+          animation__fusecomplete="property: scale; to: 1 1 1; startEvents: click; dur: 150; easing: easeOutQuad">
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

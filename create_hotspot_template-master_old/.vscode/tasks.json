@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test VR Hotspots Project",
+			"type": "shell",
+			"command": "echo \"Ready to test! Open index.html in a browser to verify the scene navigation works.\"",
+			"group": "test",
+			"problemMatcher": []
+		}
+	]
+}

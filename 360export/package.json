@@ -1,0 +1,17 @@
+{
+  "name": "360export-vr-project",
+  "version": "1.0.0",
+  "description": "VR Hotspot Project: DayAtTheFarm",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": ["vr", "aframe", "360", "panorama", "hotspot"],
+  "author": "",
+  "license": "MIT"
+} 

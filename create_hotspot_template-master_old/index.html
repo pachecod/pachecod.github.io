@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>VR Hotspot Editor</title>
+    <meta
+      name="description"
+      content="VR Hotspot Editor - Create interactive hotspots"
+    />
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+      a-text {
+        font-family: Arial;
+        font-weight: bold;
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+        20% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        80% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+      }
+
+      /* Side Panel Styles */
+      #hotspot-editor {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 350px;
+        height: 100vh;
+        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+        border-left: 2px solid #444;
+        color: white;
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+        overflow-y: auto;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .panel-header {
+        background: #333;
+        padding: 20px;
+        border-bottom: 1px solid #555;
+        text-align: center;
+      }
+
+      .panel-section {
+        padding: 20px;
+        border-bottom: 1px solid #444;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #4caf50;
+      }
+
+      .hotspot-type {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        padding: 10px;
+        border: 2px solid #555;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .hotspot-type:hover {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.1);
+      }
+
+      .hotspot-type.selected {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.2);
+      }
+
+      .hotspot-type input[type="radio"] {
+        margin-right: 10px;
+      }
+
+      .form-group {
+        margin: 15px 0;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: #333;
+        color: white;
+        box-sizing: border-box;
+      }
+
+      .form-group textarea {
+        height: 80px;
+        resize: vertical;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .btn-primary {
+        background: #4caf50;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #666;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #555;
+      }
+
+      .btn-danger {
+        background: #f44336;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #da190b;
+      }
+
+      .hotspot-list {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .hotspot-item {
+        padding: 10px;
+        margin: 5px 0;
+        background: #333;
+        border-radius: 4px;
+        border-left: 4px solid #4caf50;
+        cursor: pointer;
+      }
+
+      .hotspot-item:hover {
+        background: #444;
+      }
+
+      .hotspot-item.selected {
+        background: #444;
+        border-left-color: #ffc107;
+      }
+
+      .edit-mode-indicator {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(76, 175, 80, 0.9);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: bold;
+        z-index: 999;
+      }
+
+      .instructions {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 15px;
+        border-radius: 6px;
+        max-width: 300px;
+        z-index: 999;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Edit Mode Indicator -->
+    <div id="edit-indicator" class="edit-mode-indicator" style="display: none">
+      EDIT MODE: Click on the 360° image to place hotspot
+    </div>
+
+    <!-- Instructions -->
+    <div id="instructions" class="instructions">
+      <strong>Instructions:</strong><br />
+      1. Select hotspot type from panel<br />
+      2. Click "Add Hotspot" to enter edit mode<br />
+      3. Click on 360° image to place hotspot<br />
+      4. Use mouse to rotate view and position hotspot<br />
+      <br />
+      <strong style="color: #4caf50">💡 Pro Tip:</strong><br />
+      <span style="font-size: 12px"
+        >Current scene will be the starting point when you save/export the
+        project!</span
+      >
+    </div>
+
+    <!-- Side Panel -->
+    <div id="hotspot-editor">
+      <div class="panel-header">
+        <h2>Hotspot Editor</h2>
+      </div>
+
+      <!-- Scene Management -->
+      <div class="panel-section">
+        <div class="section-title">Scene Management</div>
+        <div class="form-group">
+          <label for="current-scene">Current Scene:</label>
+          <select
+            id="current-scene"
+            style="
+              width: 100%;
+              padding: 8px;
+              background: #333;
+              color: white;
+              border: 1px solid #555;
+              border-radius: 4px;
+            "
+          >
+            <option value="room1">Room 1</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 5px">
+          <button class="btn btn-secondary" id="add-scene" style="flex: 1">
+            Add Scene
+          </button>
+          <button class="btn btn-secondary" id="manage-scenes" style="flex: 1">
+            Manage
+          </button>
+        </div>
+        <div class="form-group">
+          <label>
+            <input
+              type="checkbox"
+              id="edit-mode-toggle"
+              checked
+              style="margin-right: 8px"
+            />
+            Edit Mode (uncheck to navigate)
+          </label>
+        </div>
+
+        <!-- Starting Point Controls -->
+        <div
+          class="form-group"
+          style="
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #555;
+          "
+        >
+          <label style="margin-bottom: 10px; color: #4caf50; font-weight: bold">
+            📍 Starting Point Controls
+          </label>
+          <div style="display: flex; gap: 5px; margin-bottom: 10px">
+            <button
+              class="btn btn-secondary"
+              id="set-starting-point"
+              style="flex: 1; font-size: 12px"
+            >
+              Set Current View
+            </button>
+            <button
+              class="btn btn-secondary"
+              id="clear-starting-point"
+              style="flex: 1; font-size: 12px"
+            >
+              Clear
+            </button>
+          </div>
+          <div
+            id="starting-point-info"
+            style="
+              font-size: 11px;
+              color: #ccc;
+              text-align: center;
+              padding: 8px;
+              background: #333;
+              border-radius: 4px;
+            "
+          >
+            No starting point set
+          </div>
+        </div>
+      </div>
+
+      <!-- Hotspot Type Selection -->
+      <div class="panel-section">
+        <div class="section-title">Hotspot Type</div>
+        <div class="hotspot-type selected" data-type="text">
+          <input type="radio" name="hotspot-type" value="text" checked />
+          <span>📝 Text Popup Only</span>
+        </div>
+        <div class="hotspot-type" data-type="audio">
+          <input type="radio" name="hotspot-type" value="audio" />
+          <span>🔊 Audio Only</span>
+        </div>
+        <div class="hotspot-type" data-type="text-audio">
+          <input type="radio" name="hotspot-type" value="text-audio" />
+          <span>🎵📝 Text + Audio</span>
+        </div>
+        <div class="hotspot-type" data-type="navigation">
+          <input type="radio" name="hotspot-type" value="navigation" />
+          <span>🚪 Navigation Portal</span>
+        </div>
+      </div>
+
+      <!-- Hotspot Properties -->
+      <div class="panel-section">
+        <div class="section-title">Hotspot Properties</div>
+        <div class="form-group">
+          <label for="hotspot-label">Label:</label>
+          <input
+            type="text"
+            id="hotspot-label"
+            placeholder="Enter hotspot label"
+          />
+        </div>
+        <div class="form-group">
+          <label for="hotspot-text">Text Content:</label>
+          <textarea
+            id="hotspot-text"
+            placeholder="Enter popup text content"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="hotspot-audio">Audio File:</label>
+          <input type="file" id="hotspot-audio" accept="audio/*" />
+        </div>
+        <div
+          class="form-group"
+          id="navigation-target-group"
+          style="display: none"
+        >
+          <label for="navigation-target">Target Scene:</label>
+          <select
+            id="navigation-target"
+            style="
+              width: 100%;
+              padding: 8px;
+              background: #333;
+              color: white;
+              border: 1px solid #555;
+              border-radius: 4px;
+            "
+          >
+            <option value="">Select target scene...</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="add-hotspot">Add Hotspot</button>
+      </div>
+
+      <!-- Existing Hotspots -->
+      <div class="panel-section">
+        <div class="section-title">Existing Hotspots</div>
+        <div class="hotspot-list" id="hotspot-list">
+          <div style="color: #888; text-align: center; padding: 20px">
+            No hotspots created yet
+          </div>
+        </div>
+        <button class="btn btn-danger" id="clear-hotspots">Clear All</button>
+      </div>
+
+      <!-- Save Template -->
+      <div class="panel-section">
+        <div class="section-title">Template</div>
+        <div class="form-group">
+          <label for="template-name">Template Name:</label>
+          <input
+            type="text"
+            id="template-name"
+            placeholder="Enter template name"
+          />
+        </div>
+        <button class="btn btn-primary" id="save-template">
+          Save Template
+        </button>
+        <button class="btn btn-secondary" id="load-template">
+          Load Template
+        </button>
+      </div>
+    </div>
+
+    <a-scene background="color: #ECECEC" id="main-scene">
+      <!-- VR Controllers -->
+      <a-entity
+        laser-controls="hand: right"
+        raycaster="objects: .clickable, .audio-control"
+      ></a-entity>
+      <a-entity
+        laser-controls="hand: left"
+        raycaster="objects: .clickable, .audio-control"
+      ></a-entity>
+
+      <a-assets>
+        <!-- Default panorama image -->
+        <img id="main-panorama" src="./images/room1.jpg" />
+        <!-- Hotspot icon -->
+        <img id="hotspot" src="./images/up-arrow.png" />
+        <!-- Default audio file -->
+        <audio id="default-audio" src="./audio/music.mp3"></audio>
+        <!-- Close icon -->
+        <img id="close" src="./images/close.png" />
+        <!-- Audio controls -->
+        <img id="play" src="./images/play.png" />
+        <img id="pause" src="./images/pause.png" />
+      </a-assets>
+
+      <!-- Container for hotspots -->
+      <a-entity id="hotspot-container"></a-entity>
+
+      <!-- 360 Sky -->
+      <a-sky id="skybox" src="#main-panorama"></a-sky>
+
+      <!-- Camera with cursor for interaction -->
+      <a-entity id="cam" camera position="0 1.6 0" look-controls>
+        <a-entity
+          id="cursor"
+          cursor="rayOrigin: mouse; fuse: false"
+          raycaster="objects: .clickable, .audio-control, #skybox"
+          position="0 0 -1.8"
+          material="shader: flat; color: #ff0000; opacity: 0.5"
+          geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.01"
+        ></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
