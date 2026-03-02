@@ -1,0 +1,317 @@
+{
+  "name": "Yuyue_Wang_Assignment_5_VR_Project",
+  "created": "2025-10-08T20:59:42.902Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/1-20250915_1757969509532.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "navigation",
+          "position": "7.14 1.51 -2.29",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1758139639671",
+          "audio": null
+        },
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "6.75 1.20 3.23",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1758140297697",
+          "audio": null
+        },
+        {
+          "id": 3,
+          "type": "text",
+          "position": "6.91 3.39 -2.32",
+          "text": "Welcome to Syracuse University!",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 1.0313240312354908,
+          "y": 986.6333232152824,
+          "z": 0
+        }
+      },
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Madelyn%20Woodson/audio/Inside-Audio_1757968037498.mp3",
+        "volume": 0.6,
+        "enabled": true
+      }
+    },
+    "scene_1758139639671": {
+      "name": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/2-20250915_1757969514872.jpg",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/2-20250915_1757969514872.jpg",
+      "hotspots": [
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "2.62 1.26 7.02",
+          "text": "",
+          "scene": "scene_1758139639671",
+          "navigationTarget": "scene_1758140297697",
+          "audio": null
+        },
+        {
+          "id": 1,
+          "type": "text",
+          "position": "1.78 2.32 7.25",
+          "text": "Have a tour of the Newhouse 2.",
+          "scene": "scene_1758139639671",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758140297697": {
+      "name": "scene 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/3-20250915_1757969520729.jpg",
+      "hotspots": [
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "7.49 1.26 -0.17",
+          "text": "",
+          "scene": "scene_1758140297697",
+          "navigationTarget": "scene_1758141807082",
+          "audio": null
+        },
+        {
+          "id": 2,
+          "type": "text",
+          "position": "7.38 1.84 -1.32",
+          "text": "Take a tour of the Neshouse!",
+          "scene": "scene_1758140297697",
+          "navigationTarget": null,
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Madelyn%20Woodson/audio/Inside-Audio_1757968037498.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1758141807082": {
+      "name": "scene 3",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/4-20250915_1757969528100.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "navigation",
+          "position": "7.26 3.25 -0.91",
+          "text": "",
+          "scene": "scene_1758141807082",
+          "navigationTarget": "scene_1758142117756",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758142117756": {
+      "name": "scene 4",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/5-20250915_1757969534627.jpg",
+      "hotspots": [
+        {
+          "id": 2,
+          "type": "navigation",
+          "position": "6.91 3.79 -1.91",
+          "text": "",
+          "scene": "scene_1758142117756",
+          "navigationTarget": "scene_1758142345365",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758142345365": {
+      "name": "scene 5",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Wenyu%20Song/images/6-20250915_1757969544464.jpg",
+      "hotspots": [
+        {
+          "id": 10,
+          "type": "navigation",
+          "position": "7.23 1.29 -1.97",
+          "text": "",
+          "scene": "scene_1758142345365",
+          "navigationTarget": "scene_1759954576741",
+          "audio": null
+        },
+        {
+          "id": 11,
+          "type": "text",
+          "position": "7.44 1.25 -0.91",
+          "text": "To the Innovation Lab.",
+          "scene": "scene_1758142345365",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -11.688339020668794,
+          "y": 3533.659905689841,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1759954576741": {
+      "name": "scene 6",
+      "image": "https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/Yuyue/images/innovationlab_1759954393511.jpg",
+      "hotspots": [
+        {
+          "id": 9,
+          "type": "text",
+          "position": "2.98 0.86 -6.84",
+          "text": "This is the Innovation Lab, which is the place where students can work on creating virtual reality projects.",
+          "scene": "scene_1759954576741",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 12,
+          "type": "navigation",
+          "position": "6.37 1.35 -3.96",
+          "text": "",
+          "scene": "scene_1759954576741",
+          "navigationTarget": "scene_1759955148653",
+          "audio": null
+        },
+        {
+          "id": 13,
+          "type": "text",
+          "position": "6.88 1.52 -3.00",
+          "text": "Click the portal to visit the Newhouse 2 lobby.",
+          "scene": "scene_1759954576741",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -12.948846169956603,
+          "y": 3562.651570123462,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1759955148653": {
+      "name": "scene 7",
+      "image": "https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/Yuyue/images/IMG-20251006-165910-511_1759955124894.jpg",
+      "hotspots": [
+        {
+          "id": 15,
+          "type": "navigation",
+          "position": "-3.41 2.40 -6.63",
+          "text": "",
+          "scene": "scene_1759955148653",
+          "navigationTarget": "scene_1759955542566",
+          "audio": null
+        },
+        {
+          "id": 16,
+          "type": "text",
+          "position": "-2.20 2.37 -7.13",
+          "text": "To the food.com!",
+          "scene": "scene_1759955148653",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -9.74028251722399,
+          "y": 3270.0993199296613,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1759955542566": {
+      "name": "scene 8",
+      "image": "https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/Yuyue/images/IMG-20251006-165908-330_1759955373533.jpg",
+      "hotspots": [
+        {
+          "id": 17,
+          "type": "navigation",
+          "position": "-7.40 2.15 1.12",
+          "text": "",
+          "scene": "scene_1759955542566",
+          "navigationTarget": "scene_1759955602112",
+          "audio": null
+        },
+        {
+          "id": 18,
+          "type": "text",
+          "position": "-7.43 2.59 -0.17",
+          "text": "Enter the food.com",
+          "scene": "scene_1759955542566",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -10.42783187138098,
+          "y": 3336.677015723863,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1759955602112": {
+      "name": "scene 9",
+      "image": "https://vlyzifpqemfanxllnmuf.supabase.co/storage/v1/object/public/files/Yuyue/images/IMG-20251006-165909-426--1-_1759955469101.jpg",
+      "hotspots": [
+        {
+          "id": 14,
+          "type": "text",
+          "position": "4.65 2.99 5.72",
+          "text": "Food.com is the hub of Newhouse: You can hang out with friends, do homework, and most of all, eat!",
+          "scene": "scene_1759955602112",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": 1.3750987083139723,
+          "y": 3103.024826869515,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}

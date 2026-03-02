@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Luxor Las Vegas Scene</title>
+    <script crossorigin="anonymous" src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  
+      <script crossorigin="anonymous">
+        // Enhanced 3D Content Script with VR rendering fixes
+        document.addEventListener('DOMContentLoaded', function() {
+          const scene = document.querySelector('a-scene');
+          if (!scene) return;
+          
+          // Force WebGL context initialization
+          const canvas = scene.canvas;
+          if (canvas) {
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+              console.log('WebGL context initialized successfully');
+              // Enable depth testing and other essential WebGL features
+              gl.enable(gl.DEPTH_TEST);
+              gl.enable(gl.CULL_FACE);
+              gl.depthFunc(gl.LEQUAL);
+            } else {
+              console.error('WebGL not supported');
+            }
+          }
+          
+          // Wait for scene to load
+          scene.addEventListener('loaded', function() {
+            console.log('A-Frame scene loaded with VR enhancements');
+            
+            // Force renderer initialization
+            const renderer = scene.renderer;
+            if (renderer) {
+              console.log('Renderer initialized');
+              // Ensure proper rendering settings
+              renderer.setSize(window.innerWidth, window.innerHeight);
+              renderer.setPixelRatio(window.devicePixelRatio);
+            }
+            
+            // Force camera initialization
+            const camera = scene.camera;
+            if (camera) {
+              console.log('Camera initialized');
+              camera.aspect = window.innerWidth / window.innerHeight;
+              camera.updateProjectionMatrix();
+            }
+            
+            // Add VR-specific optimizations
+            if (scene.hasLoaded) {
+              // Enable VR mode optimizations
+              if (scene.is('vr-mode')) {
+                console.log('VR mode detected, applying optimizations');
+              }
+            }
+            
+            // Force a render to ensure 3D content is displayed
+            setTimeout(() => {
+              if (scene.render) {
+                scene.render();
+                console.log('Forced scene render');
+              }
+            }, 100);
+          });
+          
+          // Add WebXR support detection and initialization
+          if (navigator.xr) {
+            navigator.xr.isSessionSupported('immersive-vr').then(supported => {
+              if (supported) {
+                console.log('WebXR VR supported');
+                // Add VR-specific enhancements
+                scene.setAttribute('webxr', '');
+              }
+            });
+          }
+          
+          // Handle window resize for proper rendering
+          window.addEventListener('resize', function() {
+            if (scene.camera && scene.renderer) {
+              scene.camera.aspect = window.innerWidth / window.innerHeight;
+              scene.camera.updateProjectionMatrix();
+              scene.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+          });
+          
+          // Force initial render after a short delay
+          setTimeout(() => {
+            if (scene.render) {
+              scene.render();
+              console.log('Initial forced render completed');
+            }
+          }, 500);
+        });
+        
+        // Enhanced components registration
+        if (typeof AFRAME !== 'undefined') {
+          // Scene optimizer component with rendering fixes
+          AFRAME.registerComponent('scene-optimizer', {
+            init: function() {
+              this.el.setAttribute('renderer', 'antialias: true; colorManagement: true; sortObjects: true; alpha: false; precision: high');
+              this.el.setAttribute('webxr', '');
+              
+              // Force renderer initialization
+              const self = this;
+              setTimeout(() => {
+                const renderer = self.el.renderer;
+                if (renderer) {
+                  renderer.setClearColor('#000000', 1.0);
+                  renderer.shadowMap.enabled = true;
+                  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                  console.log('Scene optimizer: Renderer enhanced');
+                }
+              }, 100);
+            }
+          });
+          
+          // Enhanced camera controls with proper initialization
+          AFRAME.registerComponent('enhanced-camera-controls', {
+            init: function() {
+              this.el.setAttribute('camera', 'active: true; fov: 80; near: 0.1; far: 1000');
+              this.el.setAttribute('look-controls', 'enabled: true; pointerLockEnabled: true');
+              this.el.setAttribute('wasd-controls', 'enabled: true; acceleration: 65; fly: false');
+              
+              // Ensure camera is properly positioned
+              const self = this;
+              setTimeout(() => {
+                const camera = self.el.getObject3D('camera');
+                if (camera) {
+                  camera.position.set(0, 1.6, 0);
+                  console.log('Enhanced camera controls: Camera positioned');
+                }
+              }, 100);
+            }
+          });
+          
+          // Enhanced model handler with rendering fixes
+          AFRAME.registerComponent('enhanced-model-handler', {
+            init: function() {
+              this.el.addEventListener('model-loaded', function() {
+                console.log('3D model loaded successfully');
+                // Force scene render after model loads
+                const scene = this.sceneEl;
+                if (scene && scene.render) {
+                  setTimeout(() => scene.render(), 50);
+                }
+              });
+              this.el.addEventListener('model-error', function() {
+                console.error('3D model failed to load');
+              });
+            }
+          });
+          
+          // Add a component to force proper 3D rendering
+          AFRAME.registerComponent('force-3d-render', {
+            init: function() {
+              const self = this;
+              const scene = this.el.sceneEl;
+              
+              // Force render every frame for the first few seconds
+              let renderCount = 0;
+              const maxRenders = 300; // 5 seconds at 60fps
+              
+              const forceRender = () => {
+                if (renderCount < maxRenders && scene && scene.render) {
+                  scene.render();
+                  renderCount++;
+                  requestAnimationFrame(forceRender);
+                }
+              };
+              
+              // Start forced rendering after scene loads
+              scene.addEventListener('loaded', () => {
+                setTimeout(forceRender, 100);
+              });
+            }
+          });
+        }
+      </script>
+    
+      <style>
+        /* Enhanced VR Compatibility Styling */
+        body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+        }
+        
+        /* VR button styling for better visibility */
+        .a-enter-vr {
+          position: fixed !important;
+          bottom: 20px !important;
+          right: 20px !important;
+          background: #4CAF50 !important;
+          color: white !important;
+          border: none !important;
+          padding: 12px 24px !important;
+          border-radius: 8px !important;
+          font-size: 16px !important;
+          font-weight: bold !important;
+          cursor: pointer !important;
+          z-index: 1000 !important;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+          transition: all 0.3s ease !important;
+        }
+        
+        .a-enter-vr:hover {
+          background: #45a049 !important;
+          transform: scale(1.05) !important;
+        }
+        
+        /* Performance optimizations for VR */
+        a-scene {
+          antialias: true !important;
+          colorManagement: true !important;
+          sortObjects: true !important;
+          background: #000000 !important;
+          canvas {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+          }
+        }
+        
+        /* Ensure proper 3D rendering context */
+        canvas {
+          display: block !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          z-index: 1 !important;
+        }
+        
+        /* Better model shadows for VR */
+        [gltf-model], [obj-model], [collada-model] {
+          cast-shadow: true !important;
+          receive-shadow: true !important;
+        }
+        
+        /* Loading indicator for 3D models */
+        .model-loading {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 20px;
+          border-radius: 10px;
+          z-index: 1000;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .model-loading .spinner {
+          width: 40px;
+          height: 40px;
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #3498db;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        /* Error state styling */
+        .model-error {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(220, 53, 69, 0.9);
+          color: white;
+          padding: 20px;
+          border-radius: 10px;
+          z-index: 1000;
+          text-align: center;
+          max-width: 300px;
+        }
+      </style>
+    </head>
+  
+  <body>
+    <a-scene webxr scene-optimizer force-3d-render background="color: #2d2d44">
+      
+      <!-- Main Luxor Pyramid (black glass) -->
+      <a-cone position="0 5 -10" radius-bottom="5" radius-top="0.01" height="10" color="#1a1a1a" shadow></a-cone>
+      
+      <!-- Light beam from pyramid top -->
+      <a-cylinder position="0 15 -10" radius="0.8" height="20" color="#ffffff" opacity="0.6" 
+                  material="transparent: true; emissive: #4db8ff; emissiveIntensity: 2"></a-cylinder>
+      
+      <!-- Bright light at pyramid peak -->
+      <a-sphere position="0 10.2 -10" radius="0.3" color="#ffffff" 
+                material="emissive: #ffffff; emissiveIntensity: 3"></a-sphere>
+      
+      <!-- Spotlight pointing up -->
+      <a-light type="spot" position="0 10 -10" rotation="-90 0 0" 
+               color="#4db8ff" intensity="2" angle="15" penumbra="0.2" 
+               distance="50"></a-light>
+      
+      <!-- Luxor Towers behind pyramid (black) -->
+      <a-box position="-6 4 -14" width="3" height="8" depth="6" color="#0a0a0a" shadow></a-box>
+      <a-box position="6 4 -14" width="3" height="8" depth="6" color="#0a0a0a" shadow></a-box>
+      
+      <!-- ALLEGIANT STADIUM (Raiders Stadium) - Larger and farther away -->
+      <!-- Main stadium dome -->
+      <a-cylinder position="-18 4 -8" radius="7" height="8" color="#2C3E50" shadow
+                  material="metalness: 0.6"></a-cylinder>
+      
+      <!-- Stadium roof (flatter dome on top) -->
+      <a-cone position="-18 8.5 -8" radius-bottom="7.5" radius-top="5.5" height="2.5" color="#34495E" 
+              material="metalness: 0.5"></a-cone>
+      
+      <!-- Stadium base/platform -->
+      <a-cylinder position="-18 0.7 -8" radius="8" height="1.4" color="#95A5A6"></a-cylinder>
+      
+      <!-- Human-sized figure (generic person) -->
+      <!-- Body -->
+      <a-cylinder position="2 0.7 -4" radius="0.15" height="1.4" color="#D2B48C"></a-cylinder>
+      <!-- Head -->
+      <a-sphere position="2 1.6 -4" radius="0.15" color="#D2B48C"></a-sphere>
+      <!-- Hat -->
+      <a-cylinder position="2 1.8 -4" radius="0.18" height="0.15" color="#F5F5DC"></a-cylinder>
+      <!-- Legs -->
+      <a-cylinder position="1.9 0.3 -4" radius="0.08" height="0.6" color="#4682B4"></a-cylinder>
+      <a-cylinder position="2.1 0.3 -4" radius="0.08" height="0.6" color="#4682B4"></a-cylinder>
+      
+      <!-- Mandalay Bay (golden tower on left) -->
+      <a-box position="-25 7 -12" width="4" height="14" depth="4" color="#D4AF37" 
+             material="metalness: 0.5"></a-box>
+      
+      <!-- New York New York (colorful towers on right) -->
+      <a-box position="12 5 -9" width="3" height="10" depth="3" color="#FFD700" shadow></a-box>
+      <a-box position="15 4 -10" width="2.5" height="8" depth="2.5" color="#FF6B6B" shadow></a-box>
+      <a-box position="10 3.5 -11" width="2" height="7" depth="2" color="#4ECDC4" shadow></a-box>
+      
+      <!-- Excalibur (castle-like structure, colorful) -->
+      <a-box position="8 3 -16" width="4" height="6" depth="4" color="#9B59B6" shadow></a-box>
+      <a-cone position="8 6.5 -16" radius-bottom="1.5" radius-top="0.1" height="2" color="#E74C3C"></a-cone>
+      
+      <!-- MGM Grand (green building) -->
+      <a-box position="-10 4 -16" width="5" height="8" depth="5" color="#2ECC71" shadow></a-box>
+      
+      <!-- Generic Strip buildings (background) -->
+      <a-box position="18 3 -20" width="3" height="6" depth="3" color="#3498DB" shadow></a-box>
+      <a-box position="-15 3.5 -22" width="3" height="7" depth="3" color="#E67E22" shadow></a-box>
+      <a-box position="0 2.5 -25" width="4" height="5" depth="4" color="#95A5A6" shadow></a-box>
+      <a-box position="22 4 -18" width="2.5" height="8" depth="2.5" color="#F39C12" shadow></a-box>
+      <a-box position="-20 3 -20" width="3" height="6" depth="3" color="#1ABC9C" shadow></a-box>
+      
+      <!-- Swimming Pool (turquoise water) -->
+      <a-plane position="6 0.1 -6" rotation="-90 0 0" width="6" height="8" color="#00CED1" 
+               material="opacity: 0.8; transparent: true"></a-plane>
+      
+      <!-- Pool deck (tan/beige concrete) -->
+      <a-plane position="6 0.05 -6" rotation="-90 0 0" width="8" height="10" color="#D2B48C"></a-plane>
+      
+      <!-- Sphinx (golden/yellow structure in front) -->
+      <a-box position="-3 2 -6" width="2" height="3" depth="3" color="#f4d03f" shadow></a-box>
+      
+      <!-- Palm trees around pool and area -->
+      <a-cylinder position="3 2 -4" radius="0.2" height="4" color="#8B4513"></a-cylinder>
+      <a-sphere position="3 4 -4" radius="0.8" color="#228B22"></a-sphere>
+      
+      <a-cylinder position="9 2 -4" radius="0.2" height="4" color="#8B4513"></a-cylinder>
+      <a-sphere position="9 4 -4" radius="0.8" color="#228B22"></a-sphere>
+      
+      <a-cylinder position="3 2 -9" radius="0.2" height="4" color="#8B4513"></a-cylinder>
+      <a-sphere position="3 4 -9" radius="0.8" color="#228B22"></a-sphere>
+      
+      <a-cylinder position="9 2 -9" radius="0.2" height="4" color="#8B4513"></a-cylinder>
+      <a-sphere position="9 4 -9" radius="0.8" color="#228B22"></a-sphere>
+      
+      <a-cylinder position="-8 2 -8" radius="0.2" height="4" color="#8B4513"></a-cylinder>
+      <a-sphere position="-8 4 -8" radius="0.8" color="#228B22"></a-sphere>
+      
+      <!-- Ground plane (darker for city streets) -->
+      <a-plane position="0 0 -10" rotation="-90 0 0" width="400" height="400" color="#3a3a3a" shadow></a-plane>
+      
+      <!-- Night sky (lighter) -->
+      <a-sky color="#1a1a3e"></a-sky>
+      
+      <!-- Ambient light for scene visibility (brighter) -->
+      <a-light type="ambient" color="#606060" intensity="0.8"></a-light>
+      
+      <!-- Additional directional light for more visibility -->
+      <a-light type="directional" position="5 10 5" intensity="0.4" color="#8080ff"></a-light>
+      
+    </a-scene>
+  </body>
+</html>

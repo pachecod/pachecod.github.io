@@ -1,0 +1,192 @@
+/* VR Hotspot Project Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #000;
+}
+
+#project-info {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 999;
+  max-width: 300px;
+}
+
+#project-info h1 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  color: #4CAF50;
+}
+
+#project-info p {
+  margin: 0;
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* Global Sound Control */
+#global-sound-control {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  margin-top: 120px; /* Below project info */
+}
+
+.sound-btn {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 2px solid #4CAF50;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  user-select: none;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.sound-btn:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: #66BB6A;
+  transform: translateY(-2px);
+}
+
+.sound-btn.muted {
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.sound-btn.muted:hover {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: #ef5350;
+}
+
+/* Audio Progress Bar */
+.audio-progress-container {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #4CAF50;
+  border-radius: 8px;
+  padding: 10px;
+  min-width: 250px;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.audio-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.progress-bar-container {
+  flex: 1;
+  position: relative;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4CAF50;
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+.progress-handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: #4CAF50;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  left: 0%;
+  transition: left 0.1s ease;
+  opacity: 0;
+}
+
+.progress-bar:hover .progress-handle {
+  opacity: 1;
+}
+
+.progress-handle:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+#current-time, #total-time {
+  min-width: 35px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hotspot animations */
+.clickable {
+  cursor: pointer;
+}
+
+/* Animation for gaze feedback */
+@keyframes hotspotPulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1.0; }
+  100% { opacity: 0.8; }
+}
+
+.hotspot-animation {
+  animation: hotspotPulse 2s infinite;
+}
+
+/* Navigation feedback animation */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #project-info {
+    position: static;
+    margin: 10px;
+  }
+  
+  #global-sound-control {
+    position: static;
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .audio-progress-container {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .audio-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .progress-bar-container {
+    width: 100%;
+  }
+}

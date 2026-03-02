@@ -1,0 +1,654 @@
+{
+  "name": "Besan_Audio_11_6_25_VR_Project",
+  "created": "2025-11-06T23:20:51.355Z",
+  "scenes": {
+    "scene1": {
+      "name": "Scene 1",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-main-entrance.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 54,
+          "type": "text",
+          "position": "-7.50 1.59 -0.08",
+          "text": "This is the main entrance of the salt farm ",
+          "scene": "scene1",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 55,
+          "type": "image",
+          "position": "0.98 1.60 -7.44",
+          "text": "",
+          "scene": "scene1",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 2.56,
+          "imageAspectRatio": 1.7777777777777777,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/Vehicle.jpg"
+        },
+        {
+          "id": 56,
+          "type": "text",
+          "position": "1.18 1.04 -7.39",
+          "text": "If you went little forward you will see this beautiful old vehicle, it look like it’s from 90s",
+          "scene": "scene1",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 5.9,
+          "popupHeight": 1.5
+        },
+        {
+          "id": 57,
+          "type": "navigation",
+          "position": "1.32 1.60 7.38",
+          "text": "",
+          "scene": "scene1",
+          "navigationTarget": "scene_1761183129119",
+          "audio": null
+        },
+        {
+          "id": 80,
+          "type": "audio",
+          "position": "7.37 0.38 0.62",
+          "text": "",
+          "scene": "scene1",
+          "navigationTarget": null,
+          "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/Introduction_1762470752106.mp3"
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -17.971652923257114,
+          "y": 191.1393841839602,
+          "z": 1.7675612818782993
+        }
+      },
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761085747627": {
+      "name": "Grape place",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-field-grape.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 5,
+          "type": "image",
+          "position": "0.95 1.60 -7.44",
+          "text": "",
+          "scene": "scene_1761085747627",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 4,
+          "imageAspectRatio": 1.3333333333333333,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Besan/images/IMG-0253_1760566055854.jpeg"
+        },
+        {
+          "id": 7,
+          "type": "text",
+          "position": "0.89 -0.65 -7.10",
+          "text": "This is a picture of grape leaves. Grape leaves are commonly found in Middle Eastern dishes. My dish, yapraq includes, grape leaves, rice, tomatoes and seasonings. ",
+          "scene": "scene_1761085747627",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 8,
+          "type": "image",
+          "position": "-7.21 0.75 1.88",
+          "text": "",
+          "scene": "scene_1761085747627",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 4,
+          "imageAspectRatio": 1.3333333333333333,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Besan/images/IMG-0383_1760566078810.jpeg"
+        },
+        {
+          "id": 9,
+          "type": "image",
+          "position": "-5.34 1.04 5.23",
+          "text": "",
+          "scene": "scene_1761085747627",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 4,
+          "imageAspectRatio": 0.75,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Besan/images/IMG-0375_1760566852128.jpeg"
+        },
+        {
+          "id": 34,
+          "type": "navigation",
+          "position": "-6.96 1.57 -2.80",
+          "text": "",
+          "scene": "scene_1761085747627",
+          "navigationTarget": "scene_1761774382710",
+          "audio": null
+        },
+        {
+          "id": 36,
+          "type": "navigation",
+          "position": "5.61 1.93 4.97",
+          "text": "",
+          "scene": "scene_1761085747627",
+          "navigationTarget": "scene_1761250794872",
+          "audio": null
+        },
+        {
+          "id": 71,
+          "type": "audio",
+          "position": "-5.88 -0.70 4.06",
+          "text": "",
+          "scene": "scene_1761085747627",
+          "navigationTarget": null,
+          "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/Grape-leaf-audio_1762296712816.mp3"
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1761170042448": {
+      "name": "Roses",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-field-fruit-trees-2.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 10,
+          "type": "image",
+          "position": "-3.41 0.74 6.62",
+          "text": "",
+          "scene": "scene_1761170042448",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 6,
+          "imageAspectRatio": 1.3333333333333333,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Amal/images/IMG-0125_1760565754838.jpeg"
+        },
+        {
+          "id": 11,
+          "type": "text",
+          "position": "-3.22 -1.94 5.77",
+          "text": "Flowers are not only a plant but can be a way humans express feelings. Some examples of this are sharing flowers with loved ones and flowers provide distinct smells that can invoke emotions.",
+          "scene": "scene_1761170042448",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 6.5,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 12,
+          "type": "image",
+          "position": "3.32 0.32 -6.60",
+          "text": "",
+          "scene": "scene_1761170042448",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 6,
+          "imageAspectRatio": 0.75,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Besan/images/IMG-0076_1760566162997.jpeg"
+        },
+        {
+          "id": 32,
+          "type": "navigation",
+          "position": "0.86 1.80 7.45",
+          "text": "",
+          "scene": "scene_1761170042448",
+          "navigationTarget": "scene_1761250794872",
+          "audio": null
+        },
+        {
+          "id": 38,
+          "type": "navigation",
+          "position": "-6.44 1.55 -3.85",
+          "text": "",
+          "scene": "scene_1761170042448",
+          "navigationTarget": "scene_1761774343071",
+          "audio": null
+        },
+        {
+          "id": 72,
+          "type": "audio",
+          "position": "3.39 -0.92 -6.20",
+          "text": "",
+          "scene": "scene_1761170042448",
+          "navigationTarget": null,
+          "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/Rose-audio_1762296714727.mp3"
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761183129119": {
+      "name": "The middle",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-path-from-field-to-pavilion.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 15,
+          "type": "text",
+          "position": "5.85 1.59 -4.70",
+          "text": "This is the middle of the farm, there is where we got out from the van in the summer and then walking to the pavilion ",
+          "scene": "scene_1761183129119",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 27,
+          "type": "navigation",
+          "position": "7.26 1.57 -1.87",
+          "text": "",
+          "scene": "scene_1761183129119",
+          "navigationTarget": "scene_1761250152206",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761250152206": {
+      "name": "The pavilion ",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-pavilion.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 16,
+          "type": "text",
+          "position": "-1.71 0.48 -7.21",
+          "text": "This is the place that we start with. We get our instructions here and then start our activities. It’s also the best place to stay dry when it rains or cool in the sun.",
+          "scene": "scene_1761250152206",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 17,
+          "type": "text",
+          "position": "4.73 -2.61 -4.02",
+          "text": "In this activity, we dug a deep hole and filled it with water. Then, we observed how long it took for the water to be obsorbed into the ground. The speed of absorption and the appearance of the water helped us identify the type of soil. For example, if the water was absorbed quickly, the soil probably is sandy.\n",
+          "scene": "scene_1761250152206",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 42,
+          "type": "navigation",
+          "position": "-4.11 1.61 -6.27",
+          "text": "",
+          "scene": "scene_1761250152206",
+          "navigationTarget": "scene_1761183129119",
+          "audio": null
+        },
+        {
+          "id": 44,
+          "type": "image",
+          "position": "6.75 0.00 -2.84",
+          "text": "",
+          "scene": "scene_1761250152206",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 4.7,
+          "imageAspectRatio": 0.75,
+          "image": null
+        },
+        {
+          "id": 45,
+          "type": "image",
+          "position": "4.39 0.06 -5.88",
+          "text": "",
+          "scene": "scene_1761250152206",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 5.17,
+          "imageAspectRatio": 0.5424107142857143,
+          "image": null
+        },
+        {
+          "id": 62,
+          "type": "navigation",
+          "position": "-6.52 1.76 -3.71",
+          "text": "",
+          "scene": "scene_1761250152206",
+          "navigationTarget": "scene_1761858662936",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761250794872": {
+      "name": "Apple feilds ",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-field-fruit-trees.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 18,
+          "type": "image",
+          "position": "5.26 1.16 -5.33",
+          "text": "",
+          "scene": "scene_1761250794872",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 5,
+          "imageAspectRatio": 0.6895238095238095,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/Apples-on-apple-tree_1761169500331.png"
+        },
+        {
+          "id": 33,
+          "type": "navigation",
+          "position": "-6.62 1.52 -3.52",
+          "text": "",
+          "scene": "scene_1761250794872",
+          "navigationTarget": "scene_1761085747627",
+          "audio": null
+        },
+        {
+          "id": 37,
+          "type": "navigation",
+          "position": "-7.26 1.56 -1.89",
+          "text": "",
+          "scene": "scene_1761250794872",
+          "navigationTarget": "scene_1761170042448",
+          "audio": null
+        },
+        {
+          "id": 49,
+          "type": "text",
+          "position": "4.96 -1.06 -4.96",
+          "text": "When we tried the apples on our first visit to the farm in July, they were bitter because they weren’t fully grown yet. The apples are fully grown in the fall, late September, early October this is when they’re sweet and you can enjoy them.",
+          "scene": "scene_1761250794872",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 5.8,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -12.341182515461409,
+          "y": 58.68582736254747,
+          "z": 2.557363453281981
+        }
+      },
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.8,
+        "enabled": true
+      }
+    },
+    "scene_1761774253164": {
+      "name": "Vegetable Garden Bed",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-vegetable-plants.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 30,
+          "type": "navigation",
+          "position": "3.53 1.77 6.61",
+          "text": "",
+          "scene": "scene_1761774253164",
+          "navigationTarget": "scene_1761774343071",
+          "audio": null
+        },
+        {
+          "id": 40,
+          "type": "navigation",
+          "position": "-6.14 1.42 4.30",
+          "text": "",
+          "scene": "scene_1761774253164",
+          "navigationTarget": "scene_1761858662936",
+          "audio": null
+        },
+        {
+          "id": 47,
+          "type": "image",
+          "position": "7.22 0.73 1.83",
+          "text": "",
+          "scene": "scene_1761774253164",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 4.93,
+          "imageAspectRatio": 0.75,
+          "image": null
+        },
+        {
+          "id": 48,
+          "type": "image",
+          "position": "6.72 0.65 -3.19",
+          "text": "",
+          "scene": "scene_1761774253164",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 4.89,
+          "imageAspectRatio": 1.3333333333333333,
+          "image": null
+        },
+        {
+          "id": 64,
+          "type": "text",
+          "position": "6.70 -1.76 -0.23",
+          "text": "In this picture we were taking the weeds out of the vegetable bed. This is so we could plant a new vegetable, we planted potatoes. We had to take the weeds out of the ground so that the potatoes could receive all of the nutrients it needs to grow.",
+          "scene": "scene_1761774253164",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 7.9,
+          "popupHeight": 2
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761774343071": {
+      "name": "Game Field",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-field-entrance-2.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 31,
+          "type": "navigation",
+          "position": "0.51 1.91 -7.48",
+          "text": "",
+          "scene": "scene_1761774343071",
+          "navigationTarget": "scene_1761170042448",
+          "audio": null
+        },
+        {
+          "id": 39,
+          "type": "navigation",
+          "position": "-2.17 1.94 7.17",
+          "text": "",
+          "scene": "scene_1761774343071",
+          "navigationTarget": "scene_1761774253164",
+          "audio": null
+        },
+        {
+          "id": 46,
+          "type": "image",
+          "position": "-7.26 0.10 1.11",
+          "text": "",
+          "scene": "scene_1761774343071",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 3.58,
+          "imageAspectRatio": 1.3333333333333333,
+          "image": null
+        },
+        {
+          "id": 66,
+          "type": "text",
+          "position": "-6.31 -2.31 1.05",
+          "text": "I had fun with my friends in here, after we were done with our work, we were able to relax here. It was nice to sit down and enjoy the fresh air. It was great thing to do after a hard days work, it kept the soul calm and lowered stress.",
+          "scene": "scene_1761774343071",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 8.6,
+          "popupHeight": 1.9
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761774382710": {
+      "name": "Peach Tree",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/Farm-peach-tree.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 35,
+          "type": "navigation",
+          "position": "4.81 1.42 5.75",
+          "text": "",
+          "scene": "scene_1761774382710",
+          "navigationTarget": "scene_1761085747627",
+          "audio": null
+        },
+        {
+          "id": 65,
+          "type": "text",
+          "position": "7.07 -0.81 -0.72",
+          "text": "This is the peach tree, we had fun here while eating the peaches, it was ready to eat in July. The skin of peach felt soft and rough when I touched it. The inside of a peach is very juicy and sweet, you could find a large seed that was very hard at the center of the peach.",
+          "scene": "scene_1761774382710",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 5.6,
+          "popupHeight": 1.8
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    },
+    "scene_1761858662936": {
+      "name": "greenhouse ",
+      "type": "image",
+      "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/images/farm-green-house-inside.jpg",
+      "videoSrc": null,
+      "videoVolume": 0.5,
+      "hotspots": [
+        {
+          "id": 50,
+          "type": "image",
+          "position": "-4.17 0.61 -6.16",
+          "text": "",
+          "scene": "scene_1761858662936",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 5,
+          "imageAspectRatio": 0.75,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Besan/images/IMG-0012_1760566033458.jpeg"
+        },
+        {
+          "id": 51,
+          "type": "image",
+          "position": "1.96 0.70 -7.18",
+          "text": "",
+          "scene": "scene_1761858662936",
+          "navigationTarget": null,
+          "audio": null,
+          "imageScale": 5,
+          "imageAspectRatio": 0.6893353941267388,
+          "image": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/Besan/images/IMG-0354_1760566018877.jpeg"
+        },
+        {
+          "id": 52,
+          "type": "text",
+          "position": "-3.81 -1.71 -5.55",
+          "text": "Tomatoes have a wonderful taste and many health benefits. They are a common ingredient and farm vegetable. tomatoes do best with specific temperature, if it’s too cold, it grows slow. If it’s too hot, flowers might drop.",
+          "scene": "scene_1761858662936",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 7,
+          "popupHeight": 2
+        },
+        {
+          "id": 53,
+          "type": "text",
+          "position": "1.54 -1.97 -6.41",
+          "text": "I picked tomato because it is a very special vegetable. Everyone uses tomatoes in their everyday dishes but, they don’t always appreciate it as a primary vegetable. \nI also picked tomato because it’s a very important part of my cultural cuisine. The dish that I picked is yapraq this is my favorite dish and the tomato is key ingredient.",
+          "scene": "scene_1761858662936",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 6,
+          "popupHeight": 2
+        },
+        {
+          "id": 63,
+          "type": "navigation",
+          "position": "1.09 1.26 7.41",
+          "text": "",
+          "scene": "scene_1761858662936",
+          "navigationTarget": "scene_1761774253164",
+          "audio": null
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -11.242125241884198,
+          "y": 98.25469156364905,
+          "z": 1.991234675923803
+        }
+      },
+      "globalSound": {
+        "audio": "https://slrztqodtgjgexmeihdc.supabase.co/storage/v1/object/public/files/common-assets/audio/meadow-with-faraway-cock-18640_1762469092898.mp3",
+        "volume": 0.5,
+        "enabled": true
+      }
+    }
+  },
+  "currentScene": "scene1",
+  "version": "1.0"
+}

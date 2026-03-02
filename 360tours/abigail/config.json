@@ -1,0 +1,611 @@
+{
+  "name": "Abigail_Luca_VR_Project",
+  "created": "2025-10-08T20:51:34.603Z",
+  "scenes": {
+    "room1": {
+      "name": "Room 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Noah%20Amaral/images/IMG-20250915-163710-125_1757969510140.jpg",
+      "hotspots": [
+        {
+          "id": 1,
+          "type": "text",
+          "position": "5.23 1.22 5.36",
+          "text": "The S.I. Newhouse School of Public Communications is a highly regarded communication school at Syracuse University, known for its cutting-edge facilities and professional programs in advertising, broadcast and digital journalism, public relations, and other fields. Founded in 1934, it is one of the oldest journalism programs in the nation and offers both undergraduate and graduate degrees, preparing ethical communicators for careers in the media.",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 7,
+          "popupHeight": 2
+        },
+        {
+          "id": 2,
+          "type": "text",
+          "position": "-6.09 5.95 -0.41",
+          "text": "Crouse College, a historic building that houses the College of Visual and Performing Arts (VPA) and the Setnor School of Music. It was built in the late 1880s as a memorial to John Crouse's wife and is known for its Romanesque Revival architecture, including a bell tower, stained glass windows, and the Setnor Auditorium with its 3,823-pipe Holtkamp Organ.",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 6.4,
+          "popupHeight": 1.9
+        },
+        {
+          "id": 3,
+          "type": "navigation",
+          "position": "4.86 0.90 5.67",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": "scene_1758140053265",
+          "audio": null
+        },
+        {
+          "id": 5,
+          "type": "audio",
+          "position": "6.03 -0.81 3.76",
+          "text": "",
+          "scene": "room1",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Leah%20Ross/audio/S.I.-Newhouse-School-of-Public-Communications---Syracuse-University_1757968759651.mp3"
+        }
+      ],
+      "startingPoint": {
+        "rotation": {
+          "x": -2.291831180523255,
+          "y": -997.7487044408119,
+          "z": 0
+        }
+      },
+      "globalSound": null
+    },
+    "scene_1758140053265": {
+      "name": "Outside Newhouse",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163905-793_1757969698220.jpg",
+      "hotspots": [
+        {
+          "id": 6,
+          "type": "audio",
+          "position": "4.76 -0.70 5.32",
+          "text": "",
+          "scene": "scene_1758140053265",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Leah%20Ross/audio/S.I.-Newhouse-School-of-Public-Communications---Syracuse-University_1757968759651.mp3"
+        },
+        {
+          "id": 7,
+          "type": "text",
+          "position": "-2.77 2.60 6.90",
+          "text": "Newhouse 1 is the original building for Syracuse University's S.I. Newhouse School of Public Communications, an architectural landmark designed by I.M. Pei that was dedicated in 1964 with a gift from Samuel I. Newhouse. Named for the publishing magnate, the cruciform-shaped building houses classrooms, studios, and the Dedication Hall, a central space with a large skylight.",
+          "scene": "scene_1758140053265",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 5.2,
+          "popupHeight": 1.9
+        },
+        {
+          "id": 8,
+          "type": "text",
+          "position": "0.13 1.99 7.49",
+          "text": "Newhouse 2 is a building within Syracuse University's S.I. Newhouse School of Public Communications, designed for broadcast and film students and completed in 1974. It houses a state-of-the-art television studio, production control rooms, audio equipment, and serves as a hub for student innovation in media, a key component of the Newhouse Communications Complex",
+          "scene": "scene_1758140053265",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4.3,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 9,
+          "type": "text",
+          "position": "3.78 1.96 6.47",
+          "text": "Newhouse 3 is the third and newest building that houses the S.I. Newhouse School of Public Communications at Syracuse University. This 85,500-square-foot, glass-wrapped building, completed in 2007 with a gift from the Newhouse family, connects the existing Newhouse I and II buildings, completing the \"campus-within-a-campus\" and providing modern spaces for students and faculty. It features a distinctive curvilinear glass facade, a three-story atrium, a Collaborative Media Room, a retractable-seat auditorium, the Sports Media Center, and the Career Development Center",
+          "scene": "scene_1758140053265",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 7.6,
+          "popupHeight": 2.3
+        },
+        {
+          "id": 11,
+          "type": "navigation",
+          "position": "6.87 2.88 -2.72",
+          "text": "",
+          "scene": "scene_1758140053265",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 12,
+          "type": "navigation",
+          "position": "-0.18 1.33 7.49",
+          "text": "",
+          "scene": "scene_1758140053265",
+          "navigationTarget": "scene_1758141315671",
+          "audio": null
+        },
+        {
+          "id": 25,
+          "type": "navigation",
+          "position": "4.58 1.59 5.94",
+          "text": "",
+          "scene": "scene_1758140053265",
+          "navigationTarget": "scene_1758142235082",
+          "audio": null
+        },
+        {
+          "id": 26,
+          "type": "navigation",
+          "position": "-2.79 2.07 6.95",
+          "text": "",
+          "scene": "scene_1758140053265",
+          "navigationTarget": "scene_1758141468332",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758141315671": {
+      "name": "Newhouse Patio",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Noah%20Amaral/images/IMG-20250915-163712-258_1757969512949.jpg",
+      "hotspots": [
+        {
+          "id": 13,
+          "type": "navigation",
+          "position": "-7.38 2.91 0.26",
+          "text": "",
+          "scene": "scene_1758141315671",
+          "navigationTarget": "room1",
+          "audio": null
+        },
+        {
+          "id": 14,
+          "type": "navigation",
+          "position": "-3.30 1.66 6.74",
+          "text": "",
+          "scene": "scene_1758141315671",
+          "navigationTarget": "scene_1758140053265",
+          "audio": null
+        },
+        {
+          "id": 15,
+          "type": "audio",
+          "position": "6.63 0.59 -3.37",
+          "text": "",
+          "scene": "scene_1758141315671",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Madelyn%20Woodson/audio/Inside-Audio_1757968037498.mp3"
+        },
+        {
+          "id": 16,
+          "type": "navigation",
+          "position": "6.24 1.88 -4.16",
+          "text": "",
+          "scene": "scene_1758141315671",
+          "navigationTarget": "scene_1758141848035",
+          "audio": null
+        },
+        {
+          "id": 17,
+          "type": "navigation",
+          "position": "7.41 2.26 0.97",
+          "text": "",
+          "scene": "scene_1758141315671",
+          "navigationTarget": "scene_1758141468332",
+          "audio": null
+        },
+        {
+          "id": 27,
+          "type": "navigation",
+          "position": "1.23 3.92 -7.03",
+          "text": "",
+          "scene": "scene_1758141315671",
+          "navigationTarget": "scene_1758142235082",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758141468332": {
+      "name": "Inside Newhouse 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Noah%20Amaral/images/IMG-20250915-163714-345_1757969515937.jpg",
+      "hotspots": [
+        {
+          "id": 18,
+          "type": "navigation",
+          "position": "7.18 1.81 2.15",
+          "text": "",
+          "scene": "scene_1758141468332",
+          "navigationTarget": "scene_1758141315671",
+          "audio": null
+        },
+        {
+          "id": 19,
+          "type": "text",
+          "position": "-7.45 0.81 -0.42",
+          "text": "Vietnam Nam War Newhouse stairs\" most likely refers to the historic 1964 speech by President Lyndon B. Johnson given on the steps of the S.I. Newhouse School of Public Communications at Syracuse University. This speech was a pivotal moment in the escalation of the Vietnam War. ",
+          "scene": "scene_1758141468332",
+          "navigationTarget": null,
+          "audio": null
+        },
+        {
+          "id": 28,
+          "type": "navigation",
+          "position": "-4.04 1.45 6.32",
+          "text": "",
+          "scene": "scene_1758141468332",
+          "navigationTarget": "scene_1758141664671",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758141664671": {
+      "name": "Newhouse bridge ",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Noah%20Amaral/images/IMG-20250915-163716-393_1757969517981.jpg",
+      "hotspots": [
+        {
+          "id": 20,
+          "type": "navigation",
+          "position": "-1.64 1.23 7.31",
+          "text": "",
+          "scene": "scene_1758141664671",
+          "navigationTarget": "scene_1758141468332",
+          "audio": null
+        },
+        {
+          "id": 21,
+          "type": "text",
+          "position": "-4.67 0.77 5.81",
+          "text": "The Mower Passage is a sunlit, indoor walkway between Newhouse I and Newhouse II at Syracuse University's S.I. Newhouse School of Public Communications. Funded by alumni Eric and Judy Mower, it serves as a gathering spot for students to study, collaborate, and work.",
+          "scene": "scene_1758141664671",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 5.2,
+          "popupHeight": 2
+        },
+        {
+          "id": 22,
+          "type": "audio",
+          "position": "-5.20 1.02 5.37",
+          "text": "",
+          "scene": "scene_1758141664671",
+          "navigationTarget": null,
+          "audio": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/audio/Syracuse-University-3_1757970149336.mp3"
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758141848035": {
+      "name": "Inside Newhouse 2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163810-622_1757969700663.jpg",
+      "hotspots": [
+        {
+          "id": 4,
+          "type": "navigation",
+          "position": "-6.84 0.11 -2.68",
+          "text": "",
+          "scene": "scene_1758141848035",
+          "navigationTarget": "scene_1758141315671",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1758142235082": {
+      "name": "Inside Newhouse 3",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Qitian%20Jiang/images/IMG-20250915-163853-585_1757969693724.jpg",
+      "hotspots": [
+        {
+          "id": 23,
+          "type": "navigation",
+          "position": "-5.77 0.50 4.66",
+          "text": "",
+          "scene": "scene_1758142235082",
+          "navigationTarget": "scene_1758141315671",
+          "audio": null
+        },
+        {
+          "id": 46,
+          "type": "navigation",
+          "position": "-0.35 -1.44 -6.85",
+          "text": "",
+          "scene": "scene_1758142235082",
+          "navigationTarget": "scene_1759955547901",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759954331646": {
+      "name": "outside of bridge into NH2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165900-800_1759953574613.jpg",
+      "hotspots": [
+        {
+          "id": 31,
+          "type": "navigation",
+          "position": "-7.46 0.82 -0.03",
+          "text": "",
+          "scene": "scene_1759954331646",
+          "navigationTarget": "scene_1758141664671",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759954401639": {
+      "name": "NH bridge into NH1 ",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165903-466--1-_1759953958824.jpg",
+      "hotspots": [
+        {
+          "id": 32,
+          "type": "navigation",
+          "position": "-7.48 1.12 0.01",
+          "text": "",
+          "scene": "scene_1759954401639",
+          "navigationTarget": "scene_1758141468332",
+          "audio": null
+        },
+        {
+          "id": 33,
+          "type": "navigation",
+          "position": "7.50 1.62 0.20",
+          "text": "",
+          "scene": "scene_1759954401639",
+          "navigationTarget": "scene_1758141664671",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759954540353": {
+      "name": "NH1 stairs",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165905-738_1759954509301.jpg",
+      "hotspots": [
+        {
+          "id": 35,
+          "type": "navigation",
+          "position": "-7.16 -0.60 0.46",
+          "text": "",
+          "scene": "scene_1759954540353",
+          "navigationTarget": "scene_1758141468332",
+          "audio": null
+        },
+        {
+          "id": 36,
+          "type": "navigation",
+          "position": "-7.48 1.62 0.56",
+          "text": "",
+          "scene": "scene_1759954540353",
+          "navigationTarget": "scene_1758141315671",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759954968838": {
+      "name": "going in to food.com",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165907-240_1759954914089.jpg",
+      "hotspots": [
+        {
+          "id": 37,
+          "type": "navigation",
+          "position": "-7.38 0.58 0.84",
+          "text": "",
+          "scene": "scene_1759954968838",
+          "navigationTarget": "scene_1759955067615",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759955067615": {
+      "name": "food.com 1",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165908-330_1759955031682.jpg",
+      "hotspots": [
+        {
+          "id": 38,
+          "type": "navigation",
+          "position": "-0.60 2.03 7.46",
+          "text": "",
+          "scene": "scene_1759955067615",
+          "navigationTarget": "scene_1759954968838",
+          "audio": null
+        },
+        {
+          "id": 59,
+          "type": "navigation",
+          "position": "-7.46 1.91 0.75",
+          "text": "",
+          "scene": "scene_1759955067615",
+          "navigationTarget": "scene_1759955242860",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759955242860": {
+      "name": "in food.com court",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165909-426_1759955177389.jpg",
+      "hotspots": [
+        {
+          "id": 40,
+          "type": "navigation",
+          "position": "7.35 1.24 1.45",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": "scene_1759955067615",
+          "audio": null
+        },
+        {
+          "id": 47,
+          "type": "weblink",
+          "position": "2.91 2.62 6.84",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://campusdining.syr.edu/wp-content/uploads/BREAKFAST.pdf",
+          "weblinkTitle": "Yella's Breakfast Menu"
+        },
+        {
+          "id": 48,
+          "type": "weblink",
+          "position": "0.96 2.47 7.39",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://campusdining.syr.edu/wp-content/uploads/LUNCH.pdf",
+          "weblinkTitle": "Yella's Lunch Menu"
+        },
+        {
+          "id": 49,
+          "type": "text",
+          "position": "1.95 3.79 6.90",
+          "text": "Yella's milkshakes, sandwiches & burgers ",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 54,
+          "type": "weblink",
+          "position": "-7.36 1.71 1.41",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://campusdining.syr.edu/wp-content/uploads/SYRACUSE-MILKSHAKE-MENU.pdf",
+          "weblinkTitle": "Yella's Milkshakes"
+        },
+        {
+          "id": 55,
+          "type": "weblink",
+          "position": "3.66 -0.62 6.16",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://campusdining.syr.edu/wp-content/uploads/SYRACUSE-MILKSHAKE-MENU.pdf",
+          "weblinkTitle": "Yella's Milkshakes"
+        },
+        {
+          "id": 56,
+          "type": "weblink",
+          "position": "-4.54 2.59 5.89",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "weblinkUrl": "https://campusdining.syr.edu/wp-content/uploads/ChoolaahX_Menu_Dec24_SYR_01-07-2025.png",
+          "weblinkTitle": "Choolaah's Bowls"
+        },
+        {
+          "id": 57,
+          "type": "text",
+          "position": "-5.34 2.80 5.12",
+          "text": "Choolaah's Indain BBQ",
+          "scene": "scene_1759955242860",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        },
+        {
+          "id": 58,
+          "type": "navigation",
+          "position": "-7.07 1.91 -2.49",
+          "text": "",
+          "scene": "scene_1759955242860",
+          "navigationTarget": "scene_1759955464964",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759955368390": {
+      "name": "main food.com",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165910-511_1759955329431.jpg",
+      "hotspots": [
+        {
+          "id": 42,
+          "type": "navigation",
+          "position": "-3.19 1.89 -6.78",
+          "text": "",
+          "scene": "scene_1759955368390",
+          "navigationTarget": "scene_1759955067615",
+          "audio": null
+        },
+        {
+          "id": 60,
+          "type": "text",
+          "position": "7.43 0.68 0.40",
+          "text": "\"Food.com\" is the unofficial nickname for a campus dining location at Syracuse University, located in the Newhouse Complex. This cafe serves as a space for various food options and a social area for students to hangout or study. ",
+          "scene": "scene_1759955368390",
+          "navigationTarget": null,
+          "audio": null,
+          "popupWidth": 4,
+          "popupHeight": 2.5
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759955464964": {
+      "name": "food.com2",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/IMG-20251006-165911-632_1759955424019.jpg",
+      "hotspots": [
+        {
+          "id": 43,
+          "type": "navigation",
+          "position": "-7.42 0.95 -0.87",
+          "text": "",
+          "scene": "scene_1759955464964",
+          "navigationTarget": "scene_1759955368390",
+          "audio": null
+        },
+        {
+          "id": 45,
+          "type": "navigation",
+          "position": "4.71 1.19 -5.83",
+          "text": "",
+          "scene": "scene_1759955464964",
+          "navigationTarget": "scene_1759955547901",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    },
+    "scene_1759955547901": {
+      "name": "into NH3",
+      "image": "https://hkfsgnludtapbbtsacwd.supabase.co/storage/v1/object/public/files/Abigail%20Luca/images/nh3lobby_1759955524828.jpg",
+      "hotspots": [
+        {
+          "id": 44,
+          "type": "navigation",
+          "position": "-7.09 -0.08 -1.77",
+          "text": "",
+          "scene": "scene_1759955547901",
+          "navigationTarget": "scene_1759955464964",
+          "audio": null
+        }
+      ],
+      "startingPoint": null,
+      "globalSound": null
+    }
+  },
+  "currentScene": "room1",
+  "version": "1.0"
+}

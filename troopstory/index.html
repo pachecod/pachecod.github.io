@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <title>U.S. Military Presence Worldwide Since 1950</title>
+    
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -11,43 +12,116 @@
       crossorigin="anonymous"
     />
 
-    <title>U.S. Troop Deployment Worldwide Since 1950</title>
-
-    <link
-      rel="canonical"
-      href="https://getbootstrap.com/docs/5.0/examples/starter-template/"
-    />
-
-    <link
-      href="http://pachecod.github.io/bootstrap/assets/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="main.css" />
-
     <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        padding-top: 70px;
       }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+      
+      .navbar {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      }
+      
+      .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 0 60px;
+        margin-bottom: 40px;
+      }
+      
+      .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+      
+      .hero-section p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      
+      .region-nav {
+        background: #f8f9fa;
+        padding: 30px 0;
+        margin-bottom: 40px;
+      }
+      
+      .region-nav .btn {
+        margin: 5px;
+        font-weight: 500;
+      }
+      
+      .main-content {
+        margin-bottom: 60px;
+      }
+      
+      .region-section {
+        padding: 60px 0;
+        border-top: 3px solid #e9ecef;
+      }
+      
+      .region-section h2 {
+        color: #2a5298;
+        font-weight: 700;
+        margin-bottom: 30px;
+      }
+      
+      .chart-container {
+        margin: 30px 0;
+      }
+      
+      .return-top {
+        display: inline-block;
+        margin-top: 30px;
+        color: #667eea;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      
+      .return-top:hover {
+        color: #764ba2;
+      }
+      
+      .bylines-section {
+        background: #f8f9fa;
+        padding: 60px 0;
+        margin-top: 60px;
+      }
+      
+      .footer {
+        background: #2a5298;
+        color: white;
+        padding: 30px 0;
+        text-align: center;
+      }
+      
+      .footer .small {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+      
+      /* Regional section layout styles */
+      .region-section .row.mb-4 {
+        margin-bottom: 3rem !important;
+      }
+      
+      @media (max-width: 767px) {
+        .region-section .col-12.order-1 {
+          margin-bottom: 1.5rem;
         }
       }
     </style>
-
-    <link href="starter-template.css" rel="stylesheet" />
+    
   </head>
+  
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="https://pachecod.github.io">HOME</a>
-
+        
         <button
           class="navbar-toggler"
           type="button"
@@ -59,257 +133,271 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-
+        
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <!-- ... -->
-            <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="http://link">
-                Spring 2025 Class Exercise
-              </a>
+          <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="#top">Fall 2025 Class Exercise</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About This Project</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <main class="container">
-      <div class="starter-template text-left py-5 px-3">
-        <!-- Top anchor for "Return to Top" links -->
-        <a id="top"></a>
-
-        <br/>
-
+    <div class="hero-section" id="top">
+      <div class="container text-center">
+        <h1>U.S. Military Presence Worldwide Since 1950</h1>
         <p>
-          <iframe title="U.S. Troops Deployed Overseas, 1950-2024" aria-label="Interactive line chart" id="datawrapper-chart-TIPNw" src="https://datawrapper.dwcdn.net/TIPNw/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="420" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-        </p>
-
-        <p>
-          Ever since World War II, the United States has maintained a significant military presence in countries across the world. The Korean War in the early 1950s saw a dramatic surge in troop levels, followed by sustained high deployments during the Vietnam War in the 1960s. After the U.S. withdrawal from Vietnam, overseas deployments declined in the 1970s but remained steady through the Cold War as the U.S. maintained a global military presence. The early 1990s brought another spike during the Gulf War, followed by a new era of large-scale deployments after 2001, driven by the wars in Afghanistan and Iraq. In the past decade, troop levels have gradually stabilized at lower levels, reflecting a shift away from prolonged ground wars toward a more strategic global military posture. This historical ebb and flow of U.S. military presence abroad tells a broader story of war, diplomacy, and America's evolving role on the world stage.
-        </p>
-
-        <p>Following is an analysis of where troops have been deployed in specific locations, and the reasons for their presence. The data for these graphs come from <a href="https://cran.r-project.org/web/packages/troopdata/readme/README.html">Troop Data</a>, which is maintained by Michael A. Allen, Michael E. Flynn, and Carla Martinez Machain. Their data comes from 2022. The deployment data were initially compiled by Tim Kane using information obtained from the U.S. Department of Defense's Defense Manpower Data Center (DMDC). The original data ended in 2005 and we have updated it to run through 2024.</p>
-
-
-        <p>This is a project of the S.I. Newhouse school's Data and Digital Journalism class taught by <a href="https://newhouse.syracuse.edu/people/dan-pacheco">Prof. Dan Pacheco. See the code for this page on its
-          <a
-            href="https://github.com/pachecod/pachecod.github.io/blob/master/troopstory/index.html"
-          >
-            Github repository.
-          </a></a></p>
-
-        
-
-        <div>
-          <a href="#antarctica">
-            <button type="button" class="btn btn-outline-primary">
-              Antarctica
-            </button>
-          </a>
-          <a href="#eastasia">
-            <button type="button" class="btn btn-outline-primary">
-              East Asia
-            </button>
-          </a>
-          <a href="#europe">
-            <button type="button" class="btn btn-outline-secondary">
-              Europe
-            </button>
-          </a>
-          <a href="#latinamerica">
-            <button type="button" class="btn btn-outline-success">
-              Latin America
-            </button>
-          </a>
-          <a href="#middleeast">
-            <button type="button" class="btn btn-outline-danger">
-              Middle East
-            </button>
-          </a>
-          <a href="#southasia">
-            <button type="button" class="btn btn-outline-warning">
-              South Asia
-            </button>
-          </a>
-          <a href="#subsahara">
-            <button type="button" class="btn btn-outline-warning">
-              Africa
-            </button>
-          </a>
-        </div>
-
-        <hr class="my-5" />
-
-        <h2 id="antarctica">Antarctica</h2>
-
-        <p>
-          Since the mid 1950’s, the United States has engaged in a number of expeditions with the goal of scientific research and exploration of Antarctica, code named, Operation Deep Freeze. Starting in 1955 and ending in 1956, Deep Freeze 1 paved the way for future operations, establishing the first permanent research station. This operation was actually filmed by the U.S. Navy and by Walt Disney Studios, leading to Walt Disney himself becoming an honorary member of the expedition. <a href="https://s3.amazonaws.com/Antarctica/POB/POBvIIn5.pdf#page=31">Source.</a> 
-          </p>
-
-          <p>
-          Following the first expedition, Operation Deep Freeze 2 and 3 both resulted in expanded scientific research and infrastructure in the area, with a specific focus on the construction of the South Pole Station. Ultimately, most of the military activity within the area over the last decade can be summed up to transportation and logistical services for the scientists involved. Since then, the National Science Foundation and U.S. government turned it over to contractors where the stations produced by Deep Freeze now live. There is not a lot of available information on these operations, or American troops in Antarctica as a whole.
-
-        </p>
-
-        <p>
-          <!-- PLACE ANTARCTICA CONTENT HERE -->
-
-          <iframe title="American Troops Deployed In Antarctica 1950-1997" aria-label="Interactive line chart" id="datawrapper-chart-J6Clw" src="https://datawrapper.dwcdn.net/J6Clw/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="395" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-
-
-          <p/>
-
-          <iframe title="U.S. Troops in Antarctica from 1956-1971" aria-label="Interactive line chart" id="datawrapper-chart-Ay85w" src="https://datawrapper.dwcdn.net/Ay85w/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="424" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-
-          <iframe title="Operation Deep Freeze Stations" aria-label="Locator map" id="datawrapper-chart-Ukw3I" src="https://datawrapper.dwcdn.net/Ukw3I/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="520" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-</script>
-
-          
-
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="eastasia">East Asia & Pacific</h2>
-
-
-        <p>There was a spike in troops during 1955, this is mainly due to the aftermath of World War 2, the US still deployed troops into Japan during reconstruction. There were also spikes in 2010 because of the 1960 treaty of mutual cooperation and security . In 2009, responding to North Korea’s Threats: North Korea conducted nuclear tests and missile launches in 2009, heightening regional tensions. The U.S. bolstered its forces in Japan to strengthen deterrence against North Korea. After 2009, the U.S. was shifting its military focus toward the Asia-Pacific region, aiming to maintain stability and reinforce its influence in East Asia.
-        </p>
-
-
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <iframe title="Number of U.S. Troops in Japan from 1950-Present " aria-label="Interactive line chart" id="datawrapper-chart-5UzD4" src="https://datawrapper.dwcdn.net/5UzD4/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="395" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-
-
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="europe">Europe & Central Asia</h2>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <iframe title="Troops in Sweden 1950-2024" aria-label="Interactive line chart" id="datawrapper-chart-7Sgnk" src="https://datawrapper.dwcdn.net/7Sgnk/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-            <br/>          
-
-          <iframe title="US Troops in Russia Since 1950" aria-label="Interactive line chart" id="datawrapper-chart-orHMX" src="https://datawrapper.dwcdn.net/orHMX/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="420" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-
-          <iframe title="U.S. Troops in Iceland Since 1950" aria-label="Interactive line chart" id="datawrapper-chart-Gnj89" src="https://datawrapper.dwcdn.net/Gnj89/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="424" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="latinamerica">Latin America & Caribbean</h2>
-        
-        <p>
-          The US has had a large amount of variance in the amount of troop deployments to Puerto Rico over the last 70 years. During the early 1950s, the Puerto Rican Nationalist Party held an insurgency, which led to the US having a need for there to be large amounts of troops in the region. However, deployments to Puerto Rico steadily decreased over time, falling down to under 200 troops that were deployed under the Bush administration in 2007. President Obama sent troops back to the island, reportedly as part of efforts to fight drug smuggling. Troop deployments then decreased as President Biden limited military spending in the 2020s.
-
-        </p>
-        
-        <iframe title="Puerto Rico Troop Deployments" aria-label="Interactive line chart" id="datawrapper-chart-nePp7" src="https://datawrapper.dwcdn.net/nePp7/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="420" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();</script>
-
-          <iframe title="Puerto Rican Largest Insurgency Locations" aria-label="Locator map" id="datawrapper-chart-Zn1Ij" src="https://datawrapper.dwcdn.net/Zn1Ij/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="519" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          
-          
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="middleeast">Middle East & North Africa</h2>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-
-          <iframe title="US troop deployment in Saudi Arabia" aria-label="Interactive line chart" id="datawrapper-chart-d8Oep" src="https://datawrapper.dwcdn.net/d8Oep/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="395" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="southasia">South Asia</h2>
-
-        <iframe title="Number of Troops Deployed in South Asia in 2010" aria-label="Map" id="datawrapper-chart-IkSTN" src="https://datawrapper.dwcdn.net/IkSTN/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="777" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-
-        <p>
-          This chart shows the number of U.S. troops deployed in South Asia between the years 1950 and 2024. Before the year 2000, there were less than 700 troops total in the region. As a result of the 9/11 terrorist attacks in 2001, U.S. foreign policy under President Bush changed drastically. At the start of 2002, the number of troops in South Asia jumped by 9,000, with 9,647 total, with the 9,000 additional troops specifically deployed to Afghanistan. Similarly, at the start of the next year (2003), Bush deployed an additional 700 troops to Afghanistan and over 500 troops to the U.S.-U.K. joint military base on the island of Diego Garcia.</p>
-          <p>As the war progressed, the region’s overall troops continued to grow at a steady pace; the majority of them however being deployed to Afghanistan in specific. After an executive order from Obama in 2009, South Asia reached its peak number of total deployments in 2010 at 99,369- of those troops 99,279 of them were sent to Afghanistan.  As Obama began his second term in office, the total troops began to decrease, going all the way down to just over 17,000. Finally, as Biden entered office this number diminished, reaching only six troops in 2021 and zero in 2022.</p>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          
-
-          <iframe title="Troops in South Asia 1950-2024" aria-label="Column Chart" id="datawrapper-chart-FVdJz" src="https://datawrapper.dwcdn.net/FVdJz/5/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="472" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-
-          <iframe title="Troops deployed in Afghanistan 1950-2024" aria-label="Column Chart" id="datawrapper-chart-RLeGh" src="https://datawrapper.dwcdn.net/RLeGh/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="450" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-       
-          
-          
-          
-          
-
-          <a href="#top">Return to Top</a>
-        </p>
-
-        <hr class="my-5" />
-
-        <h2 id="subsahara">Sub-Saharan Africa</h2>
-
-        <p>
-          The United States for the most part has avoided conflict in Sub Saharan Africa. There is one primary spike in U.S. troops being sent into the region, which is when the U.S. attempted to intervene in the Somali Civil War and sent upwards of 6,000 troops to Sub Saharan Africa. The main conflict for U.S. troops in that region was the Battle of Mogadishu, in which the U.S. suffered significant losses and pulled their troops out of the region. Since then, the United States has not had more than 2,000 troops in Sub Saharan Africa.</p>
-          <p></p>Outside of the United States' main spike in troops in the early 1990s, there has only been a handful of times in which the U.S. had troops in Sub Saharan Africa. In the mid-2010s, the U.S. got somewhat involved in Somalia, Niger, and a few other nations. However, the U.S. refrained from sending in a large number of troops.</p>
-          <p>In the 1960s and early 1970s, the United States committed a significant amount of troops to the conflict in Eritrea. While the U.S. had troops there for a lengthy amount of time, there was never too high of an influx of soldiers into the country. The U.S. also kept the amount of troops in Sub Saharan Africa below 2,000 in this time frame despite being somewhat involved in the conflict. 
-
-        </p>
-        <p>
-          <!-- PLACE COUNTRY CONTENT HERE -->
-
-          <iframe title="US Troops Deployed to Sub-Saharan Africa" aria-label="Interactive line chart" id="datawrapper-chart-a5Fw6" src="https://datawrapper.dwcdn.net/a5Fw6/3/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="407" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-          Total troops deployed to Eritrea: <iframe title="U.S. troops in Eritrea" aria-label="Interactive line chart" id="datawrapper-chart-KdvHk" src="https://datawrapper.dwcdn.net/KdvHk/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="409" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-          Total troops deoplyed to Somalia: <iframe title="[US TROOPS IN SOMALIA]" aria-label="Interactive line chart" id="datawrapper-chart-ynA9N" src="https://datawrapper.dwcdn.net/ynA9N/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="407" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();
-          </script>
-          
-          
-          <a href="#top">Return to Top</a>
+          An interactive exploration of American military presence across global regions 
+          over the past seven decades. Navigate through different regions to discover 
+          troop patterns and historical trends.
         </p>
       </div>
+    </div>
+
+    <div class="region-nav">
+      <div class="container text-center">
+        <a href="#eastasia">
+          <button type="button" class="btn btn-outline-info">
+            East Asia
+          </button>
+        </a>
+        <a href="#europe">
+          <button type="button" class="btn btn-outline-secondary">
+            Europe
+          </button>
+        </a>
+        <a href="#latinamerica">
+          <button type="button" class="btn btn-outline-success">
+            Latin America
+          </button>
+        </a>
+        <a href="#middleeast">
+          <button type="button" class="btn btn-outline-danger">
+            Middle East
+          </button>
+        </a>
+        <a href="#subsahara">
+          <button type="button" class="btn btn-outline-dark">
+            Africa
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <main class="container">
+      <div class="main-content">
+        <h2>Overview</h2>
+        
+        <div class="chart-container">
+          <p>
+            Since the end of World War II, the United States has maintained an unprecedented global military presence, with troops stationed across every inhabited continent. At its peak during the Cold War, hundreds of thousands of American service members were stationed abroad, while today that number has stabilized at approximately 160,000 personnel in dozens of countries worldwide. <a href="#about" style="font-size: 0.9em;">About this project</a></p>
+
+          <iframe src="globe.html" 
+        width="100%" 
+        height="600" 
+        frameborder="0" 
+        style="border:none;"
+        title="U.S. Troop Deployment Globe">
+</iframe>
+
+  <p>This pattern reflects major geopolitical shifts over the past seven decades—from Cold War containment strategies and the Korean and Vietnam Wars, to post-9/11 operations in the Middle East, and ongoing commitments to allies in Europe and the Indo-Pacific. The data reveals not just where American troops have been sent, but why: to deter adversaries, support allies, maintain regional stability, and respond to humanitarian crises. By examining troop levels across different regions over time, we can trace the evolving nature of American military engagement and the strategic priorities that have shaped U.S. foreign policy for three generations.
+          </p>
+          
+             <iframe title="U.S. Troops Overseas and At Home" aria-label="Area Chart" id="datawrapper-chart-qw3Y6" src="https://datawrapper.dwcdn.net/qw3Y6/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="423" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+        </div>
+      </div>
+
+      <section class="region-section" id="eastasia">
+        <h2>East Asia & Pacific</h2>
+        
+        <!-- First Row: Map and Opening Paragraph -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <iframe title="East Asia/Pacific Region" aria-label="Locator map" id="datawrapper-chart-RYVfg" src="https://datawrapper.dwcdn.net/RYVfg/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="519" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>The data from 2014 to 2024 shows that U.S. troop levels have remained relatively stable over the past decade with only minor fluctuations. From 2014 through 2021, troop numbers consistently hovered around 72,000, indicating a steady moderate level of overseas military presence. Starting in 2022, there was a slight increase to 74,000, increasing to 76,000 in 2019 and peaking at 78,000 in 2024. Therefore, while there has been a small upward trend toward the end of the decade, the data suggests that U.S. overseas troop levels have largely stabilized compared to previous decades, reflecting a more consistent and measured approach to global military engagement.</p>
+          </div>
+        </div>
+        
+        <!-- Second Row: Additional Content -->
+        <div class="row">
+          <div class="col-12">
+            <div class="chart-container">
+              <iframe title="Troops Deployed in the Last Decade - East Asia/ Pacific" aria-label="Line chart" id="datawrapper-chart-Fvznn" src="https://datawrapper.dwcdn.net/Fvznn/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="397" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <div style="min-height:563px" id="datawrapper-vis-alo6X"><script type="text/javascript" defer src="https://datawrapper.dwcdn.net/alo6X/embed.js" charset="utf-8" data-target="#datawrapper-vis-alo6X"></script><noscript><img src="https://datawrapper.dwcdn.net/alo6X/full.png" alt="Map showing Cambodia and Thailand and the border dispute that ensued between them." /></noscript></div>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="europe">
+        <h2>Europe & Central Asia</h2>
+        
+        <!-- First Row: Map and Opening Paragraph -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <iframe title="American Troops Deployed In Germany" aria-label="Stacked column chart" id="datawrapper-chart-gjdpb" src="https://datawrapper.dwcdn.net/gjdpb/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="392" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>After taking a look at the total U.S. troop levels in Germany from 1950 to the present, focusing on the trends from 1980-2000 reveals significant changes. U.S. Troops in Germany experienced a sharp decline, specifically between 1989 and 1996. An average of around 250,000 troops dropped to just over 60,000. The main reason for this is, of course, the <a href="https://www.iwm.org.uk/history/what-was-the-berlin-wall-and-how-did-it-fall#:~:text=The%20Berlin%20Wall%20fell%20on%209%20November%201989&text=The%20fall%20of%20the%20Berlin,on%20travel%20to%20West%20Germany." target="_blank">fall of the Berlin Wall in 1989 and the reunification of East and West Germany</a>. As Soviet-controlled East Germany reunified with independent West Germany, U.S. troops slowly withdrew from Germany. <a href="https://history.state.gov/milestones/1989-1992/collapse-soviet-union" target="_blank">Additionally, in 1991, the Soviet Union fell.</a> Cold War tensions that had been driving U.S. occupation and involvement in West Germany finally eased, leading to a withdrawal to a normal level of troops between allied countries.</p>
+          </div>
+        </div>
+        
+        <!-- Second Row: Additional Content -->
+        <div class="row">
+          <div class="col-12">
+            <div class="chart-container">
+              <iframe title="Troops in Germany  1980-2000 (Copy)" aria-label="Line chart" id="datawrapper-chart-bhQpV" src="https://datawrapper.dwcdn.net/bhQpV/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="395" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <p>When looking at the data for U.S. Troops stationed in Germany from 2000 to 2024 there was a major spike in 2008. What was going on that made the troops jump to six figure sizes for the first time since 1993? The reason for this spike in troops in Germany was because the American military bases in Germany are used as a staging ground for US troops before or after being deployed to the Middle East. There were major policy changes going on in the Middle East in the late 2000s and early 2010s. December 2007 began the withdrawal of troops from Iraq after a <a href="https://www.ebsco.com/research-starters/military-history-and-science/iraq-surge" target="_blank">massive surge that came in January 2007</a>. A consistent military presence was still in Iraq through 2011. American military movements in 2008 were still a part of <a href="https://www.army.mil/article/151904/usareur_units_identified_for_deployment_in_2008" target="_blank">Operation Iraqi Freedom/Operation Enduring Freedom FY 08</a> that saw an increase with over 30 units staged in Germany before being deployed to Iraq or Afghanistan. With both troops being deployed from Germany in 2008 and troops beginning to move out of the Middle East in late 2007, there was much traffic going through the American bases in Germany. 2008 was also a busy time for US Troops in Germany as the US closed down a <a href="https://fasos-research.nl/occupationstudies/on-horses-and-bases-traces-of-the-american-occupation-in-contemporary-germany/" target="_blank">base in Hanau</a>, after a 50 year presence. This base closure is in large part responsible for the steep decline in troops in 2009, there was simply less room to have so many. With so much going on in the Middle East, the US used its resources in Germany for troop staging, this combined with shutting down a base shows why 2008 was a major jump in troops followed by a major fall off.</p>
+
+              <p><strong>Sources:</strong> <a href="https://www.cfr.org/timeline/iraq-war" target="_blank">https://www.cfr.org/timeline/iraq-war</a></p>
+
+              <iframe title="American Troops in Germany 2000-2024" aria-label="Line chart" id="datawrapper-chart-Km31X" src="https://datawrapper.dwcdn.net/Km31X/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="532" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="latinamerica">
+        <h2>Latin America & Caribbean</h2>
+        
+        <!-- First Row: Map and Opening Paragraph -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <iframe title="Latin America and Caribbean" aria-label="Locator map" id="datawrapper-chart-CXtv9" src="https://datawrapper.dwcdn.net/CXtv9/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="518" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>Latin America and the Caribbean had the highest troop levels in 1953, with a total of 49,298. Puerto Rico was the territory responsible for most of these troops during that year, with 26,552. This was because the Cuban war had just erupted, and Puerto Rico was one of the closest US territories to Cuba.</p>
+          </div>
+        </div>
+        
+        <!-- Second Row: Additional Content -->
+        <div class="row">
+          <div class="col-12">
+            <div class="chart-container">
+              <iframe title="Troops Deployed Since 1950: Latin America" aria-label="Line chart" id="datawrapper-chart-JHCuC" src="https://datawrapper.dwcdn.net/JHCuC/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="369" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+        
+              <p>The Cuban Revolution erupted after Fidel Castro and the Cuban's People Party led a raid on the Moncada army barracks in Santiago de Cuba on July 26, 1953. In 1903 after America had won the Spanish-American war, they established the Guantanamo Naval Base in Southern Cuba. During the Cuban Revolution that stretched from 1953-1959, there was an increased presence of U.S. troops at Guantanamo Bay, despite no longer having diplomatic relations with the new Cuban Government.</p>
+              
+              <p><strong>Source:</strong> <a href="https://www.history.com/articles/cuban-revolution" target="_blank">https://www.history.com/articles/cuban-revolution</a></p>
+
+              <iframe title="U.S Troops Deployed During the Cuban Revolution (1953-1959)" aria-label="Area Chart" id="datawrapper-chart-MJJp7" src="https://datawrapper.dwcdn.net/MJJp7/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="452" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <p>The US started to increase its presence in Panama during WWII because of the Panama Canal's strategic importance. This continued in the cold war especially during the 1964 Panama riots. There were major anti-American protests on the right to fly the Panamanian flag. In 1977, President Jimmy Carter signed treaties with Panamanian leader Omar Torrijos to gradually transfer control of the canal and the Canal Zone to Panama. The Canal Zone was abolished in 1979, and control of the canal was turned over by the end of 1999. At this point, troops were removed from the country which shows why there was such a dramatic drop in 1999.</p>
+              
+              <p><strong>Source:</strong> <a href="https://www.history.com/articles/panama-canal-return-panama-treaties-carter" target="_blank">https://www.history.com/articles/panama-canal-return-panama-treaties-carter</a></p>
+
+              <iframe title="Number of US troops in Panama from 1950-2024" aria-label="Line chart" id="datawrapper-chart-zTDsw" src="https://datawrapper.dwcdn.net/zTDsw/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="404" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="middleeast">
+        <h2>Middle East & North Africa</h2>
+        
+        <!-- First Row: Map and Opening Paragraph -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <iframe title="Middle East and North Africa" aria-label="Locator map" id="datawrapper-chart-FSvrq" src="https://datawrapper.dwcdn.net/FSvrq/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="519" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>Troop levels in the Middle East and North Africa peaked in 2007 at 223,300 troops after 189,000 in 2006. In January 2007, President George W. Bush announced the deployment of more than 20,000 additional U.S. combat troops (<a href="https://www.army.mil/article/186745/army_marks_10th_anniversary_of_troop_surge_in_iraq" target="_blank">Troop Surge in Iraq</a>) to Iraq. The number was steady up until 2010, when it dropped to 100,000 troops, where it has stayed until the present day. The biggest spike was from 2002 to 2003, when troop levels shot up from 3,000 to 140,000 due to the Iraq War.</p>
+          </div>
+        </div>
+        
+        <!-- Second Row: Additional Content -->
+        <div class="row">
+          <div class="col-12">
+            <div class="chart-container">
+              <p>Another noticeable spike came from 1989 to 1990, when troop levels rose from 2,000 to 33,000 due to Iraq's invasion of Kuwait in August 1990. Saddam Hussein ordered the invasion of Kuwait (<a href="https://www.history.navy.mil/our-collections/art/exhibits/conflicts-and-operations/the-gulf-war-1990-1991--operation-desert-shield--desert-storm-.html" target="_blank">The Gulf War</a>) to acquire the nation's largest oil reserves and expand his power in the region. </p>
+
+              <iframe title="Overall Troop Deployment In The Middle East and North Africa" aria-label="Column Chart" id="datawrapper-chart-8UWw2" src="https://datawrapper.dwcdn.net/8UWw2/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="437" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <p>During the Iraq War, US troop levels followed the arc of America's military engagement in the country. The initial invasion force remained relatively constant through the first few years as the US confronted a growing insurgency and escalating sectarian violence. In January 2007, President George W. Bush announced the controversial "surge" strategy, deploying an additional 20,000 combat troops plus 10,000 support troops to Iraq, with the majority sent to Baghdad (<a href="https://www.ebsco.com/research-starters/military-history-and-science/iraq-surge" target="_blank">EBSCO</a>, <a href="https://www.georgewbushlibrary.gov/research/topic-guides/the-iraq-war" target="_blank">George W. Bush Library</a>). As security conditions improved and the Bush administration transitioned to the Obama presidency, troop levels began a dramatic drawdown. This reduction reflected President Obama's 2008 campaign pledge to end the war in Iraq and withdraw American combat troops (<a href="https://obamawhitehouse.archives.gov/blog/2011/10/21/president-obama-has-ended-war-Iraq" target="_blank">The White House</a>, <a href="https://www.politifact.com/article/2010/aug/20/obama-keeps-his-promise-getting-combat-troops-out-/" target="_blank">PolitiFact</a>), as well as the 2008 Status of Forces Agreement between the United States and Iraq, which established that US combat forces would withdraw from Iraqi cities by June 30, 2009 and all US forces would completely withdraw from Iraq by December 31, 2011 (<a href="https://www.ebsco.com/research-starters/law/us-iraq-status-forces-agreement-sofa" target="_blank">US-Iraq Status of Forces Agreement</a>). By 2011, only a small advisory force remained as the US formally ended its combat mission in Iraq.</p>
+
+              <iframe title="U.S. Troop Deployment In Iraq During the Iraq war" aria-label="Line chart" id="datawrapper-chart-Lx3i9" src="https://datawrapper.dwcdn.net/Lx3i9/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="396" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <p>During the beginning and middle of the Iran-Iraq War, U.S. troop levels stayed relatively steady and increased or decreased incrementally. However, troop levels went from 2,079 in 1987 to 33,017 in 1988. This was primarily due to Operation Earnest Will, which ran from July 24, 1987, to September 26, 1988, and was the largest naval convoy operation since World War II, aimed at protecting Kuwaiti-owned oil tankers from Iranian attacks during the Iran-Iraq War (<a href="https://www.navybook.com/no-higher-honor/timeline/operation-earnest-will/" target="_blank">Bradley Peniston</a>, <a href="https://www.history.navy.mil/about-us/leadership/director/directors-corner/h-grams/h-gram-018/h-018-1.html" target="_blank">Naval History</a>). The increase also reflected Operation Prime Chance, which ran from August 1987 to June 1989, a largely secret United States Special Operations Command operation that worked to stop Iranian forces from attacking Persian Gulf shipping using mines and small boats (<a href="https://nationalinterest.org/blog/buzz/operation-prime-chance-how-ussocom-got-its-revenge-on-iran" target="_blank">The National Interest</a>, <a href="https://www.defensemedianetwork.com/stories/ussocoms-first-test-of-fire-operations-prime-chance-and-praying-mantis/" target="_blank">Defense Media Network</a>).</p>
+
+              <iframe title="U.S. Troop Deployment in The Middle East and North Africa as the Iran-Iraq War Ends" aria-label="Line chart" id="datawrapper-chart-aNfku" src="https://datawrapper.dwcdn.net/aNfku/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="422" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="region-section" id="subsahara">
+        <h2>Sub-Saharan Africa</h2>
+        
+        <!-- First Row: Map and Opening Paragraph -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <iframe title="Sub-Saharan Africa" aria-label="Locator map" id="datawrapper-chart-LCbfq" src="https://datawrapper.dwcdn.net/LCbfq/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="618" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>Troop levels in sub-saharan Africa peaked in 1993 at 6,649 troops, after a sharp increase from 306 troops in 1992. 6,345 of these troops were in Somalia. The number subsequently decreased just as sharply by 1996, dropping back down to 242 and 0 in Somalia. This sudden increase is explained by Operation Restore Hope, an effort to deliver humanitarian aid to Somalia after violence between warlords impeded previous United Nations efforts to address famine, according to an article by the <a href="https://history.state.gov/milestones/1993-2000/somalia" target="_blank">Office of the Historian</a>. A turning point in this operation came in 1993 when a Somali warlord's forces shot down two Black Hawk helicopters, turning public opinion in the United States against the aid efforts. U.S. troops officially withdrew from combat four days later, and most troops had left by 1994.</p>
+          </div>
+        </div>
+        
+        <!-- Second Row: Additional Content -->
+        <div class="row">
+          <div class="col-12">
+            <div class="chart-container">
+              <iframe title="[ Sub Saharan Africa Troop Deployment ]" aria-label="Line chart" id="datawrapper-chart-3fUFN" src="https://datawrapper.dwcdn.net/3fUFN/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="394" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();
+</script>
+
+              <iframe title="Black Hawk Down area" aria-label="Locator map" id="datawrapper-chart-qXTuc" src="https://datawrapper.dwcdn.net/qXTuc/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="518" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <iframe title="[ Insert title here ]" aria-label="Line chart" id="datawrapper-chart-Gnq07" src="https://datawrapper.dwcdn.net/Gnq07/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="394" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+              <iframe title="Sub-Saharan Africa Troop Deployment 1953-1976" aria-label="Line chart" id="datawrapper-chart-fmY66" src="https://datawrapper.dwcdn.net/fmY66/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="394" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}})}();
+</script>
+
+              <p>Troop levels in Sub-Saharan Africa steadily increased starting in 1956, followed by a steady decrease beginning in 1970 until 1975 where troop presence flatlined. This created a gentle rise in troops in the data from 1956-1975. This subtle increase to decrease in the data demonstrates the decolonization and subsequent independence of Sub-Saharan Africa during this time period.</p>
+
+              <p>In 1956, Sudan became independent from Britain and Egypt, followed by Ghana in 1957, as countries gained independence colonial troops withdrew rapidly. 1960 was known as the "Year of Africa," when 17 African countries gained independence. Troop presence started to rise starting in 1961 as Portugal deployed approximately 70,000 troops each to Angola and Mozambique by the mid-1960s in an effort to fight independence movements. In 1975, the last major colonies Angola and Mozambique gained independence from Portugal.</p>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <section class="bylines-section" id="about">
+        <div class="container">
+          <p><strong>A group project from Prof. Dan Pacheco's JNL 221 class, Foundations of Data and Digital Journalism.</strong></p>
+          <p><strong>Student contributors:</strong> Caroline Erskine, Hannah Beam, Jamieson Vincent, Jack Elliott, Lucy Fries, Nick Jepson, Sofia Kissel, Ty Letendre, Jonah Lipson, Olivia Menci, Mauricio Palmar, Charlotte Price, Jonathan Regini, Maddie Ritter, Collin Smith</p>
+          <p><strong>Data source:</strong> Troop data from the <a href="https://cran.r-project.org/web/packages/troopdata/readme/README.html" target="_blank">troopdata package</a>. Data were initially compiled by Tim Kane using information obtained from the U.S. Department of Defense's Defense Manpower Data Center (DMDC).</p>
+        </div>
+      </section>
     </main>
 
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; Dan Pacheco, 2025. Fall Class Exercise | U.S. Military Presence Analysis</p>
+        <p class="small">Data visualization created for educational purposes</p>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

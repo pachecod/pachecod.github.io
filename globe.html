@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Troop Deployments - 3D Globe</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0a1128, #1e3a5f);
+            overflow: hidden;
+        }
+        
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            color: #0066cc;
+            font-weight: bold;
+        }
+        
+        .stats {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #2c3e50;
+        }
+        
+        .stats strong {
+            color: #1a1a1a;
+        }
+        
+        .legend {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 12px;
+        }
+        
+        .legend strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            font-size: 13px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            color: #2c3e50;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        #tooltip {
+            position: absolute;
+            background: rgba(30, 30, 30, 0.95);
+            color: #ffffff !important;
+            padding: 12px 16px;
+            border-radius: 6px;
+            pointer-events: none;
+            font-size: 14px;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        #tooltip strong {
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a1a;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 13px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="info-panel">
+        <h1>Global Troop Deployments</h1>
+        <div class="stats">
+            <div><strong>Total Countries:</strong> <span id="total-countries">175</span></div>
+            <div><strong>Total Troops:</strong> <span id="total-troops">1,285,877</span></div>
+            <div><strong>Largest:</strong> <span id="largest-deployment">United States</span></div>
+        </div>
+        <div class="legend">
+            <strong>Deployment Size:</strong>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff4444;"></div>
+                <span>Small (&lt;100)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffaa00;"></div>
+                <span>Medium (100-1K)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #44ff44;"></div>
+                <span>Large (1K-10K)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4444ff;"></div>
+                <span>Very Large (&gt;10K)</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        🌍 Drag to rotate • Scroll to zoom • Click points for details
+    </div>
+    
+    <div id="canvas-container"></div>
+    <div id="tooltip"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Deployment data with coordinates
+        const deployments = [
+            { country: 'Germany', troops: 36541, lat: 51.1657, lng: 10.4515 },
+            { country: 'Japan', troops: 55154, lat: 36.2048, lng: 138.2529 },
+            { country: 'South Korea', troops: 24515, lat: 35.9078, lng: 127.7669 },
+            { country: 'Italy', troops: 12482, lat: 41.8719, lng: 12.5674 },
+            { country: 'United Kingdom', troops: 10204, lat: 55.3781, lng: -3.4360 },
+            { country: 'Guam', troops: 7540, lat: 13.4443, lng: 144.7937 },
+            { country: 'Puerto Rico', troops: 4920, lat: 18.2208, lng: -66.5901 },
+            { country: 'Bahrain', troops: 3500, lat: 26.0667, lng: 50.5577 },
+            { country: 'Spain', troops: 3307, lat: 40.4637, lng: -3.7492 },
+            { country: 'Turkey', troops: 1692, lat: 38.9637, lng: 35.2433 },
+            { country: 'Norway', troops: 1439, lat: 60.4720, lng: 8.4689 },
+            { country: 'Belgium', troops: 1115, lat: 50.5039, lng: 4.4699 },
+            { country: 'Australia', troops: 732, lat: -25.2744, lng: 133.7751 },
+            { country: 'Cuba', troops: 616, lat: 21.5218, lng: -77.7812 },
+            { country: 'Kuwait', troops: 533, lat: 29.3117, lng: 47.4818 },
+            { country: 'Netherlands', troops: 419, lat: 52.1326, lng: 5.2913 },
+            { country: 'Djibouti', troops: 406, lat: 11.8251, lng: 42.5903 },
+            { country: 'Greece', troops: 402, lat: 39.0742, lng: 21.8243 },
+            { country: 'Honduras', troops: 365, lat: 15.2000, lng: -86.2419 },
+            { country: 'Philippines', troops: 311, lat: 12.8797, lng: 121.7740 },
+            { country: 'Qatar', troops: 303, lat: 25.3548, lng: 51.1839 },
+            { country: 'Poland', troops: 302, lat: 51.9194, lng: 19.1451 },
+            { country: 'Saudi Arabia', troops: 258, lat: 23.8859, lng: 45.0792 },
+            { country: 'Portugal', troops: 247, lat: 39.3999, lng: -8.2245 },
+            { country: 'Singapore', troops: 229, lat: 1.3521, lng: 103.8198 },
+            { country: 'United Arab Emirates', troops: 177, lat: 23.4241, lng: 53.8478 },
+            { country: 'Egypt', troops: 176, lat: 26.8206, lng: 30.8025 },
+            { country: 'Canada', troops: 153, lat: 56.1304, lng: -106.3468 },
+            { country: 'Romania', troops: 140, lat: 45.9432, lng: 24.9668 },
+            { country: 'Greenland', troops: 136, lat: 71.7069, lng: -42.6043 },
+            { country: 'US Virgin Islands', troops: 133, lat: 18.3358, lng: -64.8963 },
+            { country: 'Jordan', troops: 120, lat: 30.5852, lng: 36.2384 },
+            { country: 'Israel', troops: 115, lat: 31.0461, lng: 34.8516 },
+            { country: 'Thailand', troops: 111, lat: 15.8700, lng: 100.9925 },
+            { country: 'Mexico', troops: 88, lat: 23.6345, lng: -102.5528 },
+            { country: 'Hungary', troops: 84, lat: 47.1625, lng: 19.5033 },
+            { country: 'Palau', troops: 83, lat: 7.5150, lng: 134.5825 },
+            { country: 'France', troops: 81, lat: 46.2276, lng: 2.2137 },
+            { country: 'Pakistan', troops: 74, lat: 30.3753, lng: 69.3451 },
+            { country: 'Kenya', troops: 72, lat: -0.0236, lng: 37.9062 },
+            { country: 'China', troops: 64, lat: 35.8617, lng: 104.1954 },
+            { country: 'Colombia', troops: 64, lat: 4.5709, lng: -74.2973 },
+            { country: 'India', troops: 64, lat: 20.5937, lng: 78.9629 },
+            { country: 'Bahamas', troops: 63, lat: 25.0343, lng: -77.3963 },
+            { country: 'Brazil', troops: 62, lat: -14.2350, lng: -51.9253 },
+            { country: 'El Salvador', troops: 60, lat: 13.7942, lng: -88.8965 },
+            { country: 'Somalia', troops: 60, lat: 5.1521, lng: 46.1996 },
+            { country: 'Haiti', troops: 54, lat: 18.9712, lng: -72.2852 },
+            { country: 'Peru', troops: 49, lat: -9.1900, lng: -75.0152 },
+            { country: 'Taiwan', troops: 47, lat: 23.6978, lng: 120.9605 },
+            { country: 'South Africa', troops: 45, lat: -30.5595, lng: 22.9375 },
+            { country: 'Russia', troops: 41, lat: 61.5240, lng: 105.3188 },
+            { country: 'Chile', troops: 41, lat: -35.6751, lng: -71.5430 },
+            { country: 'Morocco', troops: 39, lat: 31.7917, lng: -7.0926 },
+            { country: 'Nigeria', troops: 37, lat: 9.0820, lng: 8.6753 },
+            { country: 'Indonesia', troops: 36, lat: -0.7893, lng: 113.9213 },
+            { country: 'Vietnam', troops: 33, lat: 14.0583, lng: 108.2772 },
+            { country: 'Finland', troops: 32, lat: 61.9241, lng: 25.7482 },
+            { country: 'Argentina', troops: 31, lat: -38.4161, lng: -63.6167 },
+            { country: 'Oman', troops: 29, lat: 21.4735, lng: 55.9754 },
+            { country: 'Georgia', troops: 29, lat: 42.3154, lng: 43.3569 },
+            { country: 'Kazakhstan', troops: 28, lat: 48.0196, lng: 66.9237 },
+            { country: 'Panama', troops: 28, lat: 8.5380, lng: -80.7821 },
+            { country: 'Burkina Faso', troops: 24, lat: 12.2383, lng: -1.5616 },
+            { country: 'Ecuador', troops: 24, lat: -1.8312, lng: -78.1834 },
+            { country: 'Malaysia', troops: 24, lat: 4.2105, lng: 101.9758 },
+            { country: 'Austria', troops: 22, lat: 47.5162, lng: 14.5501 },
+            { country: 'Switzerland', troops: 22, lat: 46.8182, lng: 8.2275 },
+            { country: 'Tunisia', troops: 22, lat: 33.8869, lng: 9.5375 },
+            { country: 'Senegal', troops: 22, lat: 14.4974, lng: -14.4524 },
+            { country: 'Ghana', troops: 21, lat: 7.9465, lng: -1.0232 },
+            { country: 'Lebanon', troops: 21, lat: 33.8547, lng: 35.8623 },
+            { country: 'Sweden', troops: 21, lat: 60.1282, lng: 18.6435 }
+        ];
+        
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        
+        // Create Earth sphere
+        const geometry = new THREE.SphereGeometry(5, 64, 64);
+        
+        // Load Earth texture
+        const textureLoader = new THREE.TextureLoader();
+        const earthTexture = textureLoader.load(
+            'https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg'
+        );
+        
+        const material = new THREE.MeshPhongMaterial({
+            map: earthTexture,
+            bumpScale: 0.05,
+            specular: new THREE.Color('grey'),
+            shininess: 5
+        });
+        
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+        
+        // Add atmosphere glow
+        const atmosphereGeometry = new THREE.SphereGeometry(5.2, 64, 64);
+        const atmosphereMaterial = new THREE.MeshBasicMaterial({
+            color: 0x4fc3f7,
+            transparent: true,
+            opacity: 0.1,
+            side: THREE.BackSide
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        scene.add(atmosphere);
+        
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 3, 5);
+        scene.add(directionalLight);
+        
+        // Convert lat/lng to 3D coordinates
+        function latLngToVector3(lat, lng, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lng + 180) * (Math.PI / 180);
+            
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const z = (radius * Math.sin(phi) * Math.sin(theta));
+            const y = (radius * Math.cos(phi));
+            
+            return new THREE.Vector3(x, y, z);
+        }
+        
+        // Get color based on troops
+        function getColor(troops) {
+            if (troops < 100) return 0xff4444;
+            if (troops < 1000) return 0xffaa00;
+            if (troops < 10000) return 0x44ff44;
+            return 0x4444ff;
+        }
+        
+        // Get size based on troops
+        function getSize(troops) {
+            if (troops < 100) return 0.08;
+            if (troops < 1000) return 0.12;
+            if (troops < 10000) return 0.18;
+            return 0.25;
+        }
+        
+        // Create deployment markers
+        const markers = [];
+        deployments.forEach(deployment => {
+            const size = getSize(deployment.troops);
+            const markerGeometry = new THREE.SphereGeometry(size, 16, 16);
+            const markerMaterial = new THREE.MeshBasicMaterial({
+                color: getColor(deployment.troops),
+                transparent: true,
+                opacity: 0.8
+            });
+            const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+            
+            const position = latLngToVector3(deployment.lat, deployment.lng, 5.1);
+            marker.position.copy(position);
+            marker.userData = deployment;
+            
+            // Add markers as children of earth so they rotate with it
+            earth.add(marker);
+            markers.push(marker);
+        });
+        
+        // Position camera
+        camera.position.z = 15;
+        
+        // Mouse interaction
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotation = { x: 0, y: 0 };
+        
+        renderer.domElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+        
+        renderer.domElement.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+                
+                rotation.y += deltaX * 0.005;
+                rotation.x += deltaY * 0.005;
+                
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+            
+            // Raycasting for hover
+            const mouse = new THREE.Vector2(
+                (e.clientX / window.innerWidth) * 2 - 1,
+                -(e.clientY / window.innerHeight) * 2 + 1
+            );
+            
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(markers);
+            const tooltip = document.getElementById('tooltip');
+            
+            if (intersects.length > 0) {
+                const data = intersects[0].object.userData;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
+                tooltip.innerHTML = `<strong>${data.country}</strong><br/>Troops: ${data.troops.toLocaleString()}`;
+                renderer.domElement.style.cursor = 'pointer';
+            } else {
+                tooltip.style.display = 'none';
+                renderer.domElement.style.cursor = 'default';
+            }
+        });
+        
+        renderer.domElement.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        // Zoom with mouse wheel
+        renderer.domElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            camera.position.z += e.deltaY * 0.01;
+            camera.position.z = Math.max(8, Math.min(30, camera.position.z));
+        });
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (!isDragging) {
+                rotation.y += 0.001; // Auto-rotate
+            }
+            
+            earth.rotation.x = rotation.x;
+            earth.rotation.y = rotation.y;
+            atmosphere.rotation.x = rotation.x;
+            atmosphere.rotation.y = rotation.y;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
