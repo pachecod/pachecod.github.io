@@ -66,6 +66,19 @@
         text-transform: uppercase;
         color: #c0392b;
         margin-bottom: 8px;
+        animation: crisisPulse 1.8s ease-in-out infinite;
+      }
+
+      @keyframes crisisPulse {
+        0% {
+          text-shadow: none;
+        }
+        50% {
+          text-shadow: 0 0 6px rgba(192, 57, 43, 0.5);
+        }
+        100% {
+          text-shadow: none;
+        }
       }
 
       .breaking-context h2 {
@@ -199,63 +212,6 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="breaking-context">
-        <div class="context-label">⚠ CRISIS IN THE MIDDLE EAST</div>
-        <h2>The U.S.–Israel Military Campaign Against Iran</h2>
-
-        <div class="row align-items-start">
-          <div class="col-12 col-md-7">
-            <p>
-              On February 28, 2026, the United States and Israel launched a
-              coordinated military campaign against Iran under the code names
-              <strong>Operation Epic Fury</strong> by the U.S., and
-              <strong>Operation Roaring Lion</strong> by Israel. The strikes
-              targeted nuclear facilities, ballistic missile infrastructure,
-              military command sites and senior government leadership. Iranian
-              Supreme Leader Ayatollah Ali Khamenei was killed in the strikes.
-              His death was confirmed by Iranian state media early on March 1.
-            </p>
-            <p>
-              The countries and U.S. military deployments documented in this
-              project are directly implicated in the current conflict. For
-              country-by-country maps, line charts, and additional context,
-              visit the dedicated deep dive page:
-              <a href="iran-middle-east.html#iran-middle-east-detail"
-                >Iran and the Middle East</a
-              >.
-            </p>
-          </div>
-          <div class="col-12 col-md-5 mt-3 mt-md-0">
-            <iframe
-              title="Iran and Middle East crisis locator map"
-              aria-label="Locator map"
-              id="datawrapper-chart-X99vJ"
-              src="https://datawrapper.dwcdn.net/X99vJ/1/"
-              scrolling="no"
-              frameborder="0"
-              style="width: 0; min-width: 100% !important; border: none"
-              height="483"
-              data-external="1"
-            ></iframe>
-            <script type="text/javascript">
-              window.addEventListener("message", function (a) {
-                if (void 0 !== a.data["datawrapper-height"]) {
-                  var e = document.querySelectorAll("iframe");
-                  for (var t in a.data["datawrapper-height"])
-                    for (var r, i = 0; (r = e[i]); i++)
-                      if (r.contentWindow === a.source) {
-                        var d = a.data["datawrapper-height"][t] + "px";
-                        r.style.height = d;
-                      }
-                }
-              });
-            </script>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="region-nav">
       <div class="container text-center">
         <a href="#eastasia">
@@ -320,6 +276,96 @@
             shaped U.S. foreign policy for three generations.
           </p>
 
+          <div class="breaking-context" style="margin-top: 30px; margin-bottom: 30px;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div
+                  class="context-label"
+                  role="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#crisisCollapse"
+                  aria-expanded="false"
+                  aria-controls="crisisCollapse"
+                >
+                  ⚠ CRISIS IN THE MIDDLE EAST
+                </div>
+                <h2
+                  class="mb-0"
+                  role="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#crisisCollapse"
+                  aria-expanded="false"
+                  aria-controls="crisisCollapse"
+                >
+                  The U.S.–Israel Military Campaign Against Iran
+                </h2>
+              </div>
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#crisisCollapse"
+                aria-expanded="false"
+                aria-controls="crisisCollapse"
+              >
+                ▶ More
+              </button>
+            </div>
+
+            <div id="crisisCollapse" class="collapse mt-3">
+              <div class="row align-items-start">
+                <div class="col-12 col-md-7">
+                  <p>
+                    On February 28, 2026, the United States and Israel launched
+                    a coordinated military campaign against Iran under the code
+                    names <strong>Operation Epic Fury</strong> by the U.S., and
+                    <strong>Operation Roaring Lion</strong> by Israel. The
+                    strikes targeted nuclear facilities, ballistic missile
+                    infrastructure, military command sites and senior government
+                    leadership. Iranian Supreme Leader Ayatollah Ali Khamenei
+                    was killed in the strikes. His death was confirmed by
+                    Iranian state media early on March 1.
+                  </p>
+                  <p>
+                    The countries and U.S. military deployments documented in
+                    this project are directly implicated in the current
+                    conflict. For country-by-country maps, line charts, and
+                    additional context, visit the dedicated deep dive page:
+                    <a href="iran-middle-east.html#iran-middle-east-detail"
+                      >Iran and the Middle East</a
+                    >.
+                  </p>
+                </div>
+                <div class="col-12 col-md-5 mt-3 mt-md-0">
+                  <iframe
+                    title="Iran and Middle East crisis locator map"
+                    aria-label="Locator map"
+                    id="datawrapper-chart-X99vJ"
+                    src="https://datawrapper.dwcdn.net/X99vJ/1/"
+                    scrolling="no"
+                    frameborder="0"
+                    style="width: 0; min-width: 100% !important; border: none"
+                    height="483"
+                    data-external="1"
+                  ></iframe>
+                  <script type="text/javascript">
+                    window.addEventListener("message", function (a) {
+                      if (void 0 !== a.data["datawrapper-height"]) {
+                        var e = document.querySelectorAll("iframe");
+                        for (var t in a.data["datawrapper-height"])
+                          for (var r, i = 0; (r = e[i]); i++)
+                            if (r.contentWindow === a.source) {
+                              var d = a.data["datawrapper-height"][t] + "px";
+                              r.style.height = d;
+                            }
+                      }
+                    });
+                  </script>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <iframe
             title="U.S. Troops Overseas and At Home"
             aria-label="Area Chart"
@@ -342,6 +388,25 @@
                       r.style.height = d;
                     }
               }
+            });
+          </script>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              var crisisCollapse = document.getElementById("crisisCollapse");
+              var toggleBtn = crisisCollapse
+                ? crisisCollapse.closest(".breaking-context").querySelector("button[data-bs-target=\"#crisisCollapse\"]")
+                : null;
+
+              if (!crisisCollapse || !toggleBtn) return;
+
+              crisisCollapse.addEventListener("shown.bs.collapse", function () {
+                toggleBtn.textContent = "▼ Less";
+              });
+
+              crisisCollapse.addEventListener("hidden.bs.collapse", function () {
+                toggleBtn.textContent = "▶ More";
+              });
             });
           </script>
         </div>
