@@ -112,6 +112,20 @@
         margin: 30px 0;
       }
 
+      .map-placeholder {
+        min-height: 394px;
+        border: 2px dashed #ced4da;
+        border-radius: 8px;
+        background: #f8f9fa;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        text-align: center;
+        padding: 1rem;
+      }
+
       .return-top {
         display: inline-block;
         margin-top: 30px;
@@ -187,39 +201,72 @@
       <div class="breaking-context">
         <div class="context-label">⚠ CRISIS IN THE MIDDLE EAST</div>
         <h2>The U.S.–Israel Military Campaign Against Iran</h2>
-        <p>
-          On February 28, 2026, the United States and Israel launched a
-          coordinated military campaign against Iran — codenamed
-          <strong>Operation Epic Fury</strong> by the U.S. and
-          <strong>Operation Roaring Lion</strong> by Israel. The strikes
-          targeted nuclear facilities, ballistic missile infrastructure,
-          military command sites, and senior government leadership. Iranian
-          Supreme Leader Ayatollah Ali Khamenei was killed in the strikes; his
-          death was confirmed by Iranian state media early on March 1. President
-          Trump stated the objective was to eliminate "imminent threats from the
-          Iranian regime," citing Iran's nuclear program and its violent
-          suppression of large-scale domestic protests in January 2026.
-        </p>
-        <p>
-          Iran responded swiftly with waves of missile and drone strikes against
-          Israel and U.S. military installations across the Gulf region —
-          including in Bahrain, Kuwait, Qatar, and the UAE. Four U.S. service
-          members have been killed in action as of March 2. The conflict follows
-          an earlier U.S. airstrike on Iran's nuclear sites in June 2025, and a
-          brief Iran–Israel war that same summer. As of this writing, the
-          situation remains active and rapidly evolving.
-        </p>
-        <p>
-          The countries and U.S. military deployments documented in this project
-          are all directly implicated in the current conflict. Iran sits at the
-          center; Iraq, Syria, and Lebanon are home to Iranian-backed militias
-          now under pressure; Gulf states hosting tens of thousands of U.S.
-          troops are absorbing Iranian retaliatory strikes; Israel is a primary
-          combatant; and Turkey and Egypt face mounting pressure to respond
-          diplomatically. The decades of U.S. military presence captured in this
-          data — going back to 1950 — are the foundation for understanding how
-          this moment came to be.
-        </p>
+
+        <div class="row align-items-start">
+          <div class="col-12 col-md-7">
+            <p>
+              On February 28, 2026, the United States and Israel launched a
+              coordinated military campaign against Iran — codenamed
+              <strong>Operation Epic Fury</strong> by the U.S. and
+              <strong>Operation Roaring Lion</strong> by Israel. The strikes
+              targeted nuclear facilities, ballistic missile infrastructure,
+              military command sites, and senior government leadership. Iranian
+              Supreme Leader Ayatollah Ali Khamenei was killed in the strikes;
+              his death was confirmed by Iranian state media early on March 1.
+              President Trump stated the objective was to eliminate "imminent
+              threats from the Iranian regime," citing Iran's nuclear program
+              and its violent suppression of large-scale domestic protests in
+              January 2026.
+            </p>
+            <p>
+              Iran responded swiftly with waves of missile and drone strikes
+              against Israel and U.S. military installations across the Gulf
+              region — including in Bahrain, Kuwait, Qatar, and the UAE. Four
+              U.S. service members have been killed in action as of March 2. The
+              conflict follows an earlier U.S. airstrike on Iran's nuclear sites
+              in June 2025, and a brief Iran–Israel war that same summer. As of
+              this writing, the situation remains active and rapidly evolving.
+            </p>
+            <p>
+              The countries and U.S. military deployments documented in this
+              project are all directly implicated in the current conflict. Iran
+              sits at the center; Iraq, Syria, and Lebanon are home to
+              Iranian-backed militias now under pressure; Gulf states hosting
+              tens of thousands of U.S. troops are absorbing Iranian
+              retaliatory strikes; Israel is a primary combatant; and Turkey and
+              Egypt face mounting pressure to respond diplomatically. The
+              decades of U.S. military presence captured in this data — going
+              back to 1950 — are the foundation for understanding how this
+              moment came to be.
+            </p>
+          </div>
+          <div class="col-12 col-md-5 mt-3 mt-md-0">
+            <iframe
+              title="Iran and Middle East crisis locator map"
+              aria-label="Locator map"
+              id="datawrapper-chart-X99vJ"
+              src="https://datawrapper.dwcdn.net/X99vJ/1/"
+              scrolling="no"
+              frameborder="0"
+              style="width: 0; min-width: 100% !important; border: none"
+              height="483"
+              data-external="1"
+            ></iframe>
+            <script type="text/javascript">
+              window.addEventListener("message", function (a) {
+                if (void 0 !== a.data["datawrapper-height"]) {
+                  var e = document.querySelectorAll("iframe");
+                  for (var t in a.data["datawrapper-height"])
+                    for (var r, i = 0; (r = e[i]); i++)
+                      if (r.contentWindow === a.source) {
+                        var d = a.data["datawrapper-height"][t] + "px";
+                        r.style.height = d;
+                      }
+                }
+              });
+            </script>
+          </div>
+        </div>
       </div>
 
       <section class="region-section" id="iran-middle-east-detail">
@@ -441,8 +488,11 @@
               <div class="country-section">
                 <h3>Iraq</h3>
 
-                <div class="row">
-                  <div class="col-12 col-lg-8">
+                <div class="row align-items-start">
+                  <div class="col-12 col-md-6 mb-4 mb-md-0">
+                    <div class="map-placeholder">Map placeholder</div>
+                  </div>
+                  <div class="col-12 col-md-6">
                     <iframe
                       title="US troops in Iraq by year"
                       aria-label="Line chart"
@@ -678,8 +728,11 @@
               <div class="country-section">
                 <h3>Oman</h3>
 
-                <div class="row">
-                  <div class="col-12 col-lg-8">
+                <div class="row align-items-start">
+                  <div class="col-12 col-md-6 mb-4 mb-md-0">
+                    <div class="map-placeholder">Map placeholder</div>
+                  </div>
+                  <div class="col-12 col-md-6">
                     <iframe
                       title="US Troops in Oman since 1951"
                       aria-label="Line chart"
@@ -843,8 +896,11 @@
               <div class="country-section">
                 <h3>Syria</h3>
 
-                <div class="row">
-                  <div class="col-12 col-lg-8">
+                <div class="row align-items-start">
+                  <div class="col-12 col-md-6 mb-4 mb-md-0">
+                    <div class="map-placeholder">Map placeholder</div>
+                  </div>
+                  <div class="col-12 col-md-6">
                     <iframe
                       title="U.S. Troops in Syria"
                       aria-label="Line chart"
@@ -944,8 +1000,11 @@
               <div class="country-section" id="united-arab-emirates">
                 <h3>United Arab Emirates</h3>
 
-                <div class="row">
-                  <div class="col-12 col-lg-8">
+                <div class="row align-items-start">
+                  <div class="col-12 col-md-6 mb-4 mb-md-0">
+                    <div class="map-placeholder">Map placeholder</div>
+                  </div>
+                  <div class="col-12 col-md-6">
                     <iframe
                       title="US Troops in UAE since 1950"
                       aria-label="Line chart"
@@ -979,8 +1038,11 @@
               <div class="country-section" id="yemen">
                 <h3>Yemen</h3>
 
-                <div class="row">
-                  <div class="col-12 col-lg-8">
+                <div class="row align-items-start">
+                  <div class="col-12 col-md-6 mb-4 mb-md-0">
+                    <div class="map-placeholder">Map placeholder</div>
+                  </div>
+                  <div class="col-12 col-md-6">
                     <iframe
                       title="US Troop Presence in Yemen"
                       aria-label="Line chart"
