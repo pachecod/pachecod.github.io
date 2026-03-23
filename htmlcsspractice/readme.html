@@ -1,12 +1,8 @@
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-
 	<style>
 		code {
   		font-family: Consolas,"courier new";
@@ -16,66 +12,37 @@
   		font-size: 105%;
 		}
 	</style>
-
-
 	
 	<title>Practice with HTML and CSS</title>
-
 </head>
 <body>
-
 <h1>Change the Design of your profile page using CSS</h1>
-
 <p>
-
 Follow these instructions to modify your profile by changing styles in the CSS file. 
-
-
 </p>		
-
 	<ol>
-
 		<li>Open Visual Studio Code and choose File > Open to select your sites folder (if you did this before, it may already be open to that folder). Navigate to your profile page directory and open the index.html and main.css in edit mode.</li>
-
 		<br/>
-
 	<li>In the index.html, make sure you see this tag inside the head / head area:
 		<br/>
-
-
 		
-
 		<pre><code>&lt;link rel="stylesheet" href="main.css"&gt;</code>
 		</pre>
-
 	</li>
-
 	<br/>
-
-
 	
-
 <li>
 Go to the CSS file, and find the section for <b>header.</b>
 </li>
-
 <br/>
-
 <li>
 Change the background color for the header to blue, or any other primary color. Visual Studio Code will show you which colors you can pick.
 </li>
-
 <br/>
-
-
-
 <li>
-
 Find the section for <b>img</b>.
 </li>
-
 <br/>
-
 <li>
 Change the width to width: 50%;
 Add these lines:
@@ -85,37 +52,25 @@ float: left;<br/>
 padding: 10px;
 </code>
 </pre>
-
 </li>
-
 <br/>
-
 <li>
 Find the section for body.
 </li>
-
 <br/>
-
 <li>
 Change the margin-left and margin-right to 10px;
 </li>
-
 <br/>
-
 <li>
 Back in the HTML, add a quote between paragraphs and surround it with these tags:<br>
-
 <pre><code>&#x3C;blockquote&#x3E;&#x3C;/blockquote&#x3E;
 </code></pre>
-
 </li>
-
 <br/>
-
 <li>
 In the css, add this style for blockquote:
 <br/>
-
 <pre><code>blockquote {<br/>
 font-family: times;<br/>
 font-size: 24px;<br/>
@@ -124,19 +79,66 @@ font-style: italic;<br/>
 </code>
 </pre>
 <br/>
-
 </li>
+<br/>
+<li>
+Publish it: Go to your github account and copy and paste the new CSS into the main.css there and commit changes. A few minutes later, check to see if the style changes were made.
+</li>	
+<br/>
 
+<h2>More Enhanced CSS</h2>
+
+<li>
+Experiment with <b>float</b> to control how elements sit alongside each other on the page. You already used <code>float: left</code> on your image — try applying it to other elements and see how the layout shifts.
+</li>
 <br/>
 
 <li>
-Publish it: Go to your github account and copy and paste the new CSS into the main.css there and commit changes. A few minutes later, check to see if the style changes were made.
-
-</li>	
-
+Add <b>borders</b> to give your elements more visual definition. Try adding these lines to your <b>header</b> CSS:
+<br/>
+<pre><code>border: 1px solid #333;
+border-radius: 12px;
+</code></pre>
+The <code>border-radius</code> property rounds the corners. Try increasing the value to see a more dramatic curve.
+</li>
 <br/>
 
+<li>
+Try <b>text formatting</b>, especially <b>alignment</b>. You can center text in a section using <code>text-align: center;</code>, or align it to the right with <code>text-align: right;</code>. Try applying this to your header or a paragraph.
+</li>
+<br/>
 
+<li>
+Explore <b>margins and padding</b> using the <b>CSS box model</b>. Remember: padding is the space <em>inside</em> an element's border, and margin is the space <em>outside</em> it. Try adjusting both on your header or body to see how they affect spacing.
+</li>
+<br/>
 
+<li>
+Add <b>link styling</b> to make your navigation or body links look more polished. Try adding these two new selectors to your CSS:
+<br/>
+<pre><code>header a {text-decoration: none; color: white;}
+header a:hover {color: red;}
+</code></pre>
+The first rule removes the underline and changes link color. The second changes the color when a user hovers over a link. Try swapping out the colors with your own choices.
+</li>
+<br/>
+
+<li>
+Add a <b>background-image</b> to your page. You can find free, high-quality images to use at <a href="https://unsplash.com/" target="_blank">https://unsplash.com/</a>. Download an image, upload it to your project folder, and reference it in your CSS.
+<br/><br/>
+To add the image with a subtle transparency effect so your text stays readable, replace your existing <code>body</code> background property with this:
+<br/>
+<pre><code>body {
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+        url("URL TO IMAGE HERE");
+  background-size: cover;
+  background-position: center;
+}
+</code></pre>
+Replace <code>URL TO IMAGE HERE</code> with the path to your image file (or a full URL). The <code>rgba(255, 255, 255, 0.5)</code> overlay adds a white wash at 50% opacity — adjust the last number (between 0 and 1) to make it more or less transparent.
+</li>
+<br/>
+
+</ol>
 </body>
 </html>
