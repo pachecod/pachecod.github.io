@@ -1,0 +1,54 @@
+<!-- =============================================
+             PHOTO GALLERY
+             To add or remove photos, edit the array below.
+             Each entry needs a "src" (filename) and "caption".
+        ============================================== -->
+        <div class="gallery">
+            <h2>Photo Gallery</h2>
+
+            <div class="gallery-frame">
+                <img id="gallery-img" src="" alt="">
+                <p id="gallery-caption"></p>
+            </div>
+
+            <div class="gallery-controls">
+                <button onclick="changePhoto(-1)">&#8592; Previous</button>
+                <span id="gallery-counter"></span>
+                <button onclick="changePhoto(1)">Next &#8594;</button>
+            </div>
+        </div>
+
+        <script>
+            // -----------------------------------------------
+            // ADD YOUR PHOTOS HERE
+            // "src" = filename (put photos in same folder as this HTML file)
+            // "caption" = text shown below the photo
+            // -----------------------------------------------
+            const photos = [
+                { src: "photo1.jpg", caption: "Caption for the first photo." },
+                { src: "photo2.jpg", caption: "Caption for the second photo." },
+                { src: "photo3.jpg", caption: "Caption for the third photo." }
+            ];
+            // -----------------------------------------------
+
+            let current = 0;
+
+            function showPhoto(index) {
+                document.getElementById("gallery-img").src = photos[index].src;
+                document.getElementById("gallery-img").alt = photos[index].caption;
+                document.getElementById("gallery-caption").textContent = photos[index].caption;
+                document.getElementById("gallery-counter").textContent = (index + 1) + " of " + photos.length;
+            }
+
+            function changePhoto(direction) {
+                current = (current + direction + photos.length) % photos.length;
+                showPhoto(current);
+            }
+
+            // Show the first photo when page loads
+            showPhoto(current);
+        </script>
+
+
+        
+    </div>

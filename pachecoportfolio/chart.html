@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicago Homicides: A Historical Perspective</title>
+    <!-- Fonts approximating the Washington Post style -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Franklin+Gothic+Medium&family=Libre+Franklin:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --wapo-serif: 'Merriweather', serif;
+            --wapo-sans: 'Libre Franklin', sans-serif;
+            --wapo-headline: 'Merriweather', serif;
+            --text-main: #111111;
+            --text-secondary: #666666;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: var(--text-main);
+            font-family: var(--wapo-serif);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .article-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .kicker {
+            font-family: var(--wapo-sans);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #2e6d9e;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: var(--wapo-headline);
+            font-weight: 700;
+            font-size: 2.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .byline {
+            font-family: var(--wapo-sans);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        p {
+            font-size: 1.15rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        /* Updated Image Styling for Centering */
+        .image-wrapper {
+            margin: 2.5rem 0 0.5rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .img-caption {
+            font-family: var(--wapo-sans);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            text-align: left;
+            width: 100%;
+            padding-top: 0.5rem;
+        }
+
+        /* Chart Section Styling */
+        .graphic-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            border-top: 2px solid #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        .graphic-title {
+            font-family: var(--wapo-sans);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .graphic-description {
+            font-family: var(--wapo-sans);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-family: var(--wapo-sans);
+        }
+
+        .stat-box {
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .stat-box:last-child { border-right: none; }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #111;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <article class="article-container">
+        <div class="kicker">Public Safety</div>
+        <h1>Thirty-Five Years of Data Reveal Changing Landscape of Chicago Homicides</h1>
+        
+        <div class="byline">
+            By Staff Reports | Updated March 31, 2026
+        </div>
+
+        <p>In the quiet morning hours, the city of Chicago often finds itself grappling with the weight of its own history. For decades, the metric of public safety has been tied inextricably to a single, somber data point: the annual homicide count. From the violent peaks of the early 1990s to the fluctuating levels of the 21st century, the numbers tell a story of a city in constant flux.</p>
+
+        <div class="image-wrapper">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Кызылкуп_на_рассвете.jpg" alt="Cityscape at sunrise"/>
+            <div class="img-caption">The sun rises over a landscape of shifting peaks, much like the data trends seen in urban statistics over the last quarter century. (Wikimedia Commons)</div>
+        </div>
+
+        <p>The first paragraph of our analysis begins by looking at the broader societal impacts of these trends. The first paragraph of our analysis begins by looking at the broader societal impacts of these trends. The first paragraph of our analysis begins by looking at the broader societal impacts of these trends.</p>
+
+        <!-- Chart Integration -->
+        <div class="graphic-container">
+            <h2 class="graphic-title">Chicago Homicide Trends (1990–2025)</h2>
+            <p class="graphic-description">Annual count of homicides in the city. Higher volume years (800+) are highlighted in dark blue.</p>
+            
+            <div class="relative h-[400px] w-full">
+                <canvas id="homicideChart"></canvas>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Peak Year</div>
+                    <div class="stat-value">1992 (943)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">2025 Count</div>
+                    <div class="stat-value">416</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">35-Yr Avg</div>
+                    <div class="stat-value" id="average-homicides">623</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Analysts suggest that the sharp decline seen in the 2025 figures represents a significant shift from the recent spikes of the early 2020s. Experts point to a variety of community-based interventions and economic factors as potential drivers.</p>
+
+        <p>However, the historical data reminds us that progress is often non-linear. The early 1990s remain a period of unprecedented violence that serves as a cautionary benchmark for city planners today.</p>
+
+        <p>As we move further into the decade, the transparency of this data remains crucial for public discourse and policy adjustment. Understanding where we have been is the only way to navigate where we are going.</p>
+    </article>
+
+    <script>
+        const rawData = [
+            { year: '1990', count: 854 }, { year: '1991', count: 928 }, { year: '1992', count: 943 },
+            { year: '1993', count: 855 }, { year: '1994', count: 931 }, { year: '1995', count: 828 },
+            { year: '1996', count: 796 }, { year: '1997', count: 761 }, { year: '1998', count: 704 },
+            { year: '1999', count: 643 }, { year: '2000', count: 633 }, { year: '2001', count: 667 },
+            { year: '2002', count: 656 }, { year: '2003', count: 601 }, { year: '2004', count: 453 },
+            { year: '2005', count: 451 }, { year: '2006', count: 471 }, { year: '2007', count: 448 },
+            { year: '2008', count: 513 }, { year: '2009', count: 460 }, { year: '2010', count: 438 },
+            { year: '2011', count: 436 }, { year: '2012', count: 507 }, { year: '2013', count: 422 },
+            { year: '2014', count: 420 }, { year: '2015', count: 491 }, { year: '2016', count: 778 },
+            { year: '2017', count: 658 }, { year: '2018', count: 569 }, { year: '2019', count: 506 },
+            { year: '2020', count: 774 }, { year: '2021', count: 797 }, { year: '2022', count: 723 },
+            { year: '2023', count: 617 }, { year: '2024', count: 572 }, { year: '2025', count: 416 }
+        ];
+
+        const ctx = document.getElementById('homicideChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: rawData.map(d => d.year),
+                datasets: [{
+                    data: rawData.map(d => d.count),
+                    backgroundColor: rawData.map(d => d.count > 800 ? '#2563eb' : '#94a3b8'),
+                    hoverBackgroundColor: '#1d4ed8',
+                    borderRadius: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#111',
+                        titleFont: { family: 'Libre Franklin' },
+                        bodyFont: { family: 'Libre Franklin' }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 10, family: 'Libre Franklin' },
+                            maxRotation: 90,
+                            minRotation: 90,
+                            callback: function(val, index) {
+                                const year = rawData[index].year;
+                                return (year % 5 === 0) ? year : '';
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#eee' },
+                        border: { display: false },
+                        ticks: {
+                            font: { size: 10, family: 'Libre Franklin' }
+                        }
+                    }
+                }
+            }
+        });
+
+        const sum = rawData.reduce((a, b) => a + b.count, 0);
+        document.getElementById('average-homicides').innerText = Math.round(sum / rawData.length);
+    </script>
+</body>
+</html>
