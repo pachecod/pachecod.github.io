@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+
+  <!-- Bootstrap CSS (CDN — no local files needed) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous">
+
+  <!-- Google Font — swap "Lora" / "Source Sans 3" for any Google Font pair -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Design Tokens — change these to retheme the whole page ─── */
+    :root {
+      --color-bg:        #f8f6f2;
+      --color-surface:   #ffffff;
+      --color-accent:    #c0392b;       /* headline / link accent */
+      --color-text:      #1a1a1a;
+      --color-muted:     #666;
+      --color-border:    #e0ddd8;
+      --font-display:    'Lora', Georgia, serif;
+      --font-body:       'Source Sans 3', Helvetica, sans-serif;
+      --max-width:       960px;
+      --radius:          4px;
+    }
+
+    /* ─── Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ─── Outer card / articlebox ───────────────────────────────── */
+    .articlebox {
+      background: var(--color-surface);
+      max-width: var(--max-width);
+      margin: 2rem auto;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+
+    /* ─── Navigation ────────────────────────────────────────────── */
+    header {
+      background: var(--color-text);
+      padding: .75rem 1.5rem;
+    }
+
+    header nav {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    header nav a {
+      color: #fff;
+      text-decoration: none;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: .85rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .85;
+      transition: opacity .2s;
+    }
+
+    header nav a:hover { opacity: 1; color: var(--color-accent); }
+
+    /* ─── Main content area ─────────────────────────────────────── */
+    .content-wrap {
+      padding: 2rem 2rem 3rem;
+    }
+
+    /* ─── Typography ────────────────────────────────────────────── */
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      color: var(--color-text);
+      margin-bottom: .5rem;
+    }
+
+    h1 { font-size: 2.2rem; line-height: 1.2; }
+    h2 { font-size: 1.5rem; border-bottom: 2px solid var(--color-accent);
+         padding-bottom: .25rem; margin-top: 2rem; }
+
+    p { margin-bottom: 1.1rem; }
+
+    a { color: var(--color-accent); }
+    a:hover { text-decoration: underline; }
+
+    /* ─── Images ────────────────────────────────────────────────── */
+    img.img-fluid {
+      border-radius: var(--radius);
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Placeholder blocks when no real image is available */
+    .img-placeholder {
+      background: var(--color-border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted);
+      font-size: .85rem;
+      min-height: 200px;
+      width: 100%;
+    }
+
+    /* ─── Row spacing ───────────────────────────────────────────── */
+    .row { margin-bottom: 1.5rem; }
+    .row:last-child { margin-bottom: 0; }
+
+    /* ─── Footer (optional) ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: 1rem 2rem;
+      font-size: .8rem;
+      color: var(--color-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="articlebox">
+
+  <!-- ═══ Navigation ════════════════════════════════════════════ -->
+  <header>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about/index.html">About Me</a>
+      <a href="work/index.html">My Work</a>
+      <a href="resume/index.html">Resume</a>
+    </nav>
+  </header>
+
+  <!-- ═══ Main Content ══════════════════════════════════════════ -->
+  <div class="content-wrap">
+    <div class="container-fluid p-0">
+
+      <!-- Row 1 — Page headline (full width) -->
+      <div class="row">
+        <div class="col-12">
+          <h1>Page Headline Goes Here</h1>
+          <p class="text-muted" style="font-family: var(--font-body); font-size:.95rem;">
+            A short deck or subtitle that sets context for the reader.
+          </p>
+          <hr style="border-color: var(--color-border);">
+        </div>
+      </div>
+
+      <!-- Row 2 — Text left, image right -->
+      <div class="row align-items-center">
+        <div class="col-sm">
+          <p>Story text here. Replace this with your own content. This column sits
+             alongside an image on medium and large screens, and stacks on mobile.</p>
+          <p>Add as many paragraphs as you need. The column will grow to fit.</p>
+        </div>
+        <div class="col-sm">
+          <!-- Replace src with your real image path -->
+          <img class="img-fluid" src="photo3.jpg" alt="Descriptive alt text."
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="img-placeholder" style="display:none;">Image placeholder (photo3.jpg)</div>
+        </div>
+      </div>
+
+      <!-- Row 3 — Full-width text -->
+      <div class="row">
+        <div class="col-12">
+          <h2>Section Heading</h2>
+          <p>Full-width text area. Use this for section introductions, pull quotes,
+             or any content that should span the entire column. Works well for
+             transitional copy between image rows.</p>
+        </div>
+      </div>
+
+      <!-- Row 4 — Full-width image -->
+      <div class="row">
+        <div class="col-12">
+          <img class="img-fluid" src="photo1.jpg" alt="Descriptive alt text."
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="img-placeholder" style="display:none;">Image placeholder (photo1.jpg)</div>
+        </div>
+      </div>
+
+      <!-- Row 5 — Three equal columns -->
+      <div class="row">
+        <div class="col-sm">
+          <p>Left column text. Story text here. Story text here. Story text here.</p>
+        </div>
+        <div class="col-sm">
+          <img class="img-fluid" src="photo2.jpg" alt="Descriptive alt text."
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="img-placeholder" style="display:none;">Image placeholder (photo2.jpg)</div>
+        </div>
+        <div class="col-sm">
+          <p>Right column text. Story text here. Story text here. Story text here.</p>
+        </div>
+      </div>
+
+    </div><!-- /container-fluid -->
+  </div><!-- /content-wrap -->
+
+  <!-- ═══ Footer (optional — delete if not needed) ═════════════ -->
+  <footer>
+    &copy; 2025 Your Name &mdash; <a href="mailto:you@example.com">Contact</a>
+  </footer>
+
+</div><!-- /articlebox -->
+
+<!-- Bootstrap JS bundle (includes Popper) -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+  crossorigin="anonymous"></script>
+
+</body>
+</html>
