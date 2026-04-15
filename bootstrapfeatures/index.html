@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bootstrap 5 Component Gallery</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Code+Pro:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --ink:     #0f0e0d;
+      --paper:   #f5f2ec;
+      --rule:    #d4c9b0;
+      --accent:  #c0392b;
+      --accent2: #1a6b8a;
+      --code-bg: #1c1c1e;
+      --code-fg: #e2e2e2;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    /* ── Masthead ── */
+    .masthead {
+      background: var(--ink);
+      color: #fff;
+      padding: 3.5rem 0 2.5rem;
+      border-bottom: 4px solid var(--accent);
+    }
+    .masthead h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .masthead .tagline {
+      font-size: 1rem;
+      color: #bbb;
+      margin-top: .5rem;
+    }
+    .edition-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: .25rem .65rem;
+      border-radius: 2px;
+      margin-bottom: .75rem;
+    }
+
+    /* ── Section headers ── */
+    .section-rule {
+      border-top: 3px solid var(--ink);
+      padding-top: 2.5rem;
+      margin-top: 3.5rem;
+    }
+    .section-rule h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+    }
+    .section-label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: .25rem;
+    }
+    .section-desc {
+      color: #555;
+      max-width: 60ch;
+      font-size: .95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Demo / Code panels ── */
+    .demo-panel {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: .75rem;
+      position: relative;
+    }
+    .demo-panel::before {
+      content: 'LIVE PREVIEW';
+      position: absolute;
+      top: -1px; right: 20px;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: var(--accent2);
+      color: #fff;
+      padding: .2rem .55rem;
+      border-radius: 0 0 4px 4px;
+    }
+
+    .code-panel {
+      background: var(--code-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .code-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2a2a2d;
+      padding: .55rem 1rem;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #888;
+    }
+    .copy-btn {
+      background: none;
+      border: 1px solid #555;
+      color: #bbb;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: .2rem .6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .copy-btn:hover { background: #444; color: #fff; border-color: #777; }
+    .copy-btn.copied { background: #2d6a4f; color: #fff; border-color: #2d6a4f; }
+
+    pre {
+      margin: 0;
+      padding: 1.25rem 1rem;
+      overflow-x: auto;
+      font-family: 'Source Code Pro', monospace;
+      font-size: .8rem;
+      line-height: 1.65;
+      color: var(--code-fg);
+      white-space: pre;
+    }
+
+    /* Syntax colors (manual) */
+    .t { color: #6ec0d4; }  /* tag */
+    .a { color: #c8a2e8; }  /* attr */
+    .v { color: #a8d8a3; }  /* value */
+    .c { color: #888;    }  /* comment */
+
+    /* ── Carousel images ── */
+    .carousel-img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Nav pill quick-jump ── */
+    .quick-nav {
+      background: var(--ink);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: .6rem 0;
+      border-bottom: 2px solid var(--accent);
+    }
+    .quick-nav a {
+      color: #ccc;
+      font-size: .78rem;
+      font-weight: 500;
+      text-decoration: none;
+      margin-right: 1.25rem;
+      transition: color .15s;
+      white-space: nowrap;
+    }
+    .quick-nav a:hover { color: #fff; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink);
+      color: #777;
+      font-size: .82rem;
+      padding: 2rem 0;
+      margin-top: 5rem;
+      border-top: 3px solid var(--accent);
+    }
+    footer a { color: #aaa; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ MASTHEAD ═══════════════════════════════ -->
+<header class="masthead">
+  <div class="container">
+    <div class="edition-badge">Bootstrap 5 · Student Reference</div>
+    <h1>The Component<br>Gazette</h1>
+    <p class="tagline">A field guide to Bootstrap 5 — live examples + copy-ready code for every component.</p>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ QUICK NAV ═══════════════════════════════ -->
+<nav class="quick-nav">
+  <div class="container d-flex flex-wrap">
+    <a href="#images">Images</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#alerts">Alerts</a>
+    <a href="#badges">Badges</a>
+    <a href="#cards">Cards</a>
+    <a href="#accordion">Accordion</a>
+    <a href="#carousel">Carousel</a>
+    <a href="#modal">Modal</a>
+    <a href="#navbar">Navbar</a>
+    <a href="#progress">Progress</a>
+    <a href="#listgroup">List Group</a>
+    <a href="#tooltip">Tooltips</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
+<main class="container pb-5">
+
+
+  <!-- ─── 1. IMAGES ─────────────────────────────────────────────── -->
+  <section id="images" class="section-rule">
+    <span class="section-label">01 · Images</span>
+    <h2>Responsive Image <code class="text-danger">img-fluid</code></h2>
+    <p class="section-desc">Add <code>.img-fluid</code> to any <code>&lt;img&gt;</code> so it scales down on small screens but never grows beyond its natural size. Combine with <code>.rounded</code> or <code>.rounded-circle</code> for shape variants.</p>
+
+    <div class="demo-panel">
+      <img src="https://placehold.co/900x400" class="img-fluid rounded" alt="A sample responsive image placeholder"/>
+      <div class="mt-3 d-flex gap-2">
+        <img src="https://placehold.co/120x120" class="img-fluid rounded-circle" style="width:80px;height:80px;object-fit:cover" alt="Circle crop"/>
+        <img src="https://placehold.co/120x120" class="img-fluid rounded-3 border" style="width:80px;height:80px;object-fit:cover" alt="Rounded corners"/>
+        <img src="https://placehold.co/120x120" class="img-fluid img-thumbnail" style="width:80px;height:80px;object-fit:cover" alt="Thumbnail border style"/>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Basic responsive image --&gt;
+&lt;<span class="t">img</span> <span class="a">src</span>=<span class="v">"your-image.jpg"</span> <span class="a">class</span>=<span class="v">"img-fluid rounded"</span> <span class="a">alt</span>=<span class="v">"Description"</span>/&gt;
+
+&lt;!-- Circle crop (works best on square images) --&gt;
+&lt;<span class="t">img</span> <span class="a">src</span>=<span class="v">"your-image.jpg"</span> <span class="a">class</span>=<span class="v">"img-fluid rounded-circle"</span> <span class="a">alt</span>=<span class="v">"Description"</span>/&gt;
+
+&lt;!-- Thumbnail (adds a subtle border + padding) --&gt;
+&lt;<span class="t">img</span> <span class="a">src</span>=<span class="v">"your-image.jpg"</span> <span class="a">class</span>=<span class="v">"img-fluid img-thumbnail"</span> <span class="a">alt</span>=<span class="v">"Description"</span>/&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 2. BUTTONS ────────────────────────────────────────────── -->
+  <section id="buttons" class="section-rule">
+    <span class="section-label">02 · Buttons</span>
+    <h2>Buttons</h2>
+    <p class="section-desc">Bootstrap ships nine semantic color variants plus outline versions. Use <code>.btn-sm</code> / <code>.btn-lg</code> for sizing and <code>.w-100</code> for a full-width button.</p>
+
+    <div class="demo-panel">
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-success">Success</button>
+        <button class="btn btn-danger">Danger</button>
+        <button class="btn btn-warning">Warning</button>
+        <button class="btn btn-info text-white">Info</button>
+        <button class="btn btn-dark">Dark</button>
+        <button class="btn btn-light border">Light</button>
+      </div>
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <button class="btn btn-outline-primary">Outline Primary</button>
+        <button class="btn btn-outline-secondary">Outline Secondary</button>
+        <button class="btn btn-outline-danger">Outline Danger</button>
+      </div>
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <button class="btn btn-primary btn-lg">Large</button>
+        <button class="btn btn-primary">Default</button>
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary" disabled>Disabled</button>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Solid buttons --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary"</span>&gt;Primary&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-secondary"</span>&gt;Secondary&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-success"</span>&gt;Success&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-danger"</span>&gt;Danger&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-warning"</span>&gt;Warning&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-dark"</span>&gt;Dark&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- Outline buttons --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-outline-primary"</span>&gt;Outline Primary&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-outline-danger"</span>&gt;Outline Danger&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- Sizes --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary btn-lg"</span>&gt;Large&lt;/<span class="t">button</span>&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary btn-sm"</span>&gt;Small&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- Full-width --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary w-100"</span>&gt;Full Width&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- Disabled --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary"</span> <span class="a">disabled</span>&gt;Disabled&lt;/<span class="t">button</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 3. ALERTS ─────────────────────────────────────────────── -->
+  <section id="alerts" class="section-rule">
+    <span class="section-label">03 · Alerts</span>
+    <h2>Alerts</h2>
+    <p class="section-desc">Contextual feedback messages for the user. Add <code>data-bs-dismiss="alert"</code> and the <code>.alert-dismissible</code> class to make them closeable.</p>
+
+    <div class="demo-panel">
+      <div class="alert alert-primary">📰 <strong>Tip:</strong> This is a primary alert — use it for general info.</div>
+      <div class="alert alert-success">✅ <strong>Success!</strong> Your story has been published.</div>
+      <div class="alert alert-warning">⚠️ <strong>Warning:</strong> Your draft auto-saves every 60 seconds.</div>
+      <div class="alert alert-danger">🚫 <strong>Error:</strong> Could not connect to the database.</div>
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        ℹ️ <strong>Dismissible:</strong> Click the × to close this alert.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Static alerts --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"alert alert-primary"</span>&gt;Primary alert&lt;/<span class="t">div</span>&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"alert alert-success"</span>&gt;Success alert&lt;/<span class="t">div</span>&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"alert alert-warning"</span>&gt;Warning alert&lt;/<span class="t">div</span>&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"alert alert-danger"</span>&gt;Danger alert&lt;/<span class="t">div</span>&gt;
+
+&lt;!-- Dismissible alert (requires Bootstrap JS) --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"alert alert-info alert-dismissible fade show"</span> <span class="a">role</span>=<span class="v">"alert"</span>&gt;
+  Your message here.
+  &lt;<span class="t">button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">class</span>=<span class="v">"btn-close"</span> <span class="a">data-bs-dismiss</span>=<span class="v">"alert"</span> <span class="a">aria-label</span>=<span class="v">"Close"</span>&gt;&lt;/<span class="t">button</span>&gt;
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 4. BADGES ─────────────────────────────────────────────── -->
+  <section id="badges" class="section-rule">
+    <span class="section-label">04 · Badges</span>
+    <h2>Badges</h2>
+    <p class="section-desc">Small inline labels perfect for tags, categories, or notification counts. Use <code>.rounded-pill</code> for a pill shape.</p>
+
+    <div class="demo-panel">
+      <div class="mb-3">
+        <span class="badge bg-primary me-1">Breaking News</span>
+        <span class="badge bg-secondary me-1">Opinion</span>
+        <span class="badge bg-success me-1">Published</span>
+        <span class="badge bg-danger me-1">Exclusive</span>
+        <span class="badge bg-warning text-dark me-1">Developing</span>
+        <span class="badge bg-info text-dark me-1">Feature</span>
+        <span class="badge bg-dark me-1">Archive</span>
+      </div>
+      <div class="mb-3">
+        <span class="badge rounded-pill bg-primary me-1">Pill Badge</span>
+        <span class="badge rounded-pill bg-danger me-1">12 new</span>
+        <span class="badge rounded-pill bg-success me-1">Live</span>
+      </div>
+      <div>
+        <button class="btn btn-primary me-2">
+          Notifications <span class="badge bg-danger ms-1">4</span>
+        </button>
+        <h5 class="d-inline">Headline <span class="badge bg-secondary fs-6">New</span></h5>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Color variants --&gt;
+&lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"badge bg-primary"</span>&gt;Breaking News&lt;/<span class="t">span</span>&gt;
+&lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"badge bg-danger"</span>&gt;Exclusive&lt;/<span class="t">span</span>&gt;
+&lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"badge bg-warning text-dark"</span>&gt;Developing&lt;/<span class="t">span</span>&gt;
+
+&lt;!-- Pill shape --&gt;
+&lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"badge rounded-pill bg-primary"</span>&gt;Pill Badge&lt;/<span class="t">span</span>&gt;
+
+&lt;!-- Inside a button --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary"</span>&gt;
+  Notifications &lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"badge bg-danger ms-1"</span>&gt;4&lt;/<span class="t">span</span>&gt;
+&lt;/<span class="t">button</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 5. CARDS ──────────────────────────────────────────────── -->
+  <section id="cards" class="section-rule">
+    <span class="section-label">05 · Cards</span>
+    <h2>Cards</h2>
+    <p class="section-desc">The most versatile Bootstrap component. Cards support headers, footers, images, list groups, and can be arranged in responsive grid decks.</p>
+
+    <div class="demo-panel">
+      <div class="row g-3">
+        <!-- Image card with caption -->
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm">
+            <img src="https://placehold.co/400x220" class="card-img-top" alt="Story image placeholder"/>
+            <div class="card-body">
+              <span class="badge bg-danger mb-2">Breaking</span>
+              <h5 class="card-title">Journalists Embrace AI Tools in Newsrooms</h5>
+              <p class="card-text text-muted small">A new survey finds more than half of digital newsrooms are experimenting with AI-assisted reporting workflows.</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center small text-muted">
+              <span><i class="bi bi-person"></i> Jane Smith</span>
+              <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+            </div>
+          </div>
+        </div>
+        <!-- Simple text card -->
+        <div class="col-md-4">
+          <div class="card h-100 border-start border-4 border-primary shadow-sm">
+            <div class="card-body">
+              <h6 class="text-primary text-uppercase small fw-bold">Editor's Note</h6>
+              <h5 class="card-title">A Word on Our Standards</h5>
+              <p class="card-text">We hold ourselves to rigorous fact-checking. Every claim is verified by at least two independent sources before publication.</p>
+              <a href="#" class="btn btn-primary btn-sm">Our Policy</a>
+            </div>
+          </div>
+        </div>
+        <!-- Header/footer card -->
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-header fw-semibold">📊 By the Numbers</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">Stories published <span class="badge bg-primary rounded-pill">142</span></li>
+              <li class="list-group-item d-flex justify-content-between">Corrections issued <span class="badge bg-warning text-dark rounded-pill">3</span></li>
+              <li class="list-group-item d-flex justify-content-between">Active reporters <span class="badge bg-success rounded-pill">18</span></li>
+            </ul>
+            <div class="card-footer small text-muted">Updated this month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Basic image card --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"card"</span>&gt;
+  &lt;<span class="t">img</span> <span class="a">src</span>=<span class="v">"photo.jpg"</span> <span class="a">class</span>=<span class="v">"card-img-top"</span> <span class="a">alt</span>=<span class="v">"..."</span>/&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"card-body"</span>&gt;
+    &lt;<span class="t">h5</span> <span class="a">class</span>=<span class="v">"card-title"</span>&gt;Card Title&lt;/<span class="t">h5</span>&gt;
+    &lt;<span class="t">p</span> <span class="a">class</span>=<span class="v">"card-text"</span>&gt;Card body text goes here.&lt;/<span class="t">p</span>&gt;
+    &lt;<span class="t">a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"btn btn-primary"</span>&gt;Read More&lt;/<span class="t">a</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"card-footer text-muted small"</span>&gt;Author · Date&lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">div</span>&gt;
+
+&lt;!-- Grid of cards (3 columns) --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"row g-3"</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"col-md-4"</span>&gt;
+    &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"card h-100"</span>&gt; ... &lt;/<span class="t">div</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"col-md-4"</span>&gt;
+    &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"card h-100"</span>&gt; ... &lt;/<span class="t">div</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 6. ACCORDION ──────────────────────────────────────────── -->
+  <section id="accordion" class="section-rule">
+    <span class="section-label">06 · Accordion</span>
+    <h2>Accordion</h2>
+    <p class="section-desc">Collapsible sections — perfect for FAQs, glossaries, or multi-step instructions. Only one panel is open at a time by default.</p>
+
+    <div class="demo-panel">
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true">
+              What is Bootstrap?
+            </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Bootstrap is an open-source CSS framework developed by Twitter. It includes pre-built components, a responsive grid system, and JavaScript plugins that help you build websites faster without writing everything from scratch.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+              Do I need to know CSS to use Bootstrap?
+            </button>
+          </h2>
+          <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Basic CSS knowledge helps, but Bootstrap is designed so you can get far with just HTML and the right class names. As you get more comfortable, CSS lets you customize Bootstrap's defaults.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+              How do I add Bootstrap to my project?
+            </button>
+          </h2>
+          <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              The simplest way is to paste the Bootstrap CDN <code>&lt;link&gt;</code> tag into your <code>&lt;head&gt;</code> and the <code>&lt;script&gt;</code> tag before your closing <code>&lt;/body&gt;</code>. No installation required.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+              Is Bootstrap mobile-friendly?
+            </button>
+          </h2>
+          <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Yes — Bootstrap is mobile-first by design. Its responsive grid collapses from multi-column desktop layouts to single-column stacks on small screens automatically.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"accordion"</span> <span class="a">id</span>=<span class="v">"myAccordion"</span>&gt;
+
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"accordion-item"</span>&gt;
+    &lt;<span class="t">h2</span> <span class="a">class</span>=<span class="v">"accordion-header"</span>&gt;
+      &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"accordion-button"</span> <span class="a">type</span>=<span class="v">"button"</span>
+              <span class="a">data-bs-toggle</span>=<span class="v">"collapse"</span> <span class="a">data-bs-target</span>=<span class="v">"#item1"</span>&gt;
+        Question One
+      &lt;/<span class="t">button</span>&gt;
+    &lt;/<span class="t">h2</span>&gt;
+    &lt;<span class="t">div</span> <span class="a">id</span>=<span class="v">"item1"</span> <span class="a">class</span>=<span class="v">"accordion-collapse collapse show"</span>
+         <span class="a">data-bs-parent</span>=<span class="v">"#myAccordion"</span>&gt;
+      &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"accordion-body"</span>&gt;
+        Answer goes here.
+      &lt;/<span class="t">div</span>&gt;
+    &lt;/<span class="t">div</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"accordion-item"</span>&gt;
+    &lt;<span class="t">h2</span> <span class="a">class</span>=<span class="v">"accordion-header"</span>&gt;
+      &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"accordion-button collapsed"</span> <span class="a">type</span>=<span class="v">"button"</span>
+              <span class="a">data-bs-toggle</span>=<span class="v">"collapse"</span> <span class="a">data-bs-target</span>=<span class="v">"#item2"</span>&gt;
+        Question Two
+      &lt;/<span class="t">button</span>&gt;
+    &lt;/<span class="t">h2</span>&gt;
+    &lt;<span class="t">div</span> <span class="a">id</span>=<span class="v">"item2"</span> <span class="a">class</span>=<span class="v">"accordion-collapse collapse"</span>
+         <span class="a">data-bs-parent</span>=<span class="v">"#myAccordion"</span>&gt;
+      &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"accordion-body"</span>&gt;
+        Answer goes here.
+      &lt;/<span class="t">div</span>&gt;
+    &lt;/<span class="t">div</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 7. CAROUSEL ───────────────────────────────────────────── -->
+  <section id="carousel" class="section-rule">
+    <span class="section-label">07 · Carousel</span>
+    <h2>Carousel</h2>
+    <p class="section-desc">A slideshow for cycling through images or content. Add <code>data-bs-ride="carousel"</code> to auto-play, or omit it to require user interaction. Captions go in <code>.carousel-caption</code>.</p>
+
+    <div class="demo-panel">
+      <div id="mainCarousel" class="carousel slide rounded overflow-hidden" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="https://placehold.co/900x320" class="carousel-img" alt="Slide 1"/>
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Scene One</h5>
+              <p>Captions describe what's in the image for readers who rely on them.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://placehold.co/900x320" class="carousel-img" alt="Slide 2"/>
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Scene Two</h5>
+              <p>Each slide can have its own headline and caption text.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://placehold.co/900x320" class="carousel-img" alt="Slide 3"/>
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Scene Three</h5>
+              <p>The overlay text sits on a semi-transparent gradient automatically.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://placehold.co/900x320" class="carousel-img" alt="Slide 4"/>
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Scene Four</h5>
+              <p>Add as many slides as you need — just copy the <code>.carousel-item</code> block.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;<span class="t">div</span> <span class="a">id</span>=<span class="v">"myCarousel"</span> <span class="a">class</span>=<span class="v">"carousel slide"</span> <span class="a">data-bs-ride</span>=<span class="v">"carousel"</span>&gt;
+
+  &lt;!-- Dot indicators --&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"carousel-indicators"</span>&gt;
+    &lt;<span class="t">button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">data-bs-target</span>=<span class="v">"#myCarousel"</span> <span class="a">data-bs-slide-to</span>=<span class="v">"0"</span> <span class="a">class</span>=<span class="v">"active"</span>&gt;&lt;/<span class="t">button</span>&gt;
+    &lt;<span class="t">button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">data-bs-target</span>=<span class="v">"#myCarousel"</span> <span class="a">data-bs-slide-to</span>=<span class="v">"1"</span>&gt;&lt;/<span class="t">button</span>&gt;
+    &lt;<span class="t">button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">data-bs-target</span>=<span class="v">"#myCarousel"</span> <span class="a">data-bs-slide-to</span>=<span class="v">"2"</span>&gt;&lt;/<span class="t">button</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+
+  &lt;!-- Slides --&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"carousel-inner"</span>&gt;
+
+    &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"carousel-item active"</span>&gt;
+      &lt;<span class="t">img</span> <span class="a">src</span>=<span class="v">"slide1.jpg"</span> <span class="a">class</span>=<span class="v">"d-block w-100"</span> <span class="a">alt</span>=<span class="v">"Slide 1"</span>/&gt;
+      &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"carousel-caption d-none d-md-block"</span>&gt;
+        &lt;<span class="t">h5</span>&gt;Caption Headline&lt;/<span class="t">h5</span>&gt;
+        &lt;<span class="t">p</span>&gt;Supporting text here.&lt;/<span class="t">p</span>&gt;
+      &lt;/<span class="t">div</span>&gt;
+    &lt;/<span class="t">div</span>&gt;
+
+    &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"carousel-item"</span>&gt;
+      &lt;<span class="t">img</span> <span class="a">src</span>=<span class="v">"slide2.jpg"</span> <span class="a">class</span>=<span class="v">"d-block w-100"</span> <span class="a">alt</span>=<span class="v">"Slide 2"</span>/&gt;
+    &lt;/<span class="t">div</span>&gt;
+
+  &lt;/<span class="t">div</span>&gt;
+
+  &lt;!-- Prev / Next controls --&gt;
+  &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"carousel-control-prev"</span> <span class="a">type</span>=<span class="v">"button"</span>
+          <span class="a">data-bs-target</span>=<span class="v">"#myCarousel"</span> <span class="a">data-bs-slide</span>=<span class="v">"prev"</span>&gt;
+    &lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"carousel-control-prev-icon"</span>&gt;&lt;/<span class="t">span</span>&gt;
+    &lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"visually-hidden"</span>&gt;Previous&lt;/<span class="t">span</span>&gt;
+  &lt;/<span class="t">button</span>&gt;
+  &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"carousel-control-next"</span> <span class="a">type</span>=<span class="v">"button"</span>
+          <span class="a">data-bs-target</span>=<span class="v">"#myCarousel"</span> <span class="a">data-bs-slide</span>=<span class="v">"next"</span>&gt;
+    &lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"carousel-control-next-icon"</span>&gt;&lt;/<span class="t">span</span>&gt;
+    &lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"visually-hidden"</span>&gt;Next&lt;/<span class="t">span</span>&gt;
+  &lt;/<span class="t">button</span>&gt;
+
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 8. MODAL ──────────────────────────────────────────────── -->
+  <section id="modal" class="section-rule">
+    <span class="section-label">08 · Modal</span>
+    <h2>Modal Dialog</h2>
+    <p class="section-desc">Overlays that appear on top of the page. Good for confirmation dialogs, image lightboxes, sign-up forms, or quick previews. Triggered by a <code>data-bs-toggle="modal"</code> attribute on any element.</p>
+
+    <div class="demo-panel">
+      <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#demoModal">
+        <i class="bi bi-box-arrow-up-right me-1"></i> Open Modal
+      </button>
+      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#imageModal">
+        <i class="bi bi-image me-1"></i> Image Lightbox
+      </button>
+
+      <!-- Basic modal -->
+      <div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="demoModalLabel">Modal Headline</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>This content appears in an overlay on top of your page. You can put anything here — text, forms, images, or entire components.</p>
+              <p class="text-muted small">Clicking the backdrop or pressing <kbd>Esc</kbd> also closes the modal.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image lightbox modal -->
+      <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content bg-dark text-white border-0">
+            <div class="modal-body p-0">
+              <img src="https://placehold.co/900x500" class="img-fluid w-100 rounded" alt="Full-size image placeholder"/>
+            </div>
+            <div class="modal-footer border-0 justify-content-center py-2">
+              <p class="text-muted small mb-0">Caption: This is an example lightbox image.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Trigger button --&gt;
+&lt;<span class="t">button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">class</span>=<span class="v">"btn btn-primary"</span>
+        <span class="a">data-bs-toggle</span>=<span class="v">"modal"</span> <span class="a">data-bs-target</span>=<span class="v">"#myModal"</span>&gt;
+  Open Modal
+&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- Modal markup (put anywhere in body) --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"modal fade"</span> <span class="a">id</span>=<span class="v">"myModal"</span> <span class="a">tabindex</span>=<span class="v">"-1"</span> <span class="a">aria-hidden</span>=<span class="v">"true"</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"modal-dialog"</span>&gt;
+    &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"modal-content"</span>&gt;
+
+      &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"modal-header"</span>&gt;
+        &lt;<span class="t">h5</span> <span class="a">class</span>=<span class="v">"modal-title"</span>&gt;Title&lt;/<span class="t">h5</span>&gt;
+        &lt;<span class="t">button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">class</span>=<span class="v">"btn-close"</span> <span class="a">data-bs-dismiss</span>=<span class="v">"modal"</span>&gt;&lt;/<span class="t">button</span>&gt;
+      &lt;/<span class="t">div</span>&gt;
+
+      &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"modal-body"</span>&gt;
+        Your content here.
+      &lt;/<span class="t">div</span>&gt;
+
+      &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"modal-footer"</span>&gt;
+        &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-secondary"</span> <span class="a">data-bs-dismiss</span>=<span class="v">"modal"</span>&gt;Close&lt;/<span class="t">button</span>&gt;
+        &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-primary"</span>&gt;Save Changes&lt;/<span class="t">button</span>&gt;
+      &lt;/<span class="t">div</span>&gt;
+
+    &lt;/<span class="t">div</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 9. NAVBAR ─────────────────────────────────────────────── -->
+  <section id="navbar" class="section-rule">
+    <span class="section-label">09 · Navbar</span>
+    <h2>Navigation Bar</h2>
+    <p class="section-desc">A responsive nav that collapses to a hamburger menu on small screens. <code>navbar-expand-lg</code> means it expands at the large breakpoint. Swap <code>navbar-dark bg-dark</code> for <code>navbar-light bg-light</code> for a light version.</p>
+
+    <div class="demo-panel p-0 overflow-hidden">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold" href="#">The Gazette</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#demoNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="demoNav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="#">News</a></li>
+              <li class="nav-item"><a class="nav-link" href="#">Opinion</a></li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">More</a>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                  <li><a class="dropdown-item" href="#">Sports</a></li>
+                  <li><a class="dropdown-item" href="#">Arts</a></li>
+                  <li><hr class="dropdown-divider"/></li>
+                  <li><a class="dropdown-item" href="#">About Us</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control form-control-sm me-2" type="search" placeholder="Search…"/>
+              <button class="btn btn-outline-light btn-sm" type="submit">Go</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;<span class="t">nav</span> <span class="a">class</span>=<span class="v">"navbar navbar-expand-lg navbar-dark bg-dark"</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"container"</span>&gt;
+
+    &lt;<span class="t">a</span> <span class="a">class</span>=<span class="v">"navbar-brand"</span> <span class="a">href</span>=<span class="v">"#"</span>&gt;Site Name&lt;/<span class="t">a</span>&gt;
+
+    &lt;!-- Hamburger toggle (shown on small screens) --&gt;
+    &lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"navbar-toggler"</span> <span class="a">type</span>=<span class="v">"button"</span>
+            <span class="a">data-bs-toggle</span>=<span class="v">"collapse"</span> <span class="a">data-bs-target</span>=<span class="v">"#navMenu"</span>&gt;
+      &lt;<span class="t">span</span> <span class="a">class</span>=<span class="v">"navbar-toggler-icon"</span>&gt;&lt;/<span class="t">span</span>&gt;
+    &lt;/<span class="t">button</span>&gt;
+
+    &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"collapse navbar-collapse"</span> <span class="a">id</span>=<span class="v">"navMenu"</span>&gt;
+      &lt;<span class="t">ul</span> <span class="a">class</span>=<span class="v">"navbar-nav me-auto"</span>&gt;
+        &lt;<span class="t">li</span> <span class="a">class</span>=<span class="v">"nav-item"</span>&gt;&lt;<span class="t">a</span> <span class="a">class</span>=<span class="v">"nav-link active"</span> <span class="a">href</span>=<span class="v">"#"</span>&gt;Home&lt;/<span class="t">a</span>&gt;&lt;/<span class="t">li</span>&gt;
+        &lt;<span class="t">li</span> <span class="a">class</span>=<span class="v">"nav-item"</span>&gt;&lt;<span class="t">a</span> <span class="a">class</span>=<span class="v">"nav-link"</span> <span class="a">href</span>=<span class="v">"#"</span>&gt;About&lt;/<span class="t">a</span>&gt;&lt;/<span class="t">li</span>&gt;
+
+        &lt;!-- Dropdown --&gt;
+        &lt;<span class="t">li</span> <span class="a">class</span>=<span class="v">"nav-item dropdown"</span>&gt;
+          &lt;<span class="t">a</span> <span class="a">class</span>=<span class="v">"nav-link dropdown-toggle"</span> <span class="a">href</span>=<span class="v">"#"</span>
+             <span class="a">data-bs-toggle</span>=<span class="v">"dropdown"</span>&gt;More&lt;/<span class="t">a</span>&gt;
+          &lt;<span class="t">ul</span> <span class="a">class</span>=<span class="v">"dropdown-menu"</span>&gt;
+            &lt;<span class="t">li</span>&gt;&lt;<span class="t">a</span> <span class="a">class</span>=<span class="v">"dropdown-item"</span> <span class="a">href</span>=<span class="v">"#"</span>&gt;Page A&lt;/<span class="t">a</span>&gt;&lt;/<span class="t">li</span>&gt;
+            &lt;<span class="t">li</span>&gt;&lt;<span class="t">a</span> <span class="a">class</span>=<span class="v">"dropdown-item"</span> <span class="a">href</span>=<span class="v">"#"</span>&gt;Page B&lt;/<span class="t">a</span>&gt;&lt;/<span class="t">li</span>&gt;
+          &lt;/<span class="t">ul</span>&gt;
+        &lt;/<span class="t">li</span>&gt;
+      &lt;/<span class="t">ul</span>&gt;
+    &lt;/<span class="t">div</span>&gt;
+
+  &lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">nav</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 10. PROGRESS ─────────────────────────────────────────── -->
+  <section id="progress" class="section-rule">
+    <span class="section-label">10 · Progress Bars</span>
+    <h2>Progress Bars</h2>
+    <p class="section-desc">Visual indicators for loading states, fundraising goals, story completion — anything measurable. The <code>aria-valuenow</code> attribute keeps them accessible to screen readers.</p>
+
+    <div class="demo-panel">
+      <p class="mb-1 small fw-semibold">Story completion</p>
+      <div class="progress mb-3" style="height:18px">
+        <div class="progress-bar bg-success" style="width:75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+      </div>
+
+      <p class="mb-1 small fw-semibold">Fundraising goal</p>
+      <div class="progress mb-3" style="height:22px">
+        <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" style="width:60%" role="progressbar">$60k of $100k</div>
+      </div>
+
+      <p class="mb-1 small fw-semibold">Multi-segment (stacked)</p>
+      <div class="progress mb-3" style="height:16px">
+        <div class="progress-bar bg-primary" style="width:35%" title="Video">Video 35%</div>
+        <div class="progress-bar bg-success" style="width:25%" title="Text">Text 25%</div>
+        <div class="progress-bar bg-warning" style="width:15%" title="Audio">Audio 15%</div>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Basic progress bar --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress"</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress-bar bg-success"</span>
+       <span class="a">style</span>=<span class="v">"width: 75%"</span>
+       <span class="a">role</span>=<span class="v">"progressbar"</span>
+       <span class="a">aria-valuenow</span>=<span class="v">"75"</span>
+       <span class="a">aria-valuemin</span>=<span class="v">"0"</span>
+       <span class="a">aria-valuemax</span>=<span class="v">"100"</span>&gt;75%&lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">div</span>&gt;
+
+&lt;!-- Animated striped bar --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress"</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress-bar progress-bar-striped progress-bar-animated"</span>
+       <span class="a">style</span>=<span class="v">"width: 60%"</span>&gt;&lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">div</span>&gt;
+
+&lt;!-- Stacked (multi-segment) --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress"</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress-bar bg-primary"</span> <span class="a">style</span>=<span class="v">"width:35%"</span>&gt;A&lt;/<span class="t">div</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress-bar bg-success"</span> <span class="a">style</span>=<span class="v">"width:25%"</span>&gt;B&lt;/<span class="t">div</span>&gt;
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"progress-bar bg-warning"</span> <span class="a">style</span>=<span class="v">"width:15%"</span>&gt;C&lt;/<span class="t">div</span>&gt;
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 11. LIST GROUP ───────────────────────────────────────── -->
+  <section id="listgroup" class="section-rule">
+    <span class="section-label">11 · List Group</span>
+    <h2>List Group</h2>
+    <p class="section-desc">Clean vertical lists — great for article indexes, resource links, ranked items, or navigation menus. Add <code>.list-group-item-action</code> for hover states, or colour variants like <code>.list-group-item-danger</code>.</p>
+
+    <div class="demo-panel">
+      <div class="row g-3">
+        <div class="col-md-5">
+          <h6 class="small text-muted fw-semibold mb-2 text-uppercase">Basic list</h6>
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Breaking news articles <span class="badge bg-primary rounded-pill">12</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Opinion pieces <span class="badge bg-secondary rounded-pill">5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Investigative reports <span class="badge bg-danger rounded-pill">3</span>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-7">
+          <h6 class="small text-muted fw-semibold mb-2 text-uppercase">Linked / actionable list</h6>
+          <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active">
+              <div class="d-flex justify-content-between"><strong>Top Story</strong><small>Just now</small></div>
+              <small>City Council approves new zoning plan.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+              <div class="d-flex justify-content-between"><strong>Sports</strong><small>2 hrs ago</small></div>
+              <small>Syracuse advances to regional finals.</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action list-group-item-warning">
+              <div class="d-flex justify-content-between"><strong>Weather Alert</strong><small>4 hrs ago</small></div>
+              <small>Winter storm watch issued for CNY.</small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Basic list group --&gt;
+&lt;<span class="t">ul</span> <span class="a">class</span>=<span class="v">"list-group"</span>&gt;
+  &lt;<span class="t">li</span> <span class="a">class</span>=<span class="v">"list-group-item"</span>&gt;Item One&lt;/<span class="t">li</span>&gt;
+  &lt;<span class="t">li</span> <span class="a">class</span>=<span class="v">"list-group-item"</span>&gt;Item Two&lt;/<span class="t">li</span>&gt;
+  &lt;<span class="t">li</span> <span class="a">class</span>=<span class="v">"list-group-item list-group-item-danger"</span>&gt;Danger item&lt;/<span class="t">li</span>&gt;
+&lt;/<span class="t">ul</span>&gt;
+
+&lt;!-- Actionable (linked) list group --&gt;
+&lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"list-group"</span>&gt;
+  &lt;<span class="t">a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"list-group-item list-group-item-action active"</span>&gt;
+    Active link
+  &lt;/<span class="t">a</span>&gt;
+  &lt;<span class="t">a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"list-group-item list-group-item-action"</span>&gt;
+    Regular link
+  &lt;/<span class="t">a</span>&gt;
+  &lt;<span class="t">a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"list-group-item list-group-item-action list-group-item-warning"</span>&gt;
+    Warning link
+  &lt;/<span class="t">a</span>&gt;
+&lt;/<span class="t">div</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── 12. TOOLTIPS ─────────────────────────────────────────── -->
+  <section id="tooltip" class="section-rule">
+    <span class="section-label">12 · Tooltips &amp; Popovers</span>
+    <h2>Tooltips &amp; Popovers</h2>
+    <p class="section-desc">Tooltips show a single line on hover; popovers show a larger box with a title and body. Both require Bootstrap JS and must be activated manually with a small script (shown in the code block below).</p>
+
+    <div class="demo-panel d-flex flex-wrap gap-3 align-items-center">
+      <button class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="This tooltip appears above the button.">
+        Hover me (top)
+      </button>
+      <button class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" title="This one appears to the right.">
+        Hover me (right)
+      </button>
+      <button class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="And this one below.">
+        Hover me (bottom)
+      </button>
+      <button class="btn btn-info text-white"
+              data-bs-toggle="popover"
+              data-bs-title="Popover Title"
+              data-bs-content="Popovers can hold a headline and a longer body of text — great for definitions or extra context.">
+        Click me (popover)
+      </button>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML + JS</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!-- Add title="" and data-bs-toggle="tooltip" to any element --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-secondary"</span>
+        <span class="a">data-bs-toggle</span>=<span class="v">"tooltip"</span>
+        <span class="a">data-bs-placement</span>=<span class="v">"top"</span>
+        <span class="a">title</span>=<span class="v">"Your tooltip text here"</span>&gt;
+  Hover me
+&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- Popover (click to open) --&gt;
+&lt;<span class="t">button</span> <span class="a">class</span>=<span class="v">"btn btn-info"</span>
+        <span class="a">data-bs-toggle</span>=<span class="v">"popover"</span>
+        <span class="a">data-bs-title</span>=<span class="v">"Popover Title"</span>
+        <span class="a">data-bs-content</span>=<span class="v">"Longer body text here."</span>&gt;
+  Click me
+&lt;/<span class="t">button</span>&gt;
+
+&lt;!-- REQUIRED: activate all tooltips and popovers with JS --&gt;
+&lt;<span class="t">script</span>&gt;
+  <span class="c">// Tooltips</span>
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el =&gt; {
+    new bootstrap.Tooltip(el);
+  });
+  <span class="c">// Popovers</span>
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el =&gt; {
+    new bootstrap.Popover(el);
+  });
+&lt;/<span class="t">script</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+  <!-- ─── BOILERPLATE ───────────────────────────────────────────── -->
+  <section class="section-rule">
+    <span class="section-label">Starter Template</span>
+    <h2>Full Page Boilerplate</h2>
+    <p class="section-desc">Copy this skeleton into a new <code>.html</code> file to get Bootstrap 5 — CSS, JS, and Icons — all loaded from CDN with no installation.</p>
+
+    <div class="code-panel">
+      <div class="code-panel-header">
+        <span>HTML — Full Starter Template</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;<span class="t">html</span> <span class="a">lang</span>=<span class="v">"en"</span>&gt;
+&lt;<span class="t">head</span>&gt;
+  &lt;<span class="t">meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span>/&gt;
+  &lt;<span class="t">meta</span> <span class="a">name</span>=<span class="v">"viewport"</span> <span class="a">content</span>=<span class="v">"width=device-width, initial-scale=1.0"</span>/&gt;
+  &lt;<span class="t">title</span>&gt;My Bootstrap Page&lt;/<span class="t">title</span>&gt;
+
+  &lt;!-- Bootstrap 5 CSS --&gt;
+  &lt;<span class="t">link</span> <span class="a">href</span>=<span class="v">"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"</span>
+        <span class="a">rel</span>=<span class="v">"stylesheet"</span>/&gt;
+
+  &lt;!-- Bootstrap Icons (optional) --&gt;
+  &lt;<span class="t">link</span> <span class="a">href</span>=<span class="v">"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"</span>
+        <span class="a">rel</span>=<span class="v">"stylesheet"</span>/&gt;
+&lt;/<span class="t">head</span>&gt;
+&lt;<span class="t">body</span>&gt;
+
+  &lt;<span class="t">div</span> <span class="a">class</span>=<span class="v">"container mt-4"</span>&gt;
+    &lt;<span class="t">h1</span>&gt;Hello, Bootstrap!&lt;/<span class="t">h1</span>&gt;
+    &lt;<span class="t">p</span>&gt;Start building here.&lt;/<span class="t">p</span>&gt;
+  &lt;/<span class="t">div</span>&gt;
+
+  &lt;!-- Bootstrap JS bundle (includes Popper) --&gt;
+  &lt;<span class="t">script</span> <span class="a">src</span>=<span class="v">"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"</span>&gt;&lt;/<span class="t">script</span>&gt;
+
+  &lt;!-- Activate tooltips &amp; popovers --&gt;
+  &lt;<span class="t">script</span>&gt;
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      .forEach(el =&gt; new bootstrap.Tooltip(el));
+    document.querySelectorAll('[data-bs-toggle="popover"]')
+      .forEach(el =&gt; new bootstrap.Popover(el));
+  &lt;/<span class="t">script</span>&gt;
+
+&lt;/<span class="t">body</span>&gt;
+&lt;/<span class="t">html</span>&gt;</code></pre>
+    </div>
+  </section>
+
+
+</main><!-- /main -->
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <span>Bootstrap Component Gallery · <a href="https://getbootstrap.com/docs/5.3/" target="_blank">Official Docs →</a></span>
+    <span>Built for JNL students at S.I. Newhouse School · Syracuse University</span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ SCRIPTS ═══════════════════════════════ -->
+<!-- Bootstrap JS bundle (Popper included) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Activate all tooltips
+  document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    .forEach(el => new bootstrap.Tooltip(el));
+  // Activate all popovers
+  document.querySelectorAll('[data-bs-toggle="popover"]')
+    .forEach(el => new bootstrap.Popover(el));
+
+  // ── Copy-code buttons ──────────────────────────────
+  function copyCode(btn) {
+    const pre = btn.closest('.code-panel').querySelector('pre');
+    // Strip HTML tags to get plain text
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
