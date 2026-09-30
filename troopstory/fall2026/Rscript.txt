@@ -1,0 +1,17 @@
+# 1. Load the required package
+library(troopdata)
+
+# 2. Fetch historical troop deployment data (1950–2024)
+# Note: By default, total_ad includes active duty personnel.
+# Set guard_reserve = TRUE if you also want reserve/guard troops included.
+all_historical_troops <- get_troopdata(
+  startyear = 1950,
+  endyear = 2024,
+  guard_reserve = TRUE
+)
+
+# 3. Export the dataframe to a CSV file in your working directory
+write.csv(all_historical_troops, file = "all_historical_troopdata.csv", row.names = FALSE)
+
+# 4. Print confirmation and location of the saved file
+cat("Data successfully saved to:", file.path(getwd(), "all_historical_troopdata.csv"), "\n")
