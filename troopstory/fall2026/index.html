@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<!--
+  STORY TEMPLATE
+  ==============
+  The page layout (nav bar, header, section buttons, sections, footer) is done.
+  You fill in two kinds of things:
+
+  1. TEXT — replace the bracketed [placeholder] text with your own writing.
+
+  2. SNIPPET BLOCKS — look for:
+        <div class="snippet" data-label="...">
+          PASTE ... HERE
+        </div>
+     Paste an embed code (Datawrapper, Flourish, YouTube, Google Maps, an
+     <img>, an <iframe>, etc.) between the opening and closing <div> tags.
+     Delete the "PASTE ... HERE" comment if you like. Empty blocks show a
+     dashed gray box so you can see what still needs filling; once you paste
+     something in, the box disappears.
+
+  Don't need a block? Delete the whole <div class="snippet" ...></div>.
+  There is one <section> per region. Need another? Copy a whole
+  <section> ... </section>, give it a new id, and add a matching button in
+  the "SECTION BUTTONS" area.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- EDIT: browser tab title -->
+    <title>[Your Story Title]</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        padding-top: 70px;
+      }
+
+      .navbar {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      }
+
+      .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 0 60px;
+        margin-bottom: 40px;
+      }
+
+      .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      .hero-section p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .region-nav {
+        background: #f8f9fa;
+        padding: 30px 0;
+        margin-bottom: 40px;
+      }
+
+      .region-nav .btn {
+        margin: 5px;
+        font-weight: 500;
+      }
+
+      .main-content {
+        margin-bottom: 60px;
+      }
+
+      .region-section {
+        padding: 60px 0;
+        border-top: 3px solid #e9ecef;
+      }
+
+      .region-section h2 {
+        color: #2a5298;
+        font-weight: 700;
+        margin-bottom: 30px;
+      }
+
+      .region-section .row.mb-4 {
+        margin-bottom: 3rem !important;
+      }
+
+      .snippet {
+        margin: 30px 0;
+      }
+
+      .row .snippet {
+        margin-top: 0;
+      }
+
+      /* Shown only while a snippet block has nothing pasted into it */
+      .snippet.is-empty {
+        min-height: 220px;
+        border: 2px dashed #adb5bd;
+        border-radius: 8px;
+        background: #f8f9fa;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+        font-size: 0.95rem;
+      }
+
+      .snippet.is-empty::before {
+        content: "⧉  " attr(data-label);
+      }
+
+      .return-top {
+        display: inline-block;
+        margin-top: 30px;
+        color: #667eea;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      .return-top:hover {
+        color: #764ba2;
+      }
+
+      .bylines-section {
+        background: #f8f9fa;
+        padding: 60px 0;
+        margin-top: 60px;
+      }
+
+      .footer {
+        background: #2a5298;
+        color: white;
+        padding: 30px 0;
+        text-align: center;
+      }
+
+      .footer .small {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 767px) {
+        .region-section .col-12.order-1 {
+          margin-bottom: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ============ NAV BAR ============ -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+      <div class="container-fluid">
+        <!-- EDIT: where the HOME link goes -->
+        <a class="navbar-brand" href="#top">HOME</a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNav"
+          aria-controls="mainNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="#top">Story</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About This Project</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============ HEADER ============ -->
+    <div class="hero-section" id="top">
+      <div class="container text-center">
+        <h1>[Your Headline]</h1>
+        <p>
+          [One or two sentences that tell readers what this story is about and
+          what they can explore on the page.]
+        </p>
+      </div>
+    </div>
+
+    <!-- ============ SECTION BUTTONS ============ -->
+    <!-- One button per region. Each href="#..." must match a section's id below. -->
+    <div class="region-nav">
+      <div class="container text-center">
+        <a href="#eastasia" class="btn btn-outline-info">East Asia</a>
+        <a href="#europe" class="btn btn-outline-secondary">Europe</a>
+        <a href="#latinamerica" class="btn btn-outline-success">Latin America</a>
+        <a href="#middleeast" class="btn btn-outline-danger">Middle East</a>
+        <a href="#subsahara" class="btn btn-outline-dark">Africa</a>
+      </div>
+    </div>
+
+    <main class="container">
+      <!-- ============ OVERVIEW ============ -->
+      <div class="main-content">
+        <h2>Overview</h2>
+
+        <p>
+          [Opening paragraph: the big picture. What happened, why it matters,
+          and what the data shows.]
+        </p>
+
+        <div class="snippet" data-label="Paste your main visual here (chart, map, video, or iframe)">
+          <!-- Interactive troop globe from the original troopstory (../globe.html) -->
+          <iframe
+            src="../globe.html"
+            width="100%"
+            height="600"
+            frameborder="0"
+            style="border: none"
+            title="U.S. Troop Deployment Globe"
+          ></iframe>
+        </div>
+
+        <p>[Follow-up paragraph with context or explanation.]</p>
+
+        <div class="snippet" data-label="Paste a second overview chart here">
+          <!-- PASTE EMBED CODE HERE -->
+        </div>
+      </div>
+
+      <!-- ============ EAST ASIA & PACIFIC ============ -->
+      <section class="region-section" id="eastasia">
+        <h2>East Asia &amp; Pacific</h2>
+
+        <!-- Row 1: map on the left, intro text on the right -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <div class="snippet" data-label="Paste a East Asia map or chart here">
+              <!-- PASTE EMBED CODE HERE -->
+            </div>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>[Intro paragraph: what the data shows for East Asia &amp; Pacific.]</p>
+          </div>
+        </div>
+
+        <!-- Row 2: full-width visuals (add more snippet blocks if needed) -->
+        <div class="snippet" data-label="Paste a full-width East Asia chart here">
+          <!-- PASTE EMBED CODE HERE -->
+        </div>
+
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <!-- ============ EUROPE & CENTRAL ASIA ============ -->
+      <section class="region-section" id="europe">
+        <h2>Europe &amp; Central Asia</h2>
+
+        <!-- Row 1: map on the left, intro text on the right -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <div class="snippet" data-label="Paste a Europe map or chart here">
+              <!-- PASTE EMBED CODE HERE -->
+            </div>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>[Intro paragraph: what the data shows for Europe &amp; Central Asia.]</p>
+          </div>
+        </div>
+
+        <!-- Row 2: full-width visuals (add more snippet blocks if needed) -->
+        <div class="snippet" data-label="Paste a full-width Europe chart here">
+          <!-- PASTE EMBED CODE HERE -->
+        </div>
+
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <!-- ============ LATIN AMERICA & CARIBBEAN ============ -->
+      <section class="region-section" id="latinamerica">
+        <h2>Latin America &amp; Caribbean</h2>
+
+        <!-- Row 1: map on the left, intro text on the right -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <div class="snippet" data-label="Paste a Latin America map or chart here">
+              <!-- PASTE EMBED CODE HERE -->
+            </div>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>[Intro paragraph: what the data shows for Latin America &amp; Caribbean.]</p>
+          </div>
+        </div>
+
+        <!-- Row 2: full-width visuals (add more snippet blocks if needed) -->
+        <div class="snippet" data-label="Paste a full-width Latin America chart here">
+          <!-- PASTE EMBED CODE HERE -->
+        </div>
+
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <!-- ============ MIDDLE EAST & NORTH AFRICA ============ -->
+      <section class="region-section" id="middleeast">
+        <h2>Middle East &amp; North Africa</h2>
+
+        <!-- Row 1: map on the left, intro text on the right -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <div class="snippet" data-label="Paste a Middle East map or chart here">
+              <!-- PASTE EMBED CODE HERE -->
+            </div>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>[Intro paragraph: what the data shows for Middle East &amp; North Africa.]</p>
+          </div>
+        </div>
+
+        <!-- Row 2: full-width visuals (add more snippet blocks if needed) -->
+        <div class="snippet" data-label="Paste a full-width Middle East chart here">
+          <!-- PASTE EMBED CODE HERE -->
+        </div>
+
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <!-- ============ SUB-SAHARAN AFRICA ============ -->
+      <section class="region-section" id="subsahara">
+        <h2>Sub-Saharan Africa</h2>
+
+        <!-- Row 1: map on the left, intro text on the right -->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 order-2 order-md-1">
+            <div class="snippet" data-label="Paste a Africa map or chart here">
+              <!-- PASTE EMBED CODE HERE -->
+            </div>
+          </div>
+          <div class="col-12 col-md-6 order-1 order-md-2">
+            <p>[Intro paragraph: what the data shows for Sub-Saharan Africa.]</p>
+          </div>
+        </div>
+
+        <!-- Row 2: full-width visuals (add more snippet blocks if needed) -->
+        <div class="snippet" data-label="Paste a full-width Africa chart here">
+          <!-- PASTE EMBED CODE HERE -->
+        </div>
+
+        <a href="#top" class="return-top">↑ Return to Top</a>
+      </section>
+
+      <!-- ============ ABOUT / CREDITS ============ -->
+      <section class="bylines-section" id="about">
+        <div class="container">
+          <p><strong>[Bylines: who reported, wrote, and designed this.]</strong></p>
+          <p><strong>Data source:</strong> [Where the data came from, with a link.]</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; [Your Name], [Year]. [Project Name]</p>
+        <p class="small">[Optional small print]</p>
+      </div>
+    </footer>
+
+    <!-- ============ SCRIPTS (no need to edit below this line) ============ -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // Show the dashed placeholder only on snippet blocks with nothing pasted in.
+      document.querySelectorAll(".snippet").forEach(function (block) {
+        var hasContent =
+          block.children.length > 0 || block.textContent.trim() !== "";
+        block.classList.toggle("is-empty", !hasContent);
+      });
+
+
+      // Auto-resize Datawrapper iframes (so pasted Datawrapper embeds don't
+      // need their own resize script).
+      window.addEventListener("message", function (a) {
+        if (void 0 !== a.data["datawrapper-height"]) {
+          var e = document.querySelectorAll("iframe");
+          for (var t in a.data["datawrapper-height"])
+            for (var r, i = 0; (r = e[i]); i++)
+              if (r.contentWindow === a.source) {
+                r.style.height = a.data["datawrapper-height"][t] + "px";
+              }
+        }
+      });
+    </script>
+  </body>
+</html>
