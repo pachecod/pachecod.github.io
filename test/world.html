@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NH1 World</title>
+  <style>
+    :root { --bg: #15171c; --fg: #e8eaef; --muted: #9aa1ad; --accent: #ffb547; --panel: rgba(20, 22, 28, 0.82);
+      --line: rgba(255,255,255,0.12); }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg);
+      font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    canvas { display: block; cursor: grab; touch-action: none; }
+    body.dragging canvas { cursor: grabbing; }
+    body.hovering canvas { cursor: pointer; }
+    button { font: inherit; color: inherit; }
+    .glass { background: var(--panel); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+    /* Intro card */
+    #intro { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px;
+      background: radial-gradient(ellipse at center, rgba(10,12,16,0.55), rgba(10,12,16,0.85)); transition: opacity .5s; }
+    #intro.gone { opacity: 0; pointer-events: none; }
+    #intro .card { max-width: 380px; width: 100%; border-radius: 16px; padding: 24px 26px; box-sizing: border-box; }
+    #intro h1 { margin: 0 0 6px; font-size: 22px; font-weight: 650; }
+    #intro p { margin: 0 0 14px; color: var(--muted); }
+    #enter { width: 100%; padding: 11px; border-radius: 10px; border: 0; background: var(--accent); color: #1a1205;
+      font-weight: 650; cursor: pointer; }
+    #enter:disabled { opacity: .55; cursor: progress; }
+    #loadBar { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); overflow: hidden; margin: 0 0 14px; }
+    #loadBar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+    #loadText { font-size: 12px; color: var(--muted); margin: -8px 0 14px; min-height: 1.2em; }
+
+    /* Caption that appears near a point of interest */
+    #caption { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 12px); z-index: 6; max-width: min(420px, calc(100vw - 32px));
+      box-sizing: border-box; border-radius: 12px; padding: 12px 16px; opacity: 0; transition: opacity .35s, transform .35s; pointer-events: none; }
+    #caption.show { opacity: 1; transform: translate(-50%, 0); }
+    #caption b { display: block; font-size: 15px; }
+    #caption span { color: var(--muted); font-size: 13px; }
+
+    /* Floating speech bubble for the llama */
+    #bubble { position: fixed; z-index: 7; padding: 6px 11px; border-radius: 12px; background: #fff; color: #1b1b1b;
+      font-weight: 600; font-size: 14px; transform: translate(-50%, -100%); pointer-events: none; opacity: 0; transition: opacity .25s;
+      white-space: nowrap; }
+    #bubble.show { opacity: 1; }
+
+    #hint { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 5; padding: 7px 14px; border-radius: 999px;
+      font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+    kbd { display: inline-block; min-width: 14px; padding: 0 5px; border-radius: 4px; text-align: center;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); font: 11.5px ui-monospace, monospace; color: var(--fg); }
+    #credit { position: fixed; right: 12px; bottom: 10px; z-index: 5; font-size: 11px; color: rgba(255,255,255,0.55); }
+    #credit a { color: inherit; }
+    #VRButton { background: var(--panel) !important; border: 1px solid var(--line) !important; opacity: 1 !important; }
+    @media (max-width: 640px) { #hint { display: none; } #caption { bottom: 72px; } }
+  </style>
+</head>
+<body>
+  <div id="intro">
+    <div class="card glass">
+      <h1>NH1 World</h1>
+      <p>A walkable world built from this folder: the NH1 splat as the land, the Scaniverse scan on a plinth, and a llama that wanders around.</p>
+      <div id="loadBar"><i></i></div>
+      <div id="loadText">Loading…</div>
+      <button id="enter" type="button" disabled>Enter</button>
+    </div>
+  </div>
+
+  <div id="hint" class="glass"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk · drag to look · <kbd>Shift</kbd> run · <kbd>Space</kbd>/<kbd>C</kbd> up/down · click things</div>
+  <div id="caption" class="glass"><b></b><span></span></div>
+  <div id="bubble"></div>
+  <div id="credit">“A Lama” by <a href="https://sketchfab.com/vrstorytelling" target="_blank" rel="noopener">vrstorytelling</a>, CC BY 4.0</div>
+
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+        "@sparkjsdev/spark": "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.3.1/dist/spark.module.js"
+    } }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { VRButton } from 'three/addons/webxr/VRButton.js';
+    import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
+
+    // ---------------- World layout (metres; floor is y = 0) ----------------
+    const WORLD = {
+      splat: { url: 'nh1.spz', position: [-3.5, 3.28, -4.14], rotation: [0, 0, 0], scale: 1 }, // same alignment as index.html
+      scan:  { url: 'model.glb', size: 1.2, plinth: [0, 0, 1] },
+      // The llama scan has a thin patch of ground baked into its mesh; floorCut (fraction of its height) clips it off.
+      llama: { url: 'lama.glb',  size: 1.5, fitBy: 'height', floorCut: 0.09, home: [-2, 0, 2.5], roam: 1.5 },
+      start: { position: [0, 0, 5], yaw: 0 },
+    };
+    const EYE_HEIGHT = 1.6, WALK_SPEED = 2.5, LOOK_SPEED = 0.004;
+
+    // ---------------- Renderer / scene ----------------
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.shadowMap.enabled = true;
+    renderer.localClippingEnabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.xr.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xdfe8f0);
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
+    const rig = new THREE.Group();
+    rig.add(camera);
+    scene.add(rig);
+
+    scene.add(new THREE.HemisphereLight(0xdff0ff, 0x9a948a, 1.6));
+    const sun = new THREE.DirectionalLight(0xfff1d6, 1.6);
+    sun.position.set(4, 9, 5);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8, near: 1, far: 30 });
+    scene.add(sun);
+
+    // Invisible floor that only receives shadows, so objects feel planted on the splat ground.
+    const shadowFloor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.22 }));
+    shadowFloor.rotation.x = -Math.PI / 2;
+    shadowFloor.position.y = 0.003;
+    shadowFloor.receiveShadow = true;
+    scene.add(shadowFloor);
+
+    // Fallback ground, shown only if the splat can't load.
+    const fallbackGround = new THREE.Mesh(new THREE.CircleGeometry(30, 64), new THREE.MeshStandardMaterial({ color: 0xcfd6df }));
+    fallbackGround.rotation.x = -Math.PI / 2;
+    fallbackGround.visible = false;
+    scene.add(fallbackGround);
+
+    const spark = new SparkRenderer({ renderer });
+    scene.add(spark);
+
+    // ---------------- Loading ----------------
+    const progress = { splat: 0, scan: 0, llama: 0 };
+    const loadBar = document.querySelector('#loadBar i');
+    const loadText = document.getElementById('loadText');
+    function showProgress(label) {
+      const p = (progress.splat * 0.6 + progress.scan * 0.25 + progress.llama * 0.15) * 100;
+      loadBar.style.width = p.toFixed(0) + '%';
+      if (label) loadText.textContent = label;
+    }
+
+    function loadSplat() {
+      const s = WORLD.splat;
+      const mesh = new SplatMesh({
+        url: s.url,
+        onProgress: (e) => { if (e.total) { progress.splat = e.loaded / e.total; showProgress('Loading the land…'); } },
+      });
+      mesh.position.set(...s.position);
+      mesh.rotation.set(...s.rotation.map(THREE.MathUtils.degToRad));
+      mesh.scale.setScalar(s.scale);
+      scene.add(mesh);
+      return mesh.initialized.then(() => { progress.splat = 1; showProgress(); }).catch((err) => {
+        console.error(err);
+        scene.remove(mesh);
+        spark.visible = false;
+        fallbackGround.visible = true;
+        progress.splat = 1;
+      });
+    }
+
+    const gltfLoader = new GLTFLoader();
+    function loadModel(key) {
+      const item = WORLD[key];
+      return new Promise((resolve, reject) => {
+        gltfLoader.load(item.url, (gltf) => {
+          progress[key] = 1; showProgress();
+          const root = gltf.scene;
+          root.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+          // Normalise: centred on x/z, resting on y = 0, largest side (or height) = item.size.
+          let box = new THREE.Box3().setFromObject(root);
+          const cutY = box.min.y + (item.floorCut ?? 0) * (box.max.y - box.min.y);
+          if (item.floorCut) box = boxAbove(root, cutY); // measure the body only, not the baked-in ground
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          root.position.set(-center.x, -box.min.y, -center.z);
+          const holder = new THREE.Group();
+          holder.add(root);
+          const fit = item.fitBy === 'height' ? size.y : Math.max(size.x, size.y, size.z);
+          holder.scale.setScalar(item.size / Math.max(fit, 1e-6));
+          resolve({ holder, size: size.clone().multiplyScalar(holder.scale.x) });
+        }, (e) => { if (e.total) { progress[key] = e.loaded / e.total; showProgress(); } }, reject);
+      });
+    }
+
+    function boxAbove(root, minY) {
+      root.updateMatrixWorld(true);
+      const box = new THREE.Box3(), v = new THREE.Vector3();
+      root.traverse((o) => {
+        const pos = o.isMesh && o.geometry.attributes.position;
+        if (!pos) return;
+        for (let i = 0; i < pos.count; i++) {
+          v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
+          if (v.y > minY) box.expandByPoint(v);
+        }
+      });
+      return box;
+    }
+
+    // ---------------- Points of interest ----------------
+    const pois = [];   // { object, title, text, radius }
+    const clickables = []; // { object, onClick }
+
+    // Plinth + scan
+    async function buildScan() {
+      const { holder, size } = await loadModel('scan');
+      const group = new THREE.Group();
+      group.position.set(...WORLD.scan.plinth);
+      const stoneMat = new THREE.MeshStandardMaterial({ color: 0xe9e4da, roughness: 0.85 });
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.85, 0.12, 48), stoneMat);
+      base.position.y = 0.06;
+      const column = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.7, 48), stoneMat);
+      column.position.y = 0.47;
+      const top = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.62, 0.08, 48), stoneMat);
+      top.position.y = 0.86;
+      for (const m of [base, column, top]) { m.castShadow = m.receiveShadow = true; group.add(m); }
+
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.012, 8, 96),
+        new THREE.MeshBasicMaterial({ color: 0xffb547, transparent: true, opacity: 0.8 }));
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.905;
+      group.add(ring);
+
+      const turntable = new THREE.Group();
+      turntable.position.y = 0.9;
+      turntable.add(holder);
+      group.add(turntable);
+      scene.add(group);
+
+      let spinBoost = 0;
+      animators.push((t, dt) => {
+        spinBoost = Math.max(0, spinBoost - dt * 1.5);
+        turntable.rotation.y += dt * (0.25 + spinBoost * 4);
+        ring.material.opacity = 0.45 + 0.35 * Math.sin(t * 2);
+        ring.scale.setScalar(1 + 0.03 * Math.sin(t * 2));
+      });
+      pois.push({ object: group, radius: 3, title: 'The Scan', text: 'Captured with Scaniverse and set on a plinth. Click it to give it a spin.' });
+      clickables.push({ object: turntable, onClick: () => { spinBoost = 1; } });
+      return size;
+    }
+
+    // Llama that wanders around its home
+    async function buildLlama() {
+      const { holder, size } = await loadModel('llama');
+      const llama = new THREE.Group();
+      const body = new THREE.Group(); // bobs and sways inside the walking frame
+      body.add(holder);
+      llama.add(body);
+      const home = new THREE.Vector3(...WORLD.llama.home);
+      llama.position.copy(home);
+      scene.add(llama);
+
+      // The model already faces +Z, which is "forward" for the walking maths below.
+      // Clip everything below its feet (the baked-in ground patch); the plane follows the llama as it hops.
+      const floorClip = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      holder.traverse((o) => { if (o.isMesh) o.material.clippingPlanes = [floorClip]; });
+
+      const target = new THREE.Vector3();
+      let mode = 'idle', timer = 1.5, heading = 0, stepPhase = 0, hop = 0;
+      const pickTarget = () => {
+        const a = Math.random() * Math.PI * 2, r = 0.8 + Math.random() * WORLD.llama.roam;
+        target.set(home.x + Math.cos(a) * r, 0, home.z + Math.sin(a) * r);
+        // Keep out of the plinth's way
+        const p = new THREE.Vector3(...WORLD.scan.plinth);
+        if (target.distanceTo(p) < 1.6) target.add(target.clone().sub(p).setY(0).normalize().multiplyScalar(1.6));
+      };
+
+      animators.push((t, dt) => {
+        timer -= dt;
+        if (mode === 'idle' && timer <= 0) { pickTarget(); mode = 'walk'; }
+        if (mode === 'walk') {
+          const to = target.clone().sub(llama.position).setY(0);
+          const dist = to.length();
+          const want = Math.atan2(to.x, to.z);
+          let diff = ((want - heading + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+          heading += THREE.MathUtils.clamp(diff, -dt * 2.2, dt * 2.2);
+          const facing = Math.abs(diff) < 0.6;
+          const speed = facing ? 0.55 : 0.12;
+          llama.position.x += Math.sin(heading) * speed * dt;
+          llama.position.z += Math.cos(heading) * speed * dt;
+          stepPhase += dt * speed * 14;
+          if (dist < 0.15) { mode = 'idle'; timer = 2 + Math.random() * 4; }
+        }
+        llama.rotation.y = heading;
+        const walking = mode === 'walk' ? 1 : 0;
+        hop = Math.max(0, hop - dt * 2.5);
+        body.position.y = walking * Math.abs(Math.sin(stepPhase)) * 0.035 + Math.sin(hop * Math.PI) * 0.35;
+        body.rotation.z = walking * Math.sin(stepPhase) * 0.035;
+        body.rotation.x = (1 - walking) * Math.sin(t * 0.8) * 0.015; // gentle breathing when idle
+        floorClip.constant = -(llama.position.y + body.position.y) + 0.005;
+      });
+
+      const sayings = ['Mmmm?', 'Hummm.', '*chews thoughtfully*', 'No drama.', 'Hello, human.', '🦙'];
+      pois.push({ object: llama, radius: 2.5, title: 'The Llama', text: 'Wanders the grounds on its own schedule. Click to say hi.' });
+      clickables.push({ object: llama, onClick: () => {
+        hop = 1;
+        say(llama, sayings[Math.floor(Math.random() * sayings.length)], size.y + 0.3);
+        // Turn to face the visitor
+        const me = new THREE.Vector3(); camera.getWorldPosition(me);
+        heading = Math.atan2(me.x - llama.position.x, me.z - llama.position.z);
+        mode = 'idle'; timer = 3;
+      } });
+    }
+
+    // Drifting motes for a bit of life in the air
+    function buildMotes() {
+      const N = 260, pos = new Float32Array(N * 3), seed = new Float32Array(N);
+      for (let i = 0; i < N; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * 16;
+        pos[i * 3 + 1] = Math.random() * 3.5 + 0.2;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 16;
+        seed[i] = Math.random() * 100;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({ color: 0xfff2c9, size: 0.035, transparent: true, opacity: 0.8, depthWrite: false });
+      const pts = new THREE.Points(geo, mat);
+      scene.add(pts);
+      const base = pos.slice();
+      animators.push((t) => {
+        for (let i = 0; i < N; i++) {
+          const s = seed[i];
+          pos[i * 3] = base[i * 3] + Math.sin(t * 0.3 + s) * 0.4;
+          pos[i * 3 + 1] = base[i * 3 + 1] + Math.sin(t * 0.5 + s * 1.7) * 0.25;
+          pos[i * 3 + 2] = base[i * 3 + 2] + Math.cos(t * 0.27 + s) * 0.4;
+        }
+        geo.attributes.position.needsUpdate = true;
+      });
+    }
+
+    // ---------------- Speech bubble / captions ----------------
+    const bubble = document.getElementById('bubble');
+    let bubbleTarget = null, bubbleOffset = 0, bubbleTimer = 0;
+    function say(object, text, height) {
+      bubble.textContent = text;
+      bubbleTarget = object; bubbleOffset = height; bubbleTimer = 2.4;
+      bubble.classList.add('show');
+    }
+    const tmpV = new THREE.Vector3();
+    function updateBubble(dt) {
+      if (!bubbleTarget) return;
+      bubbleTimer -= dt;
+      bubbleTarget.getWorldPosition(tmpV); tmpV.y += bubbleOffset;
+      tmpV.project(camera);
+      const visible = tmpV.z < 1 && bubbleTimer > 0;
+      bubble.style.left = ((tmpV.x + 1) / 2 * window.innerWidth) + 'px';
+      bubble.style.top = ((1 - tmpV.y) / 2 * window.innerHeight) + 'px';
+      bubble.classList.toggle('show', visible);
+      if (bubbleTimer <= 0) bubbleTarget = null;
+    }
+
+    const caption = document.getElementById('caption');
+    let currentPoi = null;
+    function updateCaption() {
+      camera.getWorldPosition(tmpV);
+      let best = null, bestD = Infinity;
+      for (const p of pois) {
+        const d = Math.hypot(p.object.position.x - tmpV.x, p.object.position.z - tmpV.z);
+        if (d < p.radius && d < bestD) { best = p; bestD = d; }
+      }
+      if (best === currentPoi) return;
+      currentPoi = best;
+      if (best) { caption.querySelector('b').textContent = best.title; caption.querySelector('span').textContent = best.text; }
+      caption.classList.toggle('show', !!best);
+    }
+
+    // ---------------- Controls ----------------
+    const lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    function resetView() {
+      rig.position.set(...WORLD.start.position);
+      rig.rotation.set(0, WORLD.start.yaw, 0);
+      camera.position.set(0, renderer.xr.isPresenting ? 0 : EYE_HEIGHT, 0);
+      camera.rotation.set(renderer.xr.isPresenting ? 0 : -0.12, 0, 0);
+    }
+    resetView();
+
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    function hitClickable(clientX, clientY) {
+      ndc.set(clientX / window.innerWidth * 2 - 1, -(clientY / window.innerHeight) * 2 + 1);
+      raycaster.setFromCamera(ndc, camera);
+      const hits = raycaster.intersectObjects(clickables.map(c => c.object), true);
+      if (!hits.length) return null;
+      return clickables.find(c => { let o = hits[0].object; while (o) { if (o === c.object) return true; o = o.parent; } return false; });
+    }
+
+    let dragId = null, lastX = 0, lastY = 0, downX = 0, downY = 0;
+    const canvas = renderer.domElement;
+    canvas.addEventListener('pointerdown', (e) => {
+      if (renderer.xr.isPresenting || e.button > 0) return;
+      dragId = e.pointerId; lastX = downX = e.clientX; lastY = downY = e.clientY;
+      canvas.setPointerCapture(e.pointerId);
+      document.body.classList.add('dragging');
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== dragId) {
+        if (e.pointerType === 'mouse') document.body.classList.toggle('hovering', !!hitClickable(e.clientX, e.clientY));
+        return;
+      }
+      lookEuler.setFromQuaternion(camera.quaternion);
+      lookEuler.y -= (e.clientX - lastX) * LOOK_SPEED;
+      lookEuler.x = THREE.MathUtils.clamp(lookEuler.x - (e.clientY - lastY) * LOOK_SPEED, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
+      lookEuler.z = 0;
+      camera.quaternion.setFromEuler(lookEuler);
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    const endDrag = (e) => {
+      if (e.pointerId !== dragId) return;
+      dragId = null;
+      document.body.classList.remove('dragging');
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) < 5) hitClickable(e.clientX, e.clientY)?.onClick();
+    };
+    canvas.addEventListener('pointerup', endDrag);
+    canvas.addEventListener('pointercancel', (e) => { if (e.pointerId === dragId) { dragId = null; document.body.classList.remove('dragging'); } });
+
+    const keys = new Set();
+    window.addEventListener('keydown', (e) => {
+      keys.add(e.code);
+      if (e.code === 'Space') e.preventDefault();
+      if (e.code === 'KeyR') resetView();
+    });
+    window.addEventListener('keyup', (e) => keys.delete(e.code));
+    window.addEventListener('blur', () => keys.clear());
+
+    document.body.appendChild(VRButton.createButton(renderer));
+    renderer.xr.addEventListener('sessionstart', () => { camera.position.set(0, 0, 0); camera.rotation.set(0, 0, 0); });
+    renderer.xr.addEventListener('sessionend', resetView);
+
+    const forward = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), move = new THREE.Vector3();
+    function horizontalBasis() {
+      camera.getWorldDirection(forward);
+      forward.y = 0;
+      if (forward.lengthSq() < 1e-6) forward.set(0, 0, -1);
+      forward.normalize();
+      right.crossVectors(forward, up).normalize();
+    }
+    let walkTime = 0;
+    function updateMovement(dt) {
+      horizontalBasis();
+      move.set(0, 0, 0);
+      if (keys.has('KeyW') || keys.has('ArrowUp')) move.add(forward);
+      if (keys.has('KeyS') || keys.has('ArrowDown')) move.sub(forward);
+      if (keys.has('KeyD') || keys.has('ArrowRight')) move.add(right);
+      if (keys.has('KeyA') || keys.has('ArrowLeft')) move.sub(right);
+      const session = renderer.xr.getSession();
+      if (session) for (const src of session.inputSources) {
+        const a = src.gamepad?.axes;
+        if (src.handedness === 'left' && a?.length >= 4) move.addScaledVector(forward, -a[3]).addScaledVector(right, a[2]);
+      }
+      const walking = move.lengthSq() > 0.02;
+      if (move.lengthSq() > 1) move.normalize();
+      if (keys.has('Space')) move.y += 1;
+      if (keys.has('KeyC')) move.y -= 1;
+      const running = keys.has('ShiftLeft') || keys.has('ShiftRight');
+      rig.position.addScaledVector(move, WALK_SPEED * (running ? 2.4 : 1) * dt);
+      if (rig.position.y < 0) rig.position.y = 0;
+      // Subtle head bob while walking on the ground (desktop only)
+      if (!renderer.xr.isPresenting) {
+        walkTime = walking && rig.position.y < 0.01 ? walkTime + dt * (running ? 13 : 9) : 0;
+        camera.position.y = EYE_HEIGHT + Math.sin(walkTime) * (walking ? 0.025 : 0);
+      }
+    }
+
+    // ---------------- Boot ----------------
+    const animators = [];
+    buildMotes();
+    const ready = Promise.allSettled([loadSplat(), buildScan(), buildLlama()]);
+    const enterBtn = document.getElementById('enter');
+    ready.then((results) => {
+      const failed = results.filter(r => r.status === 'rejected');
+      failed.forEach(r => console.error(r.reason));
+      loadBar.style.width = '100%';
+      loadText.textContent = failed.length ? 'Some pieces failed to load, but you can still look around.' : 'Ready.';
+      enterBtn.disabled = false;
+      enterBtn.focus();
+    });
+    enterBtn.addEventListener('click', () => { document.getElementById('intro').classList.add('gone'); enterBtn.blur(); });
+
+    const clock = new THREE.Clock();
+    renderer.setAnimationLoop(() => {
+      const dt = Math.min(clock.getDelta(), 0.1), t = clock.elapsedTime;
+      updateMovement(dt);
+      for (const a of animators) a(t, dt);
+      updateBubble(dt);
+      updateCaption();
+      renderer.render(scene, camera);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

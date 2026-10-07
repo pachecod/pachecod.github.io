@@ -1,395 +1,450 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D Scene Explorer</title>
+  <style>
+    :root { --bg: #15171c; --fg: #e8eaef; --muted: #9aa1ad; --accent: #5aa9ff; --panel: rgba(20, 22, 28, 0.84);
+      --line: rgba(255,255,255,0.12); }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg);
+      font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    canvas { display: block; cursor: grab; touch-action: none; }
+    body.dragging canvas { cursor: grabbing; }
+    button { font: inherit; color: inherit; }
 
-<!-- Updated 5-29-2025 -->
+    .glass { background: var(--panel); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 
-  <head>
-    <meta charset="UTF-8" />
-    <title>Agriquest Vegetable Museum</title>
-    <!-- Prevent default mobile zoom behavior -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <meta aframe-injected="" name="mobile-web-app-capable" content="yes" />
-    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
-    <script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-    <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
-    <link rel="stylesheet" href="style.css"/>
-    
-  </head>
+    /* ---------- Scene picker ---------- */
+    #picker { position: fixed; top: 16px; left: 16px; z-index: 10; width: 260px; max-width: calc(100vw - 84px);
+      max-height: calc(100vh - 110px); overflow-y: auto; border-radius: 14px; box-sizing: border-box; padding: 14px 16px; }
+    #picker.collapsed .body { display: none; }
+    #picker header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    #picker h1 { margin: 0; font-size: 15px; font-weight: 600; }
+    #togglePicker { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 2px 4px; font-size: 13px; }
+    #togglePicker:hover { color: var(--fg); }
+    #picker h2 { margin: 14px 0 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+    .list { display: flex; flex-direction: column; gap: 4px; }
+    .opt { display: flex; align-items: center; gap: 10px; text-align: left; width: 100%; padding: 7px 10px; border-radius: 9px;
+      background: rgba(255,255,255,0.04); border: 1px solid transparent; cursor: pointer; }
+    .opt:hover { background: rgba(255,255,255,0.09); }
+    .opt[aria-pressed="true"] { border-color: var(--accent); background: rgba(90,169,255,0.14); }
+    .opt .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--muted); box-sizing: border-box; }
+    .opt[aria-pressed="true"] .dot { border-color: var(--accent); background: var(--accent); }
+    .opt .name { display: block; font-size: 13px; }
+    .opt .desc { display: block; font-size: 11.5px; color: var(--muted); }
 
-  <body>
-    <a-scene 
-      loading-manager
-      cursor="rayOrigin: mouse" 
-      sound-effects
-      day-night-cycle="cycleLength: 180">
-      
-      <!-- UI Overlays -->
-      <div class="museum-info">Welcome to the Vegetable Museum</div>
-      
-      <!-- Camera Rig with Enhanced Controls -->
-      <a-entity
-        id="cameraRig"
-        enhanced-mobile-controls="speed: 3"
-        movement-controls="fly: false; constrainToNavMesh: false;"
-        navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable"
-        position="0 0 0"
-        rotation="0 0 0"
-      >
-        <a-entity
-          id="head"
-          camera="active: true"
-          look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
-          wasd-controls="fly: false"
-          position="0 1.6 0"
-        >
-          <a-cursor
-            fuse="true"
-            fuse-timeout="1500"
-            animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-            animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
-            animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
-            raycaster="objects: .clickable"
-          ></a-cursor>
-        </a-entity>
+    /* ---------- Help ---------- */
+    #infoBtn { position: fixed; top: 16px; right: 16px; z-index: 11; width: 36px; height: 36px; border-radius: 50%;
+      cursor: pointer; font: italic 600 17px Georgia, "Times New Roman", serif; }
+    #infoBtn:hover, #infoBtn[aria-expanded="true"] { background: var(--accent); color: #08111d; border-color: var(--accent); }
+    #help { position: fixed; top: 62px; right: 16px; z-index: 12; width: 300px; max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 78px); overflow-y: auto; border-radius: 14px; padding: 18px 22px; box-sizing: border-box; }
+    #help[hidden] { display: none; }
+    #help h2 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+    #help h3 { margin: 14px 0 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+    #help p { margin: 0; color: var(--muted); font-size: 13px; }
+    .keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; }
+    kbd { display: inline-block; min-width: 18px; padding: 1px 6px; border-radius: 5px; text-align: center;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); font: 12px ui-monospace, monospace; }
 
-        <!-- Controllers with improved teleportation -->
-        <a-entity
-          id="left-controller"
-          laser-controls="hand: left"
-          raycaster="objects: .clickable, .ground"
-          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
-          visible="true"
-        ></a-entity>
-        
-        <a-entity
-          id="right-controller"
-          laser-controls="hand: right"
-          raycaster="objects: .clickable, .ground"
-          blink-controls="cameraRig: #cameraRig; teleportOrigin: #cameraRig; collisionEntities: .ground; landingMaxAngle: 45; buttonTopoOffset: 0.1"
-          visible="true"
-        ></a-entity>
-      </a-entity>
+    /* ---------- HUD ---------- */
+    #hud { position: fixed; left: 16px; bottom: 16px; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      padding: 8px 12px; border-radius: 10px; font-size: 13px; color: var(--muted); max-width: calc(100vw - 32px); box-sizing: border-box; }
+    #hud input { width: 110px; accent-color: var(--accent); }
+    #hud[data-nomodel] .scale { display: none; }
+    #status:empty { display: none; }
 
-      <!-- Assets with improved organization -->
-      <a-assets timeout="10000">
-        <!-- Images -->
-        
-        <img id="image1" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/slide1-2-gw4yf3f66ye-1751025121547.png" />
-        
-        <img id="image2" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/carrots-r4wx3xyukx-1751025120575.png" />
+    #VRButton { background: var(--panel) !important; border: 1px solid var(--line) !important; opacity: 1 !important; }
+    @media (max-width: 900px) { #hud { bottom: 72px; } }
+  </style>
+</head>
+<body>
+  <aside id="picker" class="glass" aria-label="Scene picker">
+    <header>
+      <h1>Scene Explorer</h1>
+      <button id="togglePicker" type="button" aria-expanded="true">Hide</button>
+    </header>
+    <div class="body">
+      <h2>Environment (splat)</h2>
+      <div class="list" id="splatList"></div>
+      <h2>3D model</h2>
+      <div class="list" id="modelList"></div>
+    </div>
+  </aside>
 
-        <img id="image3" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/onions-2-ulzsfsmw27p-1751025119971.png" />
-        
-        <img id="arrowLeft" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/left-arrow-3u23ymwe844-1751025119761.png" />
+  <button id="infoBtn" class="glass" type="button" aria-label="How to navigate" aria-expanded="false" aria-controls="help">i</button>
+  <div id="help" class="glass" hidden>
+    <h2>How to navigate</h2>
+    <p>Click and drag to look around. WASD moves in whatever direction you're facing.</p>
+    <h3>Keyboard &amp; mouse</h3>
+    <div class="keys">
+      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>Move</span>
+      <span><kbd>Drag</kbd></span><span>Look / steer direction</span>
+      <span><kbd>Space</kbd> / <kbd>C</kbd></span><span>Up / down</span>
+      <span><kbd>Shift</kbd></span><span>Move faster</span>
+      <span><kbd>R</kbd></span><span>Reset view</span>
+      <span><kbd>H</kbd></span><span>Show / hide scene picker</span>
+      <span><kbd>I</kbd></span><span>Toggle this help</span>
+    </div>
+    <h3>VR headset</h3>
+    <div class="keys">
+      <span>Left stick</span><span>Walk</span>
+      <span>Right stick</span><span>Snap turn / up &amp; down</span>
+    </div>
+  </div>
 
-        <img id="arrowRight" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/right-arrow-3msjtd5sv0d-1751025119571.png" />
+  <div id="hud" class="glass">
+    <label class="scale" for="scale">Model size</label>
+    <input class="scale" id="scale" type="range" min="0.25" max="4" step="0.05" value="1" />
+    <span class="scale" id="scaleVal">1.0×</span>
+    <span id="status"></span>
+  </div>
 
-        <img id="sky" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/day-f5wv4xoslsk-1751025118228.jpg />
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+        "@sparkjsdev/spark": "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.3.1/dist/spark.module.js"
+    } }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { VRButton } from 'three/addons/webxr/VRButton.js';
+    import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+    import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
 
-<img id="ground" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/images/ground-bts0y1ae4p-1751036492602.png" />
+    // ======================================================================
+    //  CONTENT — add your own files here. Paths are relative to this page.
+    // ======================================================================
+    // Models: .glb / .gltf files. `size` is the largest dimension in metres at 1.0×.
+    const MODELS = [
+      { id: 'scan',  name: 'Scaniverse scan', desc: 'Textured mesh capture', url: 'model.glb', size: 2.0 },
+      { id: 'llama', name: 'Llama',           desc: 'Animal model',          url: 'lama.glb',  size: 1.6 },
+    ];
+    // Splats: .spz / .ply / .splat / .ksplat files. Use position/rotation/scale to put the
+    // floor at y = 0 and face it the right way (rotation is in degrees).
+    const SPLATS = [
+      { id: 'nh1', name: 'NH1', desc: 'Gaussian splat environment', url: 'nh1.spz',
+        position: [-3.5, 3.28, -4.14], rotation: [0, 0, 0], scale: 1 },
+    ];
+    // Shown first if nothing is in the URL. Use null for "None".
+    const DEFAULT_SPLAT = 'nh1';
+    const DEFAULT_MODEL = 'scan';
+    // ======================================================================
 
-    <img id="hotspot" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/images/hotspot-1i1znw388ro-1751025115812.png" />
-        
-        
-        <!-- 3D Models -->
-        
-        <a-asset-item id="carrot" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/3d/carrot-0xr1dgzs8cc-1751025115101.glb"></a-asset-item>
-        
-        <a-asset-item id="mushrooms" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/3d/mushroom-model-qd7alkzrh4f-1751036805791.glb"></a-asset-item>
-        
-        <a-asset-item id="onion" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/admin/3d/onion-c870m3tbmio-1751025460115.glb"></a-asset-item>
-        
-        
-        <!-- Audio -->
-        <audio id="audio1" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/mushroomsaudio-5xfurgmq9e-1751037150328.mp3" preload="auto"></audio>
-        <audio id="audiocarrots" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/audiocarrots-jdt3ha1n17-1751037075899.mp3" preload="auto"></audio>
-        <audio id="audioonion" src="https://ipeyhukhzevbldkqueba.supabase.co/storage/v1/object/public/files/Dan%20Pacheco/audio/audioonion-h1ldb0gggeb-1751037111630.mp3" preload="auto"></audio>
-      </a-assets>
+    const EYE_HEIGHT = 1.6;
+    const WALK_SPEED = 2.5;  // m/s
+    const LOOK_SPEED = 0.004; // radians per pixel
 
-      <!-- Environment -->
-      <a-entity light="type: ambient; color: #BBB; intensity: 1"></a-entity>
-      <a-entity light="type: directional; color: #FFF; intensity: 1; castShadow: true" position="-1 1 0"></a-entity>
-      
-      <a-plane
-        width="100"
-        height="100"
-        rotation="-90 0 0"
-        material="src: #ground; repeat:10 10; transparent: false; opacity: 1; normalTextureRepeat: 10 10; roughness: 0.8"
-        shadow="cast: false; receive: true"
-        class="ground clickable"
-      ></a-plane>
+    // ---------- Renderer / scene ----------
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.xr.enabled = true;
+    document.body.appendChild(renderer.domElement);
 
-      <a-sky src="#sky"></a-sky>
-      
-      <!-- Interactive Info Display -->
-      <a-entity id="info-display" position="0 0 -5">
-        <!-- Main Display Panel with billboard behavior -->
-        <a-entity 
-          id="image-panel-container"
-          face-camera
-          position="0 2.6 -4"
-        >
-          <a-plane
-            id="image-panel"
-            position="0 0 0"
-            width="4"
-            height="2.5"
-            material="src: #image1; side: double; shader: flat"
-            visible="true"
-            class="clickable"
-          ></a-plane>
-          
-          <!-- Navigation Arrows with Improved Styling -->
-          <a-entity 
-            id="nav-left" 
-            position="-2.3 0 0" 
-            class="clickable"
-          >
-            <a-image
-              src="#arrowLeft"
-              position="0 0 0.01"
-              scale="0.5 0.5 0.5"
-              class="clickable"
-              animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
-            ></a-image>
-            <a-plane
-              width="0.6"
-              height="0.6"
-              color="#333333"
-              opacity="0.7"
-              material="shader: flat"
-            ></a-plane>
-          </a-entity>
-          
-          <a-entity 
-            id="nav-right" 
-            position="2.3 0 0" 
-            class="clickable"
-          >
-            <a-image
-              src="#arrowRight"
-              position="0 0 0.01"
-              scale="0.5 0.5 0.5"
-              class="clickable"
-              animation__hover="property: scale; to: 0.6 0.6 0.6; startEvents: mouseenter; endEvents: mouseleave; dir: alternate; dur: 300"
-            ></a-image>
-            <a-plane
-              width="0.6"
-              height="0.6"
-              color="#333333"
-              opacity="0.7"
-              material="shader: flat"
-            ></a-plane>
-          </a-entity>
-          
-          <!-- Information Display Text -->
-          <a-entity
-            id="info-text"
-            position="0 -1.6 0"
-            text="value: Welcome to the Agriquest Vegetable Museum! Explore the world of vegetables in this interactive 3D exhibit. Click on the hotspots to learn more about each vegetable.; width: 3; color: #FFFFFF; align: center"
-            geometry="primitive: plane; width: 4; height: 0.8"
-            material="color: #333333; opacity: 0.8; shader: flat"
-          ></a-entity>
-        </a-entity>
-      </a-entity>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
+    const rig = new THREE.Group();
+    rig.add(camera);
+    scene.add(rig);
 
-      <!-- Create invisible floor collider to prevent falling through -->
-      <a-box
-        class="collision"
-        position="0 -0.1 0"
-        width="100"
-        height="0.2"
-        depth="100"
-        visible="false"
-        static-body
-      ></a-box>
-      
-      <!-- Create invisible ceiling to prevent flying -->
-      <a-box
-        class="collision"
-        position="0 4 0"
-        width="100"
-        height="0.2"
-        depth="100"
-        visible="false"
-        static-body
-      ></a-box>
+    scene.add(new THREE.HemisphereLight(0xdff0ff, 0x9a948a, 1.8));
+    const sun = new THREE.DirectionalLight(0xfff6e5, 1.4);
+    sun.position.set(4, 8, 5);
+    scene.add(sun);
 
-      <!-- Mushroom Exhibit -->
-      <a-entity id="mushroom-exhibit" position="-15 0 -17">
-        <!-- Mushroom Model with simplified animations -->
-        <a-entity
-          id="mushroom-model"
-          gltf-model="#mushrooms"
-          position="0 1.5 0"
-          scale="2 2 2"
-          rotation="0 -116 0"
-          shadow="cast: true; receive: true"
-        ></a-entity>
-        
-        <!-- Exhibit Environment -->
-        <a-entity
-          geometry="primitive: cylinder; radius: 5; height: 0.1"
-          position="0 0 0"
-          material="color: #2D5F34; roughness: 0.9"
-        ></a-entity>
-        
-        <!-- Information Hotspot -->
-        <a-entity
-          id="mushroom-hotspot"
-          face-camera="preserveY: true"
-          class="clickable"
-          spot="label: Learn About Mushrooms; audio: #audio1; labelBackground: #333333; info: Mushrooms are fungi that grow in dark, moist environments. They are rich in vitamin D and various minerals. Some mushrooms are edible while others are poisonous.; vegetableModel: #mushroom-model; revealAnimation: true"
-          position="3 1.5 0"
-        ></a-entity>
-      </a-entity>
+    // Shown when no splat is selected, so there's still a sense of ground and scale.
+    const plainEnv = new THREE.Group();
+    const grid = new THREE.GridHelper(60, 60, 0x8a96a8, 0xb7c1cf);
+    grid.material.transparent = true; grid.material.opacity = 0.6;
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(30, 64), new THREE.MeshStandardMaterial({ color: 0xcfd6df }));
+    ground.rotation.x = -Math.PI / 2; ground.position.y = -0.002;
+    plainEnv.add(ground, grid);
+    scene.add(plainEnv);
 
-      <!-- Carrot Exhibit -->
-      <a-entity id="carrot-exhibit" position="-5 0 15">
-        <!-- Carrot Model with simplified animations -->
-        <a-entity
-          id="carrot-model"
-          gltf-model="#carrot"
-          position="0 2 0"
-          scale="0.2 0.2 0.2"
-          rotation="63 96 110"
-          shadow="cast: true; receive: true"
-        ></a-entity>
-        
-        <!-- Exhibit Environment -->
-        <a-entity
-          geometry="primitive: cylinder; radius: 5; height: 0.1"
-          position="0 0 0"
-          material="color: #E6B570; roughness: 0.9"
-        ></a-entity>
-        
-        <!-- Information Hotspot -->
-        <a-entity
-          id="carrot-hotspot"
-          face-camera="preserveY: true"
-          class="clickable"
-          spot="label: Learn about Carrots; audio: #audiocarrots; info: Carrots are root vegetables rich in beta-carotene, which converts to vitamin A in the body. They help improve vision, boost immunity, and promote healthy skin.; vegetableModel: #carrot-model; revealAnimation: true"
-          position="3 1.5 0"
-        ></a-entity>
-      </a-entity>
+    const spark = new SparkRenderer({ renderer });
+    scene.add(spark);
 
-      <!-- Onion Exhibit -->
-      <a-entity id="onion-exhibit" position="13.6 0 2">
-        <!-- Onion Model with rotation removed -->
-        <a-entity
-          id="onion-model"
-          gltf-model="#onion"
-          position="44 3.6 25"
-          scale="3 3 3"
-          rotation="0 53 0"
-          shadow="cast: true; receive: true"
-        ></a-entity>
-        
-        <!-- Exhibit Environment -->
-        <a-entity
-          geometry="primitive: cylinder; radius: 5; height: 0.1"
-          position="0 0 0"
-          material="color: #B39DDB; roughness: 0.9"
-        ></a-entity>
-        
-        <!-- Information Hotspot -->
-        <a-entity
-          id="onion-hotspot"
-          face-camera="preserveY: true"
-          class="clickable"
-          spot="label: Learn about Onions; audio: #audioonion; info: Onions are bulbous vegetables with layers of flesh covered by a papery skin. They contain compounds that may reduce inflammation and lower cholesterol levels.; vegetableModel: #onion-model; revealAnimation: true"
-          position="3 1.5 0"
-        ></a-entity>
-      </a-entity>
+    const statusEl = document.getElementById('status');
+    const hud = document.getElementById('hud');
+    const busy = new Map(); // what's loading → message
+    function refreshStatus() { statusEl.textContent = [...busy.values()].join(' · '); }
 
-      <script>
-        // Document ready handler
-        document.addEventListener("DOMContentLoaded", () => {
-          // Image slideshow functionality
-          const images = ["#image1", "#image2", "#image3"];
-          let currentIndex = 0;
-          const imagePanel = document.querySelector("#image-panel");
-          
-          function updatePanelImage() {
-            imagePanel.setAttribute("material", "src", images[currentIndex]);
-            
-            // Update info text based on current image
-            const infoText = document.querySelector("#info-text");
-            switch(currentIndex) {
-              case 0:
-                infoText.setAttribute("text", "value", "Welcome to the Agriquest Vegetable Museum! Explore the world of vegetables in this interactive 3D exhibit. Click on the hotspots to learn more about each vegetable.");
-                break;
-              case 1:
-                infoText.setAttribute("text", "value", "Carrots are rich in beta-carotene which is good for eye health. They can be enjoyed raw or cooked in a variety of dishes.");
-                break;
-              case 2:
-                infoText.setAttribute("text", "value", "Onions add flavor to countless dishes worldwide. They contain compounds that may help reduce inflammation and promote heart health.");
-                break;
-            }
-          }
-          
-          document.querySelector("#nav-left").addEventListener("click", () => {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            updatePanelImage();
-            // Play click sound if available
-            const soundEffects = document.querySelector('[sound-effects]');
-            if (soundEffects && soundEffects.components['sound-effects'].sounds.click) {
-              soundEffects.components['sound-effects'].sounds.click.play();
-            }
-          });
-          
-          document.querySelector("#nav-right").addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % images.length;
-            updatePanelImage();
-            // Play click sound if available
-            const soundEffects = document.querySelector('[sound-effects]');
-            if (soundEffects && soundEffects.components['sound-effects'].sounds.click) {
-              soundEffects.components['sound-effects'].sounds.click.play();
-            }
-          });
-          
-          // Update hotspots to use the preserveY option
-          document.querySelectorAll('[face-camera]').forEach(el => {
-            // Check if this is a hotspot element (not the image panel)
-            if (el.hasAttribute('spot')) {
-              el.setAttribute('face-camera', 'preserveY', true);
-            }
-          });
-          
-          // VR Mode toggle
-          const vrToggle = document.createElement('div');
-          vrToggle.className = 'vr-toggle';
-          vrToggle.textContent = 'Enter VR';
-          document.body.appendChild(vrToggle);
-          
-          vrToggle.addEventListener('click', () => {
-            const scene = document.querySelector('a-scene');
-            if (scene.is('vr-mode')) {
-              scene.exitVR();
-              vrToggle.textContent = 'Enter VR';
-            } else {
-              scene.enterVR();
-              vrToggle.textContent = 'Exit VR';
-            }
-          });
-          
-          // Detect device capabilities
-          setTimeout(() => {
-            if (AFRAME.utils.device.isMobile()) {
-              document.querySelector('.controls-guide').innerHTML = 'Touch screen to move:<br>• Top half - Move forward<br>• Bottom half - Move backward<br>• Left side - Turn left<br>• Right side - Turn right';
-            } else {
-              document.querySelector('.controls-guide').innerHTML = 'Desktop Controls:<br>• WASD/Arrow Keys - Move<br>• Mouse - Look around<br>• Click - Interact with hotspots';
-            }
-          }, 1000);
+    // ---------- Splat environment ----------
+    let splat = null, splatToken = 0;
+    async function setSplat(id) {
+      const token = ++splatToken;
+      if (splat) { scene.remove(splat); splat.dispose(); splat = null; }
+      const item = SPLATS.find(s => s.id === id);
+      plainEnv.visible = !item;
+      spark.visible = !!item; // Spark keeps drawing its last frame of splats otherwise
+      scene.background = new THREE.Color(item ? 0xdfe8f0 : 0xe9eef3);
+      if (!item) { busy.delete('splat'); refreshStatus(); return; }
+
+      busy.set('splat', `Loading ${item.name}…`); refreshStatus();
+      const mesh = new SplatMesh({
+        url: item.url,
+        onProgress: (e) => {
+          if (token !== splatToken || !e.total) return;
+          busy.set('splat', `Loading ${item.name}… ${Math.round(e.loaded / e.total * 100)}%`); refreshStatus();
+        },
+      });
+      const [px, py, pz] = item.position ?? [0, 0, 0];
+      const [rx, ry, rz] = (item.rotation ?? [0, 0, 0]).map(THREE.MathUtils.degToRad);
+      mesh.position.set(px, py, pz);
+      mesh.rotation.set(rx, ry, rz);
+      mesh.scale.setScalar(item.scale ?? 1);
+      splat = mesh;
+      scene.add(mesh);
+      try {
+        await mesh.initialized;
+        if (token === splatToken) busy.delete('splat');
+      } catch (err) {
+        console.error(err);
+        if (token === splatToken) busy.set('splat', `Couldn't load ${item.name}.`);
+      }
+      refreshStatus();
+    }
+
+    // ---------- Model ----------
+    const modelHolder = new THREE.Group();
+    scene.add(modelHolder);
+    const loader = new GLTFLoader();
+    const modelCache = new Map(); // url → gltf scene, so switching back is instant
+    let modelFit = 1, modelToken = 0, currentModel = null;
+
+    function setModel(id) {
+      const token = ++modelToken;
+      modelHolder.clear();
+      const item = MODELS.find(m => m.id === id);
+      currentModel = item ?? null;
+      hud.toggleAttribute('data-nomodel', !item);
+      if (!item) { busy.delete('model'); refreshStatus(); return; }
+
+      const place = (root) => {
+        if (token !== modelToken) return;
+        root.position.set(0, 0, 0); // measure from the untransformed scene (cached scenes keep old offsets)
+        const box = new THREE.Box3().setFromObject(root);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        root.position.set(-center.x, -box.min.y, -center.z); // centred, resting on the floor
+        modelHolder.add(root);
+        modelFit = (item.size ?? 2) / Math.max(size.x, size.y, size.z, 1e-6);
+        applyScale();
+        busy.delete('model'); refreshStatus();
+      };
+
+      if (modelCache.has(item.url)) { place(modelCache.get(item.url)); return; }
+      busy.set('model', `Loading ${item.name}…`); refreshStatus();
+      loader.load(item.url, (gltf) => {
+        modelCache.set(item.url, gltf.scene);
+        place(gltf.scene);
+      }, (e) => {
+        if (token !== modelToken || !e.total) return;
+        busy.set('model', `Loading ${item.name}… ${Math.round(e.loaded / e.total * 100)}%`); refreshStatus();
+      }, (err) => {
+        console.error(err);
+        if (token === modelToken) { busy.set('model', `Couldn't load ${item.name}.`); refreshStatus(); }
+      });
+    }
+
+    const scaleInput = document.getElementById('scale');
+    const scaleVal = document.getElementById('scaleVal');
+    function applyScale() {
+      const s = parseFloat(scaleInput.value);
+      modelHolder.scale.setScalar(modelFit * s);
+      scaleVal.textContent = s.toFixed(1) + '×';
+    }
+    scaleInput.addEventListener('input', applyScale);
+
+    function resetView() {
+      const size = (currentModel?.size ?? 2) * parseFloat(scaleInput.value);
+      rig.position.set(0, 0, size * 1.6 + 1);
+      rig.rotation.set(0, 0, 0);
+      camera.position.set(0, renderer.xr.isPresenting ? 0 : EYE_HEIGHT, 0);
+      camera.rotation.set(renderer.xr.isPresenting ? 0 : -0.15, 0, 0);
+    }
+
+    // ---------- Picker UI ----------
+    const state = { splat: DEFAULT_SPLAT, model: DEFAULT_MODEL };
+    const hash = new URLSearchParams(location.hash.slice(1));
+    const pick = (key, list) => {
+      if (!hash.has(key)) return;
+      const v = hash.get(key);
+      state[key] = v === 'none' ? null : (list.some(i => i.id === v) ? v : state[key]);
+    };
+    pick('splat', SPLATS); pick('model', MODELS);
+
+    function buildList(el, items, key, onPick) {
+      const all = [{ id: null, name: 'None', desc: key === 'splat' ? 'Plain floor and sky' : 'Environment only' }, ...items];
+      el.replaceChildren(...all.map(item => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'opt';
+        b.dataset.id = item.id ?? '';
+        b.innerHTML = `<span class="dot"></span><span><span class="name"></span><span class="desc"></span></span>`;
+        b.querySelector('.name').textContent = item.name;
+        b.querySelector('.desc').textContent = item.desc ?? '';
+        b.addEventListener('click', () => {
+          if (state[key] === item.id) return;
+          state[key] = item.id;
+          mark(el, item.id);
+          writeHash();
+          onPick(item.id);
+          b.blur(); // so Space/WASD go back to the scene
         });
-      </script>
-    </a-scene>
-  </body>
+        return b;
+      }));
+      mark(el, state[key]);
+    }
+    function mark(el, id) {
+      for (const b of el.children) b.setAttribute('aria-pressed', String(b.dataset.id === (id ?? '')));
+    }
+    function writeHash() {
+      history.replaceState(null, '', `#splat=${state.splat ?? 'none'}&model=${state.model ?? 'none'}`);
+    }
+
+    buildList(document.getElementById('splatList'), SPLATS, 'splat', setSplat);
+    buildList(document.getElementById('modelList'), MODELS, 'model', (id) => { setModel(id); resetView(); });
+
+    const picker = document.getElementById('picker');
+    const togglePicker = document.getElementById('togglePicker');
+    function setPickerOpen(open) {
+      picker.classList.toggle('collapsed', !open);
+      togglePicker.textContent = open ? 'Hide' : 'Show';
+      togglePicker.setAttribute('aria-expanded', String(open));
+    }
+    togglePicker.addEventListener('click', () => setPickerOpen(picker.classList.contains('collapsed')));
+
+    setSplat(state.splat);
+    setModel(state.model);
+    resetView();
+
+    // ---------- Help ----------
+    const infoBtn = document.getElementById('infoBtn');
+    const help = document.getElementById('help');
+    function setHelp(open) { help.hidden = !open; infoBtn.setAttribute('aria-expanded', String(open)); }
+    infoBtn.addEventListener('click', () => setHelp(help.hidden));
+
+    // ---------- Desktop controls: drag to look, WASD to move ----------
+    const lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    let dragId = null, lastX = 0, lastY = 0;
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      if (renderer.xr.isPresenting || e.button > 0) return;
+      setHelp(false);
+      dragId = e.pointerId; lastX = e.clientX; lastY = e.clientY;
+      renderer.domElement.setPointerCapture(e.pointerId);
+      document.body.classList.add('dragging');
+    });
+    renderer.domElement.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== dragId) return;
+      lookEuler.setFromQuaternion(camera.quaternion);
+      lookEuler.y -= (e.clientX - lastX) * LOOK_SPEED;
+      lookEuler.x = THREE.MathUtils.clamp(lookEuler.x - (e.clientY - lastY) * LOOK_SPEED, -Math.PI / 2 + 0.01, Math.PI / 2 - 0.01);
+      lookEuler.z = 0;
+      camera.quaternion.setFromEuler(lookEuler);
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    const endDrag = (e) => {
+      if (e.pointerId !== dragId) return;
+      dragId = null;
+      document.body.classList.remove('dragging');
+    };
+    renderer.domElement.addEventListener('pointerup', endDrag);
+    renderer.domElement.addEventListener('pointercancel', endDrag);
+
+    const keys = new Set();
+    window.addEventListener('keydown', (e) => {
+      if (e.target instanceof HTMLInputElement) return;
+      keys.add(e.code);
+      if (e.code === 'KeyR') resetView();
+      if (e.code === 'Space') e.preventDefault();
+      if (e.code === 'KeyI' || e.key === '?') setHelp(help.hidden);
+      if (e.code === 'KeyH') setPickerOpen(picker.classList.contains('collapsed'));
+    });
+    window.addEventListener('keyup', (e) => keys.delete(e.code));
+    window.addEventListener('blur', () => keys.clear());
+
+    // ---------- WebXR ----------
+    document.body.appendChild(VRButton.createButton(renderer));
+    const controllerFactory = new XRControllerModelFactory();
+    for (let i = 0; i < 2; i++) {
+      const g = renderer.xr.getControllerGrip(i);
+      g.add(controllerFactory.createControllerModel(g));
+      rig.add(g);
+    }
+    let snapReady = true;
+    renderer.xr.addEventListener('sessionstart', () => {
+      setHelp(false);
+      camera.rotation.set(0, 0, 0);
+      camera.position.set(0, 0, 0); // headset supplies height
+    });
+    renderer.xr.addEventListener('sessionend', resetView);
+
+    // ---------- Movement loop ----------
+    const clock = new THREE.Clock();
+    const forward = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), move = new THREE.Vector3();
+
+    function horizontalBasis() {
+      camera.getWorldDirection(forward);
+      forward.y = 0;
+      if (forward.lengthSq() < 1e-6) forward.set(0, 0, -1);
+      forward.normalize();
+      right.crossVectors(forward, up).normalize();
+    }
+
+    function updateDesktop(dt) {
+      move.set(0, 0, 0);
+      horizontalBasis();
+      if (keys.has('KeyW') || keys.has('ArrowUp')) move.add(forward);
+      if (keys.has('KeyS') || keys.has('ArrowDown')) move.sub(forward);
+      if (keys.has('KeyD') || keys.has('ArrowRight')) move.add(right);
+      if (keys.has('KeyA') || keys.has('ArrowLeft')) move.sub(right);
+      if (move.lengthSq() > 0) move.normalize();
+      if (keys.has('Space')) move.y += 1;
+      if (keys.has('KeyC') || keys.has('ControlLeft')) move.y -= 1;
+      const speed = WALK_SPEED * (keys.has('ShiftLeft') || keys.has('ShiftRight') ? 2.5 : 1);
+      rig.position.addScaledVector(move, speed * dt);
+      const minRig = 0.1 - camera.position.y; // keep the eye above the floor
+      if (rig.position.y < minRig) rig.position.y = minRig;
+    }
+
+    function updateXR(dt) {
+      const session = renderer.xr.getSession();
+      if (!session) return;
+      horizontalBasis();
+      for (const src of session.inputSources) {
+        const axes = src.gamepad?.axes;
+        if (!axes || axes.length < 4) continue;
+        const x = axes[2], y = axes[3];
+        if (src.handedness === 'left') {
+          move.set(0, 0, 0).addScaledVector(forward, -y).addScaledVector(right, x);
+          if (move.lengthSq() > 0.02) rig.position.addScaledVector(move, WALK_SPEED * dt);
+        } else if (src.handedness === 'right') {
+          if (Math.abs(x) > 0.7 && snapReady) { rig.rotation.y -= Math.sign(x) * Math.PI / 6; snapReady = false; }
+          if (Math.abs(x) < 0.3) snapReady = true;
+          if (Math.abs(y) > 0.3) rig.position.y = Math.max(0, rig.position.y - y * WALK_SPEED * 0.6 * dt);
+        }
+      }
+      updateDesktop(dt);
+    }
+
+    renderer.setAnimationLoop(() => {
+      const dt = Math.min(clock.getDelta(), 0.1);
+      if (renderer.xr.isPresenting) updateXR(dt); else updateDesktop(dt);
+      renderer.render(scene, camera);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
 </html>
