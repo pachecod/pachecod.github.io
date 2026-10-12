@@ -181,6 +181,21 @@
             transform: scale(0.95);
         }
         
+        .spin-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0,0,0,0.15);
+        }
+        .spin-label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #333;
+        }
+        
         @media (max-width: 768px) {
             .info-panel, .legend {
                 font-size: 10px;
@@ -203,6 +218,7 @@
     <div class="info-panel">
         <h3>U.S. Military Presence</h3>
         <p><strong>Drag to rotate</strong></p>
+        <p>Globe spins (use right controls to pause or change speed)</p>
         <p id="hover-info">Hover over a country</p>
         <div class="checkbox-container">
             <input type="checkbox" id="show-cities" checked>
@@ -213,6 +229,12 @@
     <div class="zoom-controls">
         <button class="zoom-btn" id="zoom-in" title="Zoom In">🔍+</button>
         <button class="zoom-btn" id="zoom-out" title="Zoom Out">🔍−</button>
+        <div class="spin-controls">
+            <span class="spin-label">Spin</span>
+            <button class="zoom-btn" id="spin-pause" title="Pause rotation">⏸</button>
+            <button class="zoom-btn" id="spin-slower" title="Slower">−</button>
+            <button class="zoom-btn" id="spin-faster" title="Faster">+</button>
+        </div>
     </div>
     
     <div class="legend">
@@ -596,6 +618,13 @@
                                 let momentumAnimation = null;
                                 const maxVelocity = 3;
                                 
+                                // Auto-spin (Earth-like: west to east)
+                                let spinPaused = false;
+                                let spinSpeed = 1.5; // degrees per second
+                                const spinSpeedStep = 0.5;
+                                const spinSpeedMax = 6;
+                                let lastSpinTime = performance.now();
+                                
                                 function clampVelocity(vel) {
                                     const speed = Math.sqrt(vel[0] * vel[0] + vel[1] * vel[1]);
                                     if (speed > maxVelocity) {
@@ -688,6 +717,23 @@
                                     }
                                 }
                                 
+                                function spinLoop(time) {
+                                    const dt = time - lastSpinTime;
+                                    lastSpinTime = time;
+                                    if (!spinPaused && !isDragging && !momentumAnimation && spinSpeed > 0) {
+                                        const rotate = projection.rotate();
+                                        projection.rotate([rotate[0] + spinSpeed * (dt / 1000), rotate[1], rotate[2]]);
+                                        countries.attr("d", path);
+                                        latitudePaths.forEach(p => {
+                                            p.hover.attr("d", path);
+                                            p.visible.attr("d", path);
+                                        });
+                                        updateCityPositions();
+                                    }
+                                    requestAnimationFrame(spinLoop);
+                                }
+                                requestAnimationFrame(spinLoop);
+                                
                                 svg.on("click", function() {
                                     if (momentumAnimation) {
                                         cancelAnimationFrame(momentumAnimation);
@@ -725,6 +771,20 @@
                                 
                                 document.getElementById('zoom-out').addEventListener('click', function() {
                                     updateZoom(currentScale / 1.3);
+                                });
+                                
+                                // Spin controls
+                                const spinPauseBtn = document.getElementById('spin-pause');
+                                spinPauseBtn.addEventListener('click', function() {
+                                    spinPaused = !spinPaused;
+                                    spinPauseBtn.textContent = spinPaused ? '▶' : '⏸';
+                                    spinPauseBtn.title = spinPaused ? 'Play rotation' : 'Pause rotation';
+                                });
+                                document.getElementById('spin-slower').addEventListener('click', function() {
+                                    spinSpeed = Math.max(0, spinSpeed - spinSpeedStep);
+                                });
+                                document.getElementById('spin-faster').addEventListener('click', function() {
+                                    spinSpeed = Math.min(spinSpeedMax, spinSpeed + spinSpeedStep);
                                 });
                                 
                                 // Legend toggle
