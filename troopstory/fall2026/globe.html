@@ -8,61 +8,67 @@
         * {
             box-sizing: border-box;
         }
+        /* Two columns: the key on the left, the globe and its controls on the right.
+           The globe is sized to its own column, so zooming never slides it under the key. */
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
             overflow: hidden;
-            background: #1a1a1a;
+            background: #000;
+            display: flex;
+            height: 100vh;
+        }
+        /* Stars are a fixed layer behind everything, so they stay still while the globe spins.
+           brightness() makes them stand out; the 2000px tile size keeps each star visible. */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url('https://cdn.jsdelivr.net/npm/three-globe@2.45.0/example/img/night-sky.png') center / 2000px auto repeat;
+            filter: brightness(2.6) contrast(1.4);
+            pointer-events: none;
+        }
+        .sidebar {
+            position: relative;
+            z-index: 1;
+            flex: 0 0 250px;
+            padding: 20px 0 20px 20px;
+            overflow-y: auto;
+        }
+        .globe-col {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
         }
         #globe-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        svg {
+            width: 100%;
+            height: 100%;
             cursor: grab;
+            opacity: 0;
+            transition: opacity 0.8s ease;
         }
-        svg:active {
+        #globe-container.ready {
+            opacity: 1;
+        }
+        #globe-container:active {
             cursor: grabbing;
         }
-        .country {
-            stroke: #fff;
-            stroke-width: 0.5px;
-            transition: stroke-width 0.2s;
-        }
-        .country:hover {
-            stroke: #333;
-            stroke-width: 1.5px;
-        }
-        .tooltip {
-            position: absolute;
+        .globe-tooltip {
             background: rgba(0, 0, 0, 0.85);
             color: white;
             padding: 10px 14px;
             border-radius: 5px;
             font-size: 13px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 1000;
             box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
-        .tooltip.visible {
-            opacity: 1;
-        }
         .info-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
             background: rgba(255, 255, 255, 0.95);
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            max-width: 250px;
-            z-index: 100;
         }
         .info-panel h3 {
             margin: 0 0 10px 0;
@@ -74,41 +80,11 @@
             font-size: 12px;
             color: #666;
         }
-        .city-label {
-            font-size: 11px;
-            font-weight: 900;
-            fill: #000;
-            stroke: #fff;
-            stroke-width: 3px;
-            paint-order: stroke;
-            pointer-events: none;
-        }
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #ddd;
-        }
-        .checkbox-container input {
-            cursor: pointer;
-        }
-        .checkbox-container label {
-            cursor: pointer;
-            font-size: 11px;
-        }
         .legend {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
             font-size: 11px;
-            z-index: 100;
-            min-width: 140px;
         }
         .legend-title {
             font-weight: bold;
@@ -122,7 +98,6 @@
         }
         .legend-toggle {
             font-size: 16px;
-            cursor: pointer;
         }
         .legend-content {
             transition: max-height 0.3s ease, opacity 0.3s ease;
@@ -144,7 +119,9 @@
             margin-right: 8px;
             border-radius: 2px;
         }
-        
+        .legend-color.none {
+            background: repeating-linear-gradient(45deg, #2b5f8a, #2b5f8a 3px, #6b8f5a 3px, #6b8f5a 6px);
+        }
         .zoom-controls {
             position: absolute;
             top: 50%;
@@ -155,7 +132,6 @@
             gap: 10px;
             z-index: 100;
         }
-        
         .zoom-btn {
             width: 44px;
             height: 44px;
@@ -170,17 +146,14 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        
         .zoom-btn:hover {
             background: white;
             transform: scale(1.1);
             box-shadow: 0 3px 12px rgba(0,0,0,0.4);
         }
-        
         .zoom-btn:active {
             transform: scale(0.95);
         }
-        
         .spin-controls {
             display: flex;
             flex-direction: column;
@@ -188,631 +161,515 @@
             gap: 6px;
             margin-top: 8px;
             padding-top: 8px;
-            border-top: 1px solid rgba(0,0,0,0.15);
+            border-top: 1px solid rgba(255,255,255,0.3);
         }
         .spin-label {
             font-size: 11px;
             font-weight: bold;
-            color: #333;
+            color: #fff;
         }
-        
+        .height-control {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 14px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            z-index: 100;
+        }
+        .height-hint {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            background: #1e3c72;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            pointer-events: none;
+            transition: opacity 1s ease;
+            animation: hintBob 1.6s ease-in-out infinite;
+        }
+        .height-hint::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -7px;
+            border: 7px solid transparent;
+            border-top-color: #1e3c72;
+        }
+        .height-hint.hidden {
+            opacity: 0;
+        }
+        @keyframes hintBob {
+            0%, 100% { margin-bottom: 0; }
+            50% { margin-bottom: 5px; }
+        }
+        .height-control input {
+            width: 180px;
+            cursor: pointer;
+        }
+        #height-value {
+            min-width: 34px;
+            font-weight: normal;
+            font-variant-numeric: tabular-nums;
+        }
         @media (max-width: 768px) {
-            .info-panel, .legend {
-                font-size: 10px;
-                padding: 10px;
+            .height-control input {
+                width: 110px;
+            }
+        }
+        .loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 14px;
+            pointer-events: none;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                flex-basis: 190px;
+                padding: 10px 0 10px 10px;
             }
             .info-panel {
-                max-width: 180px;
+                font-size: 10px;
+                padding: 10px;
             }
             .info-panel h3 {
                 font-size: 14px;
             }
         }
+        /* Phones: stack the key above the globe */
+        @media (max-width: 560px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                flex: 0 0 auto;
+                max-height: 40vh;
+                padding: 10px 10px 0;
+            }
+            .globe-col {
+                flex: 1;
+            }
+        }
     </style>
 </head>
 <body>
-    <div id="globe-container"></div>
-    
-    <div class="tooltip"></div>
-    
-    <div class="info-panel">
-        <h3>U.S. Military Presence</h3>
-        <p><strong>Drag to rotate</strong></p>
-        <p>Globe spins (use right controls to pause or change speed)</p>
-        <p id="hover-info">Hover over a country</p>
-        <div class="checkbox-container">
-            <input type="checkbox" id="show-cities" checked>
-            <label for="show-cities">Show cities</label>
-        </div>
-    </div>
-    
-    <div class="zoom-controls">
-        <button class="zoom-btn" id="zoom-in" title="Zoom In">🔍+</button>
-        <button class="zoom-btn" id="zoom-out" title="Zoom Out">🔍−</button>
-        <div class="spin-controls">
-            <span class="spin-label">Spin</span>
-            <button class="zoom-btn" id="spin-pause" title="Pause rotation">⏸</button>
-            <button class="zoom-btn" id="spin-slower" title="Slower">−</button>
-            <button class="zoom-btn" id="spin-faster" title="Faster">+</button>
-        </div>
-    </div>
-    
-    <div class="legend">
-        <div class="legend-title" id="legend-toggle">
-            <span>Number of Troops</span>
-            <span class="legend-toggle">−</span>
-        </div>
-        <div class="legend-content" id="legend-content">
-            <div class="legend-item">
-                <div class="legend-color" style="background: #e8e8e8"></div>
-                <span>0</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #c0c0c0"></div>
-                <span>1-100</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #cfe2f3"></div>
-                <span>100-500</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #9fc5e8"></div>
-                <span>500-1,000</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #6fa8dc"></div>
-                <span>1,000-5,000</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #3d85c6"></div>
-                <span>5,000-10,000</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #0b5394"></div>
-                <span>10,000-20,000</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #e69138"></div>
-                <span>20,000-50,000</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #cc0000"></div>
-                <span>50,000+</span>
+    <aside class="sidebar">
+        <div class="info-panel">
+            <h3>U.S. Military Presence</h3>
+            <p><strong>Drag to rotate</strong></p>
+            <p>Globe spins (use the pause button on the right to stop it)</p>
+            <p id="hover-info">Hover over a country</p>
+            <div class="legend">
+                <div class="legend-title" id="legend-toggle">
+                    <span>Number of Troops</span>
+                    <span class="legend-toggle">−</span>
+                </div>
+                <div class="legend-content" id="legend-content">
+                    <div class="legend-item"><div class="legend-color none"></div><span>0 (no tint)</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #fff176"></div><span>1-100</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #ffd60a"></div><span>100-500</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #ffb000"></div><span>500-1,000</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #ff7a00"></div><span>1,000-5,000</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #ff3d00"></div><span>5,000-10,000</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #e0005a"></div><span>10,000-20,000</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #b5179e"></div><span>20,000-50,000</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background: #7209b7"></div><span>50,000+</span></div>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    </aside>
+
+    <main class="globe-col">
+        <div id="globe-container"></div>
+        <div class="loading" id="loading">Loading globe…</div>
+
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="zoom-in" title="Zoom In">🔍+</button>
+            <button class="zoom-btn" id="zoom-out" title="Zoom Out">🔍−</button>
+            <div class="spin-controls">
+                <span class="spin-label">Spin</span>
+                <button class="zoom-btn" id="spin-pause" title="Pause rotation">⏸</button>
+            </div>
+        </div>
+
+        <div class="height-control">
+            <div class="height-hint" id="height-hint" role="note">↔ Drag to raise or lower countries by troop count</div>
+            <label for="height-slider">Country height</label>
+            <input type="range" id="height-slider" min="0" max="3" step="0.05" value="0">
+            <span id="height-value">0.0×</span>
+        </div>
+    </main>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    
-    <script>
-        // Color scale function
+
+    <script type="module">
+        // three must be the same version globe.gl uses, so both share one copy
+        import Globe from 'https://cdn.jsdelivr.net/npm/globe.gl@2.46.2/+esm';
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.185.1/+esm';
+        import * as topojson from 'https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm';
+
+        // Imagery: NASA Blue Marble (public domain), via the three-globe examples
+        const IMG = 'https://cdn.jsdelivr.net/npm/three-globe@2.45.0/example/img/';
+        const CLOUDS_IMG = 'https://cdn.jsdelivr.net/npm/globe.gl@2.46.2/example/clouds/clouds.png';
+        // Natural Earth 1:50m country shapes (small enough for 3D, still includes Bahrain etc.)
+        const COUNTRIES_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json';
+
+        // Spin speed in degrees per second
+        const spinSpeed = 0.75;
+        let spinPaused = false;
+
+        // Same bins as the flat globe, but vivid colors that stand out on satellite imagery
         function getColor(troops) {
-            return troops > 50000 ? '#cc0000' :
-                   troops > 20000 ? '#e69138' :
-                   troops > 10000 ? '#0b5394' :
-                   troops > 5000  ? '#3d85c6' :
-                   troops > 1000  ? '#6fa8dc' :
-                   troops > 500   ? '#9fc5e8' :
-                   troops > 100   ? '#cfe2f3' :
-                   troops > 0     ? '#c0c0c0' :
-                                    '#e8e8e8';
+            return troops > 50000 ? '#7209b7' :
+                   troops > 20000 ? '#b5179e' :
+                   troops > 10000 ? '#e0005a' :
+                   troops > 5000  ? '#ff3d00' :
+                   troops > 1000  ? '#ff7a00' :
+                   troops > 500   ? '#ffb000' :
+                   troops > 100   ? '#ffd60a' :
+                   troops > 0     ? '#fff176' :
+                                    null;
         }
-        
-        // Country name mapping
-        const countryNameMap = {
-            'United States of America': 'United States',
-            'Republic of Korea': 'South Korea',
-            'Democratic Republic of the Congo': 'Congo (Kinshasa)',
-            'Republic of the Congo': 'Congo (Brazzaville)',
-            'Czech Republic': 'Czechia',
-            'The Bahamas': 'Bahamas',
-            'Ivory Coast': "Cote d'Ivoire"
+
+        // Light tint for small deployments so the satellite image shows through
+        function tintAlpha(troops) {
+            return troops > 20000 ? 0.9 :
+                   troops > 5000  ? 0.85 :
+                   troops > 1000  ? 0.8 :
+                   troops > 100   ? 0.7 :
+                                    0.45;
+        }
+
+        // Lit material for the raised sides, so light and shadow show their height
+        const sideMaterials = {};
+        function sideMaterial(hex) {
+            const key = hex || 'none';
+            if (!sideMaterials[key]) {
+                sideMaterials[key] = hex
+                    ? new THREE.MeshLambertMaterial({ color: hex, transparent: true, opacity: 0.9 })
+                    : new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+            }
+            return sideMaterials[key];
+        }
+
+        // Lighter version of a color, used for country outlines
+        function brighten(hex) {
+            const n = parseInt(hex.slice(1), 16);
+            const mix = c => Math.round(c + (255 - c) * 0.45);
+            return `rgb(${mix(n >> 16)}, ${mix((n >> 8) & 255)}, ${mix(n & 255)})`;
+        }
+
+        function withAlpha(hex, alpha) {
+            const n = parseInt(hex.slice(1), 16);
+            return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+        }
+
+        // Map-file names -> extra troops.csv names that refer to the same place.
+        // (Names that differ only in accents, "&" vs "and", or punctuation match automatically.)
+        const aliases = {
+            'United States of America': ['United States'],
+            'U.S. Virgin Is.': ['US Virgin Islands'],
+            'Dominican Rep.': ['Dominican Republic'],
+            'Bosnia and Herz.': ['Bosnia and Herzegovina'],
+            'Dem. Rep. Congo': ['Congo - Kinshasa', 'Democratic Republic of the Congo'],
+            'Congo': ['Congo - Brazzaville'],
+            'S. Sudan': ['South Sudan'],
+            'Central African Rep.': ['Central African Republic'],
+            'Marshall Is.': ['Marshall Islands'],
+            'Myanmar': ['Myanmar (Burma)'],
+            'Macedonia': ['North Macedonia'],
+            'Serbia': ['Yugoslavia'],
+            'Cabo Verde': ['Cape Verde'],
+            'Micronesia': ['Micronesia (Federated States Of)', 'Federated States of Micronesia'],
+            'Antigua and Barb.': ['Antigua and Barbuda'],
+            'Czechia': ['Czech Republic'],
+            'Timor-Leste': ['East Timor'],
+            'Eq. Guinea': ['Equatorial Guinea'],
+            "Côte d'Ivoire": ['Ivory Coast'],
+            'Solomon Is.': ['Solomon Islands'],
+            'Saint Lucia': ['St. Lucia'],
+            'St. Vin. and Gren.': ['St. Vincent and the Grenadines'],
+            'eSwatini': ['Swaziland']
         };
-        
-        // Set up dimensions
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const radius = Math.min(width, height) / 2.2;
-        
-        // Create SVG
-        const svg = d3.select("#globe-container")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-        
-        // Add stars to background
-        const numStars = 200;
-        for (let i = 0; i < numStars; i++) {
-            svg.append("circle")
-                .attr("cx", Math.random() * width)
-                .attr("cy", Math.random() * height)
-                .attr("r", Math.random() * 1.5 + 0.3)
-                .attr("fill", "#ffffff")
-                .attr("opacity", Math.random() * 0.7 + 0.3);
+
+        function norm(name) {
+            return name.normalize('NFKD').replace(/[̀-ͯ]/g, '')
+                .toLowerCase().replace(/&/g, 'and').replace(/[^a-z]/g, '');
         }
-        
-        const g = svg.append("g")
-            .attr("transform", `translate(${width / 2},${height / 2})`);
-        
-        // Create projection
-        const projection = d3.geoOrthographic()
-            .scale(radius)
-            .translate([0, 0])
-            .rotate([-10, -50, 0])
-            .clipAngle(90);
-        
-        const path = d3.geoPath().projection(projection);
-        
-        // Add water texture pattern
-        const defs = svg.append("defs");
-        
-        // Create subtle wave pattern
-        const waterPattern = defs.append("pattern")
-            .attr("id", "water-texture")
-            .attr("patternUnits", "userSpaceOnUse")
-            .attr("width", 30)
-            .attr("height", 30);
-        
-        // Base water color
-        waterPattern.append("rect")
-            .attr("width", 30)
-            .attr("height", 30)
-            .attr("fill", "#5ba3d0");
-        
-        // Add subtle curved wave lines
-        for (let i = 0; i < 6; i++) {
-            waterPattern.append("path")
-                .attr("d", `M -5 ${5 + i * 5} Q 2.5 ${3 + i * 5}, 7.5 ${5 + i * 5} T 22.5 ${5 + i * 5} T 37.5 ${5 + i * 5}`)
-                .attr("stroke", "#4a8ab8")
-                .attr("stroke-width", 1)
-                .attr("fill", "none")
-                .attr("opacity", 0.38);
-        }
-        
-        // Add lighter accent waves
-        for (let i = 0; i < 3; i++) {
-            waterPattern.append("path")
-                .attr("d", `M -5 ${7.5 + i * 10} Q 2.5 ${6 + i * 10}, 7.5 ${7.5 + i * 10} T 22.5 ${7.5 + i * 10} T 37.5 ${7.5 + i * 10}`)
-                .attr("stroke", "#6bb5e0")
-                .attr("stroke-width", 0.8)
-                .attr("fill", "none")
-                .attr("opacity", 0.25);
-        }
-        
-        // Add ocean
-        const globe = g.append("circle")
-            .attr("r", radius)
-            .attr("fill", "url(#water-texture)")
-            .attr("stroke", "#3d7ba8")
-            .attr("stroke-width", 2);
-        
-        // Create latitude lines
+
         const latitudes = [
-            { lat: 0, color: "#ff6b6b", dash: "5,5", name: "equator", label: "Equator" },           
-            { lat: 23.5, color: "#ffa500", dash: "3,3", name: "tropic-cancer", label: "Tropic of Cancer" },  
-            { lat: -23.5, color: "#ffa500", dash: "3,3", name: "tropic-capricorn", label: "Tropic of Capricorn" }, 
-            { lat: 66.5, color: "#87ceeb", dash: "3,3", name: "arctic", label: "Arctic Circle" },         
-            { lat: -66.5, color: "#87ceeb", dash: "3,3", name: "antarctic", label: "Antarctic Circle" }      
-        ];
-        
-        // Major cities
+            { lat: 0, color: '#ff6b6b', label: 'Equator' },
+            { lat: 23.5, color: '#ffa500', label: 'Tropic of Cancer' },
+            { lat: -23.5, color: '#ffa500', label: 'Tropic of Capricorn' },
+            { lat: 66.5, color: '#87ceeb', label: 'Arctic Circle' },
+            { lat: -66.5, color: '#87ceeb', label: 'Antarctic Circle' }
+        ].map(l => ({ ...l, coords: Array.from({ length: 361 }, (_, i) => [l.lat, i - 180]) }));
+
         const cities = [
-            { name: "Tokyo", coords: [139.6917, 35.6895] },
-            { name: "New York", coords: [-74.0060, 40.7128] },
-            { name: "London", coords: [-0.1276, 51.5074] },
-            { name: "Paris", coords: [2.3522, 48.8566] },
-            { name: "Beijing", coords: [116.4074, 39.9042] },
-            { name: "Moscow", coords: [37.6173, 55.7558] },
-            { name: "Sydney", coords: [151.2093, -33.8688] },
-            { name: "Cairo", coords: [31.2357, 30.0444] },
-            { name: "Mumbai", coords: [72.8777, 19.0760] },
-            { name: "São Paulo", coords: [-46.6333, -23.5505] },
-            { name: "Los Angeles", coords: [-118.2437, 34.0522] },
-            { name: "Mexico City", coords: [-99.1332, 19.4326] },
-            { name: "Seoul", coords: [126.9780, 37.5665] },
-            { name: "Berlin", coords: [13.4050, 52.5200] },
-            { name: "Singapore", coords: [103.8198, 1.3521] },
-            { name: "Buenos Aires", coords: [-58.3816, -34.6037] },
-            { name: "Cape Town", coords: [18.4241, -33.9249] },
-            { name: "Bangkok", coords: [100.5018, 13.7563] },
-            { name: "Dubai", coords: [55.2708, 25.2048] },
-            { name: "Hong Kong", coords: [114.1694, 22.3193] }
+            { name: 'Tokyo', lat: 35.6895, lng: 139.6917 },
+            { name: 'New York', lat: 40.7128, lng: -74.0060 },
+            { name: 'London', lat: 51.5074, lng: -0.1276 },
+            { name: 'Paris', lat: 48.8566, lng: 2.3522 },
+            { name: 'Beijing', lat: 39.9042, lng: 116.4074 },
+            { name: 'Moscow', lat: 55.7558, lng: 37.6173 },
+            { name: 'Sydney', lat: -33.8688, lng: 151.2093 },
+            { name: 'Cairo', lat: 30.0444, lng: 31.2357 },
+            { name: 'Mumbai', lat: 19.0760, lng: 72.8777 },
+            { name: 'São Paulo', lat: -23.5505, lng: -46.6333 },
+            { name: 'Los Angeles', lat: 34.0522, lng: -118.2437 },
+            { name: 'Mexico City', lat: 19.4326, lng: -99.1332 },
+            { name: 'Seoul', lat: 37.5665, lng: 126.9780 },
+            { name: 'Berlin', lat: 52.5200, lng: 13.4050 },
+            { name: 'Singapore', lat: 1.3521, lng: 103.8198 },
+            { name: 'Buenos Aires', lat: -34.6037, lng: -58.3816 },
+            { name: 'Cape Town', lat: -33.9249, lng: 18.4241 },
+            { name: 'Bangkok', lat: 13.7563, lng: 100.5018 },
+            { name: 'Dubai', lat: 25.2048, lng: 55.2708 },
+            { name: 'Hong Kong', lat: 22.3193, lng: 114.1694 }
         ];
-        
-        // Tooltip
-        const tooltip = d3.select(".tooltip");
-        const hoverInfo = d3.select("#hover-info");
-        
-        // Load data
-        let troopsData = {};
-        
+
+        const hoverInfo = document.getElementById('hover-info');
+        const el = document.getElementById('globe-container');
+        let hovered = null;
+
+        // Every country with troops rises with log(troops), so big and small deployments
+        // are both visible. At 1×: 10 troops ≈ 0.04, 250 ≈ 0.06, 36k ≈ 0.09, 1.1M ≈ 0.12 globe radius
+        function altitude(d) {
+            if (d === hovered) return altitudeBase(d) + 0.01;
+            return altitudeBase(d);
+        }
+        // The slider scales the raised part (1× = default, 0 = flat).
+        // The globe starts flat and rises to 1× after a short delay (see "Intro rise" below).
+        let heightScale = 0;
+        const DEFAULT_HEIGHT = 1;
+        const INTRO_DELAY_MS = 10000;
+        let sliderTouched = false;
+        function altitudeBase(d) {
+            if (!d.troops) return 0.004;
+            return 0.004 + heightScale * (0.018 + Math.log10(d.troops + 1) * 0.016);
+        }
+
+        // animateIn: false skips globe.gl's zoom-from-tiny intro; the globe fades in instead
+        const world = new Globe(el, { animateIn: false })
+            // NASA Blue Marble Next Generation (topography + bathymetry, public domain),
+            // with the ocean recolored toward Google Earth's lighter blue. Original: IMG + 'earth-blue-marble.jpg'
+            .globeImageUrl('earth-texture.jpg')
+            .bumpImageUrl(IMG + 'earth-topology.png')
+            .backgroundColor('rgba(0, 0, 0, 0)') // transparent, so the fixed star background shows through
+            .showAtmosphere(true)
+            .atmosphereColor('#7fb8ff')
+            .atmosphereAltitude(0.18)
+            .width(el.parentElement.clientWidth)
+            .height(el.parentElement.clientHeight)
+            .pointOfView({ lat: 25, lng: 10, altitude: 2.2 })
+            .onGlobeReady(() => {
+                document.getElementById('loading').remove();
+                attachClouds();
+                el.classList.add('ready');
+            });
+
+        // Brighter than the default lighting, closer to Google Earth
+        world.lights().forEach(light => {
+            light.intensity *= light.isAmbientLight ? 1.6 : 1.3;
+        });
+
+        // Shiny oceans, matte land (the water mask makes sunlight glint off the sea)
+        new THREE.TextureLoader().load(IMG + 'earth-water.png', tex => {
+            const mat = world.globeMaterial();
+            mat.specularMap = tex;
+            mat.specular = new THREE.Color('#555');
+            mat.shininess = 18;
+            mat.needsUpdate = true;
+        });
+
+        // Slowly drifting cloud layer just above the surface
+        const clouds = new THREE.Mesh(
+            new THREE.SphereGeometry(world.getGlobeRadius() * 1.006, 75, 75),
+            new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.85, depthWrite: false })
+        );
+        // Attach to the globe itself (not the scene) so the clouds grow with it during
+        // globe.gl's zoom-in intro, instead of looming over a tiny Earth. Runs when the
+        // cloud image loads and again when the globe is ready, whichever comes last.
+        let cloudsLoaded = false;
+        function attachClouds() {
+            if (!cloudsLoaded) return;
+            let globeMesh = null;
+            world.scene().traverse(o => { if (o.material === world.globeMaterial()) globeMesh = o; });
+            if (globeMesh) globeMesh.parent.add(clouds);
+        }
+        new THREE.TextureLoader().load(CLOUDS_IMG, tex => {
+            clouds.material.map = tex;
+            clouds.material.needsUpdate = true;
+            cloudsLoaded = true;
+            attachClouds();
+        });
+        (function driftClouds() {
+            clouds.rotation.y += 0.00004;
+            requestAnimationFrame(driftClouds);
+        })();
+
+        // Auto-rotate: OrbitControls speed 1 = 6 degrees per second
+        const controls = world.controls();
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = spinSpeed / 6;
+        function applySpin() {
+            controls.autoRotate = !spinPaused;
+        }
+
+        // Cities
+        function updateCities() {
+            world
+                .labelsData(cities)
+                .labelText('name')
+                .labelSize(1.1)
+                .labelDotRadius(0.45)
+                .labelColor(() => 'rgba(255, 255, 255, 0.95)')
+                .labelResolution(2)
+                .labelAltitude(0.012)
+                .labelLabel(d => `<div class="globe-tooltip"><strong>${d.name}</strong></div>`);
+        }
+
+        // Latitude lines
+        function updateLines() {
+            world
+                .pathsData(latitudes)
+                .pathPoints('coords')
+                .pathPointLat(p => p[0])
+                .pathPointLng(p => p[1])
+                .pathColor(d => withAlpha(d.color, 0.9))
+                .pathDashLength(0.01)
+                .pathStroke(1.5)
+                .pathDashGap(0.008)
+                .pathPointAlt(0.005)
+                .pathLabel(d => `<div class="globe-tooltip"><strong>${d.label}</strong></div>`);
+        }
+
+        // Load troop data, then country shapes
         fetch('troops.csv')
-            .then(response => response.text())
+            .then(r => r.text())
             .then(csvText => {
-                Papa.parse(csvText, {
-                    header: true,
-                    dynamicTyping: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        // Create lookup object
-                        results.data.forEach(row => {
-                            const country = row.Country;
-                            const troops = row['Troops Deployed'] || 0;
-                            troopsData[country] = troops;
+                const troopsByName = {};
+                Papa.parse(csvText, { header: true, dynamicTyping: true, skipEmptyLines: true }).data
+                    .forEach(row => {
+                        const key = norm(String(row.Country || ''));
+                        troopsByName[key] = (troopsByName[key] || 0) + (row['Troops Deployed'] || 0);
+                    });
+
+                return fetch(COUNTRIES_URL).then(r => r.json()).then(topo => {
+                    const features = topojson.feature(topo, topo.objects.countries).features
+                        .filter(f => f.properties.name !== 'Antarctica');
+                    features.forEach(f => {
+                        const keys = new Set([f.properties.name, ...(aliases[f.properties.name] || [])].map(norm));
+                        f.troops = [...keys].reduce((sum, k) => sum + (troopsByName[k] || 0), 0);
+                    });
+
+                    world
+                        .polygonsData(features)
+                        .polygonCapColor(d => {
+                            const c = getColor(d.troops);
+                            if (!c) return d === hovered ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0)';
+                            return withAlpha(c, d === hovered ? 0.9 : tintAlpha(d.troops));
+                        })
+                        .polygonSideMaterial(d => sideMaterial(d.troops ? getColor(d.troops) : null))
+                        .polygonStrokeColor(d => d === hovered ? '#ffffff' : d.troops > 100 ? brighten(getColor(d.troops)) : 'rgba(255, 255, 255, 0.25)')
+                        .polygonAltitude(altitude)
+                        .polygonCapCurvatureResolution(3)
+                        .polygonsTransitionDuration(700)
+                        .polygonLabel(d => `<div class="globe-tooltip"><strong>${d.properties.name}</strong><br>${d.troops.toLocaleString()} troops</div>`)
+                        .onPolygonHover(d => {
+                            hovered = d;
+                            hoverInfo.innerHTML = d
+                                ? `<strong>${d.properties.name}</strong><br>${d.troops.toLocaleString()} troops`
+                                : 'Hover over a country';
+                            world.polygonCapColor(world.polygonCapColor()).polygonStrokeColor(world.polygonStrokeColor()).polygonAltitude(altitude);
                         });
-                        
-                        // Load GeoJSON
-                        fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-                            .then(response => response.json())
-                            .then(world => {
-                                // Add countries
-                                const countries = g.selectAll(".country")
-                                    .data(world.features)
-                                    .enter().append("path")
-                                    .attr("class", "country")
-                                    .attr("d", path)
-                                    .attr("fill", d => {
-                                        let countryName = d.properties.ADMIN || d.properties.name;
-                                        if (countryNameMap[countryName]) {
-                                            countryName = countryNameMap[countryName];
-                                        }
-                                        const troops = troopsData[countryName] || 0;
-                                        return getColor(troops);
-                                    })
-                                    .on("mouseover", function(event, d) {
-                                        let countryName = d.properties.ADMIN || d.properties.name;
-                                        let displayName = countryName;
-                                        if (countryNameMap[countryName]) {
-                                            countryName = countryNameMap[countryName];
-                                        }
-                                        const troops = troopsData[countryName] || 0;
-                                        
-                                        tooltip
-                                            .html(`<strong>${displayName}</strong><br>${troops.toLocaleString()} troops`)
-                                            .style("left", (event.pageX + 15) + "px")
-                                            .style("top", (event.pageY - 15) + "px")
-                                            .classed("visible", true);
-                                        
-                                        hoverInfo.html(`<strong>${displayName}</strong><br>${troops.toLocaleString()} troops`);
-                                    })
-                                    .on("mouseout", function() {
-                                        tooltip.classed("visible", false);
-                                        hoverInfo.html("Hover over a country");
-                                    })
-                                    .on("mousemove", function(event) {
-                                        tooltip
-                                            .style("left", (event.pageX + 15) + "px")
-                                            .style("top", (event.pageY - 15) + "px");
-                                    });
-                                
-                                // Add latitude lines
-                                const latitudePaths = latitudes.map(l => {
-                                    const line = {
-                                        type: "LineString",
-                                        coordinates: d3.range(-180, 181, 1).map(lon => [lon, l.lat])
-                                    };
-                                    
-                                    // Create invisible thick line for easier hovering
-                                    const hoverPath = g.append("path")
-                                        .datum(line)
-                                        .attr("class", `latitude-hover ${l.name}`)
-                                        .attr("d", path)
-                                        .attr("fill", "none")
-                                        .attr("stroke", "transparent")
-                                        .attr("stroke-width", 10)
-                                        .style("cursor", "pointer");
-                                    
-                                    // Create visible line
-                                    const visiblePath = g.append("path")
-                                        .datum(line)
-                                        .attr("class", `latitude-line ${l.name}`)
-                                        .attr("d", path)
-                                        .attr("fill", "none")
-                                        .attr("stroke", l.color)
-                                        .attr("stroke-width", l.lat === 0 ? 2 : 1.5)
-                                        .attr("stroke-dasharray", l.dash)
-                                        .attr("opacity", 0.6)
-                                        .style("pointer-events", "none");
-                                    
-                                    hoverPath
-                                        .on("mouseover", function(event) {
-                                            visiblePath.attr("opacity", 0.9).attr("stroke-width", l.lat === 0 ? 3 : 2.5);
-                                            tooltip
-                                                .html(`<strong>${l.label}</strong>`)
-                                                .style("left", (event.pageX + 15) + "px")
-                                                .style("top", (event.pageY - 15) + "px")
-                                                .classed("visible", true);
-                                        })
-                                        .on("mouseout", function() {
-                                            visiblePath.attr("opacity", 0.6).attr("stroke-width", l.lat === 0 ? 2 : 1.5);
-                                            tooltip.classed("visible", false);
-                                        })
-                                        .on("mousemove", function(event) {
-                                            tooltip
-                                                .style("left", (event.pageX + 15) + "px")
-                                                .style("top", (event.pageY - 15) + "px");
-                                        });
-                                    
-                                    return { hover: hoverPath, visible: visiblePath };
-                                });
-                                
-                                // Add city dots - store city data with each dot
-                                const cityDots = cities.map(city => {
-                                    const dot = g.append("circle")
-                                        .attr("class", "city-dot")
-                                        .attr("r", 8)
-                                        .attr("fill", "#000")
-                                        .attr("stroke", "#fff")
-                                        .attr("stroke-width", 1.5)
-                                        .style("cursor", "pointer")
-                                        .on("mouseover", function(event) {
-                                            d3.select(this).attr("r", 10).attr("stroke-width", 2);
-                                            tooltip
-                                                .html(`<strong>${city.name}</strong>`)
-                                                .style("left", (event.pageX + 15) + "px")
-                                                .style("top", (event.pageY - 15) + "px")
-                                                .classed("visible", true);
-                                        })
-                                        .on("mouseout", function() {
-                                            d3.select(this).attr("r", 8).attr("stroke-width", 1.5);
-                                            tooltip.classed("visible", false);
-                                        })
-                                        .on("mousemove", function(event) {
-                                            tooltip
-                                                .style("left", (event.pageX + 15) + "px")
-                                                .style("top", (event.pageY - 15) + "px");
-                                        });
-                                    
-                                    // Add city label
-                                    const label = g.append("text")
-                                        .attr("class", "city-label")
-                                        .text(city.name);
-                                    
-                                    return { dot: dot, label: label, coords: city.coords };
-                                });
-                                
-                                // Update city positions - FIXED VERSION
-                                function updateCityPositions() {
-                                    const showCities = document.getElementById('show-cities')?.checked ?? true;
-                                    
-                                    cityDots.forEach(item => {
-                                        const projected = projection(item.coords);
-                                        if (projected) {
-                                            const [x, y] = projected;
-                                            
-                                            // Get the center point of the visible hemisphere
-                                            const centerPoint = projection.invert([0, 0]);
-                                            
-                                            // Calculate angular distance from center
-                                            const angle = d3.geoDistance(item.coords, centerPoint);
-                                            
-                                            // Check if on visible hemisphere (< 90 degrees = π/2 radians)
-                                            const isVisible = angle < Math.PI / 2;
-                                            
-                                            // Show both dot and label only if cities are enabled AND on visible side
-                                            const shouldShow = isVisible && showCities;
-                                            
-                                            item.dot
-                                                .attr("cx", x)
-                                                .attr("cy", y)
-                                                .style("display", shouldShow ? "block" : "none");
-                                            
-                                            item.label
-                                                .attr("x", x + 12)
-                                                .attr("y", y + 4)
-                                                .style("display", shouldShow ? "block" : "none");
-                                        }
-                                    });
-                                }
-                                
-                                // Initial positioning
-                                updateCityPositions();
-                                
-                                // Dragging with momentum
-                                let lastRotate;
-                                let isDragging = false;
-                                let needsUpdate = false;
-                                let velocity = [0, 0];
-                                let lastDragTime = 0;
-                                let momentumAnimation = null;
-                                const maxVelocity = 3;
-                                
-                                // Auto-spin (Earth-like: west to east)
-                                let spinPaused = false;
-                                let spinSpeed = 1.5; // degrees per second
-                                const spinSpeedStep = 0.5;
-                                const spinSpeedMax = 6;
-                                let lastSpinTime = performance.now();
-                                
-                                function clampVelocity(vel) {
-                                    const speed = Math.sqrt(vel[0] * vel[0] + vel[1] * vel[1]);
-                                    if (speed > maxVelocity) {
-                                        const scale = maxVelocity / speed;
-                                        return [vel[0] * scale, vel[1] * scale];
-                                    }
-                                    return vel;
-                                }
-                                
-                                function dragstarted(event) {
-                                    lastRotate = projection.rotate();
-                                    isDragging = true;
-                                    velocity = [0, 0];
-                                    lastDragTime = Date.now();
-                                    
-                                    if (momentumAnimation) {
-                                        cancelAnimationFrame(momentumAnimation);
-                                        momentumAnimation = null;
-                                    }
-                                }
-                                
-                                function dragged(event) {
-                                    const rotate = lastRotate;
-                                    const k = 75 / projection.scale();
-                                    const dx = event.dx * k;
-                                    const dy = event.dy * k;
-                                    
-                                    projection.rotate([rotate[0] + dx, rotate[1] - dy]);
-                                    lastRotate = projection.rotate();
-                                    
-                                    const now = Date.now();
-                                    const dt = now - lastDragTime;
-                                    if (dt > 0) {
-                                        velocity = clampVelocity([dx / dt * 16, dy / dt * 16]);
-                                    }
-                                    lastDragTime = now;
-                                    
-                                    if (!needsUpdate) {
-                                        needsUpdate = true;
-                                        requestAnimationFrame(updatePaths);
-                                    }
-                                }
-                                
-                                function dragended(event) {
-                                    isDragging = false;
-                                    
-                                    if (Math.abs(velocity[0]) > 0.1 || Math.abs(velocity[1]) > 0.1) {
-                                        startMomentum();
-                                    }
-                                }
-                                
-                                function startMomentum() {
-                                    const friction = 0.92;
-                                    const minVelocity = 0.05;
-                                    
-                                    function animate() {
-                                        velocity[0] *= friction;
-                                        velocity[1] *= friction;
-                                        
-                                        if (Math.abs(velocity[0]) < minVelocity && Math.abs(velocity[1]) < minVelocity) {
-                                            velocity = [0, 0];
-                                            momentumAnimation = null;
-                                            return;
-                                        }
-                                        
-                                        const rotate = projection.rotate();
-                                        projection.rotate([rotate[0] + velocity[0], rotate[1] - velocity[1]]);
-                                        countries.attr("d", path);
-                                        latitudePaths.forEach(p => {
-                                            p.hover.attr("d", path);
-                                            p.visible.attr("d", path);
-                                        });
-                                        updateCityPositions();
-                                        
-                                        momentumAnimation = requestAnimationFrame(animate);
-                                    }
-                                    
-                                    momentumAnimation = requestAnimationFrame(animate);
-                                }
-                                
-                                function updatePaths() {
-                                    if (isDragging || needsUpdate) {
-                                        countries.attr("d", path);
-                                        latitudePaths.forEach(p => {
-                                            p.hover.attr("d", path);
-                                            p.visible.attr("d", path);
-                                        });
-                                        updateCityPositions();
-                                        needsUpdate = false;
-                                    }
-                                }
-                                
-                                function spinLoop(time) {
-                                    const dt = time - lastSpinTime;
-                                    lastSpinTime = time;
-                                    if (!spinPaused && !isDragging && !momentumAnimation && spinSpeed > 0) {
-                                        const rotate = projection.rotate();
-                                        projection.rotate([rotate[0] + spinSpeed * (dt / 1000), rotate[1], rotate[2]]);
-                                        countries.attr("d", path);
-                                        latitudePaths.forEach(p => {
-                                            p.hover.attr("d", path);
-                                            p.visible.attr("d", path);
-                                        });
-                                        updateCityPositions();
-                                    }
-                                    requestAnimationFrame(spinLoop);
-                                }
-                                requestAnimationFrame(spinLoop);
-                                
-                                svg.on("click", function() {
-                                    if (momentumAnimation) {
-                                        cancelAnimationFrame(momentumAnimation);
-                                        momentumAnimation = null;
-                                        velocity = [0, 0];
-                                    }
-                                });
-                                
-                                const drag = d3.drag()
-                                    .on("start", dragstarted)
-                                    .on("drag", dragged)
-                                    .on("end", dragended);
-                                
-                                svg.call(drag);
-                                
-                                // Zoom controls
-                                let currentScale = 1;
-                                
-                                function updateZoom(newScale) {
-                                    currentScale = Math.max(0.5, Math.min(5, newScale));
-                                    const scale = radius * currentScale;
-                                    projection.scale(scale);
-                                    globe.attr("r", scale);
-                                    countries.attr("d", path);
-                                    latitudePaths.forEach(p => {
-                                        p.hover.attr("d", path);
-                                        p.visible.attr("d", path);
-                                    });
-                                    updateCityPositions();
-                                }
-                                
-                                document.getElementById('zoom-in').addEventListener('click', function() {
-                                    updateZoom(currentScale * 1.3);
-                                });
-                                
-                                document.getElementById('zoom-out').addEventListener('click', function() {
-                                    updateZoom(currentScale / 1.3);
-                                });
-                                
-                                // Spin controls
-                                const spinPauseBtn = document.getElementById('spin-pause');
-                                spinPauseBtn.addEventListener('click', function() {
-                                    spinPaused = !spinPaused;
-                                    spinPauseBtn.textContent = spinPaused ? '▶' : '⏸';
-                                    spinPauseBtn.title = spinPaused ? 'Play rotation' : 'Pause rotation';
-                                });
-                                document.getElementById('spin-slower').addEventListener('click', function() {
-                                    spinSpeed = Math.max(0, spinSpeed - spinSpeedStep);
-                                });
-                                document.getElementById('spin-faster').addEventListener('click', function() {
-                                    spinSpeed = Math.min(spinSpeedMax, spinSpeed + spinSpeedStep);
-                                });
-                                
-                                // Legend toggle
-                                const legendToggle = document.getElementById('legend-toggle');
-                                const legendContent = document.getElementById('legend-content');
-                                const legendToggleIcon = legendToggle.querySelector('.legend-toggle');
-                                
-                                legendToggle.addEventListener('click', function() {
-                                    legendContent.classList.toggle('collapsed');
-                                    legendToggleIcon.textContent = legendContent.classList.contains('collapsed') ? '+' : '−';
-                                });
-                                
-                                // City names toggle
-                                const showCitiesCheckbox = document.getElementById('show-cities');
-                                showCitiesCheckbox.addEventListener('change', function() {
-                                    updateCityPositions();
-                                });
-                            })
-                            .catch(error => console.error('Error loading GeoJSON:', error));
-                    }
+
+                    // Intro rise: flat at first, then slowly raise to the default height,
+                    // unless the reader has already moved the slider
+                    setTimeout(() => {
+                        if (sliderTouched) return;
+                        heightScale = DEFAULT_HEIGHT;
+                        heightSlider.value = DEFAULT_HEIGHT;
+                        heightValue.textContent = DEFAULT_HEIGHT.toFixed(1) + '×';
+                        world.polygonsTransitionDuration(2500).polygonAltitude(altitude);
+                        setTimeout(() => world.polygonsTransitionDuration(700), 2600);
+                        setTimeout(hideHint, HINT_AFTER_RISE_MS);
+                    }, INTRO_DELAY_MS);
                 });
             })
-            .catch(error => console.error('Error reading CSV:', error));
-        
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            location.reload();
+            .catch(err => console.error('Error loading globe data:', err));
+
+        updateCities();
+        updateLines();
+
+        // Controls
+
+        // Height slider
+        const heightSlider = document.getElementById('height-slider');
+        const heightValue = document.getElementById('height-value');
+        // Helper hint above the slider: fades ~10 seconds after the intro rise, or as soon
+        // as the slider is used (30-second fallback in case the data never loads)
+        const HINT_AFTER_RISE_MS = 10000;
+        const heightHint = document.getElementById('height-hint');
+        const hideHint = () => heightHint.classList.add('hidden');
+        setTimeout(hideHint, 30000);
+
+        heightSlider.addEventListener('input', () => {
+            hideHint();
+            sliderTouched = true;
+            heightScale = parseFloat(heightSlider.value);
+            heightValue.textContent = heightScale.toFixed(1) + '×';
+            world.polygonAltitude(altitude);
         });
+
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            const pov = world.pointOfView();
+            world.pointOfView({ altitude: Math.max(0.3, pov.altitude / 1.3) }, 400);
+        });
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            const pov = world.pointOfView();
+            world.pointOfView({ altitude: Math.min(6, pov.altitude * 1.3) }, 400);
+        });
+
+        const spinPauseBtn = document.getElementById('spin-pause');
+        spinPauseBtn.addEventListener('click', () => {
+            spinPaused = !spinPaused;
+            spinPauseBtn.textContent = spinPaused ? '▶' : '⏸';
+            spinPauseBtn.title = spinPaused ? 'Play rotation' : 'Pause rotation';
+            applySpin();
+        });
+
+        const legendToggle = document.getElementById('legend-toggle');
+        const legendContent = document.getElementById('legend-content');
+        legendToggle.addEventListener('click', () => {
+            legendContent.classList.toggle('collapsed');
+            legendToggle.querySelector('.legend-toggle').textContent =
+                legendContent.classList.contains('collapsed') ? '+' : '−';
+        });
+
+        // Keep the globe sized to its column
+        new ResizeObserver(() => {
+            world.width(el.parentElement.clientWidth).height(el.parentElement.clientHeight);
+        }).observe(el.parentElement);
     </script>
 </body>
 </html>
