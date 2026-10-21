@@ -36,282 +36,7 @@
       crossorigin="anonymous"
     />
 
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        padding-top: 70px;
-      }
-
-      .navbar {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      }
-
-      .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 80px 0 60px;
-        margin-bottom: 40px;
-      }
-
-      .hero-section h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-      }
-
-      .hero-section .last-updated {
-        margin-top: 18px;
-        font-size: 0.9rem;
-        opacity: 0.85;
-      }
-
-      .hero-section a {
-        color: #fff;
-        text-decoration: underline;
-      }
-
-      .hero-section a:hover {
-        color: #e0e7ff;
-      }
-
-      .hero-section p {
-        font-size: 1.2rem;
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      .region-nav {
-        background: #f8f9fa;
-        padding: 30px 0;
-        margin-bottom: 40px;
-      }
-
-      .region-nav .btn {
-        margin: 5px;
-        font-weight: 500;
-      }
-
-      /* Region jump bar. Phones/tablets: a bar along the bottom of the
-         screen, buttons left to right, wrapping onto more rows on small
-         screens so every button is always visible. Desktop (1200px+):
-         a stacked rail on the left. Either way it appears once the region
-         buttons under the header scroll out of view. */
-      .region-rail {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        gap: 5px;
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1020;
-        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
-        background: #fff;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
-        transform: translateY(110%);
-        pointer-events: none;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-      }
-
-      .region-rail.visible {
-        transform: none;
-        pointer-events: auto;
-      }
-
-      .region-rail .btn {
-        flex: 0 0 auto;
-        font-weight: 500;
-        font-size: 0.8rem;
-        padding: 3px 8px;
-        background: #fff;
-      }
-
-      .region-rail .btn.active {
-        color: #fff;
-      }
-
-      .region-rail .btn-outline-info.active { background: #0dcaf0; }
-      .region-rail .btn-outline-secondary.active { background: #6c757d; }
-      .region-rail .btn-outline-success.active { background: #198754; }
-      .region-rail .btn-outline-danger.active { background: #dc3545; }
-      .region-rail .btn-outline-primary.active { background: #0d6efd; }
-      .region-rail .btn-outline-warning.active { background: #ffc107; color: #000; }
-      .region-rail .btn-outline-dark.active { background: #212529; }
-
-      .region-rail .rail-top {
-        display: none; /* desktop rail only; not shown in the phone bar */
-        font-size: 0.8rem;
-        color: #667eea;
-        text-decoration: none;
-      }
-
-      @media (min-width: 1200px) {
-        main.container {
-          padding-left: 190px; /* room for the rail */
-        }
-
-        .region-rail {
-          flex-direction: column;
-          align-items: stretch;
-          gap: 8px;
-          top: 90px;
-          right: auto;
-          bottom: auto;
-          left: 20px;
-          width: 155px;
-          flex-wrap: nowrap;
-          padding: 0;
-          background: none;
-          box-shadow: none;
-          opacity: 0;
-          transform: translateX(-12px);
-        }
-
-        .region-rail.visible {
-          opacity: 1;
-          transform: none;
-        }
-
-        .region-rail .btn {
-          text-align: left;
-          font-size: 0.9rem;
-          padding: 0.25rem 0.5rem;
-        }
-
-        .region-rail .rail-top {
-          display: inline;
-          margin-top: 4px;
-        }
-      }
-
-      .main-content {
-        margin-bottom: 60px;
-      }
-
-      .region-section {
-        padding: 60px 0;
-        border-top: 3px solid #e9ecef;
-      }
-
-      .region-section h2 {
-        color: #2a5298;
-        font-weight: 700;
-        margin-bottom: 30px;
-      }
-
-      .region-section h2:has(+ .byline) {
-        margin-bottom: 6px;
-      }
-
-      .byline {
-        font-size: 0.95rem;
-        color: #555;
-        margin-bottom: 30px;
-      }
-
-      .region-section .row.mb-4 {
-        margin-bottom: 3rem !important;
-      }
-
-      .snippet {
-        margin: 30px 0;
-      }
-
-      .row .snippet {
-        margin-top: 0;
-      }
-
-      /* Shown only while a snippet block has nothing pasted into it */
-      .snippet.is-empty {
-        min-height: 220px;
-        border: 2px dashed #adb5bd;
-        border-radius: 8px;
-        background: #f8f9fa;
-        color: #6c757d;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 20px;
-        font-size: 0.95rem;
-      }
-
-      .snippet.is-empty::before {
-        content: "⧉  " attr(data-label);
-      }
-
-      .chart-headline {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin: 10px 0 12px;
-      }
-
-      .chart-credit,
-      .chart-note {
-        font-size: 0.85rem;
-        color: #666;
-        margin-top: -18px;
-        margin-bottom: 24px;
-      }
-
-      .chart-note {
-        margin-top: -16px;
-      }
-
-      .return-top {
-        display: inline-block;
-        margin-top: 30px;
-        color: #667eea;
-        font-weight: 500;
-        text-decoration: none;
-      }
-
-      .return-top:hover {
-        color: #764ba2;
-      }
-
-      .bylines-section {
-        background: #f8f9fa;
-        padding: 60px 0;
-        margin-top: 60px;
-      }
-
-      .bylines-section h2 {
-        color: #2a5298;
-        font-weight: 700;
-        margin-bottom: 20px;
-      }
-
-      /* Keep jumped-to sections from sliding under the fixed nav bar */
-      section[id] {
-        scroll-margin-top: 70px;
-      }
-
-      .footer {
-        background: #2a5298;
-        color: white;
-        padding: 30px 0;
-        text-align: center;
-      }
-
-      .footer .small {
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-
-      @media (max-width: 767px) {
-        .region-section .col-12.order-1 {
-          margin-bottom: 1.5rem;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
@@ -356,7 +81,7 @@
           Fall 2026. Learn more <a href="#about">about this project</a>.
         </p>
         <!-- Set to the time of the latest push to GitHub -->
-        <p class="last-updated" id="last-updated">Last updated: Oct. 21, 2026, 11:04 a.m. ET</p>
+        <p class="last-updated" id="last-updated">Last updated: Oct. 21, 2026, 12:19 p.m. ET</p>
       </div>
     </div>
 
@@ -390,7 +115,7 @@
           of thousands of American service members were stationed abroad,
           while today that number has stabilized at approximately 160,000
           personnel in dozens of countries worldwide.
-          <a href="#about" style="font-size: 0.9em">About this project</a>
+          <a href="#about" class="about-link">About this project</a>
         </p>
 
         <div class="snippet" data-label="Paste your main visual here (chart, map, video, or iframe)">
@@ -402,8 +127,8 @@
             width="100%"
             height="600"
             frameborder="0"
-            style="border: none"
             title="U.S. Troop Deployment Globe"
+            class="globe-frame"
           ></iframe>
 
 
@@ -482,7 +207,7 @@
             height="410"
             frameborder="0"
             scrolling="no"
-            style="border: none; max-width: 100%"
+            class="gsheet-chart"
           ></iframe>
 
 
@@ -544,7 +269,7 @@
             src="https://flo.uri.sh/visualisation/30621629/embed"
             frameborder="0"
             scrolling="no"
-            style="width: 100%; height: 600px; border: none"
+            class="flourish-chart"
           ></iframe>
 
 

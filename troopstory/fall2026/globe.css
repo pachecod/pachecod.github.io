@@ -1,0 +1,263 @@
+/* 3D troop globe styles (globe.html). */
+
+* {
+    box-sizing: border-box;
+}
+/* Two columns: the key on the left, the globe and its controls on the right.
+   The globe is sized to its own column, so zooming never slides it under the key. */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    height: 100vh;
+}
+/* Stars are a fixed layer behind everything, so they stay still while the globe spins.
+   brightness() makes them stand out; the 2000px tile size keeps each star visible. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url('https://cdn.jsdelivr.net/npm/three-globe@2.45.0/example/img/night-sky.png') center / 2000px auto repeat;
+    filter: brightness(2.6) contrast(1.4);
+    pointer-events: none;
+}
+.sidebar {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 250px;
+    padding: 20px 0 20px 20px;
+    overflow-y: auto;
+}
+.globe-col {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+#globe-container {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+#globe-container.ready {
+    opacity: 1;
+}
+#globe-container:active {
+    cursor: grabbing;
+}
+.globe-tooltip {
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.info-panel {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.info-panel h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+.info-panel p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: #666;
+}
+.legend {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 11px;
+}
+.legend-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.legend-toggle {
+    font-size: 16px;
+}
+.legend-content {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    max-height: 300px;
+}
+.legend-content.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+}
+.legend-color {
+    width: 20px;
+    height: 14px;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+.legend-color.none {
+    background: repeating-linear-gradient(45deg, #2b5f8a, #2b5f8a 3px, #6b8f5a 3px, #6b8f5a 6px);
+}
+.zoom-controls {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+.zoom-btn {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.zoom-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+}
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+.spin-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+.spin-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+}
+/* Country height slider: last section of the info panel, under the key */
+.height-control {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    color: #333;
+}
+.height-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: bold;
+}
+.height-control input {
+    width: 100%;
+    margin: 6px 0 0;
+    cursor: pointer;
+}
+#height-value {
+    font-weight: normal;
+    font-variant-numeric: tabular-nums;
+}
+/* Hint under the slider; fades and collapses after the intro */
+.height-hint {
+    position: relative;
+    margin-top: 12px;
+    background: #1e3c72;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.35;
+    padding: 7px 10px;
+    border-radius: 6px;
+    max-height: 80px;
+    overflow: visible;
+    transition: opacity 1s ease, max-height 0.6s ease 1s, margin 0.6s ease 1s, padding 0.6s ease 1s;
+    animation: hintBob 1.6s ease-in-out infinite;
+}
+.height-hint::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -7px;
+    border: 7px solid transparent;
+    border-bottom-color: #1e3c72;
+}
+.height-hint.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+    animation: none;
+}
+@keyframes hintBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+}
+.loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 14px;
+    pointer-events: none;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        flex-basis: 190px;
+        padding: 10px 0 10px 10px;
+    }
+    .info-panel {
+        font-size: 10px;
+        padding: 10px;
+    }
+    .info-panel h3 {
+        font-size: 14px;
+    }
+}
+/* Phones: stack the key above the globe */
+@media (max-width: 560px) {
+    body {
+        flex-direction: column;
+    }
+    .sidebar {
+        flex: 0 0 auto;
+        max-height: 40vh;
+        padding: 10px 10px 0;
+    }
+    .globe-col {
+        flex: 1;
+    }
+}

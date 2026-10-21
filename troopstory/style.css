@@ -1,185 +1,296 @@
-:root {
-    --primary-blue: #2c5aa0;
-    --secondary-blue: #4a7bc8;
-    --light-gray: #f8f9fa;
-    --dark-gray: #212529;
-    --border-color: #dee2e6;
+/* Troop Story page styles (index.html). Loaded after Bootstrap. */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  padding-top: 70px;
+}
+
+.navbar {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 0 60px;
+  margin-bottom: 40px;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero-section .last-updated {
+  margin-top: 18px;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.hero-section a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.hero-section a:hover {
+  color: #e0e7ff;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.region-nav {
+  background: #f8f9fa;
+  padding: 30px 0;
+  margin-bottom: 40px;
+}
+
+.region-nav .btn {
+  margin: 5px;
+  font-weight: 500;
+}
+
+/* Region jump bar. Phones/tablets: a bar along the bottom of the
+   screen, buttons left to right, wrapping onto more rows on small
+   screens so every button is always visible. Desktop (1200px+):
+   a stacked rail on the left. Either way it appears once the region
+   buttons under the header scroll out of view. */
+.region-rail {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1020;
+  padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(110%);
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.region-rail.visible {
+  transform: none;
+  pointer-events: auto;
+}
+
+.region-rail .btn {
+  flex: 0 0 auto;
+  font-weight: 500;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  background: #fff;
+}
+
+.region-rail .btn.active {
+  color: #fff;
+}
+
+.region-rail .btn-outline-info.active { background: #0dcaf0; }
+.region-rail .btn-outline-secondary.active { background: #6c757d; }
+.region-rail .btn-outline-success.active { background: #198754; }
+.region-rail .btn-outline-danger.active { background: #dc3545; }
+.region-rail .btn-outline-primary.active { background: #0d6efd; }
+.region-rail .btn-outline-warning.active { background: #ffc107; color: #000; }
+.region-rail .btn-outline-dark.active { background: #212529; }
+
+.region-rail .rail-top {
+  display: none; /* desktop rail only; not shown in the phone bar */
+  font-size: 0.8rem;
+  color: #667eea;
+  text-decoration: none;
+}
+
+@media (min-width: 1200px) {
+  main.container {
+    padding-left: 190px; /* room for the rail */
   }
-  
-  * {
-    scroll-behavior: smooth;
+
+  .region-rail {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    top: 90px;
+    right: auto;
+    bottom: auto;
+    left: 20px;
+    width: 155px;
+    flex-wrap: nowrap;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    opacity: 0;
+    transform: translateX(-12px);
   }
-  
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    padding-top: 56px;
-    background-color: var(--light-gray);
+
+  .region-rail.visible {
+    opacity: 1;
+    transform: none;
   }
-  
-  /* Navigation */
-  .navbar {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+
+  .region-rail .btn {
+    text-align: left;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
   }
-  
-  .navbar-brand {
-    font-weight: 600;
-    font-size: 1.25rem;
+
+  .region-rail .rail-top {
+    display: inline;
+    margin-top: 4px;
   }
-  
-  /* Hero Section */
-  .hero-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 4rem 0 3rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  
-  .hero-section h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  
-  .hero-section p {
-    font-size: 1.1rem;
-    opacity: 0.95;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  /* Region Navigation */
-  .region-nav {
-    position: sticky;
-    top: 56px;
-    background: white;
-    padding: 1.5rem 0;
-    z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
-  }
-  
-  .region-nav .btn {
-    margin: 0.5rem 0.25rem;
-    border-radius: 25px;
-    padding: 0.5rem 1.25rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border-width: 2px;
-  }
-  
-  .region-nav .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  }
-  
-  /* Main Content */
-  .main-content {
-    background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  
-  /* Section Styling */
-  .region-section {
-    background: white;
-    border-radius: 12px;
-    padding: 2.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border-left: 4px solid var(--primary-blue);
-  }
-  
-  .region-section h2 {
-    color: var(--primary-blue);
-    font-weight: 700;
+}
+
+.main-content {
+  margin-bottom: 60px;
+}
+
+.region-section {
+  padding: 60px 0;
+  border-top: 3px solid #e9ecef;
+}
+
+.region-section h2 {
+  color: #2a5298;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.region-section h2:has(+ .byline) {
+  margin-bottom: 6px;
+}
+
+.byline {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.region-section .row.mb-4 {
+  margin-bottom: 3rem !important;
+}
+
+.snippet {
+  margin: 30px 0;
+}
+
+.row .snippet {
+  margin-top: 0;
+}
+
+/* Shown only while a snippet block has nothing pasted into it */
+.snippet.is-empty {
+  min-height: 220px;
+  border: 2px dashed #adb5bd;
+  border-radius: 8px;
+  background: #f8f9fa;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.95rem;
+}
+
+.snippet.is-empty::before {
+  content: "⧉  " attr(data-label);
+}
+
+.chart-headline {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 10px 0 12px;
+}
+
+.chart-credit,
+.chart-note {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: -18px;
+  margin-bottom: 24px;
+}
+
+.chart-note {
+  margin-top: -16px;
+}
+
+.return-top {
+  display: inline-block;
+  margin-top: 30px;
+  color: #667eea;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.return-top:hover {
+  color: #764ba2;
+}
+
+.bylines-section {
+  background: #f8f9fa;
+  padding: 60px 0;
+  margin-top: 60px;
+}
+
+.bylines-section h2 {
+  color: #2a5298;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Keep jumped-to sections from sliding under the fixed nav bar */
+section[id] {
+  scroll-margin-top: 70px;
+}
+
+.footer {
+  background: #2a5298;
+  color: white;
+  padding: 30px 0;
+  text-align: center;
+}
+
+.footer .small {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 767px) {
+  .region-section .col-12.order-1 {
     margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--border-color);
   }
-  
-  .region-section p {
-    color: #495057;
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Chart Container */
-  .chart-container {
-    background: var(--light-gray);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin: 2rem 0;
-    border: 1px solid var(--border-color);
-  }
-  
-  .chart-container iframe {
-    border-radius: 8px;
-  }
-  
-  /* Return to Top Button */
-  .return-top {
-    display: inline-block;
-    margin-top: 2rem;
-    color: var(--primary-blue);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border: 2px solid var(--primary-blue);
-    border-radius: 25px;
-    transition: all 0.3s ease;
-  }
-  
-  .return-top:hover {
-    background: var(--primary-blue);
-    color: white;
-    transform: translateY(-2px);
-  }
-  
-  /* Footer */
-  .footer {
-    background: var(--dark-gray);
-    color: white;
-    padding: 2rem 0;
-    text-align: center;
-    margin-top: 3rem;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .hero-section h1 {
-      font-size: 1.75rem;
-    }
-    
-    .region-nav {
-      padding: 1rem 0;
-    }
-    
-    .region-nav .btn {
-      font-size: 0.85rem;
-      padding: 0.4rem 1rem;
-    }
-    
-    .region-section {
-      padding: 1.5rem;
-    }
-  }
-  
-  /* Smooth fade-in animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .region-section {
-    animation: fadeIn 0.5s ease-out;
-  }
+}
+
+/* Classes for elements that used inline style attributes */
+.about-link {
+  font-size: 0.9em;
+}
+
+.globe-frame,
+.gsheet-chart,
+.flourish-chart {
+  border: none;
+}
+
+.gsheet-chart {
+  max-width: 100%;
+}
+
+.flourish-chart {
+  width: 100%;
+  height: 600px;
+}
