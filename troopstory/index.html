@@ -62,6 +62,21 @@
         margin-bottom: 20px;
       }
 
+      .hero-section .last-updated {
+        margin-top: 18px;
+        font-size: 0.9rem;
+        opacity: 0.85;
+      }
+
+      .hero-section a {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      .hero-section a:hover {
+        color: #e0e7ff;
+      }
+
       .hero-section p {
         font-size: 1.2rem;
         max-width: 800px;
@@ -77,6 +92,102 @@
       .region-nav .btn {
         margin: 5px;
         font-weight: 500;
+      }
+
+      /* Region jump bar. Phones/tablets: a bar along the bottom of the
+         screen, buttons left to right, wrapping onto more rows on small
+         screens so every button is always visible. Desktop (1200px+):
+         a stacked rail on the left. Either way it appears once the region
+         buttons under the header scroll out of view. */
+      .region-rail {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1020;
+        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+        background: #fff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+        transform: translateY(110%);
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      .region-rail.visible {
+        transform: none;
+        pointer-events: auto;
+      }
+
+      .region-rail .btn {
+        flex: 0 0 auto;
+        font-weight: 500;
+        font-size: 0.8rem;
+        padding: 3px 8px;
+        background: #fff;
+      }
+
+      .region-rail .btn.active {
+        color: #fff;
+      }
+
+      .region-rail .btn-outline-info.active { background: #0dcaf0; }
+      .region-rail .btn-outline-secondary.active { background: #6c757d; }
+      .region-rail .btn-outline-success.active { background: #198754; }
+      .region-rail .btn-outline-danger.active { background: #dc3545; }
+      .region-rail .btn-outline-primary.active { background: #0d6efd; }
+      .region-rail .btn-outline-warning.active { background: #ffc107; color: #000; }
+      .region-rail .btn-outline-dark.active { background: #212529; }
+
+      .region-rail .rail-top {
+        display: none; /* desktop rail only; not shown in the phone bar */
+        font-size: 0.8rem;
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      @media (min-width: 1200px) {
+        main.container {
+          padding-left: 190px; /* room for the rail */
+        }
+
+        .region-rail {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+          top: 90px;
+          right: auto;
+          bottom: auto;
+          left: 20px;
+          width: 155px;
+          flex-wrap: nowrap;
+          padding: 0;
+          background: none;
+          box-shadow: none;
+          opacity: 0;
+          transform: translateX(-12px);
+        }
+
+        .region-rail.visible {
+          opacity: 1;
+          transform: none;
+        }
+
+        .region-rail .btn {
+          text-align: left;
+          font-size: 0.9rem;
+          padding: 0.25rem 0.5rem;
+        }
+
+        .region-rail .rail-top {
+          display: inline;
+          margin-top: 4px;
+        }
       }
 
       .main-content {
@@ -172,6 +283,17 @@
         margin-top: 60px;
       }
 
+      .bylines-section h2 {
+        color: #2a5298;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      /* Keep jumped-to sections from sliding under the fixed nav bar */
+      section[id] {
+        scroll-margin-top: 70px;
+      }
+
       .footer {
         background: #2a5298;
         color: white;
@@ -197,7 +319,7 @@
     <nav class="navbar navbar-expand-md navbar-dark fixed-top">
       <div class="container-fluid">
         <!-- EDIT: where the HOME link goes -->
-        <a class="navbar-brand" href="https://pachecod.github.io">HOME</a>
+        <a class="navbar-brand" href="https://pachecod.github.io">Troop Story</a>
 
         <button
           class="navbar-toggler"
@@ -229,7 +351,12 @@
           An interactive exploration of American military presence across global
           regions over the past seven decades. Navigate through different
           regions to discover troop patterns and historical trends.
+          This is a project of Prof. Dan Pacheco&rsquo;s JNL 221: Foundations of
+          Data and Digital Journalism class. Visuals and reports here are from
+          Fall 2026. Learn more <a href="#about">about this project</a>.
         </p>
+        <!-- Set to the time of the latest push to GitHub -->
+        <p class="last-updated" id="last-updated">Last updated: Oct. 21, 2026, 11:04 a.m. ET</p>
       </div>
     </div>
 
@@ -237,15 +364,19 @@
     <!-- One button per region. Each href="#..." must match a section's id below. -->
     <div class="region-nav">
       <div class="container text-center">
-        <a href="#eastasia" class="btn btn-outline-info">East Asia</a>
-        <a href="#europe" class="btn btn-outline-secondary">Europe</a>
-        <a href="#latinamerica" class="btn btn-outline-success">Latin America</a>
-        <a href="#middleeast" class="btn btn-outline-danger">Middle East</a>
-        <a href="#northamerica" class="btn btn-outline-primary">North America</a>
-        <a href="#southasia" class="btn btn-outline-warning">South Asia</a>
-        <a href="#subsahara" class="btn btn-outline-dark">Africa</a>
+        <a href="#eastasia" class="btn btn-outline-info" title="East Asia &amp; Pacific" aria-label="East Asia &amp; Pacific">E. Asia</a>
+        <a href="#europe" class="btn btn-outline-secondary" title="Europe &amp; Central Asia" aria-label="Europe &amp; Central Asia">Europe</a>
+        <a href="#latinamerica" class="btn btn-outline-success" title="Latin America &amp; Caribbean" aria-label="Latin America &amp; Caribbean">Lat. America</a>
+        <a href="#middleeast" class="btn btn-outline-danger" title="Middle East &amp; North Africa" aria-label="Middle East &amp; North Africa">Middle East</a>
+        <a href="#northamerica" class="btn btn-outline-primary" title="North America" aria-label="North America">N. America</a>
+        <a href="#southasia" class="btn btn-outline-warning" title="South Asia" aria-label="South Asia">S. Asia</a>
+        <a href="#subsahara" class="btn btn-outline-dark" title="Sub-Saharan Africa" aria-label="Sub-Saharan Africa">Africa</a>
       </div>
     </div>
+
+    <!-- Region jump bar (bottom on phones, left rail on desktop): copies the
+         region buttons above automatically; no need to edit -->
+    <nav class="region-rail" id="region-rail" aria-label="Jump to a region"></nav>
 
     <main class="container">
       <!-- ============ OVERVIEW ============ -->
@@ -265,9 +396,9 @@
         <div class="snippet" data-label="Paste your main visual here (chart, map, video, or iframe)">
 
 
-          <!-- Interactive troop globe (shared with the fall2026 page: fall2026/globe.html) -->
+          <!-- Interactive troop globe (globe.html in this folder, reads troops.csv) -->
           <iframe
-            src="fall2026/globe.html"
+            src="globe.html"
             width="100%"
             height="600"
             frameborder="0"
@@ -759,11 +890,17 @@
       <!-- ============ ABOUT / CREDITS ============ -->
       <section class="bylines-section" id="about">
         <div class="container">
+          <h2>About This Project</h2>
           <p>
             <strong
               >A group project from Prof. Dan Pacheco's JNL 221 class,
               Foundations of Data and Digital Journalism.</strong
             >
+          </p>
+          <p>
+            This was a classroom learning tool. See a need for corrections?
+            Email them to Prof. Pacheco,
+            <a href="mailto:drpachec@syr.edu">drpachec@syr.edu</a>.
           </p>
           <p class="mb-1"><strong>Reporting and graphics:</strong></p>
           <ul>
@@ -807,6 +944,73 @@
       crossorigin="anonymous"
     ></script>
     <script>
+      // Region jump bar: copy the region buttons, show the bar once the
+      // top button row scrolls away, and highlight the section being read.
+      (function () {
+        var rail = document.getElementById("region-rail");
+        var topRow = document.querySelector(".region-nav");
+        if (!rail || !topRow) return;
+        topRow.querySelectorAll("a.btn").forEach(function (btn) {
+          var copy = btn.cloneNode(true);
+          copy.classList.add("btn-sm");
+          rail.appendChild(copy);
+        });
+        var toTop = document.createElement("a");
+        toTop.href = "#top";
+        toTop.className = "rail-top";
+        toTop.textContent = "\u2191 Top";
+        rail.appendChild(toTop);
+
+        new IntersectionObserver(function (entries) {
+          var e = entries[0];
+          rail.classList.toggle(
+            "visible",
+            !e.isIntersecting && e.boundingClientRect.top < 0
+          );
+        }).observe(topRow);
+
+        var links = {};
+        rail.querySelectorAll("a.btn").forEach(function (a) {
+          links[a.getAttribute("href").slice(1)] = a;
+        });
+        var spy = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting || !links[e.target.id]) return;
+              Object.keys(links).forEach(function (id) {
+                links[id].classList.toggle("active", id === e.target.id);
+              });
+            });
+          },
+          { rootMargin: "-45% 0px -50% 0px" }
+        );
+        document.querySelectorAll(".region-section").forEach(function (sec) {
+          spy.observe(sec);
+        });
+
+        // Phones/tablets: leave room at the bottom of the page for the bar,
+        // however many rows it wraps onto, so it never covers the footer
+        var desktop = window.matchMedia("(min-width: 1200px)");
+        function padForBar() {
+          document.body.style.paddingBottom = desktop.matches
+            ? ""
+            : rail.offsetHeight + "px";
+        }
+        new ResizeObserver(padForBar).observe(rail);
+        desktop.addEventListener("change", padForBar);
+        padForBar();
+      })();
+
+      // Close the phone-size nav menu after a link in it is tapped
+      document.querySelectorAll("#mainNav .nav-link").forEach(function (link) {
+        link.addEventListener("click", function () {
+          var menu = document.getElementById("mainNav");
+          if (menu.classList.contains("show")) {
+            bootstrap.Collapse.getOrCreateInstance(menu).hide();
+          }
+        });
+      });
+
       // Show the dashed placeholder only on snippet blocks with nothing pasted in.
       document.querySelectorAll(".snippet").forEach(function (block) {
         var hasContent =
