@@ -1,76 +1,110 @@
-/* Basic reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Article container */
-  .article-container {
-    width: 80%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #ffffff;
-    color: #333;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-  }
-  
-  /* Article header */
-  .article-header {
-    margin-bottom: 20px;
-  }
-  
-  .article-header h1 {
-    font-size: 2em;
-    margin-bottom: 10px;
-    color: #111;
-  }
-  
-  .article-header .article-meta {
-    font-size: 0.9em;
-    color: #666;
-  }
-  
-  /* Main article content */
-  .article-content p {
-    margin-bottom: 15px;
-    font-size: 1.1em;
-  }
-  
-  /* Images within the article */
-  .article-content img {
-    width: 100%;
-    height: auto;
-    margin: 15px 0;
-    border-radius: 5px;
-  }
-  
-  /* Blockquotes */
-  .article-content blockquote {
-    border-left: 5px solid #333;
-    padding: 10px 20px;
-    margin: 15px 0;
-    font-style: italic;
-    color: #555;
-  }
-  
-  /* Article footer */
-  .article-footer {
-    margin-top: 30px;
-    font-size: 0.9em;
-    color: #666;
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
-  }
-  
-  .article-footer a {
-    color: #0077cc;
-    text-decoration: none;
-  }
-  
-  .article-footer a:hover {
-    text-decoration: underline;
-  }
-  
+/* Election results article template
+   Single typeface (Newsreader, designed for reading on screens) with
+   Georgia as the fallback if the font can't load. */
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&display=swap");
+
+:root {
+  --ink: #16202a;        /* body text and headline */
+  --muted: #4d5963;      /* opening paragraph */
+  --masthead: #0c3b3f;   /* deep teal nameplate bar */
+  --signal: #e0a526;     /* gold rule under the nameplate */
+  --paper: #ffffff;
+
+  --measure: 40rem;      /* width of the text column */
+  --gutter: clamp(1.25rem, 5vw, 2rem);
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.1875rem;
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Nameplate: full-width bar, text lines up with the article column */
+.article-header {
+  padding: 1.1rem max(var(--gutter), calc((100% - var(--measure)) / 2));
+  background: var(--masthead);
+  border-bottom: 5px solid var(--signal);
+  color: #fff;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* Article column */
+.article-container {
+  max-width: calc(var(--measure) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0 var(--gutter) 4rem;
+}
+
+h1 {
+  margin: 2.5rem 0 1.25rem;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0 0 1.25em;
+}
+
+/* The paragraph right after the headline reads as the summary */
+.article-container > h1 + p {
+  margin-bottom: 1.75rem;
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1.45;
+}
+
+a {
+  color: var(--masthead);
+  text-underline-offset: 0.15em;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* Embedded content (maps, charts, videos, images) is always exactly as
+   wide as the article text. !important is needed because embed codes
+   such as Datawrapper's set their width inline. */
+.article-container iframe,
+.article-container embed,
+.article-container object,
+.article-container video {
+  display: block;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin: 2.25rem 0;
+  border: 0;
+}
+
+.article-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2.25rem 0;
+}
