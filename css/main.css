@@ -1,0 +1,28 @@
+/* Each font name below must match a font in the Google Fonts <link> in index.html. */
+
+/* Paragraphs and everything else */
+body {
+  font-family: "Edu NSW ACT Hand Pre", cursive;
+}
+
+/* Headline */
+h1 {
+  font-family: "DynaPuff", system-ui;
+}
+
+/* Subhead */
+h2 {
+  font-family: "BBH Bogle", sans-serif;
+}
+
+p {
+  font-size: 12px;
+}
+
+img {
+  max-width: 200px;
+}
+
+.altimage {
+  max-width: 50px;
+}
