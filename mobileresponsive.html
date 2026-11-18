@@ -6,13 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bootstrap Layout Practice</title>
 
+  <!-- Google Fonts: these lines go ABOVE the Bootstrap link.
+       Every page of your site needs its own copy of them. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BBH+Bogle&family=DynaPuff&family=Edu+NSW+ACT+Hand+Pre&display=swap" rel="stylesheet">
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Your own CSS goes after Bootstrap so it can override it -->
   <style>
+    /* Fonts: every name here must match a font in the Google Fonts link above */
+    body { font-family: "Edu NSW ACT Hand Pre", cursive; }
+    h1 { font-family: "DynaPuff", system-ui; }
+    h2 { font-family: "BBH Bogle", sans-serif; }
+
     /* Colored outlines so you can SEE the rows and columns.
-       Delete this whole block when you're done experimenting. */
+       Delete only these two rules when you're done experimenting. */
     .row { outline: 2px dashed #e67e22; }
     [class*="col"] { outline: 1px solid #3498db; padding: 15px; }
   </style>
